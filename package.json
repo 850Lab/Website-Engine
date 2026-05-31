@@ -10,7 +10,8 @@
     "outreach": "node src/cli.js",
     "server": "node src/server.js",
     "web:dev": "npm run dev --prefix mission-control",
-    "web:build": "npm run build --prefix mission-control"
+    "web:build": "npm run build --prefix mission-control",
+    "start": "npm run server"
   },
   "engines": {
     "node": ">=18"
