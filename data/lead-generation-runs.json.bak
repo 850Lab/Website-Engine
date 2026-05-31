@@ -1,0 +1,4427 @@
+[
+  {
+    "id": "run_1779925849993_d2e77bb2",
+    "status": "completed",
+    "startedAt": "2026-05-27T23:50:49.993Z",
+    "completedAt": "2026-05-27T23:51:27.362Z",
+    "failedAt": null,
+    "config": {
+      "searchTerm": "tree service",
+      "city": "Beaumont",
+      "state": "TX",
+      "zipCode": "",
+      "searchRadiusMiles": null,
+      "locationQuery": "Beaumont, TX",
+      "maxResults": 15,
+      "runMode": "research_score_enrich",
+      "filters": {
+        "websiteStatus": "weak_or_missing",
+        "excludeStrongWebsites": true,
+        "minScore": 15,
+        "minReviews": 10,
+        "minRating": 4,
+        "mustHavePhone": true,
+        "mustHaveWebsite": false,
+        "mustHaveEmail": false,
+        "mustHaveSocialPresence": false,
+        "excludeDuplicates": true,
+        "excludedNiches": [
+          "franchise",
+          "national chain",
+          "corporate office"
+        ]
+      },
+      "opportunitySignals": {
+        "missingCTA": false,
+        "noBookingForm": false,
+        "noMobileFriendlySignal": false,
+        "lowTrustSignals": false,
+        "weakHomepageCopy": false,
+        "noBeforeAfterGallery": false,
+        "noServiceAreaPage": false,
+        "noReviewsTestimonialsShown": false,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "outreachReadiness": {
+        "hasPhone": false,
+        "hasEmail": false,
+        "hasFacebookPage": false,
+        "hasInstagramPage": false,
+        "enoughPublicInfoForPersonalization": true,
+        "enoughInfoForPreview": true
+      },
+      "previewSettings": {
+        "autoGeneratePreview": false,
+        "autoPrepareAssets": false,
+        "autoRenderScreenshots": false,
+        "useAIImagesWhenRealImagesLowConfidence": true,
+        "requireApprovalBeforeOutreach": true
+      }
+    },
+    "modeDescription": "Discover + enrich + score, then qualify/reject and save qualified leads.",
+    "logs": [
+      {
+        "at": "2026-05-27T23:50:49.993Z",
+        "step": "searching",
+        "message": "Searching Google Maps for tree service in Beaumont, TX..."
+      },
+      {
+        "at": "2026-05-27T23:51:21.222Z",
+        "step": "discovered",
+        "message": "Discovered 15 candidate businesses.",
+        "discovered": 15
+      },
+      {
+        "at": "2026-05-27T23:51:21.738Z",
+        "step": "enriched",
+        "message": "Davis Tree Experts: enrichment completed.",
+        "leadName": "Davis Tree Experts",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:21.739Z",
+        "step": "enriched",
+        "message": "Davis Tree Experts: scored 11 (HOLD).",
+        "leadName": "Davis Tree Experts",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:21.741Z",
+        "step": "rejected",
+        "message": "Davis Tree Experts: rejected (Score below minimum (11 < 15).).",
+        "leadId": "virtual-5c8ea0d1c3",
+        "leadName": "Davis Tree Experts",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:22.166Z",
+        "step": "enriched",
+        "message": "The Compadres Landscaping LLC: enrichment completed.",
+        "leadName": "The Compadres Landscaping LLC",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:22.166Z",
+        "step": "enriched",
+        "message": "The Compadres Landscaping LLC: scored 7 (SKIP).",
+        "leadName": "The Compadres Landscaping LLC",
+        "score": 7,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-27T23:51:22.167Z",
+        "step": "rejected",
+        "message": "The Compadres Landscaping LLC: rejected (Score below minimum (7 < 15).).",
+        "leadId": "virtual-a57b1ae597",
+        "leadName": "The Compadres Landscaping LLC",
+        "reasons": [
+          "Score below minimum (7 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:23.229Z",
+        "step": "enriched",
+        "message": "Secure Choice Tree Service of Beaumont Texas: enrichment completed.",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:23.230Z",
+        "step": "enriched",
+        "message": "Secure Choice Tree Service of Beaumont Texas: scored 11 (HOLD).",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:23.230Z",
+        "step": "rejected",
+        "message": "Secure Choice Tree Service of Beaumont Texas: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-ee4d90205d",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:23.919Z",
+        "step": "enriched",
+        "message": "Environmental Tree Service: enrichment completed.",
+        "leadName": "Environmental Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:23.919Z",
+        "step": "enriched",
+        "message": "Environmental Tree Service: scored 11 (HOLD).",
+        "leadName": "Environmental Tree Service",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:23.920Z",
+        "step": "rejected",
+        "message": "Environmental Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-7f76abb921",
+        "leadName": "Environmental Tree Service",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:24.879Z",
+        "step": "enriched",
+        "message": "Lombardo's Bonded Tree Service, LLC: enrichment completed.",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:24.880Z",
+        "step": "enriched",
+        "message": "Lombardo's Bonded Tree Service, LLC: scored 11 (HOLD).",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:24.880Z",
+        "step": "rejected",
+        "message": "Lombardo's Bonded Tree Service, LLC: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-a05982028c",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:25.278Z",
+        "step": "enriched",
+        "message": "CJ's Tree Service Professionals, LLC: enrichment completed.",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:25.279Z",
+        "step": "enriched",
+        "message": "CJ's Tree Service Professionals, LLC: scored 11 (HOLD).",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:25.279Z",
+        "step": "rejected",
+        "message": "CJ's Tree Service Professionals, LLC: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-6db17ef696",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:25.703Z",
+        "step": "enriched",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: enrichment completed.",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:25.703Z",
+        "step": "enriched",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: scored 8 (SKIP).",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "score": 8,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-27T23:51:25.703Z",
+        "step": "rejected",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-1318d57ddc",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:25.996Z",
+        "step": "enriched",
+        "message": "Hagan tree services: enrichment completed.",
+        "leadName": "Hagan tree services",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:25.996Z",
+        "step": "enriched",
+        "message": "Hagan tree services: scored 8 (SKIP).",
+        "leadName": "Hagan tree services",
+        "score": 8,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-27T23:51:25.996Z",
+        "step": "rejected",
+        "message": "Hagan tree services: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-71f5b2db95",
+        "leadName": "Hagan tree services",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:26.343Z",
+        "step": "enriched",
+        "message": "Beaumont Tree Service: enrichment completed.",
+        "leadName": "Beaumont Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:26.344Z",
+        "step": "enriched",
+        "message": "Beaumont Tree Service: scored 14 (HOLD).",
+        "leadName": "Beaumont Tree Service",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:26.344Z",
+        "step": "rejected",
+        "message": "Beaumont Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-9a76a70e60",
+        "leadName": "Beaumont Tree Service",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:26.482Z",
+        "step": "enriched",
+        "message": "A Unity Tree Service: enrichment completed.",
+        "leadName": "A Unity Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:26.482Z",
+        "step": "enriched",
+        "message": "A Unity Tree Service: scored 16 (TARGET).",
+        "leadName": "A Unity Tree Service",
+        "score": 16,
+        "status": "TARGET"
+      },
+      {
+        "at": "2026-05-27T23:51:26.483Z",
+        "step": "rejected",
+        "message": "A Unity Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-82a0daae0d",
+        "leadName": "A Unity Tree Service",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:26.744Z",
+        "step": "enriched",
+        "message": "Edward's Tree Trimming: enrichment completed.",
+        "leadName": "Edward's Tree Trimming",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:26.745Z",
+        "step": "enriched",
+        "message": "Edward's Tree Trimming: scored 13 (HOLD).",
+        "leadName": "Edward's Tree Trimming",
+        "score": 13,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:26.745Z",
+        "step": "rejected",
+        "message": "Edward's Tree Trimming: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-2990505426",
+        "leadName": "Edward's Tree Trimming",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:26.905Z",
+        "step": "enriched",
+        "message": "Good hands Tree service: enrichment completed.",
+        "leadName": "Good hands Tree service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:26.906Z",
+        "step": "enriched",
+        "message": "Good hands Tree service: scored 16 (TARGET).",
+        "leadName": "Good hands Tree service",
+        "score": 16,
+        "status": "TARGET"
+      },
+      {
+        "at": "2026-05-27T23:51:26.913Z",
+        "step": "qualified",
+        "message": "Good hands Tree service: qualified.",
+        "leadId": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+        "leadName": "Good hands Tree service"
+      },
+      {
+        "at": "2026-05-27T23:51:27.012Z",
+        "step": "enriched",
+        "message": "Brent Wester Landscape Management: enrichment completed.",
+        "leadName": "Brent Wester Landscape Management",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:27.012Z",
+        "step": "enriched",
+        "message": "Brent Wester Landscape Management: scored 14 (HOLD).",
+        "leadName": "Brent Wester Landscape Management",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:27.013Z",
+        "step": "rejected",
+        "message": "Brent Wester Landscape Management: rejected (Duplicate business already exists.).",
+        "leadId": "virtual-afb4093a1c",
+        "leadName": "Brent Wester Landscape Management",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:27.108Z",
+        "step": "enriched",
+        "message": "Allen's Tree Experts: enrichment completed.",
+        "leadName": "Allen's Tree Experts",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:27.108Z",
+        "step": "enriched",
+        "message": "Allen's Tree Experts: scored 11 (HOLD).",
+        "leadName": "Allen's Tree Experts",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:27.108Z",
+        "step": "rejected",
+        "message": "Allen's Tree Experts: rejected (Score below minimum (11 < 15).).",
+        "leadId": "virtual-32517feed8",
+        "leadName": "Allen's Tree Experts",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:27.361Z",
+        "step": "enriched",
+        "message": "Triple R Tree Service: enrichment completed.",
+        "leadName": "Triple R Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-27T23:51:27.361Z",
+        "step": "enriched",
+        "message": "Triple R Tree Service: scored 11 (HOLD).",
+        "leadName": "Triple R Tree Service",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-27T23:51:27.362Z",
+        "step": "rejected",
+        "message": "Triple R Tree Service: rejected (Website is not weak/missing.).",
+        "leadId": "virtual-a6e912b651",
+        "leadName": "Triple R Tree Service",
+        "reasons": [
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-27T23:51:27.362Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 15,
+          "enriched": 15,
+          "qualified": 1,
+          "rejected": 14,
+          "previewsGenerated": 0,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "qualifiedLeads": [
+      {
+        "id": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+        "businessName": "Good hands Tree service",
+        "category": "Tree service",
+        "city": "Vidor, TX",
+        "phone": "(409) 728-6073",
+        "websiteUrl": "",
+        "websiteQuality": "unknown",
+        "score": 16,
+        "status": "TARGET",
+        "googleReviewCount": 37,
+        "googleRating": 4.6,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": false,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": true
+        }
+      }
+    ],
+    "rejectedLeads": [
+      {
+        "lead": {
+          "id": "virtual-5c8ea0d1c3",
+          "businessName": "Davis Tree Experts",
+          "category": "Tree service",
+          "city": "Vidor, TX",
+          "phone": "(409) 217-4075",
+          "websiteUrl": "https://www.davistreeexperts.com/",
+          "websiteQuality": "weak",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 4,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-a57b1ae597",
+          "businessName": "The Compadres Landscaping LLC",
+          "category": "Landscaper",
+          "city": "Beaumont, TX",
+          "phone": "(409) 272-2581",
+          "websiteUrl": "https://www.thecompadreslandscapingllc.com/",
+          "websiteQuality": "weak",
+          "score": 7,
+          "status": "SKIP",
+          "googleReviewCount": 4,
+          "googleRating": 4,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Score below minimum (7 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-ee4d90205d",
+          "businessName": "Secure Choice Tree Service of Beaumont Texas",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 554-5104",
+          "websiteUrl": "https://www.facebook.com/SecureChoiceTreeService",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 24,
+          "googleRating": 4.8,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-7f76abb921",
+          "businessName": "Environmental Tree Service",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 898-4576",
+          "websiteUrl": "https://environmentaltreeserviceco.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 25,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-a05982028c",
+          "businessName": "Lombardo's Bonded Tree Service, LLC",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 835-2860",
+          "websiteUrl": "http://www.lombardostreeservice.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 28,
+          "googleRating": 4.6,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-6db17ef696",
+          "businessName": "CJ's Tree Service Professionals, LLC",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 934-2186",
+          "websiteUrl": "https://www.cjstreeserviceprofllc.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 91,
+          "googleRating": 4.9,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-1318d57ddc",
+          "businessName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+          "category": "Tree service",
+          "city": "Lumberton, TX",
+          "phone": "(409) 237-4226",
+          "websiteUrl": "https://www.nationwidetreecareservingtexasgulfcoastareas.com/",
+          "websiteQuality": "strong",
+          "score": 8,
+          "status": "SKIP",
+          "googleReviewCount": 5,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-71f5b2db95",
+          "businessName": "Hagan tree services",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 289-3791",
+          "websiteUrl": "https://www.facebook.com/Hagans-Tree-Services-1381621598583463/",
+          "websiteQuality": "unknown",
+          "score": 8,
+          "status": "SKIP",
+          "googleReviewCount": 8,
+          "googleRating": 4.8,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-9a76a70e60",
+          "businessName": "Beaumont Tree Service",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 220-4930",
+          "websiteUrl": "https://www.beaumonttreepros.com/",
+          "websiteQuality": "weak",
+          "score": 14,
+          "status": "HOLD",
+          "googleReviewCount": 62,
+          "googleRating": 4.9,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-82a0daae0d",
+          "businessName": "A Unity Tree Service",
+          "category": "Tree service",
+          "city": "Lumberton, TX",
+          "phone": "(409) 659-1069",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 16,
+          "status": "TARGET",
+          "googleReviewCount": 43,
+          "googleRating": 4.7,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-2990505426",
+          "businessName": "Edward's Tree Trimming",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 724-1591",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 13,
+          "status": "HOLD",
+          "googleReviewCount": 1,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-afb4093a1c",
+          "businessName": "Brent Wester Landscape Management",
+          "category": "Landscaper",
+          "city": "Beaumont, TX",
+          "phone": "(409) 840-5005",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 14,
+          "status": "HOLD",
+          "googleReviewCount": 11,
+          "googleRating": 4.7,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-32517feed8",
+          "businessName": "Allen's Tree Experts",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 892-1665",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 1,
+          "googleRating": 1,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-a6e912b651",
+          "businessName": "Triple R Tree Service",
+          "category": "Tree service",
+          "city": "Silsbee, TX",
+          "phone": "(409) 679-9902",
+          "websiteUrl": "https://clienthub.getjobber.com/hubs/772cf1bb-855d-4e10-ae76-98208aefbe39/public/requests/266907/new?rwg_token=AFd1xnFSKKWPihzo4zGxQN_D3CyGEUWszdZJVsHS0IcsAMPwafOxl9ngIjKq9DTjix9I5ZQyE0kzjWjnanRga41TdWVU7O9Asw%3D%3D",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 372,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      }
+    ],
+    "summary": {
+      "discovered": 15,
+      "enriched": 15,
+      "qualified": 1,
+      "rejected": 14,
+      "previewsGenerated": 0,
+      "assetsPrepared": 0,
+      "screenshotsRendered": 0,
+      "failed": 0
+    },
+    "statuses": [
+      {
+        "step": "pending",
+        "at": "2026-05-27T23:50:49.993Z"
+      },
+      {
+        "step": "searching",
+        "at": "2026-05-27T23:50:49.993Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-27T23:51:21.222Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:21.738Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:21.739Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:21.741Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:22.166Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:22.166Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:22.167Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:23.229Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:23.230Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:23.230Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:23.919Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:23.919Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:23.920Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:24.879Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:24.880Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:24.880Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:25.278Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:25.279Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:25.279Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:25.703Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:25.703Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:25.703Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:25.996Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:25.996Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:25.996Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.343Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.344Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:26.344Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.482Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.482Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:26.483Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.744Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.745Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:26.745Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.905Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:26.906Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-27T23:51:26.913Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:27.012Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:27.012Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:27.013Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:27.108Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:27.108Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:27.108Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:27.361Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-27T23:51:27.361Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-27T23:51:27.362Z"
+      },
+      {
+        "step": "completed",
+        "at": "2026-05-27T23:51:27.362Z"
+      }
+    ]
+  },
+  {
+    "id": "f469e8a21bc14d08",
+    "status": "completed",
+    "startedAt": "2026-05-28T00:08:53.049Z",
+    "completedAt": "2026-05-28T00:09:25.377Z",
+    "failedAt": null,
+    "config": {
+      "runTitle": "Beaumont-Tree Service",
+      "searchTerm": "tree service",
+      "city": "Beaumont",
+      "state": "TX",
+      "zipCode": "",
+      "searchRadiusMiles": null,
+      "locationQuery": "Beaumont, TX",
+      "maxResults": 15,
+      "runMode": "research_score_enrich",
+      "filters": {
+        "websiteStatus": "weak_or_missing",
+        "excludeStrongWebsites": true,
+        "minScore": 15,
+        "minReviews": 10,
+        "minRating": 4,
+        "mustHavePhone": true,
+        "mustHaveWebsite": false,
+        "mustHaveEmail": false,
+        "mustHaveSocialPresence": false,
+        "excludeDuplicates": true,
+        "excludedNiches": [
+          "franchise",
+          "national chain",
+          "corporate office"
+        ]
+      },
+      "opportunitySignals": {
+        "missingCTA": false,
+        "noBookingForm": false,
+        "noMobileFriendlySignal": false,
+        "lowTrustSignals": false,
+        "weakHomepageCopy": false,
+        "noBeforeAfterGallery": false,
+        "noServiceAreaPage": false,
+        "noReviewsTestimonialsShown": false,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "outreachReadiness": {
+        "hasPhone": false,
+        "hasEmail": false,
+        "hasFacebookPage": false,
+        "hasInstagramPage": false,
+        "enoughPublicInfoForPersonalization": true,
+        "enoughInfoForPreview": true
+      },
+      "previewSettings": {
+        "autoGeneratePreview": false,
+        "autoPrepareAssets": false,
+        "autoRenderScreenshots": false,
+        "useAIImagesWhenRealImagesLowConfidence": true,
+        "requireApprovalBeforeOutreach": true
+      }
+    },
+    "title": "Beaumont-Tree Service",
+    "modeDescription": "Discover + enrich + score, then qualify/reject and save qualified leads.",
+    "logs": [
+      {
+        "at": "2026-05-28T00:08:53.049Z",
+        "step": "searching",
+        "message": "Searching Google Maps for tree service in Beaumont, TX..."
+      },
+      {
+        "at": "2026-05-28T00:09:20.965Z",
+        "step": "discovered",
+        "message": "Discovered 15 candidate businesses.",
+        "discovered": 15
+      },
+      {
+        "at": "2026-05-28T00:09:21.433Z",
+        "step": "enriched",
+        "message": "Secure Choice Tree Service of Beaumont Texas: enrichment completed.",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:21.433Z",
+        "step": "enriched",
+        "message": "Secure Choice Tree Service of Beaumont Texas: scored 11 (HOLD).",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:21.434Z",
+        "step": "rejected",
+        "message": "Secure Choice Tree Service of Beaumont Texas: rejected (Duplicate business already exists.).",
+        "leadId": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:21.941Z",
+        "step": "enriched",
+        "message": "Environmental Tree Service: enrichment completed.",
+        "leadName": "Environmental Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:21.941Z",
+        "step": "enriched",
+        "message": "Environmental Tree Service: scored 11 (HOLD).",
+        "leadName": "Environmental Tree Service",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:21.941Z",
+        "step": "rejected",
+        "message": "Environmental Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "7ca67a1c-12ad-4194-9550-6f1eb92b521a",
+        "leadName": "Environmental Tree Service",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:22.230Z",
+        "step": "enriched",
+        "message": "Lombardo's Bonded Tree Service, LLC: enrichment completed.",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:22.230Z",
+        "step": "enriched",
+        "message": "Lombardo's Bonded Tree Service, LLC: scored 11 (HOLD).",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:22.230Z",
+        "step": "rejected",
+        "message": "Lombardo's Bonded Tree Service, LLC: rejected (Duplicate business already exists.).",
+        "leadId": "b2289d7d-e792-4b34-89fc-e76f00984f60",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:22.675Z",
+        "step": "enriched",
+        "message": "CJ's Tree Service Professionals, LLC: enrichment completed.",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:22.675Z",
+        "step": "enriched",
+        "message": "CJ's Tree Service Professionals, LLC: scored 11 (HOLD).",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:22.676Z",
+        "step": "rejected",
+        "message": "CJ's Tree Service Professionals, LLC: rejected (Duplicate business already exists.).",
+        "leadId": "18cdfc67-9d1c-42c2-986e-0ffcc2b28887",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:22.985Z",
+        "step": "enriched",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: enrichment completed.",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:22.985Z",
+        "step": "enriched",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: scored 8 (SKIP).",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "score": 8,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T00:09:22.985Z",
+        "step": "rejected",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: rejected (Duplicate business already exists.).",
+        "leadId": "6639245e-bd16-4bcd-b76f-e05051ebfbe6",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:23.226Z",
+        "step": "enriched",
+        "message": "Hagan tree services: enrichment completed.",
+        "leadName": "Hagan tree services",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:23.226Z",
+        "step": "enriched",
+        "message": "Hagan tree services: scored 8 (SKIP).",
+        "leadName": "Hagan tree services",
+        "score": 8,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T00:09:23.227Z",
+        "step": "rejected",
+        "message": "Hagan tree services: rejected (Duplicate business already exists.).",
+        "leadId": "354ab01c-59d1-4db3-b755-4baf42f2f66b",
+        "leadName": "Hagan tree services",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:23.434Z",
+        "step": "enriched",
+        "message": "Beaumont Tree Service: enrichment completed.",
+        "leadName": "Beaumont Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:23.435Z",
+        "step": "enriched",
+        "message": "Beaumont Tree Service: scored 14 (HOLD).",
+        "leadName": "Beaumont Tree Service",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:23.435Z",
+        "step": "rejected",
+        "message": "Beaumont Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "b1d7853f-3d90-4584-bbdc-6892d647b02a",
+        "leadName": "Beaumont Tree Service",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:23.578Z",
+        "step": "enriched",
+        "message": "A Unity Tree Service: enrichment completed.",
+        "leadName": "A Unity Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:23.578Z",
+        "step": "enriched",
+        "message": "A Unity Tree Service: scored 16 (TARGET).",
+        "leadName": "A Unity Tree Service",
+        "score": 16,
+        "status": "TARGET"
+      },
+      {
+        "at": "2026-05-28T00:09:23.579Z",
+        "step": "rejected",
+        "message": "A Unity Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "c1879c9f-fa05-435b-9951-61aef538447e",
+        "leadName": "A Unity Tree Service",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:23.829Z",
+        "step": "enriched",
+        "message": "Edward's Tree Trimming: enrichment completed.",
+        "leadName": "Edward's Tree Trimming",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:23.829Z",
+        "step": "enriched",
+        "message": "Edward's Tree Trimming: scored 13 (HOLD).",
+        "leadName": "Edward's Tree Trimming",
+        "score": 13,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:23.829Z",
+        "step": "rejected",
+        "message": "Edward's Tree Trimming: rejected (Duplicate business already exists.).",
+        "leadId": "d752b3f0-253b-4ce4-b8a3-0c32b65930ea",
+        "leadName": "Edward's Tree Trimming",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:23.959Z",
+        "step": "enriched",
+        "message": "Good hands Tree service: enrichment completed.",
+        "leadName": "Good hands Tree service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:23.960Z",
+        "step": "enriched",
+        "message": "Good hands Tree service: scored 16 (TARGET).",
+        "leadName": "Good hands Tree service",
+        "score": 16,
+        "status": "TARGET"
+      },
+      {
+        "at": "2026-05-28T00:09:23.960Z",
+        "step": "rejected",
+        "message": "Good hands Tree service: rejected (Duplicate business already exists.).",
+        "leadId": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+        "leadName": "Good hands Tree service",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:24.054Z",
+        "step": "enriched",
+        "message": "Brent Wester Landscape Management: enrichment completed.",
+        "leadName": "Brent Wester Landscape Management",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:24.054Z",
+        "step": "enriched",
+        "message": "Brent Wester Landscape Management: scored 14 (HOLD).",
+        "leadName": "Brent Wester Landscape Management",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:24.055Z",
+        "step": "rejected",
+        "message": "Brent Wester Landscape Management: rejected (Duplicate business already exists.).",
+        "leadId": "ca3d7207-0174-4abb-945c-afafd4b8549c",
+        "leadName": "Brent Wester Landscape Management",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:24.139Z",
+        "step": "enriched",
+        "message": "Allen's Tree Experts: enrichment completed.",
+        "leadName": "Allen's Tree Experts",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:24.139Z",
+        "step": "enriched",
+        "message": "Allen's Tree Experts: scored 11 (HOLD).",
+        "leadName": "Allen's Tree Experts",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:24.139Z",
+        "step": "rejected",
+        "message": "Allen's Tree Experts: rejected (Score below minimum (11 < 15).).",
+        "leadId": "virtual-f6702e0c16",
+        "leadName": "Allen's Tree Experts",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:24.692Z",
+        "step": "enriched",
+        "message": "Red Stag Dirt and Tree Services: enrichment completed.",
+        "leadName": "Red Stag Dirt and Tree Services",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:24.692Z",
+        "step": "enriched",
+        "message": "Red Stag Dirt and Tree Services: scored 9 (SKIP).",
+        "leadName": "Red Stag Dirt and Tree Services",
+        "score": 9,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T00:09:24.692Z",
+        "step": "rejected",
+        "message": "Red Stag Dirt and Tree Services: rejected (Score below minimum (9 < 15).).",
+        "leadId": "virtual-450ee4496f",
+        "leadName": "Red Stag Dirt and Tree Services",
+        "reasons": [
+          "Score below minimum (9 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:24.965Z",
+        "step": "enriched",
+        "message": "Triple R Tree Service: enrichment completed.",
+        "leadName": "Triple R Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:24.965Z",
+        "step": "enriched",
+        "message": "Triple R Tree Service: scored 11 (HOLD).",
+        "leadName": "Triple R Tree Service",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:24.965Z",
+        "step": "rejected",
+        "message": "Triple R Tree Service: rejected (Website is not weak/missing.).",
+        "leadId": "virtual-e8afb36906",
+        "leadName": "Triple R Tree Service",
+        "reasons": [
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:25.377Z",
+        "step": "enriched",
+        "message": "Davis Tree Experts: enrichment completed.",
+        "leadName": "Davis Tree Experts",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:09:25.377Z",
+        "step": "enriched",
+        "message": "Davis Tree Experts: scored 11 (HOLD).",
+        "leadName": "Davis Tree Experts",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:09:25.377Z",
+        "step": "rejected",
+        "message": "Davis Tree Experts: rejected (Score below minimum (11 < 15).).",
+        "leadId": "virtual-679f267c2e",
+        "leadName": "Davis Tree Experts",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:09:25.377Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 15,
+          "enriched": 15,
+          "qualified": 0,
+          "rejected": 15,
+          "previewsGenerated": 0,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "qualifiedLeads": [],
+    "rejectedLeads": [
+      {
+        "lead": {
+          "id": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+          "businessName": "Secure Choice Tree Service of Beaumont Texas",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 554-5104",
+          "websiteUrl": "https://www.facebook.com/SecureChoiceTreeService",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 24,
+          "googleRating": 4.8,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "7ca67a1c-12ad-4194-9550-6f1eb92b521a",
+          "businessName": "Environmental Tree Service",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 898-4576",
+          "websiteUrl": "https://environmentaltreeserviceco.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 25,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "b2289d7d-e792-4b34-89fc-e76f00984f60",
+          "businessName": "Lombardo's Bonded Tree Service, LLC",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 835-2860",
+          "websiteUrl": "http://www.lombardostreeservice.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 28,
+          "googleRating": 4.6,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "18cdfc67-9d1c-42c2-986e-0ffcc2b28887",
+          "businessName": "CJ's Tree Service Professionals, LLC",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 934-2186",
+          "websiteUrl": "https://www.cjstreeserviceprofllc.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 91,
+          "googleRating": 4.9,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "6639245e-bd16-4bcd-b76f-e05051ebfbe6",
+          "businessName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+          "category": "Tree service",
+          "city": "Lumberton, TX",
+          "phone": "(409) 237-4226",
+          "websiteUrl": "https://www.nationwidetreecareservingtexasgulfcoastareas.com/",
+          "websiteQuality": "strong",
+          "score": 8,
+          "status": "SKIP",
+          "googleReviewCount": 5,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "354ab01c-59d1-4db3-b755-4baf42f2f66b",
+          "businessName": "Hagan tree services",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 289-3791",
+          "websiteUrl": "https://www.facebook.com/Hagans-Tree-Services-1381621598583463/",
+          "websiteQuality": "unknown",
+          "score": 8,
+          "status": "SKIP",
+          "googleReviewCount": 8,
+          "googleRating": 4.8,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "b1d7853f-3d90-4584-bbdc-6892d647b02a",
+          "businessName": "Beaumont Tree Service",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 220-4930",
+          "websiteUrl": "https://www.beaumonttreepros.com/",
+          "websiteQuality": "weak",
+          "score": 14,
+          "status": "HOLD",
+          "googleReviewCount": 62,
+          "googleRating": 4.9,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "c1879c9f-fa05-435b-9951-61aef538447e",
+          "businessName": "A Unity Tree Service",
+          "category": "Tree service",
+          "city": "Lumberton, TX",
+          "phone": "(409) 659-1069",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 16,
+          "status": "TARGET",
+          "googleReviewCount": 43,
+          "googleRating": 4.7,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "lead": {
+          "id": "d752b3f0-253b-4ce4-b8a3-0c32b65930ea",
+          "businessName": "Edward's Tree Trimming",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 724-1591",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 13,
+          "status": "HOLD",
+          "googleReviewCount": 1,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+          "businessName": "Good hands Tree service",
+          "category": "Tree service",
+          "city": "Vidor, TX",
+          "phone": "(409) 728-6073",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 16,
+          "status": "TARGET",
+          "googleReviewCount": 37,
+          "googleRating": 4.6,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "lead": {
+          "id": "ca3d7207-0174-4abb-945c-afafd4b8549c",
+          "businessName": "Brent Wester Landscape Management",
+          "category": "Landscaper",
+          "city": "Beaumont, TX",
+          "phone": "(409) 840-5005",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 14,
+          "status": "HOLD",
+          "googleReviewCount": 11,
+          "googleRating": 4.7,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-f6702e0c16",
+          "businessName": "Allen's Tree Experts",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 892-1665",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 1,
+          "googleRating": 1,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-450ee4496f",
+          "businessName": "Red Stag Dirt and Tree Services",
+          "category": "Dirt supplier",
+          "city": "Beaumont, TX",
+          "phone": "(409) 365-3390",
+          "websiteUrl": "https://redstagdirtandtreeservices.squarespace.com/",
+          "websiteQuality": "weak",
+          "score": 9,
+          "status": "SKIP",
+          "googleReviewCount": 8,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Score below minimum (9 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-e8afb36906",
+          "businessName": "Triple R Tree Service",
+          "category": "Tree service",
+          "city": "Silsbee, TX",
+          "phone": "(409) 679-9902",
+          "websiteUrl": "https://clienthub.getjobber.com/hubs/772cf1bb-855d-4e10-ae76-98208aefbe39/public/requests/266907/new?rwg_token=AFd1xnGpao6sV2LWAwtSquXrU1OkUxPwhZwr7fjM0Ku4AxdCl0a1SBOoks_jlYVOjcDeA7O9BySF9d7vla4lMwpIo-Y3YSWOgw%3D%3D",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 372,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-679f267c2e",
+          "businessName": "Davis Tree Experts",
+          "category": "Tree service",
+          "city": "Vidor, TX",
+          "phone": "(409) 217-4075",
+          "websiteUrl": "https://www.davistreeexperts.com/",
+          "websiteQuality": "weak",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 4,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      }
+    ],
+    "summary": {
+      "discovered": 15,
+      "enriched": 15,
+      "qualified": 0,
+      "rejected": 15,
+      "previewsGenerated": 0,
+      "assetsPrepared": 0,
+      "screenshotsRendered": 0,
+      "failed": 0
+    },
+    "statuses": [
+      {
+        "step": "pending",
+        "at": "2026-05-28T00:08:53.049Z"
+      },
+      {
+        "step": "searching",
+        "at": "2026-05-28T00:08:53.049Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-28T00:09:20.965Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:21.433Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:21.433Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:21.434Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:21.941Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:21.941Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:21.941Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:22.230Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:22.230Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:22.230Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:22.675Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:22.675Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:22.676Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:22.985Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:22.985Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:22.985Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.226Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.226Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:23.227Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.434Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.435Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:23.435Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.578Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.578Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:23.579Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.829Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.829Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:23.829Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.959Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:23.960Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:23.960Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.054Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.054Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:24.055Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.139Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.139Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:24.139Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.692Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.692Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:24.692Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.965Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:24.965Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:24.965Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:25.377Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:09:25.377Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:09:25.377Z"
+      },
+      {
+        "step": "completed",
+        "at": "2026-05-28T00:09:25.377Z"
+      }
+    ]
+  },
+  {
+    "id": "1ba85ee9c46f2985",
+    "status": "completed",
+    "startedAt": "2026-05-28T00:10:36.860Z",
+    "completedAt": "2026-05-28T00:11:05.681Z",
+    "failedAt": null,
+    "config": {
+      "runTitle": "Beaumont-Tree Services",
+      "searchTerm": "tree service",
+      "city": "Beaumont",
+      "state": "TX",
+      "zipCode": "",
+      "searchRadiusMiles": null,
+      "locationQuery": "Beaumont, TX",
+      "maxResults": 15,
+      "runMode": "research_score_enrich",
+      "filters": {
+        "websiteStatus": "weak_or_missing",
+        "excludeStrongWebsites": true,
+        "minScore": 15,
+        "minReviews": 10,
+        "minRating": 4,
+        "mustHavePhone": true,
+        "mustHaveWebsite": false,
+        "mustHaveEmail": false,
+        "mustHaveSocialPresence": false,
+        "excludeDuplicates": true,
+        "excludedNiches": [
+          "franchise",
+          "national chain",
+          "corporate office"
+        ]
+      },
+      "opportunitySignals": {
+        "missingCTA": false,
+        "noBookingForm": false,
+        "noMobileFriendlySignal": false,
+        "lowTrustSignals": false,
+        "weakHomepageCopy": false,
+        "noBeforeAfterGallery": false,
+        "noServiceAreaPage": false,
+        "noReviewsTestimonialsShown": false,
+        "noGoogleBusinessProfileWebsiteLink": true
+      },
+      "outreachReadiness": {
+        "hasPhone": false,
+        "hasEmail": false,
+        "hasFacebookPage": false,
+        "hasInstagramPage": false,
+        "enoughPublicInfoForPersonalization": true,
+        "enoughInfoForPreview": true
+      },
+      "previewSettings": {
+        "autoGeneratePreview": false,
+        "autoPrepareAssets": false,
+        "autoRenderScreenshots": false,
+        "useAIImagesWhenRealImagesLowConfidence": true,
+        "requireApprovalBeforeOutreach": true
+      }
+    },
+    "title": "Beaumont-Tree Services",
+    "modeDescription": "Discover + enrich + score, then qualify/reject and save qualified leads.",
+    "logs": [
+      {
+        "at": "2026-05-28T00:10:36.860Z",
+        "step": "searching",
+        "message": "Searching Google Maps for tree service in Beaumont, TX..."
+      },
+      {
+        "at": "2026-05-28T00:11:02.526Z",
+        "step": "discovered",
+        "message": "Discovered 13 candidate businesses.",
+        "discovered": 13
+      },
+      {
+        "at": "2026-05-28T00:11:02.947Z",
+        "step": "enriched",
+        "message": "Secure Choice Tree Service of Beaumont Texas: enrichment completed.",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:02.947Z",
+        "step": "enriched",
+        "message": "Secure Choice Tree Service of Beaumont Texas: scored 11 (HOLD).",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:02.947Z",
+        "step": "rejected",
+        "message": "Secure Choice Tree Service of Beaumont Texas: rejected (Duplicate business already exists.).",
+        "leadId": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:03.498Z",
+        "step": "enriched",
+        "message": "Environmental Tree Service: enrichment completed.",
+        "leadName": "Environmental Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:03.498Z",
+        "step": "enriched",
+        "message": "Environmental Tree Service: scored 11 (HOLD).",
+        "leadName": "Environmental Tree Service",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:03.498Z",
+        "step": "rejected",
+        "message": "Environmental Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "7ca67a1c-12ad-4194-9550-6f1eb92b521a",
+        "leadName": "Environmental Tree Service",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:03.773Z",
+        "step": "enriched",
+        "message": "Lombardo's Bonded Tree Service, LLC: enrichment completed.",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:03.773Z",
+        "step": "enriched",
+        "message": "Lombardo's Bonded Tree Service, LLC: scored 11 (HOLD).",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:03.773Z",
+        "step": "rejected",
+        "message": "Lombardo's Bonded Tree Service, LLC: rejected (Duplicate business already exists.).",
+        "leadId": "b2289d7d-e792-4b34-89fc-e76f00984f60",
+        "leadName": "Lombardo's Bonded Tree Service, LLC",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:04.104Z",
+        "step": "enriched",
+        "message": "CJ's Tree Service Professionals, LLC: enrichment completed.",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:04.104Z",
+        "step": "enriched",
+        "message": "CJ's Tree Service Professionals, LLC: scored 11 (HOLD).",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:04.104Z",
+        "step": "rejected",
+        "message": "CJ's Tree Service Professionals, LLC: rejected (Duplicate business already exists.).",
+        "leadId": "18cdfc67-9d1c-42c2-986e-0ffcc2b28887",
+        "leadName": "CJ's Tree Service Professionals, LLC",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:04.316Z",
+        "step": "enriched",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: enrichment completed.",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:04.316Z",
+        "step": "enriched",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: scored 8 (SKIP).",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "score": 8,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T00:11:04.316Z",
+        "step": "rejected",
+        "message": "Nationwide Tree Care Serving Texas & Gulf Coast Areas: rejected (Duplicate business already exists.).",
+        "leadId": "6639245e-bd16-4bcd-b76f-e05051ebfbe6",
+        "leadName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:04.554Z",
+        "step": "enriched",
+        "message": "Hagan tree services: enrichment completed.",
+        "leadName": "Hagan tree services",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:04.554Z",
+        "step": "enriched",
+        "message": "Hagan tree services: scored 8 (SKIP).",
+        "leadName": "Hagan tree services",
+        "score": 8,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T00:11:04.554Z",
+        "step": "rejected",
+        "message": "Hagan tree services: rejected (Duplicate business already exists.).",
+        "leadId": "354ab01c-59d1-4db3-b755-4baf42f2f66b",
+        "leadName": "Hagan tree services",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:04.749Z",
+        "step": "enriched",
+        "message": "A Unity Tree Service: enrichment completed.",
+        "leadName": "A Unity Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:04.749Z",
+        "step": "enriched",
+        "message": "A Unity Tree Service: scored 16 (TARGET).",
+        "leadName": "A Unity Tree Service",
+        "score": 16,
+        "status": "TARGET"
+      },
+      {
+        "at": "2026-05-28T00:11:04.750Z",
+        "step": "rejected",
+        "message": "A Unity Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "c1879c9f-fa05-435b-9951-61aef538447e",
+        "leadName": "A Unity Tree Service",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:04.893Z",
+        "step": "enriched",
+        "message": "Edward's Tree Trimming: enrichment completed.",
+        "leadName": "Edward's Tree Trimming",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:04.893Z",
+        "step": "enriched",
+        "message": "Edward's Tree Trimming: scored 13 (HOLD).",
+        "leadName": "Edward's Tree Trimming",
+        "score": 13,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:04.893Z",
+        "step": "rejected",
+        "message": "Edward's Tree Trimming: rejected (Duplicate business already exists.).",
+        "leadId": "d752b3f0-253b-4ce4-b8a3-0c32b65930ea",
+        "leadName": "Edward's Tree Trimming",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:04.975Z",
+        "step": "enriched",
+        "message": "Good hands Tree service: enrichment completed.",
+        "leadName": "Good hands Tree service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:04.975Z",
+        "step": "enriched",
+        "message": "Good hands Tree service: scored 16 (TARGET).",
+        "leadName": "Good hands Tree service",
+        "score": 16,
+        "status": "TARGET"
+      },
+      {
+        "at": "2026-05-28T00:11:04.975Z",
+        "step": "rejected",
+        "message": "Good hands Tree service: rejected (Duplicate business already exists.).",
+        "leadId": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+        "leadName": "Good hands Tree service",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:05.061Z",
+        "step": "enriched",
+        "message": "Brent Wester Landscape Management: enrichment completed.",
+        "leadName": "Brent Wester Landscape Management",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:05.061Z",
+        "step": "enriched",
+        "message": "Brent Wester Landscape Management: scored 14 (HOLD).",
+        "leadName": "Brent Wester Landscape Management",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:05.061Z",
+        "step": "rejected",
+        "message": "Brent Wester Landscape Management: rejected (Duplicate business already exists.).",
+        "leadId": "ca3d7207-0174-4abb-945c-afafd4b8549c",
+        "leadName": "Brent Wester Landscape Management",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:05.154Z",
+        "step": "enriched",
+        "message": "Allen's Tree Experts: enrichment completed.",
+        "leadName": "Allen's Tree Experts",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:05.154Z",
+        "step": "enriched",
+        "message": "Allen's Tree Experts: scored 11 (HOLD).",
+        "leadName": "Allen's Tree Experts",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:05.154Z",
+        "step": "rejected",
+        "message": "Allen's Tree Experts: rejected (Score below minimum (11 < 15).).",
+        "leadId": "virtual-6a7f23ecae",
+        "leadName": "Allen's Tree Experts",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:05.352Z",
+        "step": "enriched",
+        "message": "Red Stag Dirt and Tree Services: enrichment completed.",
+        "leadName": "Red Stag Dirt and Tree Services",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:05.352Z",
+        "step": "enriched",
+        "message": "Red Stag Dirt and Tree Services: scored 9 (SKIP).",
+        "leadName": "Red Stag Dirt and Tree Services",
+        "score": 9,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T00:11:05.352Z",
+        "step": "rejected",
+        "message": "Red Stag Dirt and Tree Services: rejected (Score below minimum (9 < 15).).",
+        "leadId": "virtual-9fd21e9bbc",
+        "leadName": "Red Stag Dirt and Tree Services",
+        "reasons": [
+          "Score below minimum (9 < 15).",
+          "Review count below minimum (8 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:05.681Z",
+        "step": "enriched",
+        "message": "Davis Tree Experts: enrichment completed.",
+        "leadName": "Davis Tree Experts",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T00:11:05.681Z",
+        "step": "enriched",
+        "message": "Davis Tree Experts: scored 11 (HOLD).",
+        "leadName": "Davis Tree Experts",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T00:11:05.681Z",
+        "step": "rejected",
+        "message": "Davis Tree Experts: rejected (Score below minimum (11 < 15).).",
+        "leadId": "virtual-51f489d015",
+        "leadName": "Davis Tree Experts",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "at": "2026-05-28T00:11:05.681Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 13,
+          "enriched": 13,
+          "qualified": 0,
+          "rejected": 13,
+          "previewsGenerated": 0,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "qualifiedLeads": [],
+    "rejectedLeads": [
+      {
+        "lead": {
+          "id": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+          "businessName": "Secure Choice Tree Service of Beaumont Texas",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 554-5104",
+          "websiteUrl": "https://www.facebook.com/SecureChoiceTreeService",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 24,
+          "googleRating": 4.8,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "lead": {
+          "id": "7ca67a1c-12ad-4194-9550-6f1eb92b521a",
+          "businessName": "Environmental Tree Service",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 898-4576",
+          "websiteUrl": "https://environmentaltreeserviceco.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 25,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "lead": {
+          "id": "b2289d7d-e792-4b34-89fc-e76f00984f60",
+          "businessName": "Lombardo's Bonded Tree Service, LLC",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 835-2860",
+          "websiteUrl": "http://www.lombardostreeservice.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 28,
+          "googleRating": 4.6,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "lead": {
+          "id": "18cdfc67-9d1c-42c2-986e-0ffcc2b28887",
+          "businessName": "CJ's Tree Service Professionals, LLC",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 934-2186",
+          "websiteUrl": "https://www.cjstreeserviceprofllc.com/",
+          "websiteQuality": "strong",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 91,
+          "googleRating": 4.9,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "lead": {
+          "id": "6639245e-bd16-4bcd-b76f-e05051ebfbe6",
+          "businessName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+          "category": "Tree service",
+          "city": "Lumberton, TX",
+          "phone": "(409) 237-4226",
+          "websiteUrl": "https://www.nationwidetreecareservingtexasgulfcoastareas.com/",
+          "websiteQuality": "strong",
+          "score": 8,
+          "status": "SKIP",
+          "googleReviewCount": 5,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "lead": {
+          "id": "354ab01c-59d1-4db3-b755-4baf42f2f66b",
+          "businessName": "Hagan tree services",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 289-3791",
+          "websiteUrl": "https://www.facebook.com/Hagans-Tree-Services-1381621598583463/",
+          "websiteQuality": "unknown",
+          "score": 8,
+          "status": "SKIP",
+          "googleReviewCount": 8,
+          "googleRating": 4.8,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "lead": {
+          "id": "c1879c9f-fa05-435b-9951-61aef538447e",
+          "businessName": "A Unity Tree Service",
+          "category": "Tree service",
+          "city": "Lumberton, TX",
+          "phone": "(409) 659-1069",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 16,
+          "status": "TARGET",
+          "googleReviewCount": 43,
+          "googleRating": 4.7,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "lead": {
+          "id": "d752b3f0-253b-4ce4-b8a3-0c32b65930ea",
+          "businessName": "Edward's Tree Trimming",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 724-1591",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 13,
+          "status": "HOLD",
+          "googleReviewCount": 1,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+          "businessName": "Good hands Tree service",
+          "category": "Tree service",
+          "city": "Vidor, TX",
+          "phone": "(409) 728-6073",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 16,
+          "status": "TARGET",
+          "googleReviewCount": 37,
+          "googleRating": 4.6,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "lead": {
+          "id": "ca3d7207-0174-4abb-945c-afafd4b8549c",
+          "businessName": "Brent Wester Landscape Management",
+          "category": "Landscaper",
+          "city": "Beaumont, TX",
+          "phone": "(409) 840-5005",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 14,
+          "status": "HOLD",
+          "googleReviewCount": 11,
+          "googleRating": 4.7,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-6a7f23ecae",
+          "businessName": "Allen's Tree Experts",
+          "category": "Tree service",
+          "city": "Beaumont, TX",
+          "phone": "(409) 892-1665",
+          "websiteUrl": "",
+          "websiteQuality": "unknown",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 1,
+          "googleRating": 1,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": false,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": true
+          }
+        },
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-9fd21e9bbc",
+          "businessName": "Red Stag Dirt and Tree Services",
+          "category": "Dirt supplier",
+          "city": "Beaumont, TX",
+          "phone": "(409) 365-3390",
+          "websiteUrl": "https://redstagdirtandtreeservices.squarespace.com/",
+          "websiteQuality": "weak",
+          "score": 9,
+          "status": "SKIP",
+          "googleReviewCount": 8,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Score below minimum (9 < 15).",
+          "Review count below minimum (8 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "lead": {
+          "id": "virtual-51f489d015",
+          "businessName": "Davis Tree Experts",
+          "category": "Tree service",
+          "city": "Vidor, TX",
+          "phone": "(409) 217-4075",
+          "websiteUrl": "https://www.davistreeexperts.com/",
+          "websiteQuality": "weak",
+          "score": 11,
+          "status": "HOLD",
+          "googleReviewCount": 4,
+          "googleRating": 5,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      }
+    ],
+    "summary": {
+      "discovered": 13,
+      "enriched": 13,
+      "qualified": 0,
+      "rejected": 13,
+      "previewsGenerated": 0,
+      "assetsPrepared": 0,
+      "screenshotsRendered": 0,
+      "failed": 0
+    },
+    "statuses": [
+      {
+        "step": "pending",
+        "at": "2026-05-28T00:10:36.860Z"
+      },
+      {
+        "step": "searching",
+        "at": "2026-05-28T00:10:36.860Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-28T00:11:02.526Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:02.947Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:02.947Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:02.947Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:03.498Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:03.498Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:03.498Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:03.773Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:03.773Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:03.773Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.104Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.104Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:04.104Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.316Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.316Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:04.316Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.554Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.554Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:04.554Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.749Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.749Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:04.750Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.893Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.893Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:04.893Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.975Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:04.975Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:04.975Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.061Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.061Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:05.061Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.154Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.154Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:05.154Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.352Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.352Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:05.352Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.681Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T00:11:05.681Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T00:11:05.681Z"
+      },
+      {
+        "step": "completed",
+        "at": "2026-05-28T00:11:05.681Z"
+      }
+    ]
+  },
+  {
+    "id": "358f954ce911d3b7",
+    "status": "completed",
+    "startedAt": "2026-05-28T09:43:56.614Z",
+    "completedAt": "2026-05-28T09:44:03.156Z",
+    "failedAt": null,
+    "config": {
+      "runTitle": "E2E Real Discovery 1779961427032",
+      "searchTerm": "tree service",
+      "city": "Beaumont",
+      "state": "TX",
+      "zipCode": "",
+      "searchRadiusMiles": null,
+      "locationQuery": "Beaumont, TX",
+      "maxResults": 1,
+      "runMode": "research_score",
+      "filters": {
+        "websiteStatus": "any",
+        "excludeStrongWebsites": false,
+        "minScore": 0,
+        "minReviews": 0,
+        "minRating": 0,
+        "mustHavePhone": false,
+        "mustHaveWebsite": false,
+        "mustHaveEmail": false,
+        "mustHaveSocialPresence": false,
+        "excludeDuplicates": false,
+        "excludedNiches": []
+      },
+      "opportunitySignals": {
+        "missingCTA": false,
+        "noBookingForm": false,
+        "noMobileFriendlySignal": false,
+        "lowTrustSignals": false,
+        "weakHomepageCopy": false,
+        "noBeforeAfterGallery": false,
+        "noServiceAreaPage": false,
+        "noReviewsTestimonialsShown": false,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "outreachReadiness": {
+        "hasPhone": false,
+        "hasEmail": false,
+        "hasFacebookPage": false,
+        "hasInstagramPage": false,
+        "enoughPublicInfoForPersonalization": false,
+        "enoughInfoForPreview": false
+      },
+      "previewSettings": {
+        "autoGeneratePreview": false,
+        "autoPrepareAssets": false,
+        "autoRenderScreenshots": false,
+        "useAIImagesWhenRealImagesLowConfidence": false,
+        "requireApprovalBeforeOutreach": true
+      }
+    },
+    "title": "E2E Real Discovery 1779961427032",
+    "modeDescription": "Discover + score from base fields, then qualify/reject and save qualified leads.",
+    "logs": [
+      {
+        "at": "2026-05-28T09:43:56.614Z",
+        "step": "searching",
+        "message": "Searching Google Maps for tree service in Beaumont, TX..."
+      },
+      {
+        "at": "2026-05-28T09:44:03.150Z",
+        "step": "discovered",
+        "message": "Discovered 1 candidate businesses.",
+        "discovered": 1
+      },
+      {
+        "at": "2026-05-28T09:44:03.153Z",
+        "step": "discovered",
+        "message": "Secure Choice Tree Service of Beaumont Texas: scored 7 (SKIP).",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas",
+        "score": 7,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T09:44:03.156Z",
+        "step": "qualified",
+        "message": "Secure Choice Tree Service of Beaumont Texas: qualified.",
+        "leadId": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+        "leadName": "Secure Choice Tree Service of Beaumont Texas"
+      },
+      {
+        "at": "2026-05-28T09:44:03.156Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 1,
+          "enriched": 0,
+          "qualified": 1,
+          "rejected": 0,
+          "previewsGenerated": 0,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "qualifiedLeads": [
+      {
+        "id": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+        "businessName": "Secure Choice Tree Service of Beaumont Texas",
+        "category": "Tree service",
+        "city": "Beaumont, TX",
+        "phone": "(409) 554-5104",
+        "websiteUrl": "https://www.facebook.com/SecureChoiceTreeService",
+        "websiteQuality": "unknown",
+        "score": 11,
+        "status": "HOLD",
+        "googleReviewCount": 24,
+        "googleRating": 4.8,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      }
+    ],
+    "rejectedLeads": [],
+    "summary": {
+      "discovered": 1,
+      "enriched": 0,
+      "qualified": 1,
+      "rejected": 0,
+      "previewsGenerated": 0,
+      "assetsPrepared": 0,
+      "screenshotsRendered": 0,
+      "failed": 0
+    },
+    "statuses": [
+      {
+        "step": "pending",
+        "at": "2026-05-28T09:43:56.614Z"
+      },
+      {
+        "step": "searching",
+        "at": "2026-05-28T09:43:56.614Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-28T09:44:03.150Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-28T09:44:03.153Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-28T09:44:03.156Z"
+      },
+      {
+        "step": "completed",
+        "at": "2026-05-28T09:44:03.156Z"
+      }
+    ]
+  },
+  {
+    "id": "bd7de5e428d9a1b3",
+    "status": "completed",
+    "startedAt": "2026-05-28T10:33:00.384Z",
+    "completedAt": "2026-05-28T10:33:21.830Z",
+    "failedAt": null,
+    "config": {
+      "runTitle": "Operator Smoke Pest Control Beaumont 2026-05-28T10-32-58",
+      "searchTerm": "pest control",
+      "city": "Beaumont",
+      "state": "TX",
+      "zipCode": "",
+      "searchRadiusMiles": null,
+      "locationQuery": "Beaumont, TX",
+      "maxResults": 5,
+      "runMode": "research_score_enrich",
+      "filters": {
+        "websiteStatus": "any",
+        "excludeStrongWebsites": false,
+        "minScore": 0,
+        "minReviews": 0,
+        "minRating": 0,
+        "mustHavePhone": true,
+        "mustHaveWebsite": false,
+        "mustHaveEmail": false,
+        "mustHaveSocialPresence": false,
+        "excludeDuplicates": false,
+        "excludedNiches": [
+          "franchise",
+          "national chain",
+          "corporate office"
+        ]
+      },
+      "opportunitySignals": {
+        "missingCTA": false,
+        "noBookingForm": false,
+        "noMobileFriendlySignal": false,
+        "lowTrustSignals": false,
+        "weakHomepageCopy": false,
+        "noBeforeAfterGallery": false,
+        "noServiceAreaPage": false,
+        "noReviewsTestimonialsShown": false,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "outreachReadiness": {
+        "hasPhone": false,
+        "hasEmail": false,
+        "hasFacebookPage": false,
+        "hasInstagramPage": false,
+        "enoughPublicInfoForPersonalization": true,
+        "enoughInfoForPreview": true
+      },
+      "previewSettings": {
+        "autoGeneratePreview": false,
+        "autoPrepareAssets": false,
+        "autoRenderScreenshots": false,
+        "useAIImagesWhenRealImagesLowConfidence": true,
+        "requireApprovalBeforeOutreach": true
+      }
+    },
+    "title": "Operator Smoke Pest Control Beaumont 2026-05-28T10-32-58",
+    "modeDescription": "Discover + enrich + score, then qualify/reject and save qualified leads.",
+    "logs": [
+      {
+        "at": "2026-05-28T10:33:00.384Z",
+        "step": "searching",
+        "message": "Searching Google Maps for pest control in Beaumont, TX..."
+      },
+      {
+        "at": "2026-05-28T10:33:15.336Z",
+        "step": "discovered",
+        "message": "Discovered 5 candidate businesses.",
+        "discovered": 5
+      },
+      {
+        "at": "2026-05-28T10:33:18.360Z",
+        "step": "enriched",
+        "message": "Bill Clark Pest Control, Inc.: enrichment completed.",
+        "leadName": "Bill Clark Pest Control, Inc.",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T10:33:18.361Z",
+        "step": "enriched",
+        "message": "Bill Clark Pest Control, Inc.: scored 14 (HOLD).",
+        "leadName": "Bill Clark Pest Control, Inc.",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T10:33:18.373Z",
+        "step": "qualified",
+        "message": "Bill Clark Pest Control, Inc.: qualified.",
+        "leadId": "c6d91417-f87b-4a74-8ce8-9b9a04ab9248",
+        "leadName": "Bill Clark Pest Control, Inc."
+      },
+      {
+        "at": "2026-05-28T10:33:18.980Z",
+        "step": "enriched",
+        "message": "Orkin: enrichment completed.",
+        "leadName": "Orkin",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T10:33:18.980Z",
+        "step": "enriched",
+        "message": "Orkin: scored 11 (HOLD).",
+        "leadName": "Orkin",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T10:33:18.987Z",
+        "step": "qualified",
+        "message": "Orkin: qualified.",
+        "leadId": "a8f3a643-ffcb-40f2-aa0c-af0b1d12967c",
+        "leadName": "Orkin"
+      },
+      {
+        "at": "2026-05-28T10:33:19.843Z",
+        "step": "enriched",
+        "message": "GuardTech Pest Management: enrichment completed.",
+        "leadName": "GuardTech Pest Management",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T10:33:19.843Z",
+        "step": "enriched",
+        "message": "GuardTech Pest Management: scored 14 (HOLD).",
+        "leadName": "GuardTech Pest Management",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T10:33:19.850Z",
+        "step": "qualified",
+        "message": "GuardTech Pest Management: qualified.",
+        "leadId": "4f441f25-fabf-4f56-8652-62f2628e5b22",
+        "leadName": "GuardTech Pest Management"
+      },
+      {
+        "at": "2026-05-28T10:33:20.945Z",
+        "step": "enriched",
+        "message": "Terminix: enrichment completed.",
+        "leadName": "Terminix",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T10:33:20.945Z",
+        "step": "enriched",
+        "message": "Terminix: scored 11 (HOLD).",
+        "leadName": "Terminix",
+        "score": 11,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T10:33:20.952Z",
+        "step": "qualified",
+        "message": "Terminix: qualified.",
+        "leadId": "b997c09c-94d1-4e01-b7e7-73c00f10d464",
+        "leadName": "Terminix"
+      },
+      {
+        "at": "2026-05-28T10:33:21.813Z",
+        "step": "enriched",
+        "message": "J&J Exterminating Beaumont: enrichment completed.",
+        "leadName": "J&J Exterminating Beaumont",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T10:33:21.814Z",
+        "step": "enriched",
+        "message": "J&J Exterminating Beaumont: scored 14 (HOLD).",
+        "leadName": "J&J Exterminating Beaumont",
+        "score": 14,
+        "status": "HOLD"
+      },
+      {
+        "at": "2026-05-28T10:33:21.830Z",
+        "step": "qualified",
+        "message": "J&J Exterminating Beaumont: qualified.",
+        "leadId": "3940a8bf-cb98-43c0-a15c-b60b51e9659b",
+        "leadName": "J&J Exterminating Beaumont"
+      },
+      {
+        "at": "2026-05-28T10:33:21.830Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 5,
+          "enriched": 5,
+          "qualified": 5,
+          "rejected": 0,
+          "previewsGenerated": 0,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "qualifiedLeads": [
+      {
+        "id": "c6d91417-f87b-4a74-8ce8-9b9a04ab9248",
+        "businessName": "Bill Clark Pest Control, Inc.",
+        "category": "Pest control service",
+        "city": "Beaumont, TX",
+        "phone": "(409) 898-3224",
+        "websiteUrl": "https://www.billclarkbugsperts.com/beaumont-tx-pest-control?utm_source=gbp&utm_medium=organic&utm_campaign=gbp-beaumont",
+        "websiteQuality": "weak",
+        "score": 14,
+        "status": "HOLD",
+        "googleReviewCount": 1922,
+        "googleRating": 5,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      },
+      {
+        "id": "a8f3a643-ffcb-40f2-aa0c-af0b1d12967c",
+        "businessName": "Orkin",
+        "category": "Pest control service",
+        "city": "Beaumont, TX",
+        "phone": "(409) 242-6943",
+        "websiteUrl": "https://www.orkin.com/quote?utm_source=local&utm_medium=local&utm_campaign=LCL0313",
+        "websiteQuality": "strong",
+        "score": 11,
+        "status": "HOLD",
+        "googleReviewCount": 1540,
+        "googleRating": 4.7,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      },
+      {
+        "id": "4f441f25-fabf-4f56-8652-62f2628e5b22",
+        "businessName": "GuardTech Pest Management",
+        "category": "Pest control service",
+        "city": "Beaumont, TX",
+        "phone": "(409) 996-2766",
+        "websiteUrl": "https://www.guardtechpest.com/?scheduling=1&appointmentredirect=1&rwg_token=AFd1xnHTacjueUtIwgYUCySqLA7uAcd53fzgOmRT7a616_DmrXhV8XUtfmFeKGx9VZIlrmDL_Bh7CqO1Qi8yFA_L5uoiIi-qmw%3D%3D",
+        "websiteQuality": "weak",
+        "score": 14,
+        "status": "HOLD",
+        "googleReviewCount": 468,
+        "googleRating": 4.9,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      },
+      {
+        "id": "b997c09c-94d1-4e01-b7e7-73c00f10d464",
+        "businessName": "Terminix",
+        "category": "Pest control service",
+        "city": "Beaumont, TX",
+        "phone": "(409) 210-7801",
+        "websiteUrl": "https://www.terminix.com/book-now/?branchId=2509&rwg_token=AFd1xnG51olKiAlEMNKn6TYQoN14_Ciie4egLPfLVIZJK_GVvw4cgEnyfyugccAYzlUjrj6RDNIWLkoUnotU27BN53_zzpWv2A%3D%3D",
+        "websiteQuality": "unknown",
+        "score": 11,
+        "status": "HOLD",
+        "googleReviewCount": 526,
+        "googleRating": 4.4,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      },
+      {
+        "id": "3940a8bf-cb98-43c0-a15c-b60b51e9659b",
+        "businessName": "J&J Exterminating Beaumont",
+        "category": "Pest control service",
+        "city": "Beaumont, TX",
+        "phone": "(409) 797-6190",
+        "websiteUrl": "https://www.jjext.com/locations/beaumont-pest-control/?utm_campaign=GMB",
+        "websiteQuality": "weak",
+        "score": 14,
+        "status": "HOLD",
+        "googleReviewCount": 130,
+        "googleRating": 4.9,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      }
+    ],
+    "rejectedLeads": [],
+    "summary": {
+      "discovered": 5,
+      "enriched": 5,
+      "qualified": 5,
+      "rejected": 0,
+      "previewsGenerated": 0,
+      "assetsPrepared": 0,
+      "screenshotsRendered": 0,
+      "failed": 0
+    },
+    "statuses": [
+      {
+        "step": "pending",
+        "at": "2026-05-28T10:33:00.384Z"
+      },
+      {
+        "step": "searching",
+        "at": "2026-05-28T10:33:00.384Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-28T10:33:15.336Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:18.360Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:18.361Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-28T10:33:18.373Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:18.980Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:18.980Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-28T10:33:18.987Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:19.843Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:19.843Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-28T10:33:19.850Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:20.945Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:20.945Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-28T10:33:20.952Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:21.813Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T10:33:21.814Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-28T10:33:21.830Z"
+      },
+      {
+        "step": "completed",
+        "at": "2026-05-28T10:33:21.830Z"
+      }
+    ]
+  },
+  {
+    "id": "autopilot_1779978469637_63dccfa5",
+    "status": "completed",
+    "startedAt": "2026-05-28T14:27:49.641Z",
+    "completedAt": "2026-05-28T14:28:02.344Z",
+    "failedAt": null,
+    "config": {
+      "runTitle": "Autopilot: tree service in Austin, TX - 2026-05-28 14:27",
+      "searchTerm": "tree service",
+      "city": "Austin",
+      "state": "TX",
+      "zipCode": "",
+      "searchRadiusMiles": null,
+      "locationQuery": "Austin, TX",
+      "maxResults": 1,
+      "runMode": "full_preview_package",
+      "filters": {
+        "websiteStatus": "any",
+        "excludeStrongWebsites": false,
+        "minScore": 0,
+        "minReviews": 0,
+        "minRating": 0,
+        "mustHavePhone": false,
+        "mustHaveWebsite": false,
+        "mustHaveEmail": false,
+        "mustHaveSocialPresence": false,
+        "excludeDuplicates": true,
+        "excludeChains": true,
+        "excludedNiches": []
+      },
+      "opportunitySignals": {
+        "missingCTA": false,
+        "noBookingForm": false,
+        "noMobileFriendlySignal": false,
+        "lowTrustSignals": false,
+        "weakHomepageCopy": false,
+        "noBeforeAfterGallery": false,
+        "noServiceAreaPage": false,
+        "noReviewsTestimonialsShown": false,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "outreachReadiness": {
+        "hasPhone": false,
+        "hasEmail": false,
+        "hasFacebookPage": false,
+        "hasInstagramPage": false,
+        "enoughPublicInfoForPersonalization": true,
+        "enoughInfoForPreview": true
+      },
+      "previewSettings": {
+        "autoGeneratePreview": true,
+        "autoPrepareAssets": false,
+        "autoRenderScreenshots": false,
+        "useAIImagesWhenRealImagesLowConfidence": true,
+        "requireApprovalBeforeOutreach": true
+      }
+    },
+    "title": "Autopilot: tree service in Austin, TX - 2026-05-28 14:27",
+    "modeDescription": "Discover + enrich + score + qualify/reject + optional preview generation for qualified leads.",
+    "logs": [
+      {
+        "at": "2026-05-28T14:27:49.642Z",
+        "step": "searching",
+        "message": "Searching Google Maps for tree service in Austin, TX..."
+      },
+      {
+        "at": "2026-05-28T14:28:01.104Z",
+        "step": "discovered",
+        "message": "Discovered 1 candidate businesses.",
+        "discovered": 1
+      },
+      {
+        "at": "2026-05-28T14:28:02.321Z",
+        "step": "enriched",
+        "message": "Austin Tree Surgeons - Tree Service: enrichment completed.",
+        "leadName": "Austin Tree Surgeons - Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T14:28:02.322Z",
+        "step": "enriched",
+        "message": "Austin Tree Surgeons - Tree Service: scored 6 (SKIP).",
+        "leadName": "Austin Tree Surgeons - Tree Service",
+        "score": 6,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T14:28:02.330Z",
+        "step": "qualified",
+        "message": "Austin Tree Surgeons - Tree Service: qualified.",
+        "leadId": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "leadName": "Austin Tree Surgeons - Tree Service"
+      },
+      {
+        "at": "2026-05-28T14:28:02.338Z",
+        "step": "preview_ready",
+        "message": "Austin Tree Surgeons - Tree Service: preview generated.",
+        "leadId": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "leadName": "Austin Tree Surgeons - Tree Service"
+      },
+      {
+        "at": "2026-05-28T14:28:02.344Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 1,
+          "enriched": 1,
+          "qualified": 1,
+          "rejected": 0,
+          "previewsGenerated": 1,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "qualifiedLeads": [
+      {
+        "id": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "businessName": "Austin Tree Surgeons - Tree Service",
+        "category": "Tree service",
+        "city": "Austin, TX",
+        "phone": "(512) 301-4400",
+        "websiteUrl": "https://austintreesurgeons.com/request-an-estimate/",
+        "websiteQuality": "unknown",
+        "score": 6,
+        "status": "SKIP",
+        "googleReviewCount": 8,
+        "googleRating": 4.6,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "likelyFranchise": false,
+        "chainConfidence": 0,
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      }
+    ],
+    "rejectedLeads": [],
+    "summary": {
+      "discovered": 1,
+      "enriched": 1,
+      "qualified": 1,
+      "rejected": 0,
+      "previewsGenerated": 1,
+      "assetsPrepared": 0,
+      "screenshotsRendered": 0,
+      "failed": 0
+    },
+    "statuses": [
+      {
+        "step": "pending",
+        "at": "2026-05-28T14:27:49.641Z"
+      },
+      {
+        "step": "searching",
+        "at": "2026-05-28T14:27:49.642Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-28T14:28:01.104Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T14:28:02.321Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T14:28:02.322Z"
+      },
+      {
+        "step": "qualified",
+        "at": "2026-05-28T14:28:02.330Z"
+      },
+      {
+        "step": "preview_ready",
+        "at": "2026-05-28T14:28:02.338Z"
+      },
+      {
+        "step": "completed",
+        "at": "2026-05-28T14:28:02.344Z"
+      }
+    ]
+  },
+  {
+    "id": "autopilot_1779978500104_b8b7fa99",
+    "status": "completed",
+    "startedAt": "2026-05-28T14:28:20.109Z",
+    "completedAt": "2026-05-28T14:28:25.772Z",
+    "failedAt": null,
+    "config": {
+      "runTitle": "Autopilot: tree service in Austin, TX - 2026-05-28 14:28",
+      "searchTerm": "tree service",
+      "city": "Austin",
+      "state": "TX",
+      "zipCode": "",
+      "searchRadiusMiles": null,
+      "locationQuery": "Austin, TX",
+      "maxResults": 1,
+      "runMode": "full_preview_package",
+      "filters": {
+        "websiteStatus": "any",
+        "excludeStrongWebsites": false,
+        "minScore": 0,
+        "minReviews": 0,
+        "minRating": 0,
+        "mustHavePhone": false,
+        "mustHaveWebsite": false,
+        "mustHaveEmail": false,
+        "mustHaveSocialPresence": false,
+        "excludeDuplicates": true,
+        "excludeChains": true,
+        "excludedNiches": []
+      },
+      "opportunitySignals": {
+        "missingCTA": false,
+        "noBookingForm": false,
+        "noMobileFriendlySignal": false,
+        "lowTrustSignals": false,
+        "weakHomepageCopy": false,
+        "noBeforeAfterGallery": false,
+        "noServiceAreaPage": false,
+        "noReviewsTestimonialsShown": false,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "outreachReadiness": {
+        "hasPhone": false,
+        "hasEmail": false,
+        "hasFacebookPage": false,
+        "hasInstagramPage": false,
+        "enoughPublicInfoForPersonalization": true,
+        "enoughInfoForPreview": true
+      },
+      "previewSettings": {
+        "autoGeneratePreview": true,
+        "autoPrepareAssets": false,
+        "autoRenderScreenshots": false,
+        "useAIImagesWhenRealImagesLowConfidence": true,
+        "requireApprovalBeforeOutreach": true
+      }
+    },
+    "title": "Autopilot: tree service in Austin, TX - 2026-05-28 14:28",
+    "modeDescription": "Discover + enrich + score + qualify/reject + optional preview generation for qualified leads.",
+    "logs": [
+      {
+        "at": "2026-05-28T14:28:20.109Z",
+        "step": "searching",
+        "message": "Searching Google Maps for tree service in Austin, TX..."
+      },
+      {
+        "at": "2026-05-28T14:28:24.641Z",
+        "step": "discovered",
+        "message": "Discovered 1 candidate businesses.",
+        "discovered": 1
+      },
+      {
+        "at": "2026-05-28T14:28:25.770Z",
+        "step": "enriched",
+        "message": "Austin Tree Surgeons - Tree Service: enrichment completed.",
+        "leadName": "Austin Tree Surgeons - Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T14:28:25.771Z",
+        "step": "enriched",
+        "message": "Austin Tree Surgeons - Tree Service: scored 6 (SKIP).",
+        "leadName": "Austin Tree Surgeons - Tree Service",
+        "score": 6,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T14:28:25.772Z",
+        "step": "rejected",
+        "message": "Austin Tree Surgeons - Tree Service: rejected (Duplicate business already exists.).",
+        "leadId": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "leadName": "Austin Tree Surgeons - Tree Service",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "at": "2026-05-28T14:28:25.772Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 1,
+          "enriched": 1,
+          "qualified": 0,
+          "rejected": 1,
+          "previewsGenerated": 0,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "qualifiedLeads": [],
+    "rejectedLeads": [
+      {
+        "lead": {
+          "id": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+          "businessName": "Austin Tree Surgeons - Tree Service",
+          "category": "Tree service",
+          "city": "Austin, TX",
+          "phone": "(512) 301-4400",
+          "websiteUrl": "https://austintreesurgeons.com/request-an-estimate/",
+          "websiteQuality": "unknown",
+          "score": 6,
+          "status": "SKIP",
+          "googleReviewCount": 8,
+          "googleRating": 4.6,
+          "pipelineStage": "new",
+          "previewStatus": "not_generated",
+          "likelyFranchise": false,
+          "chainConfidence": 0,
+          "detectedSignals": {
+            "missingCTA": true,
+            "noBookingForm": true,
+            "noMobileFriendlySignal": true,
+            "lowTrustSignals": true,
+            "weakHomepageCopy": true,
+            "noBeforeAfterGallery": true,
+            "noServiceAreaPage": true,
+            "noReviewsTestimonialsShown": true,
+            "noGoogleBusinessProfileWebsiteLink": false
+          }
+        },
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      }
+    ],
+    "summary": {
+      "discovered": 1,
+      "enriched": 1,
+      "qualified": 0,
+      "rejected": 1,
+      "previewsGenerated": 0,
+      "assetsPrepared": 0,
+      "screenshotsRendered": 0,
+      "failed": 0
+    },
+    "statuses": [
+      {
+        "step": "pending",
+        "at": "2026-05-28T14:28:20.109Z"
+      },
+      {
+        "step": "searching",
+        "at": "2026-05-28T14:28:20.109Z"
+      },
+      {
+        "step": "discovered",
+        "at": "2026-05-28T14:28:24.641Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T14:28:25.770Z"
+      },
+      {
+        "step": "enriched",
+        "at": "2026-05-28T14:28:25.771Z"
+      },
+      {
+        "step": "rejected",
+        "at": "2026-05-28T14:28:25.772Z"
+      },
+      {
+        "step": "completed",
+        "at": "2026-05-28T14:28:25.772Z"
+      }
+    ]
+  }
+]

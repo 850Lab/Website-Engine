@@ -1,0 +1,850 @@
+[
+  {
+    "id": "run_1779925849993_d2e77bb2",
+    "title": "Beaumont Tree Services - Saved Run",
+    "createdAt": "2026-05-27T23:50:49.993Z",
+    "updatedAt": "2026-05-27T23:51:27.362Z",
+    "searchTerm": "tree service",
+    "city": "Beaumont",
+    "state": "TX",
+    "runMode": "research_score_enrich",
+    "filters": {
+      "websiteStatus": "weak_or_missing",
+      "excludeStrongWebsites": true,
+      "minScore": 15,
+      "minReviews": 10,
+      "minRating": 4,
+      "mustHavePhone": true,
+      "mustHaveWebsite": false,
+      "mustHaveEmail": false,
+      "mustHaveSocialPresence": false,
+      "excludeDuplicates": true,
+      "excludedNiches": [
+        "franchise",
+        "national chain",
+        "corporate office"
+      ]
+    },
+    "previewSettings": {
+      "autoGeneratePreview": false,
+      "autoPrepareAssets": false,
+      "autoRenderScreenshots": false,
+      "useAIImagesWhenRealImagesLowConfidence": true,
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [
+      "bfe001ef-8ec5-4c48-9baf-56bac615d34d"
+    ],
+    "rejectedLeads": [
+      {
+        "leadId": null,
+        "businessName": "Davis Tree Experts",
+        "score": 11,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "The Compadres Landscaping LLC",
+        "score": 7,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Score below minimum (7 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Secure Choice Tree Service of Beaumont Texas",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Environmental Tree Service",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Lombardo's Bonded Tree Service, LLC",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "CJ's Tree Service Professionals, LLC",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "score": 8,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Hagan tree services",
+        "score": 8,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Beaumont Tree Service",
+        "score": 14,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "A Unity Tree Service",
+        "score": 16,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Edward's Tree Trimming",
+        "score": 13,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Brent Wester Landscape Management",
+        "score": 14,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Allen's Tree Experts",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Triple R Tree Service",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      }
+    ],
+    "stats": {
+      "totalDiscovered": 15,
+      "qualified": 1,
+      "rejected": 14,
+      "previewReady": 0,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  },
+  {
+    "id": "f469e8a21bc14d08",
+    "title": "Beaumont-Tree Service",
+    "createdAt": "2026-05-28T00:08:53.049Z",
+    "updatedAt": "2026-05-28T00:09:25.384Z",
+    "searchTerm": "tree service",
+    "city": "Beaumont",
+    "state": "TX",
+    "runMode": "research_score_enrich",
+    "filters": {
+      "websiteStatus": "weak_or_missing",
+      "excludeStrongWebsites": true,
+      "minScore": 15,
+      "minReviews": 10,
+      "minRating": 4,
+      "mustHavePhone": true,
+      "mustHaveWebsite": false,
+      "mustHaveEmail": false,
+      "mustHaveSocialPresence": false,
+      "excludeDuplicates": true,
+      "excludedNiches": [
+        "franchise",
+        "national chain",
+        "corporate office"
+      ]
+    },
+    "previewSettings": {
+      "autoGeneratePreview": false,
+      "autoPrepareAssets": false,
+      "autoRenderScreenshots": false,
+      "useAIImagesWhenRealImagesLowConfidence": true,
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [],
+    "rejectedLeads": [
+      {
+        "leadId": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+        "businessName": "Secure Choice Tree Service of Beaumont Texas",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": "7ca67a1c-12ad-4194-9550-6f1eb92b521a",
+        "businessName": "Environmental Tree Service",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": "b2289d7d-e792-4b34-89fc-e76f00984f60",
+        "businessName": "Lombardo's Bonded Tree Service, LLC",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": "18cdfc67-9d1c-42c2-986e-0ffcc2b28887",
+        "businessName": "CJ's Tree Service Professionals, LLC",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": "6639245e-bd16-4bcd-b76f-e05051ebfbe6",
+        "businessName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "score": 8,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10)."
+        ]
+      },
+      {
+        "leadId": "354ab01c-59d1-4db3-b755-4baf42f2f66b",
+        "businessName": "Hagan tree services",
+        "score": 8,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "leadId": "b1d7853f-3d90-4584-bbdc-6892d647b02a",
+        "businessName": "Beaumont Tree Service",
+        "score": 14,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "leadId": "c1879c9f-fa05-435b-9951-61aef538447e",
+        "businessName": "A Unity Tree Service",
+        "score": 16,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "leadId": "d752b3f0-253b-4ce4-b8a3-0c32b65930ea",
+        "businessName": "Edward's Tree Trimming",
+        "score": 13,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "leadId": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+        "businessName": "Good hands Tree service",
+        "score": 16,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "leadId": "ca3d7207-0174-4abb-945c-afafd4b8549c",
+        "businessName": "Brent Wester Landscape Management",
+        "score": 14,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Allen's Tree Experts",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Red Stag Dirt and Tree Services",
+        "score": 9,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Score below minimum (9 < 15).",
+          "Review count below minimum (8 < 10)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Triple R Tree Service",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Davis Tree Experts",
+        "score": 11,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10)."
+        ]
+      }
+    ],
+    "stats": {
+      "totalDiscovered": 15,
+      "qualified": 0,
+      "rejected": 15,
+      "previewReady": 0,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  },
+  {
+    "id": "1ba85ee9c46f2985",
+    "title": "Beaumont-Tree Services",
+    "createdAt": "2026-05-28T00:10:36.860Z",
+    "updatedAt": "2026-05-28T00:11:05.687Z",
+    "searchTerm": "tree service",
+    "city": "Beaumont",
+    "state": "TX",
+    "runMode": "research_score_enrich",
+    "filters": {
+      "websiteStatus": "weak_or_missing",
+      "excludeStrongWebsites": true,
+      "minScore": 15,
+      "minReviews": 10,
+      "minRating": 4,
+      "mustHavePhone": true,
+      "mustHaveWebsite": false,
+      "mustHaveEmail": false,
+      "mustHaveSocialPresence": false,
+      "excludeDuplicates": true,
+      "excludedNiches": [
+        "franchise",
+        "national chain",
+        "corporate office"
+      ]
+    },
+    "previewSettings": {
+      "autoGeneratePreview": false,
+      "autoPrepareAssets": false,
+      "autoRenderScreenshots": false,
+      "useAIImagesWhenRealImagesLowConfidence": true,
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [],
+    "rejectedLeads": [
+      {
+        "leadId": "d2484fb6-f6ce-46fd-ac69-51a644224062",
+        "businessName": "Secure Choice Tree Service of Beaumont Texas",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "leadId": "7ca67a1c-12ad-4194-9550-6f1eb92b521a",
+        "businessName": "Environmental Tree Service",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "leadId": "b2289d7d-e792-4b34-89fc-e76f00984f60",
+        "businessName": "Lombardo's Bonded Tree Service, LLC",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "leadId": "18cdfc67-9d1c-42c2-986e-0ffcc2b28887",
+        "businessName": "CJ's Tree Service Professionals, LLC",
+        "score": 11,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (11 < 15).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "leadId": "6639245e-bd16-4bcd-b76f-e05051ebfbe6",
+        "businessName": "Nationwide Tree Care Serving Texas & Gulf Coast Areas",
+        "score": 8,
+        "websiteStatus": "strong",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Strong website excluded by filter.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (5 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "leadId": "354ab01c-59d1-4db3-b755-4baf42f2f66b",
+        "businessName": "Hagan tree services",
+        "score": 8,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Website is not weak/missing.",
+          "Score below minimum (8 < 15).",
+          "Review count below minimum (8 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "leadId": "c1879c9f-fa05-435b-9951-61aef538447e",
+        "businessName": "A Unity Tree Service",
+        "score": 16,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "leadId": "d752b3f0-253b-4ce4-b8a3-0c32b65930ea",
+        "businessName": "Edward's Tree Trimming",
+        "score": 13,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (13 < 15).",
+          "Review count below minimum (1 < 10)."
+        ]
+      },
+      {
+        "leadId": "bfe001ef-8ec5-4c48-9baf-56bac615d34d",
+        "businessName": "Good hands Tree service",
+        "score": 16,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      },
+      {
+        "leadId": "ca3d7207-0174-4abb-945c-afafd4b8549c",
+        "businessName": "Brent Wester Landscape Management",
+        "score": 14,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists.",
+          "Score below minimum (14 < 15)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Allen's Tree Experts",
+        "score": 11,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (1 < 10).",
+          "Rating below minimum (1 < 4)."
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Red Stag Dirt and Tree Services",
+        "score": 9,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Score below minimum (9 < 15).",
+          "Review count below minimum (8 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      },
+      {
+        "leadId": null,
+        "businessName": "Davis Tree Experts",
+        "score": 11,
+        "websiteStatus": "weak",
+        "reasons": [
+          "Score below minimum (11 < 15).",
+          "Review count below minimum (4 < 10).",
+          "Missing requested opportunity signal: noGoogleBusinessProfileWebsiteLink"
+        ]
+      }
+    ],
+    "stats": {
+      "totalDiscovered": 13,
+      "qualified": 0,
+      "rejected": 13,
+      "previewReady": 0,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  },
+  {
+    "id": "e2e_group_1779961427032",
+    "title": "E2E Target Group Renamed 1779961427032",
+    "createdAt": "2026-05-28T09:43:47.436Z",
+    "updatedAt": "2026-05-28T09:43:47.485Z",
+    "archived": true,
+    "searchTerm": "tree service",
+    "city": "Beaumont",
+    "state": "TX",
+    "runMode": "manual_test",
+    "filters": {
+      "websiteStatus": "any",
+      "minScore": 0
+    },
+    "previewSettings": {
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [
+      "9006d1b5-c85a-46d0-9432-d1649f4f0484"
+    ],
+    "rejectedLeads": [
+      {
+        "leadId": "c83bba89-1891-4ae3-a556-841c35fa74c8",
+        "businessName": "E2E Imported Landscaping 1779961427032",
+        "score": 0,
+        "websiteStatus": "missing",
+        "reasons": [
+          "E2E rejection reason"
+        ]
+      }
+    ],
+    "stats": {
+      "totalDiscovered": 2,
+      "qualified": 1,
+      "rejected": 1,
+      "previewReady": 0,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  },
+  {
+    "id": "358f954ce911d3b7",
+    "title": "E2E Real Discovery 1779961427032",
+    "createdAt": "2026-05-28T09:43:56.614Z",
+    "updatedAt": "2026-05-28T09:44:03.173Z",
+    "archived": false,
+    "searchTerm": "tree service",
+    "city": "Beaumont",
+    "state": "TX",
+    "runMode": "research_score",
+    "filters": {
+      "websiteStatus": "any",
+      "excludeStrongWebsites": false,
+      "minScore": 0,
+      "minReviews": 0,
+      "minRating": 0,
+      "mustHavePhone": false,
+      "mustHaveWebsite": false,
+      "mustHaveEmail": false,
+      "mustHaveSocialPresence": false,
+      "excludeDuplicates": false,
+      "excludedNiches": []
+    },
+    "previewSettings": {
+      "autoGeneratePreview": false,
+      "autoPrepareAssets": false,
+      "autoRenderScreenshots": false,
+      "useAIImagesWhenRealImagesLowConfidence": false,
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [
+      "d2484fb6-f6ce-46fd-ac69-51a644224062"
+    ],
+    "rejectedLeads": [],
+    "stats": {
+      "totalDiscovered": 1,
+      "qualified": 1,
+      "rejected": 0,
+      "previewReady": 0,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  },
+  {
+    "id": "bd7de5e428d9a1b3",
+    "title": "Operator Smoke Pest Control Beaumont 2026-05-28T10-32-58",
+    "createdAt": "2026-05-28T10:33:00.384Z",
+    "updatedAt": "2026-05-28T10:33:21.841Z",
+    "archived": false,
+    "searchTerm": "pest control",
+    "city": "Beaumont",
+    "state": "TX",
+    "runMode": "research_score_enrich",
+    "filters": {
+      "websiteStatus": "any",
+      "excludeStrongWebsites": false,
+      "minScore": 0,
+      "minReviews": 0,
+      "minRating": 0,
+      "mustHavePhone": true,
+      "mustHaveWebsite": false,
+      "mustHaveEmail": false,
+      "mustHaveSocialPresence": false,
+      "excludeDuplicates": false,
+      "excludedNiches": [
+        "franchise",
+        "national chain",
+        "corporate office"
+      ]
+    },
+    "previewSettings": {
+      "autoGeneratePreview": false,
+      "autoPrepareAssets": false,
+      "autoRenderScreenshots": false,
+      "useAIImagesWhenRealImagesLowConfidence": true,
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [
+      "c6d91417-f87b-4a74-8ce8-9b9a04ab9248",
+      "a8f3a643-ffcb-40f2-aa0c-af0b1d12967c",
+      "4f441f25-fabf-4f56-8652-62f2628e5b22",
+      "b997c09c-94d1-4e01-b7e7-73c00f10d464",
+      "3940a8bf-cb98-43c0-a15c-b60b51e9659b"
+    ],
+    "rejectedLeads": [],
+    "stats": {
+      "totalDiscovered": 5,
+      "qualified": 5,
+      "rejected": 0,
+      "previewReady": 0,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  },
+  {
+    "id": "autopilot_1779978469637_63dccfa5",
+    "title": "Autopilot: tree service in Austin, TX - 2026-05-28 14:27",
+    "createdAt": "2026-05-28T14:27:49.641Z",
+    "updatedAt": "2026-05-28T14:28:02.353Z",
+    "archived": false,
+    "searchTerm": "tree service",
+    "city": "Austin",
+    "state": "TX",
+    "runMode": "full_preview_package",
+    "filters": {
+      "websiteStatus": "any",
+      "excludeStrongWebsites": false,
+      "minScore": 0,
+      "minReviews": 0,
+      "minRating": 0,
+      "mustHavePhone": false,
+      "mustHaveWebsite": false,
+      "mustHaveEmail": false,
+      "mustHaveSocialPresence": false,
+      "excludeDuplicates": true,
+      "excludeChains": true,
+      "excludedNiches": []
+    },
+    "previewSettings": {
+      "autoGeneratePreview": true,
+      "autoPrepareAssets": false,
+      "autoRenderScreenshots": false,
+      "useAIImagesWhenRealImagesLowConfidence": true,
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [
+      "75ab07a6-f27d-48d7-94b7-bb7be46bce5f"
+    ],
+    "rejectedLeads": [],
+    "stats": {
+      "totalDiscovered": 1,
+      "qualified": 1,
+      "rejected": 0,
+      "previewReady": 1,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  },
+  {
+    "id": "autopilot_1779978500104_b8b7fa99",
+    "title": "Autopilot: tree service in Austin, TX - 2026-05-28 14:28",
+    "createdAt": "2026-05-28T14:28:20.109Z",
+    "updatedAt": "2026-05-28T14:28:25.783Z",
+    "archived": false,
+    "searchTerm": "tree service",
+    "city": "Austin",
+    "state": "TX",
+    "runMode": "full_preview_package",
+    "filters": {
+      "websiteStatus": "any",
+      "excludeStrongWebsites": false,
+      "minScore": 0,
+      "minReviews": 0,
+      "minRating": 0,
+      "mustHavePhone": false,
+      "mustHaveWebsite": false,
+      "mustHaveEmail": false,
+      "mustHaveSocialPresence": false,
+      "excludeDuplicates": true,
+      "excludeChains": true,
+      "excludedNiches": []
+    },
+    "previewSettings": {
+      "autoGeneratePreview": true,
+      "autoPrepareAssets": false,
+      "autoRenderScreenshots": false,
+      "useAIImagesWhenRealImagesLowConfidence": true,
+      "requireApprovalBeforeOutreach": true
+    },
+    "qualifiedLeadIds": [],
+    "rejectedLeads": [
+      {
+        "leadId": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "businessName": "Austin Tree Surgeons - Tree Service",
+        "score": 6,
+        "websiteStatus": "unknown",
+        "reasons": [
+          "Duplicate business already exists."
+        ]
+      }
+    ],
+    "stats": {
+      "totalDiscovered": 1,
+      "qualified": 0,
+      "rejected": 1,
+      "previewReady": 0,
+      "contacted": 0,
+      "replied": 0,
+      "won": 0,
+      "lost": 0
+    }
+  }
+]

@@ -1,0 +1,111 @@
+[
+  {
+    "id": "autopilot_1779978469637_63dccfa5",
+    "title": "Autopilot: tree service in Austin, TX - 2026-05-28 14:27",
+    "source": "cli",
+    "startedAt": "2026-05-28T14:27:49.637Z",
+    "completedAt": "2026-05-28T14:28:02.369Z",
+    "niche": "tree service",
+    "city": "Austin, TX",
+    "status": "completed",
+    "totalDiscovered": 1,
+    "qualified": 1,
+    "rejected": 0,
+    "previewsGenerated": 1,
+    "assetsPrepared": 0,
+    "screenshotsRendered": 0,
+    "errors": [],
+    "qualifiedLeadIds": [
+      "75ab07a6-f27d-48d7-94b7-bb7be46bce5f"
+    ],
+    "qualifiedLeads": [
+      {
+        "id": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "businessName": "Austin Tree Surgeons - Tree Service",
+        "category": "Tree service",
+        "city": "Austin, TX",
+        "phone": "(512) 301-4400",
+        "websiteUrl": "https://austintreesurgeons.com/request-an-estimate/",
+        "websiteQuality": "unknown",
+        "score": 6,
+        "status": "SKIP",
+        "googleReviewCount": 8,
+        "googleRating": 4.6,
+        "pipelineStage": "new",
+        "previewStatus": "not_generated",
+        "likelyFranchise": false,
+        "chainConfidence": 0,
+        "detectedSignals": {
+          "missingCTA": true,
+          "noBookingForm": true,
+          "noMobileFriendlySignal": true,
+          "lowTrustSignals": true,
+          "weakHomepageCopy": true,
+          "noBeforeAfterGallery": true,
+          "noServiceAreaPage": true,
+          "noReviewsTestimonialsShown": true,
+          "noGoogleBusinessProfileWebsiteLink": false
+        }
+      }
+    ],
+    "rejectedLeads": [],
+    "targetLeadGroupId": "autopilot_1779978469637_63dccfa5",
+    "logs": [
+      {
+        "at": "2026-05-28T14:27:49.642Z",
+        "step": "searching",
+        "message": "Searching Google Maps for tree service in Austin, TX..."
+      },
+      {
+        "at": "2026-05-28T14:28:01.104Z",
+        "step": "discovered",
+        "message": "Discovered 1 candidate businesses.",
+        "discovered": 1
+      },
+      {
+        "at": "2026-05-28T14:28:02.321Z",
+        "step": "enriched",
+        "message": "Austin Tree Surgeons - Tree Service: enrichment completed.",
+        "leadName": "Austin Tree Surgeons - Tree Service",
+        "enriched": true
+      },
+      {
+        "at": "2026-05-28T14:28:02.322Z",
+        "step": "enriched",
+        "message": "Austin Tree Surgeons - Tree Service: scored 6 (SKIP).",
+        "leadName": "Austin Tree Surgeons - Tree Service",
+        "score": 6,
+        "status": "SKIP"
+      },
+      {
+        "at": "2026-05-28T14:28:02.330Z",
+        "step": "qualified",
+        "message": "Austin Tree Surgeons - Tree Service: qualified.",
+        "leadId": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "leadName": "Austin Tree Surgeons - Tree Service"
+      },
+      {
+        "at": "2026-05-28T14:28:02.338Z",
+        "step": "preview_ready",
+        "message": "Austin Tree Surgeons - Tree Service: preview generated.",
+        "leadId": "75ab07a6-f27d-48d7-94b7-bb7be46bce5f",
+        "leadName": "Austin Tree Surgeons - Tree Service"
+      },
+      {
+        "at": "2026-05-28T14:28:02.344Z",
+        "step": "completed",
+        "message": "Lead generation run completed.",
+        "summary": {
+          "discovered": 1,
+          "enriched": 1,
+          "qualified": 1,
+          "rejected": 0,
+          "previewsGenerated": 1,
+          "assetsPrepared": 0,
+          "screenshotsRendered": 0,
+          "failed": 0
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "name": "website-outreach-engine",
+  "version": "1.0.0",
+  "description": "Local business website opportunity scanner",
+  "type": "module",
+  "bin": {
+    "outreach": "./src/cli.js"
+  },
+  "scripts": {
+    "outreach": "node src/cli.js",
+    "server": "node src/server.js",
+    "web:dev": "npm run dev --prefix mission-control",
+    "web:build": "npm run build --prefix mission-control"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "playwright": "^1.52.0"
+  }
+}
