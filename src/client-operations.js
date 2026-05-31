@@ -96,6 +96,8 @@ function normalizeClient(client = {}) {
     phone: cleanText(client.phone),
     plan: cleanText(client.plan),
     status: clamp(client.status, CLIENT_STATUSES, "active"),
+    activationPaid: Boolean(client.activationPaid),
+    activationPaidAt: toIsoOrNull(client.activationPaidAt),
     stripeCustomerId: cleanText(client.stripeCustomerId),
     stripeSubscriptionId: cleanText(client.stripeSubscriptionId),
     billingStatus: normalizeBillingStatus(client.billingStatus),

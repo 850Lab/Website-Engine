@@ -4059,11 +4059,20 @@ function OperationsPage() {
 
   const act = async (key, fn, message) => {
     setBusy(key);
+    // #region agent log
+    fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H7',location:'mission-control/src/App.jsx:4062',message:'operations ui action started',data:{key,clientCount:ops?.clients?.length ?? 0,clientFormReady:Boolean(clientForm.companyName && clientForm.plan),siteFormReady:Boolean(siteForm.clientId && (siteForm.domain || siteForm.deploymentUrl)),requestFormReady:Boolean(requestForm.clientId && requestForm.title && requestForm.priority)},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     try {
       await fn();
       await load();
+      // #region agent log
+      fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H7',location:'mission-control/src/App.jsx:4067',message:'operations ui action succeeded',data:{key},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       notify(message);
     } catch (err) {
+      // #region agent log
+      fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H7',location:'mission-control/src/App.jsx:4071',message:'operations ui action failed',data:{key,error:err.message},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       notify(err.message || "Operation failed.", "error");
     } finally {
       setBusy("");

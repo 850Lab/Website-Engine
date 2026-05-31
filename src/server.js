@@ -306,12 +306,12 @@ async function updatePreviewStatusByArtifacts(leadId) {
 const app = express();
 app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   try {
-    const event = verifyStripeWebhookPayload(req.body.toString("utf8"), req.get("stripe-signature"));
-    const updatedClient = await handleStripeWebhookEvent(event);
+    const event = verifyStripeWebhookPayload(req.body, req.get("stripe-signature"));
+    const webhookResult = await handleStripeWebhookEvent(event);
     // #region agent log
-    fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H4,H5',location:'src/server.js:310',message:'stripe webhook handled',data:{eventType:event?.type ?? "",objectType:event?.data?.object?.object ?? "",matchedClient:Boolean(updatedClient),billingStatus:updatedClient?.billingStatus ?? null,hasCustomerId:Boolean(updatedClient?.stripeCustomerId),hasSubscriptionId:Boolean(updatedClient?.stripeSubscriptionId)},timestamp:Date.now()})}).catch(()=>{});
+    fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H4,H5',location:'src/server.js:310',message:'stripe webhook handled',data:{eventType:event?.type ?? "",eventId:event?.id ?? "",objectType:event?.data?.object?.object ?? "",duplicate:Boolean(webhookResult?.duplicate),matchedClient:Boolean(webhookResult?.client),billingStatus:webhookResult?.billingStatus ?? null,hasCustomerId:Boolean(webhookResult?.client?.stripeCustomerId),hasSubscriptionId:Boolean(webhookResult?.client?.stripeSubscriptionId)},timestamp:Date.now()})}).catch(()=>{});
     // #endregion
-    return res.json({ received: true });
+    return res.json({ received: true, duplicate: Boolean(webhookResult?.duplicate) });
   } catch (err) {
     // #region agent log
     fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H4',location:'src/server.js:314',message:'stripe webhook failed before handling',data:{hasSignature:Boolean(req.get("stripe-signature")),bodyLength:req.body?.length ?? 0,error:err.message},timestamp:Date.now()})}).catch(()=>{});
@@ -412,8 +412,18 @@ app.get("/api/operations", async (_req, res) => {
 
 app.post("/api/operations/clients", async (req, res) => {
   try {
-    return res.status(201).json(await createClient(req.body ?? {}));
+    // #region agent log
+    fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H7',location:'src/server.js:410',message:'create client route entered',data:{hasCompanyName:Boolean(req.body?.companyName),hasPlan:Boolean(req.body?.plan),hasEmail:Boolean(req.body?.email)},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+    const client = await createClient(req.body ?? {});
+    // #region agent log
+    fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H7',location:'src/server.js:415',message:'create client route succeeded',data:{clientId:client.clientId,billingStatus:client.billingStatus,hasEmail:Boolean(client.email)},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+    return res.status(201).json(client);
   } catch (err) {
+    // #region agent log
+    fetch('http://127.0.0.1:7614/ingest/6f0f275e-1f8a-4058-adf1-e65618aa0a8f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'684fa0'},body:JSON.stringify({sessionId:'684fa0',runId:'initial',hypothesisId:'H7',location:'src/server.js:420',message:'create client route failed',data:{error:err.message},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     return res.status(400).json({ error: err.message });
   }
 });
