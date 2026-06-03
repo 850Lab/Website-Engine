@@ -5,6 +5,12 @@ import {
   markClientCheckoutStarted,
   updateClientBillingFromStripe,
 } from "./client-operations.js";
+import {
+  linkRevenueClient,
+  recordRevenueActivation,
+  transitionRevenueStageIfEarlier,
+} from "./revenue-pipeline.js";
+import { createFulfillmentRecord } from "./fulfillment.js";
 import { DATA_DIR, writeJsonFileSafe } from "./storage.js";
 
 const STRIPE_EVENTS_FILE = join(DATA_DIR, "stripe-events.json");
@@ -284,10 +290,47 @@ export async function handleStripeWebhookEvent(event) {
             : "checkout_completed",
         },
       });
+      if (client) {
+        await linkRevenueClient({ clientId: client.clientId });
+        await transitionRevenueStageIfEarlier(
+          { clientId: client.clientId },
+          "checkout_completed",
+          "Stripe checkout completed."
+        );
+      }
       break;
     case "customer.subscription.created":
     case "customer.subscription.updated":
       client = await applySubscription(object);
+      if (client?.billingStatus === "active") {
+        await linkRevenueClient({ clientId: client.clientId, actualValue: 50 });
+        const revenueRecord = await recordRevenueActivation(
+          { clientId: client.clientId },
+          {
+            source: "stripe_webhook",
+            eventId,
+            eventType,
+            stripeCustomerId: client.stripeCustomerId,
+            stripeSubscriptionId: client.stripeSubscriptionId,
+            billingStatus: client.billingStatus,
+            activationPaid: Boolean(client.activationPaid),
+            actualValue: 50,
+            notes: "Stripe subscription confirmed active/trialing.",
+          }
+        );
+        if (revenueRecord) {
+          await createFulfillmentRecord({
+            clientId: client.clientId,
+            revenueId: revenueRecord.revenueId,
+            leadId: revenueRecord.leadId,
+          });
+        }
+        await transitionRevenueStageIfEarlier(
+          { clientId: client.clientId },
+          "activated",
+          "Stripe subscription confirmed active."
+        );
+      }
       break;
     case "customer.subscription.deleted":
       client = await applySubscription(object, {

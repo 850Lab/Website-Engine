@@ -74,6 +74,234 @@ export const api = {
   demoProjects() {
     return request("/demo-projects", { method: "GET" });
   },
+  websites() {
+    return request("/websites", { method: "GET" });
+  },
+  websiteConveyor() {
+    return request("/websites/conveyor", { method: "GET" });
+  },
+  deploymentStatus() {
+    return request("/deployment/status", { method: "GET" });
+  },
+  automationConfig() {
+    return request("/automation/config", { method: "GET" });
+  },
+  updateAutomationConfig(payload) {
+    return request("/automation/config", {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  automationWorkers() {
+    return request("/automation/workers", { method: "GET" });
+  },
+  automationJobs() {
+    return request("/automation/jobs", { method: "GET" });
+  },
+  createAutomationJob(payload) {
+    return request("/automation/jobs", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  previewChainPlan(websiteId) {
+    return request(`/automation/preview-chain/${websiteId}/plan`, { method: "GET" });
+  },
+  enqueuePreviewChain(websiteId, payload = {}) {
+    return request(`/automation/preview-chain/${websiteId}/enqueue`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  qcDeploymentChainPlan(websiteId) {
+    return request(`/automation/qc-deployment-chain/${websiteId}/plan`, { method: "GET" });
+  },
+  enqueueQcDeploymentChain(websiteId, payload = {}) {
+    return request(`/automation/qc-deployment-chain/${websiteId}/enqueue`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  outreachChainPlan(websiteId) {
+    return request(`/automation/outreach-chain/${websiteId}/plan`, { method: "GET" });
+  },
+  enqueueOutreachChain(websiteId, payload = {}) {
+    return request(`/automation/outreach-chain/${websiteId}/enqueue`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  createPlaceholderReply(websiteId, payload = {}) {
+    return request(`/automation/reply-inbox/${websiteId}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  replyRevenueChainPlan(websiteId) {
+    return request(`/automation/reply-revenue-chain/${websiteId}/plan`, { method: "GET" });
+  },
+  enqueueReplyRevenueChain(websiteId, payload = {}) {
+    return request(`/automation/reply-revenue-chain/${websiteId}/enqueue`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  runAutomationCycle(payload = {}) {
+    return request("/automation/run-cycle", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  automationOrchestratorStatus() {
+    return request("/automation/orchestrator/status", { method: "GET" });
+  },
+  orchestrateWebsite(websiteId, payload = {}) {
+    return request(`/automation/orchestrator/website/${websiteId}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  runAutomationScheduler(payload = {}) {
+    return request("/automation/scheduler/run", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  orchestrationLogs() {
+    return request("/automation/orchestration/logs", { method: "GET" });
+  },
+  automationRuns() {
+    return request("/automation/runs", { method: "GET" });
+  },
+  automationLogs() {
+    return request("/automation/logs", { method: "GET" });
+  },
+  website(websiteId) {
+    return request(`/websites/${websiteId}`, { method: "GET" });
+  },
+  websiteTimeline(websiteId) {
+    return request(`/websites/${websiteId}/timeline`, { method: "GET" });
+  },
+  websiteExceptions(websiteId) {
+    return request(`/websites/${websiteId}/exceptions`, { method: "GET" });
+  },
+  websiteAction(websiteId, action, payload = {}) {
+    return request(`/websites/${websiteId}/actions/${action}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  exceptions() {
+    return request("/exceptions", { method: "GET" });
+  },
+  exception(exceptionId) {
+    return request(`/exceptions/${exceptionId}`, { method: "GET" });
+  },
+  exceptionAction(exceptionId, action, payload = {}) {
+    return request(`/exceptions/${exceptionId}/actions/${action}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  revenue() {
+    return request("/revenue", { method: "GET" });
+  },
+  addLeadToRevenue(id, payload = {}) {
+    return request(`/revenue/from-lead/${id}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  leadRevenue(id) {
+    return request(`/revenue/lead/${id}`, { method: "GET" });
+  },
+  logLeadReply(id, payload) {
+    return request(`/revenue/lead/${id}/replies`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  logLeadMeeting(id, payload) {
+    return request(`/revenue/lead/${id}/meetings`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  patchRevenueStage(revenueId, payload) {
+    return request(`/revenue/${revenueId}/stage`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  logRevenueReply(revenueId, payload) {
+    return request(`/revenue/${revenueId}/replies`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  logRevenueMeeting(revenueId, payload) {
+    return request(`/revenue/${revenueId}/meetings`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  logRevenueProposal(revenueId, payload) {
+    return request(`/revenue/${revenueId}/proposals`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  patchRevenueProposal(revenueId, proposalId, payload) {
+    return request(`/revenue/${revenueId}/proposals/${proposalId}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  attachRevenueCheckoutUrl(revenueId, payload) {
+    return request(`/revenue/${revenueId}/checkout-url`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  attachRevenueClient(revenueId, payload) {
+    return request(`/revenue/${revenueId}/client`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  markRevenueLost(revenueId, payload) {
+    return request(`/revenue/${revenueId}/lost`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  fulfillment() {
+    return request("/fulfillment", { method: "GET" });
+  },
+  createFulfillmentFromClient(clientId, payload = {}) {
+    return request(`/fulfillment/from-client/${clientId}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  linkFulfillmentSite(fulfillmentId, payload) {
+    return request(`/fulfillment/${fulfillmentId}/site`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  patchFulfillmentChecklist(fulfillmentId, key, payload) {
+    return request(`/fulfillment/${fulfillmentId}/checklist/${key}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  createFulfillmentMaintenanceRequest(fulfillmentId, payload) {
+    return request(`/fulfillment/${fulfillmentId}/maintenance-requests`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
   operations() {
     return request("/operations", { method: "GET" });
   },

@@ -22,6 +22,22 @@ export const MAINTENANCE_STATUSES = [
   "cancelled",
 ];
 export const MAINTENANCE_PRIORITIES = ["low", "normal", "high", "urgent"];
+export const MAINTENANCE_REQUEST_TYPES = [
+  "text_update",
+  "image_update",
+  "service_update",
+  "hours_update",
+  "bug_fix",
+  "new_section",
+  "other",
+];
+
+export const MAINTENANCE_SLA_TARGETS = {
+  urgent: { hours: 24, label: "24 hours" },
+  high: { hours: 48, label: "48 hours" },
+  normal: { businessDays: 5, label: "5 business days" },
+  low: { businessDays: 10, label: "10 business days" },
+};
 
 function nowIso() {
   return new Date().toISOString();
@@ -45,6 +61,39 @@ function toIsoOrNull(value) {
   if (!value) return null;
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function addBusinessDays(start, businessDays) {
+  const date = new Date(start);
+  let remaining = Math.max(0, Number(businessDays) || 0);
+  while (remaining > 0) {
+    date.setDate(date.getDate() + 1);
+    const day = date.getDay();
+    if (day !== 0 && day !== 6) remaining -= 1;
+  }
+  return date;
+}
+
+function calculateMaintenanceDueDate(priority, start = new Date()) {
+  const rule = MAINTENANCE_SLA_TARGETS[priority] ?? MAINTENANCE_SLA_TARGETS.normal;
+  const startDate = new Date(start);
+  if (Number.isNaN(startDate.getTime())) return null;
+  if (rule.hours) return new Date(startDate.getTime() + rule.hours * 60 * 60 * 1000).toISOString();
+  return addBusinessDays(startDate, rule.businessDays).toISOString();
+}
+
+function maintenanceSlaRisk(request = {}, now = Date.now()) {
+  if (!isOpenRequest(request)) return "on_track";
+  const due = new Date(request.dueDate);
+  if (Number.isNaN(due.getTime())) return "on_track";
+  if (due.getTime() < now) return "overdue";
+  const assigned = new Date(request.assignedDate || request.createdAt);
+  const startTime = Number.isNaN(assigned.getTime()) ? now : assigned.getTime();
+  const totalWindow = due.getTime() - startTime;
+  const remaining = due.getTime() - now;
+  if (remaining <= 24 * 60 * 60 * 1000) return "at_risk";
+  if (totalWindow > 0 && (now - startTime) / totalWindow >= 0.75) return "at_risk";
+  return "on_track";
 }
 
 function healthScore(input, fallback = 75) {
@@ -135,14 +184,26 @@ function normalizeSite(site = {}) {
 
 function normalizeMaintenanceRequest(request = {}) {
   const now = nowIso();
+  const priority = clamp(request.priority, MAINTENANCE_PRIORITIES, "normal");
+  const assignedDate = toIsoOrNull(request.assignedDate) || now;
+  const dueDate = toIsoOrNull(request.dueDate) || calculateMaintenanceDueDate(priority, assignedDate);
+  const status = clamp(request.status, MAINTENANCE_STATUSES, "submitted");
   return {
     requestId: cleanText(request.requestId) || `request_${randomUUID()}`,
     clientId: cleanText(request.clientId),
     siteId: cleanText(request.siteId),
+    fulfillmentId: cleanText(request.fulfillmentId),
     title: cleanText(request.title),
-    priority: clamp(request.priority, MAINTENANCE_PRIORITIES, "normal"),
-    status: clamp(request.status, MAINTENANCE_STATUSES, "submitted"),
-    assignedDate: toIsoOrNull(request.assignedDate) || now,
+    description: cleanText(request.description),
+    priority,
+    requestedBy: cleanText(request.requestedBy),
+    requestType: clamp(request.requestType, MAINTENANCE_REQUEST_TYPES, "other"),
+    dueDate,
+    status,
+    slaTarget: MAINTENANCE_SLA_TARGETS[priority]?.label ?? MAINTENANCE_SLA_TARGETS.normal.label,
+    slaRisk: maintenanceSlaRisk({ ...request, priority, assignedDate, dueDate, status }),
+    overdue: maintenanceSlaRisk({ ...request, priority, assignedDate, dueDate, status }) === "overdue",
+    assignedDate,
     completedDate: toIsoOrNull(request.completedDate),
     notes: cleanText(request.notes),
     createdAt: toIsoOrNull(request.createdAt) || now,
@@ -166,22 +227,93 @@ function isOpenRequest(request) {
 }
 
 function isOverdueRequest(request) {
-  if (!isOpenRequest(request)) return false;
-  const assigned = new Date(request.assignedDate);
-  if (Number.isNaN(assigned.getTime())) return false;
-  const ageMs = Date.now() - assigned.getTime();
-  const limitMs = request.priority === "urgent"
-    ? 24 * 60 * 60 * 1000
-    : request.priority === "high"
-      ? 3 * 24 * 60 * 60 * 1000
-      : 7 * 24 * 60 * 60 * 1000;
-  return ageMs > limitMs;
+  return maintenanceSlaRisk(request) === "overdue";
 }
 
-function buildSummary(state) {
-  const activeClients = state.clients.filter((client) => client.status === "active" && client.billingStatus !== "canceled");
+function isDueSoonRequest(request) {
+  if (!isOpenRequest(request)) return false;
+  const due = new Date(request.dueDate);
+  if (Number.isNaN(due.getTime())) return false;
+  const msUntilDue = due.getTime() - Date.now();
+  return msUntilDue >= 0 && msUntilDue <= 48 * 60 * 60 * 1000;
+}
+
+function isCompletedThisWeek(request) {
+  if (request.status !== "completed" || !request.completedDate) return false;
+  const completed = new Date(request.completedDate);
+  if (Number.isNaN(completed.getTime())) return false;
+  const now = new Date();
+  const start = new Date(now);
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  return completed.getTime() >= start.getTime();
+}
+
+function buildMaintenanceSlaQueues(state) {
+  const requests = state.maintenanceRequests.map(normalizeMaintenanceRequest);
+  const openRequests = requests.filter(isOpenRequest);
+  const byDueDate = (a, b) => String(a.dueDate).localeCompare(String(b.dueDate));
+  return {
+    urgentRequests: openRequests
+      .filter((request) => request.priority === "urgent")
+      .sort(byDueDate),
+    overdueRequests: openRequests
+      .filter(isOverdueRequest)
+      .sort(byDueDate),
+    requestsDueSoon: openRequests
+      .filter(isDueSoonRequest)
+      .sort(byDueDate),
+    requestsWaitingOnClient: openRequests
+      .filter((request) => request.status === "waiting_client")
+      .sort(byDueDate),
+    completedThisWeek: requests
+      .filter(isCompletedThisWeek)
+      .sort((a, b) => String(b.completedDate).localeCompare(String(a.completedDate))),
+  };
+}
+
+function calculateClientHealthScore(client, { sitesByClient = new Map(), requestsByClient = new Map(), fulfillmentByClient = new Map() } = {}) {
+  let score = healthScore(client.healthScore);
+  const openRequests = (requestsByClient.get(client.clientId) ?? []).filter(isOpenRequest);
+  const overdueRequests = openRequests.filter(isOverdueRequest);
+  const fulfillment = fulfillmentByClient.get(client.clientId);
+  if (overdueRequests.length) score -= Math.min(30, overdueRequests.length * 15);
+  if (fulfillment?.status === "blocked") score -= 20;
+  if (["past_due", "canceled", "not_configured"].includes(client.billingStatus) || client.failedPaymentCount > 0) score -= 20;
+  if (!(sitesByClient.get(client.clientId) ?? []).length) score -= 15;
+  return healthScore(score);
+}
+
+function buildClientHealthContext(state, fulfillmentRecords = []) {
+  const sitesByClient = new Map();
+  const requestsByClient = new Map();
+  const fulfillmentByClient = new Map();
+  for (const site of state.sites) {
+    sitesByClient.set(site.clientId, [...(sitesByClient.get(site.clientId) ?? []), site]);
+  }
+  for (const request of state.maintenanceRequests) {
+    requestsByClient.set(request.clientId, [...(requestsByClient.get(request.clientId) ?? []), request]);
+  }
+  for (const record of fulfillmentRecords) {
+    if (record.clientId && !fulfillmentByClient.has(record.clientId)) fulfillmentByClient.set(record.clientId, record);
+  }
+  return { sitesByClient, requestsByClient, fulfillmentByClient };
+}
+
+function buildEnrichedClients(state, fulfillmentRecords = []) {
+  const context = buildClientHealthContext(state, fulfillmentRecords);
+  return state.clients.map((client) => ({
+    ...client,
+    healthScore: calculateClientHealthScore(client, context),
+  }));
+}
+
+function buildSummary(state, fulfillmentRecords = []) {
+  const clients = buildEnrichedClients(state, fulfillmentRecords);
+  const activeClients = clients.filter((client) => client.status === "active" && client.billingStatus !== "canceled");
   const openRequests = state.maintenanceRequests.filter(isOpenRequest);
   const overdueRequests = openRequests.filter(isOverdueRequest);
+  const slaQueues = buildMaintenanceSlaQueues(state);
   const healthBuckets = {
     healthy: activeClients.filter((client) => client.healthScore >= 75).length,
     watch: activeClients.filter((client) => client.healthScore >= 50 && client.healthScore < 75).length,
@@ -189,10 +321,14 @@ function buildSummary(state) {
   };
   return {
     activeClients: activeClients.length,
-    archivedClients: state.clients.filter((client) => client.status === "archived").length,
+    archivedClients: clients.filter((client) => client.status === "archived").length,
     sites: state.sites.length,
     openRequests: openRequests.length,
     overdueRequests: overdueRequests.length,
+    urgentRequests: slaQueues.urgentRequests.length,
+    requestsDueSoon: slaQueues.requestsDueSoon.length,
+    requestsWaitingOnClient: slaQueues.requestsWaitingOnClient.length,
+    completedThisWeek: slaQueues.completedThisWeek.length,
     onboarding: {
       notStarted: activeClients.filter((client) => client.onboardingStatus === "not_started").length,
       inProgress: activeClients.filter((client) => client.onboardingStatus === "in_progress").length,
@@ -211,12 +347,13 @@ function buildSummary(state) {
   };
 }
 
-function buildOperationsHealth(state) {
-  const activeClients = state.clients.filter((client) => client.status === "active");
+function buildOperationsHealth(state, fulfillmentRecords = []) {
+  const activeClients = buildEnrichedClients(state, fulfillmentRecords).filter((client) => client.status === "active");
   const sitesByClient = new Map();
   for (const site of state.sites) {
     sitesByClient.set(site.clientId, [...(sitesByClient.get(site.clientId) ?? []), site]);
   }
+  const fulfillmentByClient = new Map(fulfillmentRecords.map((record) => [record.clientId, record]));
   const warnings = [];
   for (const client of activeClients) {
     if (!(sitesByClient.get(client.clientId) ?? []).length) {
@@ -267,6 +404,14 @@ function buildOperationsHealth(state) {
         message: `${client.companyName} cancellation status: ${client.cancellationStatus}.`,
       });
     }
+    if (fulfillmentByClient.get(client.clientId)?.status === "blocked") {
+      warnings.push({
+        type: "blocked_fulfillment",
+        severity: "high",
+        clientId: client.clientId,
+        message: `${client.companyName} has blocked fulfillment work.`,
+      });
+    }
   }
   for (const site of state.sites) {
     if (!site.domain && !site.deploymentUrl) {
@@ -280,17 +425,13 @@ function buildOperationsHealth(state) {
     }
   }
   for (const request of state.maintenanceRequests.filter(isOpenRequest)) {
-    const assigned = new Date(request.assignedDate);
-    const ageDays = Number.isNaN(assigned.getTime())
-      ? 0
-      : Math.floor((Date.now() - assigned.getTime()) / (24 * 60 * 60 * 1000));
-    if (ageDays > 7) {
+    if (isOverdueRequest(request)) {
       warnings.push({
-        type: "stale_open_request",
+        type: "overdue_maintenance_request",
         severity: request.priority === "urgent" || request.priority === "high" ? "high" : "medium",
         clientId: request.clientId,
         requestId: request.requestId,
-        message: `${request.title} has been open for ${ageDays} days.`,
+        message: `${request.title} is overdue against SLA.`,
       });
     }
   }
@@ -299,12 +440,20 @@ function buildOperationsHealth(state) {
 
 function buildDailyOperatorView(state, healthWarnings = buildOperationsHealth(state)) {
   const activeClients = state.clients.filter((client) => client.status === "active");
-  const priorityRequests = state.maintenanceRequests
-    .filter((request) => isOpenRequest(request) && ["urgent", "high"].includes(request.priority))
-    .sort((a, b) => String(a.assignedDate).localeCompare(String(b.assignedDate)))
-    .slice(0, 8);
+  const slaQueues = buildMaintenanceSlaQueues(state);
+  const priorityRequests = [
+    ...slaQueues.urgentRequests,
+    ...state.maintenanceRequests.filter((request) => isOpenRequest(request) && request.priority === "high"),
+  ].sort((a, b) => String(a.dueDate).localeCompare(String(b.dueDate))).slice(0, 8);
   return {
     priorityRequests,
+    maintenanceSlaQueues: {
+      urgentRequests: slaQueues.urgentRequests.slice(0, 12),
+      overdueRequests: slaQueues.overdueRequests.slice(0, 12),
+      requestsDueSoon: slaQueues.requestsDueSoon.slice(0, 12),
+      requestsWaitingOnClient: slaQueues.requestsWaitingOnClient.slice(0, 12),
+      completedThisWeek: slaQueues.completedThisWeek.slice(0, 12),
+    },
     clientsNeedingOnboarding: activeClients
       .filter((client) => client.onboardingStatus !== "complete")
       .slice(0, 8),
@@ -349,6 +498,9 @@ function validateMaintenanceInput(input = {}) {
   if (!MAINTENANCE_STATUSES.includes(input.status)) {
     throw new Error(`Maintenance request status must be one of: ${MAINTENANCE_STATUSES.join(", ")}.`);
   }
+  if (input.requestType && !MAINTENANCE_REQUEST_TYPES.includes(input.requestType)) {
+    throw new Error(`Maintenance request type must be one of: ${MAINTENANCE_REQUEST_TYPES.join(", ")}.`);
+  }
 }
 
 function findDuplicateClient(clients, input = {}) {
@@ -364,14 +516,18 @@ function findDuplicateClient(clients, input = {}) {
   }) ?? null;
 }
 
-export async function getClientOperationsView() {
+export async function getClientOperationsView({ fulfillmentRecords = [] } = {}) {
   const state = await readState();
-  const healthWarnings = buildOperationsHealth(state);
+  const healthWarnings = buildOperationsHealth(state, fulfillmentRecords);
   return {
     ...state,
-    summary: buildSummary(state),
+    clients: buildEnrichedClients(state, fulfillmentRecords),
+    maintenanceSlaQueues: buildMaintenanceSlaQueues(state),
+    summary: buildSummary(state, fulfillmentRecords),
     healthWarnings,
     dailyOperatorView: buildDailyOperatorView(state, healthWarnings),
+    maintenanceRequestTypes: MAINTENANCE_REQUEST_TYPES,
+    maintenanceSlaTargets: MAINTENANCE_SLA_TARGETS,
   };
 }
 

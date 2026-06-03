@@ -7,6 +7,26 @@ const DATA_DIR = join(__dirname, "..", "data");
 const LEADS_FILE = join(DATA_DIR, "leads.json");
 const writeQueues = new Map();
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function retryFileOperation(operation, { attempts = 5, delayMs = 75 } = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (err) {
+      lastError = err;
+      if (!["EPERM", "EBUSY", "EACCES"].includes(err.code) || attempt === attempts) {
+        throw err;
+      }
+      await sleep(delayMs * attempt);
+    }
+  }
+  throw lastError;
+}
+
 export async function writeJsonFileSafe(filePath, data) {
   const previous = writeQueues.get(filePath) ?? Promise.resolve();
   const next = previous.then(async () => {
@@ -14,12 +34,12 @@ export async function writeJsonFileSafe(filePath, data) {
     const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
     try {
       await readFile(filePath, "utf8");
-      await copyFile(filePath, `${filePath}.bak`);
+      await retryFileOperation(() => copyFile(filePath, `${filePath}.bak`));
     } catch (err) {
       if (err.code !== "ENOENT") throw err;
     }
     await writeFile(tempPath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
-    await rename(tempPath, filePath);
+    await retryFileOperation(() => rename(tempPath, filePath));
   });
   writeQueues.set(
     filePath,

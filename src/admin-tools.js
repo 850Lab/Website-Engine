@@ -4,6 +4,7 @@ import { DATA_DIR, LEADS_FILE, writeJsonFileSafe } from "./storage.js";
 import { LEAD_RUNS_FILE } from "./lead-runs.js";
 import { LEAD_GENERATION_RUNS_FILE } from "./lead-generation-runs.js";
 import { getStoredAdminAccount } from "./admin-auth.js";
+import { getDeploymentProviderStatus } from "./deployment.js";
 
 const ROOT = join(DATA_DIR, "..");
 const PREVIEWS_ROOT = join(ROOT, "previews-v3");
@@ -117,6 +118,7 @@ export async function getAdminSystemStatus() {
     integrations: {
       openAiKeyDetected: Boolean(process.env.OPENAI_API_KEY),
       playwrightAvailable: await playwrightAvailable(),
+      deployment: getDeploymentProviderStatus(),
     },
     storage: {
       dataDir: DATA_DIR,
