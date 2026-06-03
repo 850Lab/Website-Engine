@@ -204,6 +204,170 @@ function useAuth() {
   return { loading, authenticated, setAuthenticated };
 }
 
+const SUPPORT_EMAIL = "support@websiteengine.local"; // TODO: Replace with the production support email/domain before public launch.
+const SERVICE_DESCRIPTION = "The Website Engine creates custom website previews for businesses and facilitates follow-up communications regarding website services, project discussions, appointment scheduling, and customer support.";
+
+function PublicLegalLayout({ title, updated, children }) {
+  return (
+    <div className="public-legal-wrap">
+      <main className="public-legal-card">
+        <div className="public-legal-header">
+          <Link className="public-brand" to="/">
+            Website Engine
+          </Link>
+          <nav className="public-legal-nav" aria-label="Legal pages">
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms of Service</Link>
+            <Link to="/login">Login</Link>
+          </nav>
+        </div>
+        <p className="eyebrow">Website Engine Legal</p>
+        <h1>{title}</h1>
+        <p className="muted">Last updated: {updated}</p>
+        <p>{SERVICE_DESCRIPTION}</p>
+        <div className="legal-content">{children}</div>
+        <footer className="public-legal-footer">
+          <span>Website Engine</span>
+          <Link to="/privacy">Privacy Policy</Link>
+          <Link to="/terms">Terms of Service</Link>
+          <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+        </footer>
+      </main>
+    </div>
+  );
+}
+
+function PrivacyPolicyPage() {
+  return (
+    <PublicLegalLayout title="Privacy Policy" updated="June 2, 2026">
+      <section>
+        <h2>Information Collected</h2>
+        <p>
+          We may collect business contact information, including business names, contact names, phone numbers, email
+          addresses, website URLs, service categories, business locations, project details, and communications related
+          to website previews and website services.
+        </p>
+      </section>
+      <section>
+        <h2>How Information Is Used</h2>
+        <p>
+          We use information to create and share custom website previews, respond to service inquiries, discuss website
+          projects, schedule appointments, provide customer support, improve our services, and maintain records of
+          business communications.
+        </p>
+      </section>
+      <section>
+        <h2>SMS/Text Message Communications</h2>
+        <p>
+          If you provide a phone number or engage with our business communications, we may send SMS or text messages
+          related to website previews, appointment scheduling, project updates, service inquiries, and customer support.
+          Message and data rates may apply. Message frequency may vary.
+        </p>
+        <p>
+          Users may opt out of SMS messages at any time by replying STOP. For help, users may reply HELP or contact
+          support.
+        </p>
+      </section>
+      <section>
+        <h2>Opt-Out Instructions</h2>
+        <p>
+          You may opt out of SMS messages by replying STOP to any message. You may request help by replying HELP. You
+          may also contact us at <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> to update your communication
+          preferences.
+        </p>
+      </section>
+      <section>
+        <h2>Data Sharing</h2>
+        <p>
+          SMS consent and phone numbers are not sold, rented, or shared with third parties for their marketing purposes.
+        </p>
+        <p>
+          We may share information with service providers that help us operate the Website Engine, host website
+          previews, communicate with businesses, or provide support. These providers are only permitted to use the
+          information as needed to provide services to us.
+        </p>
+      </section>
+      <section>
+        <h2>Data Security</h2>
+        <p>
+          We use reasonable administrative, technical, and organizational safeguards to protect information. No method
+          of transmission or storage is completely secure, but we work to limit access to information to authorized
+          personnel and service providers.
+        </p>
+      </section>
+      <section>
+        <h2>Contact Information</h2>
+        <p>
+          Questions about this Privacy Policy may be sent to{" "}
+          <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+        </p>
+      </section>
+    </PublicLegalLayout>
+  );
+}
+
+function TermsOfServicePage() {
+  return (
+    <PublicLegalLayout title="Terms of Service" updated="June 2, 2026">
+      <section>
+        <h2>Website Preview Services</h2>
+        <p>
+          Website Engine provides custom website previews and related website service discussions for businesses.
+          Previews may be used to demonstrate design, content, layout, functionality, and possible service options.
+        </p>
+      </section>
+      <section>
+        <h2>Business Communications</h2>
+        <p>
+          By communicating with us, requesting information, or reviewing a website preview, you agree that we may
+          contact you about website services, project discussions, appointment scheduling, support, and related
+          business inquiries.
+        </p>
+      </section>
+      <section>
+        <h2>SMS/Text Message Terms</h2>
+        <p>
+          By providing a phone number or engaging with our business communications, users may receive messages related
+          to website previews, appointments, project updates, and service inquiries. Message and data rates may apply.
+          Message frequency may vary. Reply STOP to opt out or HELP for help.
+        </p>
+        <p>
+          SMS consent and phone numbers are not sold, rented, or shared with third parties for their marketing purposes.
+        </p>
+      </section>
+      <section>
+        <h2>User Responsibilities</h2>
+        <p>
+          You are responsible for providing accurate business information, reviewing preview content for accuracy, and
+          ensuring that any materials you provide can be used for website preview or website service purposes.
+        </p>
+      </section>
+      <section>
+        <h2>No Guarantee of Results</h2>
+        <p>
+          Website previews and website services are provided to support business marketing and online presence
+          discussions. We do not guarantee sales, leads, revenue, search rankings, customer acquisition, or any specific
+          business result.
+        </p>
+      </section>
+      <section>
+        <h2>Limitation of Liability</h2>
+        <p>
+          To the maximum extent permitted by law, Website Engine is not liable for indirect, incidental, special,
+          consequential, or punitive damages arising from the use of website previews, communications, or services.
+        </p>
+      </section>
+      <section>
+        <h2>Contact Information</h2>
+        <p>
+          Questions about these Terms may be sent to{" "}
+          <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+        </p>
+      </section>
+    </PublicLegalLayout>
+  );
+}
+
 function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -426,6 +590,18 @@ function Shell({ children, onLogout }) {
         <NavLink className="nav-link" to="/opportunities">
           Opportunities
         </NavLink>
+        <NavLink className="nav-link" to="/websites">
+          Websites
+        </NavLink>
+        <NavLink className="nav-link" to="/conveyor">
+          Conveyor
+        </NavLink>
+        <NavLink className="nav-link" to="/exceptions">
+          Exceptions
+        </NavLink>
+        <NavLink className="nav-link" to="/automation">
+          Automation
+        </NavLink>
         <NavLink className="nav-link" to="/projects">
           Demo Projects
         </NavLink>
@@ -444,6 +620,12 @@ function Shell({ children, onLogout }) {
         <NavLink className="nav-link" to="/outreach">
           Outreach
         </NavLink>
+        <NavLink className="nav-link" to="/revenue">
+          Revenue
+        </NavLink>
+        <NavLink className="nav-link" to="/fulfillment">
+          Fulfillment
+        </NavLink>
         <NavLink className="nav-link" to="/operations">
           Operations
         </NavLink>
@@ -451,6 +633,10 @@ function Shell({ children, onLogout }) {
           Settings
         </NavLink>
         <div style={{ marginTop: "auto" }}>
+          <div className="sidebar-legal-links">
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+          </div>
           <button className="button-danger" onClick={onLogout}>
             Logout
           </button>
@@ -587,6 +773,10 @@ function MissionControlPage() {
       {summary ? (
         <div className="grid-cards">
           <div className="card"><h4>Total Leads</h4><div className="value">{summary.totalLeads}</div></div>
+          <div className="card"><h4>Factory Exceptions</h4><div className="value">{summary.factoryExceptions?.totalExceptions ?? 0}</div></div>
+          <div className="card"><h4>Critical Exceptions</h4><div className="value">{summary.factoryExceptions?.criticalExceptions ?? 0}</div></div>
+          <div className="card"><h4>Warning Exceptions</h4><div className="value">{summary.factoryExceptions?.warningExceptions ?? 0}</div></div>
+          <div className="card"><h4>Websites Blocked</h4><div className="value">{summary.factoryExceptions?.websitesBlocked ?? 0}</div></div>
           <div className="card"><h4>TARGET</h4><div className="value">{summary.targetLeads}</div></div>
           <div className="card"><h4>HOLD</h4><div className="value">{summary.holdLeads}</div></div>
           <div className="card"><h4>SKIP</h4><div className="value">{summary.skipLeads}</div></div>
@@ -1360,6 +1550,7 @@ function LeadGenerationPage() {
 function LeadDetailPage() {
   const { id } = useParams();
   const [lead, setLead] = useState(null);
+  const [revenueRecord, setRevenueRecord] = useState(null);
   const [busy, setBusy] = useState(false);
   const [notes, setNotes] = useState("");
   const [draft, setDraft] = useState({ subject: "", body: "" });
@@ -1390,11 +1581,25 @@ function LeadDetailPage() {
     nextFollowUpAt: "",
     notes: "",
   });
+  const [replyCapture, setReplyCapture] = useState({
+    channel: "email",
+    sentiment: "interested",
+    replyText: "",
+    nextAction: "",
+    followUpDate: "",
+  });
+  const [meetingCapture, setMeetingCapture] = useState({
+    scheduledAt: "",
+    channel: "phone",
+    notes: "",
+    expectedOutcome: "",
+  });
 
   const load = async () => {
-    const [data, sales] = await Promise.all([api.lead(id), api.salesSupport(id)]);
+    const [data, sales, revenue] = await Promise.all([api.lead(id), api.salesSupport(id), api.leadRevenue(id)]);
     setLead(data);
     setSalesSupport(sales);
+    setRevenueRecord(revenue.record ?? null);
     setNotes(data.notes ?? "");
     setDeal({
       dealStage: data.dealStage ?? "discovery",
@@ -1492,6 +1697,9 @@ function LeadDetailPage() {
           <div><b>Preview status:</b> <PillBadge value={lead.previewStatus} /></div>
           <div><b>Reply status:</b> <PillBadge value={lead.replyStatus} /></div>
           <div><b>Deal stage:</b> <PillBadge value={lead.dealStage} /></div>
+          <div><b>Revenue stage:</b> <PillBadge value={revenueRecord?.currentStage ?? "not_in_pipeline"} /></div>
+          <div><b>Next action:</b> {revenueRecord?.replies?.at(-1)?.nextAction || "—"}</div>
+          <div><b>Follow-up:</b> {revenueRecord?.replies?.at(-1)?.followUpDate ? new Date(revenueRecord.replies.at(-1).followUpDate).toLocaleString() : "—"}</div>
           <div><b>Assigned:</b> {lead.assignedTo || "Unassigned"}</div>
         </div>
 
@@ -1531,6 +1739,96 @@ function LeadDetailPage() {
           <h3 className="section-title">Operator Memory</h3>
           <div>{lead.operatorMemorySummary}</div>
           <div className="muted">This updates from the memory fields below and travels with the lead.</div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Reply + Meeting Capture</h3>
+        <div className="detail-grid">
+          <div className="card stack">
+            <h4>Log Reply</h4>
+            <div className="field">
+              <label>Reply channel</label>
+              <select value={replyCapture.channel} onChange={(e) => setReplyCapture((current) => ({ ...current, channel: e.target.value }))}>
+                {["email", "sms", "phone", "website", "social", "other"].map((channel) => (
+                  <option key={channel} value={channel}>{channel}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label>Reply sentiment</label>
+              <select value={replyCapture.sentiment} onChange={(e) => setReplyCapture((current) => ({ ...current, sentiment: e.target.value }))}>
+                {["interested", "neutral", "objection", "not_interested"].map((sentiment) => (
+                  <option key={sentiment} value={sentiment}>{sentiment}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label>Reply text / evidence</label>
+              <textarea value={replyCapture.replyText} onChange={(e) => setReplyCapture((current) => ({ ...current, replyText: e.target.value }))} />
+            </div>
+            <div className="field">
+              <label>Next action</label>
+              <input value={replyCapture.nextAction} onChange={(e) => setReplyCapture((current) => ({ ...current, nextAction: e.target.value }))} />
+            </div>
+            <div className="field">
+              <label>Follow-up date</label>
+              <input type="datetime-local" value={replyCapture.followUpDate} onChange={(e) => setReplyCapture((current) => ({ ...current, followUpDate: e.target.value }))} />
+            </div>
+            <button
+              disabled={busy || !replyCapture.replyText}
+              onClick={() => run(async () => {
+                await api.logLeadReply(lead.id, replyCapture);
+                setReplyCapture({
+                  channel: "email",
+                  sentiment: "interested",
+                  replyText: "",
+                  nextAction: "",
+                  followUpDate: "",
+                });
+              }, "Reply logged.")}
+            >
+              Log Reply
+            </button>
+          </div>
+
+          <div className="card stack">
+            <h4>Schedule Meeting</h4>
+            <div className="field">
+              <label>Meeting date/time</label>
+              <input type="datetime-local" value={meetingCapture.scheduledAt} onChange={(e) => setMeetingCapture((current) => ({ ...current, scheduledAt: e.target.value }))} />
+            </div>
+            <div className="field">
+              <label>Meeting channel</label>
+              <select value={meetingCapture.channel} onChange={(e) => setMeetingCapture((current) => ({ ...current, channel: e.target.value }))}>
+                {["phone", "google_meet", "zoom", "in_person", "other"].map((channel) => (
+                  <option key={channel} value={channel}>{channel}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label>Meeting notes</label>
+              <textarea value={meetingCapture.notes} onChange={(e) => setMeetingCapture((current) => ({ ...current, notes: e.target.value }))} />
+            </div>
+            <div className="field">
+              <label>Expected outcome</label>
+              <input value={meetingCapture.expectedOutcome} onChange={(e) => setMeetingCapture((current) => ({ ...current, expectedOutcome: e.target.value }))} />
+            </div>
+            <button
+              disabled={busy || !meetingCapture.scheduledAt}
+              onClick={() => run(async () => {
+                await api.logLeadMeeting(lead.id, meetingCapture);
+                setMeetingCapture({
+                  scheduledAt: "",
+                  channel: "phone",
+                  notes: "",
+                  expectedOutcome: "",
+                });
+              }, "Meeting scheduled.")}
+            >
+              Log Meeting
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1589,7 +1887,13 @@ function LeadDetailPage() {
         <h3 className="section-title">Proposal + Quote</h3>
         <div className="btn-row">
           <button onClick={() => run(() => api.generateProposal(lead.id, deal), "Proposal generated.")} disabled={busy}>Generate Proposal</button>
-          <button onClick={() => run(() => api.patchLead(lead.id, { proposalStatus: "accepted", dealStage: "won", activity: { type: "proposal_accepted", summary: "Proposal accepted" } }), "Proposal accepted.")} disabled={busy || lead.proposalStatus === "not_generated"}>Mark Accepted</button>
+          <button onClick={() => run(async () => {
+            await api.patchLead(lead.id, { proposalStatus: "accepted", dealStage: "won", activity: { type: "proposal_accepted", summary: "Proposal accepted" } });
+            const proposal = revenueRecord?.proposals?.at(-1);
+            if (revenueRecord?.revenueId && proposal?.proposalId) {
+              await api.patchRevenueProposal(revenueRecord.revenueId, proposal.proposalId, { status: "accepted" });
+            }
+          }, "Proposal accepted.")} disabled={busy || lead.proposalStatus === "not_generated"}>Mark Accepted</button>
           <button onClick={() => run(() => api.patchLead(lead.id, { proposalStatus: "rejected", activity: { type: "proposal_rejected", summary: "Proposal rejected" } }), "Proposal rejected.")} disabled={busy || lead.proposalStatus === "not_generated"}>Mark Rejected</button>
         </div>
         <div><b>Status:</b> <PillBadge value={lead.proposalStatus} /></div>
@@ -3853,6 +4157,856 @@ function ManualLeadPage() {
   );
 }
 
+function AutomationPage() {
+  const [view, setView] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [jobDraft, setJobDraft] = useState({
+    websiteId: "",
+    leadId: "",
+    workerType: "research_worker",
+    priority: 50,
+  });
+  const [selectedWebsiteId, setSelectedWebsiteId] = useState("");
+  const [previewChainPlan, setPreviewChainPlan] = useState(null);
+  const [qcDeploymentPlan, setQcDeploymentPlan] = useState(null);
+  const [outreachPlan, setOutreachPlan] = useState(null);
+  const [replyRevenuePlan, setReplyRevenuePlan] = useState(null);
+  const [replyDraft, setReplyDraft] = useState({
+    from: "",
+    channel: "email",
+    replyText: "Thanks, this looks interesting. Can you send more details?",
+  });
+
+  const load = async () => {
+    try {
+      const [config, jobs, runs, logs, workers, websites, orchestratorStatus, orchestrationLogs] = await Promise.all([
+        api.automationConfig(),
+        api.automationJobs(),
+        api.automationRuns(),
+        api.automationLogs(),
+        api.automationWorkers(),
+        api.websites(),
+        api.automationOrchestratorStatus(),
+        api.orchestrationLogs(),
+      ]);
+      const websiteRows = websites.websites ?? [];
+      setView({
+        config,
+        jobs: jobs.jobs ?? [],
+        runs: runs.runs ?? [],
+        logs: logs.logs ?? [],
+        workers: workers.workers ?? [],
+        websites: websiteRows,
+        orchestrator: orchestratorStatus.orchestrator ?? null,
+        scheduler: orchestratorStatus.scheduler ?? null,
+        orchestrationLogs: orchestrationLogs.logs ?? [],
+      });
+      setSelectedWebsiteId((current) => current || websiteRows[0]?.websiteId || "");
+      setError("");
+    } catch (err) {
+      setError(err.message || "Failed to load automation status.");
+      notify(err.message || "Failed to load automation status.", "error");
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const patchConfig = async (patch) => {
+    if (!view?.config) return;
+    setBusy(true);
+    try {
+      const config = await api.updateAutomationConfig(patch);
+      setView((current) => ({ ...current, config }));
+      notify("Automation config saved.");
+    } catch (err) {
+      notify(err.message || "Automation config update failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const runCycle = async () => {
+    setBusy(true);
+    try {
+      await api.runAutomationCycle({ maxJobs: view?.config?.maxJobsPerCycle ?? 5 });
+      await load();
+      notify(view?.config?.dryRun || view?.config?.safety?.forceDryRun ? "Dry-run automation cycle completed." : "Automation cycle completed.");
+    } catch (err) {
+      notify(err.message || "Automation cycle failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const orchestrateSelectedWebsite = async ({ dryRun, executeCycles = true }) => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      await api.orchestrateWebsite(selectedWebsiteId, {
+        dryRun,
+        executeCycles,
+        maxDepth: dryRun ? 1 : 12,
+      });
+      await load();
+      notify(dryRun ? "Dry-run orchestration completed." : "Website orchestration completed.");
+    } catch (err) {
+      notify(err.message || "Website orchestration failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const runScheduler = async ({ dryRun, enabled }) => {
+    setBusy(true);
+    try {
+      await api.runAutomationScheduler({
+        dryRun,
+        enabled,
+        maxWebsites: 25,
+        maxDepth: dryRun ? 1 : 1,
+      });
+      await load();
+      notify(dryRun ? "Dry-run scheduler scan completed." : "Scheduler scan completed.");
+    } catch (err) {
+      notify(err.message || "Scheduler run failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const createJob = async () => {
+    if (!jobDraft.websiteId.trim()) {
+      notify("Website ID is required to create a placeholder automation job.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      await api.createAutomationJob({
+        ...jobDraft,
+        priority: Number(jobDraft.priority) || 50,
+        input: { source: "mission_control_manual" },
+      });
+      setJobDraft((current) => ({ ...current, websiteId: "", leadId: "" }));
+      await load();
+      notify("Placeholder automation job created.");
+    } catch (err) {
+      notify(err.message || "Automation job creation failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const planPreviewChain = async () => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const plan = await api.previewChainPlan(selectedWebsiteId);
+      setPreviewChainPlan(plan);
+      notify("Preview-chain plan loaded.");
+    } catch (err) {
+      notify(err.message || "Preview-chain plan failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const enqueuePreviewChain = async (dryRun) => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await api.enqueuePreviewChain(selectedWebsiteId, { dryRun });
+      setPreviewChainPlan(result);
+      await load();
+      notify(dryRun ? "Dry-run enqueue logged." : "Preview-chain jobs enqueued.");
+    } catch (err) {
+      notify(err.message || "Preview-chain enqueue failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const planQcDeploymentChain = async () => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const plan = await api.qcDeploymentChainPlan(selectedWebsiteId);
+      setQcDeploymentPlan(plan);
+      notify("QC/deployment-chain plan loaded.");
+    } catch (err) {
+      notify(err.message || "QC/deployment-chain plan failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const enqueueQcDeploymentChain = async (dryRun) => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await api.enqueueQcDeploymentChain(selectedWebsiteId, { dryRun });
+      setQcDeploymentPlan(result);
+      await load();
+      notify(dryRun ? "Dry-run QC/deployment enqueue logged." : "QC/deployment jobs enqueued.");
+    } catch (err) {
+      notify(err.message || "QC/deployment-chain enqueue failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const planOutreachChain = async () => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const plan = await api.outreachChainPlan(selectedWebsiteId);
+      setOutreachPlan(plan);
+      notify("Outreach-chain plan loaded.");
+    } catch (err) {
+      notify(err.message || "Outreach-chain plan failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const enqueueOutreachChain = async (dryRun) => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await api.enqueueOutreachChain(selectedWebsiteId, { dryRun });
+      setOutreachPlan(result);
+      await load();
+      notify(dryRun ? "Dry-run outreach enqueue logged." : "Outreach jobs enqueued.");
+    } catch (err) {
+      notify(err.message || "Outreach-chain enqueue failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const createPlaceholderReply = async () => {
+    if (!selectedWebsiteId || !replyDraft.replyText.trim()) {
+      notify("Select a Website and enter reply text.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      await api.createPlaceholderReply(selectedWebsiteId, replyDraft);
+      await load();
+      notify("Placeholder inbound reply added.");
+    } catch (err) {
+      notify(err.message || "Placeholder reply creation failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const planReplyRevenueChain = async () => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const plan = await api.replyRevenueChainPlan(selectedWebsiteId);
+      setReplyRevenuePlan(plan);
+      notify("Reply/revenue-chain plan loaded.");
+    } catch (err) {
+      notify(err.message || "Reply/revenue-chain plan failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const enqueueReplyRevenueChain = async (dryRun) => {
+    if (!selectedWebsiteId) {
+      notify("Select a Website first.", "error");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await api.enqueueReplyRevenueChain(selectedWebsiteId, { dryRun });
+      setReplyRevenuePlan(result);
+      await load();
+      notify(dryRun ? "Dry-run reply/revenue enqueue logged." : "Reply/revenue jobs enqueued.");
+    } catch (err) {
+      notify(err.message || "Reply/revenue-chain enqueue failed.", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!view) {
+    return (
+      <div className="stack">
+        <h2 className="section-title">Automation</h2>
+        {error ? <div className="muted" style={{ color: "#ffb4c0" }}>{error}</div> : <div className="card muted">Loading automation foundation...</div>}
+      </div>
+    );
+  }
+
+  const { config, jobs, runs, logs, workers, websites, orchestrator, scheduler, orchestrationLogs } = view;
+  const stageEntries = Object.entries(config.stages ?? {});
+  const deploymentAutomationLogs = logs.filter((log) => String(log.workerType ?? "").includes("deployment"));
+  const outreachAutomationLogs = logs.filter((log) => String(log.workerType ?? "").includes("outreach"));
+  const replyRevenueAutomationLogs = logs.filter((log) => /reply|revenue/.test(String(log.workerType ?? "")));
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">Automation</h2>
+          <div className="muted">Phase 6 automation with a state-based orchestrator, disabled scheduler, and the existing worker/job system.</div>
+        </div>
+        <div className="btn-row">
+          <button className="button-ghost" disabled={busy} onClick={load}>Refresh</button>
+          <button disabled={busy} onClick={runCycle}>
+            {config.dryRun || config.safety?.forceDryRun ? "Run Dry-Run Cycle" : "Run Cycle"}
+          </button>
+        </div>
+      </div>
+      {error ? <div className="muted" style={{ color: "#ffb4c0" }}>{error}</div> : null}
+
+      <div className="grid-cards">
+        <div className="card">
+          <h4>Global Automation</h4>
+          <div className="value">{config.globalEnabled ? "Enabled" : "Disabled"}</div>
+          <div className="muted">Manual run only: {String(config.manualRunOnly)}</div>
+        </div>
+        <div className="card">
+          <h4>Dry Run</h4>
+          <div className="value">{config.dryRun || config.safety?.forceDryRun ? "On" : "Off"}</div>
+          <div className="muted">Default mode for safe planning and job execution.</div>
+        </div>
+        <div className="card">
+          <h4>Max Jobs / Cycle</h4>
+          <div className="value">{config.maxJobsPerCycle}</div>
+          <div className="muted">Retry max: {config.retryDefaults?.maxAttempts} attempts</div>
+        </div>
+        <div className="card">
+          <h4>Recent Runs</h4>
+          <div className="value">{runs.length}</div>
+          <div className="muted">Showing latest persisted runs.</div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <div className="topbar" style={{ marginBottom: 0 }}>
+          <div>
+            <h3 className="section-title">Automation Orchestrator</h3>
+            <div className="muted">
+              Inspects Website state and enqueues the next safe existing worker. The scheduler is disabled unless explicitly enabled.
+            </div>
+          </div>
+          <div className="btn-row">
+            <select
+              value={selectedWebsiteId}
+              onChange={(event) => {
+                setSelectedWebsiteId(event.target.value);
+                setPreviewChainPlan(null);
+                setQcDeploymentPlan(null);
+                setOutreachPlan(null);
+                setReplyRevenuePlan(null);
+              }}
+            >
+              {(websites ?? []).map((website) => (
+                <option key={website.websiteId} value={website.websiteId}>
+                  {website.businessName} · {website.factoryStatus} · {website.websiteId}
+                </option>
+              ))}
+            </select>
+            <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={() => orchestrateSelectedWebsite({ dryRun: true, executeCycles: false })}>
+              Orchestrate Website Dry-Run
+            </button>
+            <button disabled={busy || !selectedWebsiteId || Boolean(config.dryRun || config.safety?.forceDryRun)} onClick={() => orchestrateSelectedWebsite({ dryRun: false, executeCycles: true })}>
+              Orchestrate Website
+            </button>
+          </div>
+        </div>
+        <div className="grid-cards">
+          <div className="card">
+            <h4>Scheduler</h4>
+            <div className="value">{scheduler?.enabled ? "Enabled" : "Disabled"}</div>
+            <div className="muted">Manual run only: {String(scheduler?.manualRunOnly ?? config.manualRunOnly)}</div>
+          </div>
+          <div className="card">
+            <h4>Active Orchestration</h4>
+            <div className="value">{orchestrator?.activeLocks?.length ?? 0}</div>
+            <div className="muted">Active jobs: {orchestrator?.activeJobs?.length ?? 0}</div>
+          </div>
+          <div className="card">
+            <h4>Blocked</h4>
+            <div className="value">{orchestrator?.blocked?.length ?? 0}</div>
+            <div className="muted">Stops include failed QC/deploy, terminal revenue, and unresolved exceptions.</div>
+          </div>
+          <div className="card">
+            <h4>Human Review</h4>
+            <div className="value">{orchestrator?.waitingForHumanReview?.length ?? 0}</div>
+            <div className="muted">Unclear replies or approval review are not bypassed.</div>
+          </div>
+        </div>
+        <div className="btn-row">
+          <button className="button-ghost" disabled={busy} onClick={() => runScheduler({ dryRun: true })}>
+            Dry-Run Scheduler
+          </button>
+          <button disabled={busy || Boolean(config.dryRun || config.safety?.forceDryRun)} onClick={() => runScheduler({ dryRun: false })}>
+            Run Scheduler Once
+          </button>
+          <button className="button-ghost" disabled={busy} onClick={() => runScheduler({ dryRun: true, enabled: !scheduler?.enabled })}>
+            {scheduler?.enabled ? "Disable Scheduler" : "Enable Scheduler"}
+          </button>
+        </div>
+        <div className="detail-grid">
+          <div className="log-box">
+            <strong>Active orchestration decisions</strong>
+            {(orchestrator?.lastDecisions ?? []).slice(0, 8).map((decision) => (
+              <div key={`${decision.websiteId}-${decision.at}`}>
+                {decision.websiteId}: {decision.status} {decision.workerType ? `· ${decision.workerType}` : ""} · {decision.message}
+              </div>
+            ))}
+            {!(orchestrator?.lastDecisions ?? []).length ? <div>No orchestration decisions recorded yet.</div> : null}
+          </div>
+          <div className="log-box">
+            <strong>Recent orchestration logs</strong>
+            {(orchestrationLogs ?? []).slice(0, 8).map((log) => (
+              <div key={log.logId}>
+                {log.event}: {log.message}
+              </div>
+            ))}
+            {!(orchestrationLogs ?? []).length ? <div>No orchestration logs recorded yet.</div> : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <div className="topbar" style={{ marginBottom: 0 }}>
+          <div>
+            <h3 className="section-title">Config</h3>
+            <div className="muted">Enable stages to let preview-chain jobs be claimed during manual cycles.</div>
+          </div>
+          <label className="muted">
+            <input
+              type="checkbox"
+              checked={Boolean(config.globalEnabled)}
+              disabled={busy}
+              onChange={(event) => patchConfig({ globalEnabled: event.target.checked })}
+            />{" "}
+            Global enabled
+          </label>
+        </div>
+        <div className="detail-grid">
+          <label className="muted">
+            <input
+              type="checkbox"
+              checked={Boolean(config.dryRun)}
+              disabled={busy || Boolean(config.safety?.forceDryRun)}
+              onChange={(event) => patchConfig({ dryRun: event.target.checked })}
+            />{" "}
+            Default dry-run
+          </label>
+          <label className="muted">
+            <input
+              type="checkbox"
+              checked={Boolean(config.safety?.forceDryRun)}
+              disabled={busy}
+              onChange={(event) => patchConfig({ safety: { forceDryRun: event.target.checked } })}
+            />{" "}
+            Force dry-run safety
+          </label>
+          {stageEntries.map(([stage, enabled]) => (
+            <label key={stage} className="muted">
+              <input
+                type="checkbox"
+                checked={Boolean(enabled)}
+                disabled={busy}
+                onChange={(event) => patchConfig({ stages: { [stage]: event.target.checked } })}
+              />{" "}
+              {stage.replace(/_/g, " ")}
+            </label>
+          ))}
+        </div>
+        <div className="detail-grid">
+          {["allowAutonomousEnqueue", "allowFactoryStateWrites", "allowPreviewGeneration", "allowAssetPreparation", "allowScreenshotRendering", "allowQcExecution", "allowDeployment", "allowDeploymentRefresh", "allowOutreachDraft", "allowAutoOutreachApproval", "allowSimulatedSend", "allowReplyCapture", "allowReplyClassification", "allowAutoLostFromReply", "allowRevenueReconciliation"].map((flag) => (
+            <label key={flag} className="muted">
+              <input
+                type="checkbox"
+                checked={Boolean(config.safety?.[flag])}
+                disabled={busy || Boolean(config.safety?.forceDryRun)}
+                onChange={(event) => patchConfig({ safety: { [flag]: event.target.checked } })}
+              />{" "}
+              {flag.replace(/([A-Z])/g, " $1").toLowerCase()}
+            </label>
+          ))}
+        </div>
+        <div className="log-box">
+          Still blocked: real provider send={String(config.safety?.allowOutreachSend)}, direct revenue mutation={String(config.safety?.allowRevenueMutation)}
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Preview Chain Enqueue</h3>
+        <div className="muted">
+          Plans or creates research, preview, asset, and screenshot jobs for one Website. The chain stops before QC.
+        </div>
+        <div className="btn-row">
+          <select
+            value={selectedWebsiteId}
+            onChange={(event) => {
+              setSelectedWebsiteId(event.target.value);
+              setPreviewChainPlan(null);
+              setQcDeploymentPlan(null);
+              setOutreachPlan(null);
+              setReplyRevenuePlan(null);
+            }}
+          >
+            {(websites ?? []).map((website) => (
+              <option key={website.websiteId} value={website.websiteId}>
+                {website.businessName} · {website.factoryStatus} · {website.websiteId}
+              </option>
+            ))}
+          </select>
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={planPreviewChain}>
+            Plan Jobs
+          </button>
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={() => enqueuePreviewChain(true)}>
+            Dry-Run Enqueue
+          </button>
+          <button disabled={busy || !selectedWebsiteId || Boolean(config.dryRun || config.safety?.forceDryRun)} onClick={() => enqueuePreviewChain(false)}>
+            Enqueue Live Jobs
+          </button>
+        </div>
+        {previewChainPlan ? (
+          <div className="log-box">
+            <div>{previewChainPlan.businessName} · {previewChainPlan.factoryStatus}</div>
+            {(previewChainPlan.planned ?? []).length ? (
+              (previewChainPlan.planned ?? []).map((job) => (
+                <div key={`${job.workerType}-${job.websiteId}`}>
+                  {job.workerType}: {job.duplicateJobId ? `duplicate ${job.duplicateJobId}` : job.reason}
+                </div>
+              ))
+            ) : (
+              <div>No preview-chain jobs are currently safe to enqueue for this Website.</div>
+            )}
+            {(previewChainPlan.created ?? []).map((job) => (
+              <div key={job.jobId}>created: {job.workerType} · {job.jobId}</div>
+            ))}
+            {(previewChainPlan.skipped ?? []).map((job) => (
+              <div key={`${job.workerType}-${job.reason}`}>skipped: {job.workerType} · {job.reason}</div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">QC + Deployment Chain Enqueue</h3>
+        <div className="muted">
+          Plans or creates deterministic QC, deployment, and pending deployment refresh jobs. This chain never sends outreach or changes revenue.
+        </div>
+        <div className="btn-row">
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={planQcDeploymentChain}>
+            Plan QC/Deployment
+          </button>
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={() => enqueueQcDeploymentChain(true)}>
+            Dry-Run Enqueue
+          </button>
+          <button disabled={busy || !selectedWebsiteId || Boolean(config.dryRun || config.safety?.forceDryRun)} onClick={() => enqueueQcDeploymentChain(false)}>
+            Enqueue Live Jobs
+          </button>
+        </div>
+        <div className="log-box">
+          Deployment safety: configured={String(qcDeploymentPlan?.provider?.configured ?? "unknown")}, missing={(qcDeploymentPlan?.provider?.missing ?? []).join(", ") || "none"}
+        </div>
+        {qcDeploymentPlan ? (
+          <div className="log-box">
+            <div>{qcDeploymentPlan.businessName} · {qcDeploymentPlan.factoryStatus}</div>
+            <div>QC: {qcDeploymentPlan.qc?.status || "missing"} · passed={String(Boolean(qcDeploymentPlan.qc?.passed))}</div>
+            <div>Deployment: {qcDeploymentPlan.deployment?.status || "missing"} · {qcDeploymentPlan.deployment?.deployedUrl || "not deployed"}</div>
+            {(qcDeploymentPlan.planned ?? []).length ? (
+              (qcDeploymentPlan.planned ?? []).map((job) => (
+                <div key={`${job.workerType}-${job.websiteId}`}>
+                  {job.workerType}: {job.duplicateJobId ? `duplicate ${job.duplicateJobId}` : job.reason}
+                </div>
+              ))
+            ) : (
+              <div>No QC/deployment jobs are currently safe to enqueue for this Website.</div>
+            )}
+            {(qcDeploymentPlan.created ?? []).map((job) => (
+              <div key={job.jobId}>created: {job.workerType} · {job.jobId}</div>
+            ))}
+            {(qcDeploymentPlan.skipped ?? []).map((job) => (
+              <div key={`${job.workerType}-${job.reason}`}>skipped: {job.workerType} · {job.reason}</div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Outreach Chain Enqueue</h3>
+        <div className="muted">
+          Plans or creates outreach draft, approval policy, and simulated sender jobs. This chain requires verified deployment and never marks won/lost.
+        </div>
+        <div className="btn-row">
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={planOutreachChain}>
+            Plan Outreach
+          </button>
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={() => enqueueOutreachChain(true)}>
+            Dry-Run Enqueue
+          </button>
+          <button disabled={busy || !selectedWebsiteId || Boolean(config.dryRun || config.safety?.forceDryRun)} onClick={() => enqueueOutreachChain(false)}>
+            Enqueue Live/Simulated Jobs
+          </button>
+        </div>
+        <div className="log-box">
+          Outreach safety: draft={String(config.safety?.allowOutreachDraft)}, auto approval={String(config.safety?.allowAutoOutreachApproval)}, simulated send={String(config.safety?.allowSimulatedSend)}, real send={String(config.safety?.allowOutreachSend)}
+        </div>
+        {outreachPlan ? (
+          <div className="log-box">
+            <div>{outreachPlan.businessName} · {outreachPlan.factoryStatus}</div>
+            <div>Verified URL: {outreachPlan.verifiedDeployment?.deployedUrl || "missing"}</div>
+            <div>Outreach: {outreachPlan.outreach?.approvalStatus || "missing"} / {outreachPlan.outreach?.sendStatus || "missing"}</div>
+            {(outreachPlan.planned ?? []).length ? (
+              (outreachPlan.planned ?? []).map((job) => (
+                <div key={`${job.workerType}-${job.websiteId}`}>
+                  {job.workerType}: {job.duplicateJobId ? `duplicate ${job.duplicateJobId}` : job.reason}
+                </div>
+              ))
+            ) : (
+              <div>No outreach jobs are currently safe to enqueue for this Website.</div>
+            )}
+            {(outreachPlan.created ?? []).map((job) => (
+              <div key={job.jobId}>created: {job.workerType} · {job.jobId}</div>
+            ))}
+            {(outreachPlan.skipped ?? []).map((job) => (
+              <div key={`${job.workerType}-${job.reason}`}>skipped: {job.workerType} · {job.reason}</div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Reply + Revenue Chain</h3>
+        <div className="muted">
+          Adds placeholder inbound replies, captures/classifies them, and reconciles lead, Website, and revenue terminal state conservatively.
+        </div>
+        <div className="btn-row">
+          <input
+            placeholder="from optional"
+            value={replyDraft.from}
+            onChange={(event) => setReplyDraft((current) => ({ ...current, from: event.target.value }))}
+          />
+          <select
+            value={replyDraft.channel}
+            onChange={(event) => setReplyDraft((current) => ({ ...current, channel: event.target.value }))}
+          >
+            <option value="email">email</option>
+            <option value="sms">sms</option>
+            <option value="phone">phone</option>
+            <option value="other">other</option>
+          </select>
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={createPlaceholderReply}>
+            Add Placeholder Reply
+          </button>
+        </div>
+        <textarea
+          value={replyDraft.replyText}
+          onChange={(event) => setReplyDraft((current) => ({ ...current, replyText: event.target.value }))}
+        />
+        <div className="btn-row">
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={planReplyRevenueChain}>
+            Plan Reply/Revenue
+          </button>
+          <button className="button-ghost" disabled={busy || !selectedWebsiteId} onClick={() => enqueueReplyRevenueChain(true)}>
+            Dry-Run Enqueue
+          </button>
+          <button disabled={busy || !selectedWebsiteId || Boolean(config.dryRun || config.safety?.forceDryRun)} onClick={() => enqueueReplyRevenueChain(false)}>
+            Enqueue Live Jobs
+          </button>
+        </div>
+        <div className="log-box">
+          Reply/revenue safety: capture={String(config.safety?.allowReplyCapture)}, classify={String(config.safety?.allowReplyClassification)}, auto lost={String(config.safety?.allowAutoLostFromReply)}, reconcile={String(config.safety?.allowRevenueReconciliation)}
+        </div>
+        {replyRevenuePlan ? (
+          <div className="log-box">
+            <div>{replyRevenuePlan.businessName} · {replyRevenuePlan.factoryStatus}</div>
+            <div>Revenue: {replyRevenuePlan.revenue?.currentStage || "missing"}</div>
+            <div>Inbound replies: {(replyRevenuePlan.inboundReplies ?? []).length}</div>
+            {(replyRevenuePlan.planned ?? []).length ? (
+              (replyRevenuePlan.planned ?? []).map((job) => (
+                <div key={`${job.workerType}-${job.websiteId}`}>
+                  {job.workerType}: {job.duplicateJobId ? `duplicate ${job.duplicateJobId}` : job.reason}
+                </div>
+              ))
+            ) : (
+              <div>No reply/revenue jobs are currently safe to enqueue for this Website.</div>
+            )}
+            {(replyRevenuePlan.created ?? []).map((job) => (
+              <div key={job.jobId}>created: {job.workerType} · {job.jobId}</div>
+            ))}
+            {(replyRevenuePlan.skipped ?? []).map((job) => (
+              <div key={`${job.workerType}-${job.reason}`}>skipped: {job.workerType} · {job.reason}</div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Create Manual Automation Job</h3>
+        <div className="btn-row">
+          <input
+            placeholder="websiteId"
+            value={jobDraft.websiteId}
+            onChange={(event) => setJobDraft((current) => ({ ...current, websiteId: event.target.value }))}
+          />
+          <input
+            placeholder="leadId optional"
+            value={jobDraft.leadId}
+            onChange={(event) => setJobDraft((current) => ({ ...current, leadId: event.target.value }))}
+          />
+          <select
+            value={jobDraft.workerType}
+            onChange={(event) => setJobDraft((current) => ({ ...current, workerType: event.target.value }))}
+          >
+            {workers.map((worker) => (
+              <option key={worker.workerType} value={worker.workerType}>{worker.workerType}</option>
+            ))}
+          </select>
+          <input
+            type="number"
+            min="0"
+            max="1000"
+            value={jobDraft.priority}
+            onChange={(event) => setJobDraft((current) => ({ ...current, priority: event.target.value }))}
+          />
+          <button disabled={busy} onClick={createJob}>Create Job</button>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Recent Jobs</h3>
+        {jobs.length ? (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Job</th><th>Website</th><th>Worker</th><th>Status</th><th>Attempts</th><th>Updated</th></tr>
+              </thead>
+              <tbody>
+                {jobs.slice(0, 20).map((job) => (
+                  <tr key={job.jobId}>
+                    <td className="mono">{job.jobId}</td>
+                    <td className="mono">{job.websiteId}</td>
+                    <td>{job.workerType}</td>
+                    <td><PillBadge value={job.status} /></td>
+                    <td>{job.attempts}/{job.maxAttempts}</td>
+                    <td>{job.updatedAt ? new Date(job.updatedAt).toLocaleString() : "n/a"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="muted">No automation jobs yet.</div>
+        )}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Recent Runs</h3>
+        {runs.length ? (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Run</th><th>Status</th><th>Dry Run</th><th>Scanned</th><th>Claimed</th><th>Completed</th><th>Failed</th></tr>
+              </thead>
+              <tbody>
+                {runs.slice(0, 10).map((run) => (
+                  <tr key={run.runId}>
+                    <td className="mono">{run.runId}</td>
+                    <td><PillBadge value={run.status} /></td>
+                    <td>{String(run.dryRun)}</td>
+                    <td>{run.jobsScanned}</td>
+                    <td>{run.jobsClaimed}</td>
+                    <td>{run.jobsCompleted}</td>
+                    <td>{run.jobsFailed}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="muted">No automation runs yet.</div>
+        )}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Recent Logs</h3>
+        {deploymentAutomationLogs.length ? (
+          <div className="log-box">
+            <div>Recent deployment automation logs</div>
+            {deploymentAutomationLogs.slice(0, 10).map((log) => (
+              <div key={`deployment-${log.logId}`}>
+                [{log.createdAt}] {log.event} · {log.workerType} {log.message}
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {outreachAutomationLogs.length ? (
+          <div className="log-box">
+            <div>Recent outreach automation logs</div>
+            {outreachAutomationLogs.slice(0, 10).map((log) => (
+              <div key={`outreach-${log.logId}`}>
+                [{log.createdAt}] {log.event} · {log.workerType} {log.message}
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {replyRevenueAutomationLogs.length ? (
+          <div className="log-box">
+            <div>Recent reply/revenue automation logs</div>
+            {replyRevenueAutomationLogs.slice(0, 10).map((log) => (
+              <div key={`reply-revenue-${log.logId}`}>
+                [{log.createdAt}] {log.event} · {log.workerType} {log.message}
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {logs.length ? (
+          <div className="log-box">
+            {logs.slice(0, 30).map((log) => (
+              <div key={log.logId}>
+                [{log.createdAt}] {log.event} {log.workerType ? `· ${log.workerType}` : ""} {log.message}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="muted">No automation logs yet.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SettingsPage() {
   const [status, setStatus] = useState(null);
   const [cleanupPreview, setCleanupPreview] = useState(null);
@@ -3949,6 +5103,7 @@ function SettingsPage() {
             <div className="card"><h4>Generation Runs</h4><div className="value">{status.counts?.generationRuns ?? 0}</div></div>
             <div className="card"><h4>Preview Folders</h4><div className="value">{status.counts?.previewFolders ?? 0}</div></div>
             <div className="card"><h4>Render Screenshots</h4><div className="value">{status.counts?.renderScreenshots ?? 0}</div></div>
+            <div className="card"><h4>Deployment Provider</h4><div className="value">{status.integrations?.deployment?.configured ? "Ready" : "Missing"}</div><div className="muted">{status.integrations?.deployment?.providerName ?? "vercel"}</div></div>
           </div>
 
           <div className="card stack">
@@ -3956,6 +5111,9 @@ function SettingsPage() {
             <div className="detail-grid">
               <div><b>OpenAI key detected:</b> <PillBadge value={status.integrations?.openAiKeyDetected ? "yes" : "no"} /></div>
               <div><b>Playwright available:</b> <PillBadge value={status.integrations?.playwrightAvailable ? "yes" : "no"} /></div>
+              <div><b>Deployment configured:</b> <PillBadge value={status.integrations?.deployment?.configured ? "yes" : "no"} /></div>
+              <div><b>Deployment missing env:</b> {(status.integrations?.deployment?.missing ?? []).join(", ") || "none"}</div>
+              <div><b>Deployment optional env:</b> {(status.integrations?.deployment?.optional ?? []).join(", ") || "none"}</div>
               <div><b>Last backup:</b> {status.storage?.lastBackupAt ? new Date(status.storage.lastBackupAt).toLocaleString() : "No backup detected yet"}</div>
               <div><b>Data folder:</b> <span className="muted">{status.storage?.dataDir}</span></div>
             </div>
@@ -4024,6 +5182,1143 @@ function SettingsPage() {
   );
 }
 
+function WebsiteRegistryPage() {
+  const [view, setView] = useState(null);
+
+  const load = async () => {
+    setView(await api.websites());
+  };
+
+  useEffect(() => {
+    load().catch((err) => notify(err.message || "Failed to load websites.", "error"));
+  }, []);
+
+  if (!view) return <div className="card muted">Loading websites...</div>;
+
+  const websites = view.websites ?? [];
+  const summary = view.summary ?? {};
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">Websites</h2>
+          <div className="muted">Master registry composed from leads, previews, revenue, fulfillment, clients, sites, and maintenance.</div>
+        </div>
+        <button className="button-ghost" onClick={load}>Refresh</button>
+      </div>
+
+      <div className="grid-cards">
+        <div className="card"><h4>Total Websites</h4><div className="value">{summary.total ?? 0}</div></div>
+        <div className="card"><h4>Live / Maintenance</h4><div className="value">{summary.live ?? 0}</div></div>
+        <div className="card"><h4>Blocked</h4><div className="value">{summary.blocked ?? 0}</div></div>
+        <div className="card"><h4>Exceptions</h4><div className="value">{summary.exceptions ?? 0}</div></div>
+      </div>
+
+      <div className="grid-cards">
+        {(view.stages ?? []).map((stage) => (
+          <div key={stage} className="card"><h4>{stage}</h4><div className="value">{summary.byStage?.[stage] ?? 0}</div></div>
+        ))}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Website Registry</h3>
+        {websites.length ? (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Website</th>
+                  <th>Stage</th>
+                  <th>Preview</th>
+                  <th>Deployment</th>
+                  <th>Client</th>
+                  <th>Maintenance</th>
+                  <th>Exceptions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {websites.map((website) => (
+                  <tr key={website.websiteId}>
+                    <td>
+                      <Link to={`/websites/${website.websiteId}`}><b>{website.businessName}</b></Link>
+                      <div className="muted compact-meta">{website.location || website.sourceWebsite || website.websiteId}</div>
+                    </td>
+                    <td><PillBadge value={website.currentStage} /> <PillBadge value={website.status} /></td>
+                    <td>{website.previewUrl ? <a href={website.previewUrl} target="_blank">Preview</a> : <span className="muted">none</span>}</td>
+                    <td>{website.deployedUrl ? <a href={website.deployedUrl} target="_blank">Live URL</a> : <span className="muted">not deployed</span>}</td>
+                    <td>
+                      <div>{website.client?.status || "none"}</div>
+                      <div className="muted compact-meta">Billing {website.billingStatus}</div>
+                    </td>
+                    <td>
+                      <div>Open {website.maintenance?.open ?? 0}</div>
+                      <div className="muted compact-meta">Overdue {website.maintenance?.overdue ?? 0}</div>
+                    </td>
+                    <td><PillBadge value={website.exceptionCount ? `${website.exceptionCount}_exceptions` : "clear"} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="muted">No websites composed yet. Add a lead, client, site, revenue record, or fulfillment record.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProductionConveyorPage() {
+  const [payload, setPayload] = useState(null);
+
+  const load = async () => {
+    setPayload(await api.websiteConveyor());
+  };
+
+  useEffect(() => {
+    load().catch((err) => notify(err.message || "Failed to load production conveyor.", "error"));
+  }, []);
+
+  if (!payload) return <div className="card muted">Loading production conveyor...</div>;
+
+  const conveyor = payload.conveyor ?? {};
+  const metrics = conveyor.metrics ?? {};
+  const stages = conveyor.stages ?? payload.stages ?? [];
+  const labels = {
+    intake: "Intake",
+    research: "Research",
+    generation: "Generation",
+    qc: "QC",
+    deployment: "Deployment",
+    live: "Live",
+    maintenance: "Maintenance",
+  };
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">Production Conveyor</h2>
+          <div className="muted">Factory-floor view of Websites moving from intake to maintenance.</div>
+        </div>
+        <button className="button-ghost" onClick={load}>Refresh</button>
+      </div>
+
+      <div className="grid-cards">
+        <div className="card"><h4>Total Websites</h4><div className="value">{metrics.totalWebsites ?? 0}</div></div>
+        <div className="card"><h4>In Production</h4><div className="value">{metrics.inProduction ?? 0}</div></div>
+        <div className="card"><h4>Awaiting Human Decision</h4><div className="value">{metrics.awaitingHumanDecision ?? 0}</div></div>
+        <div className="card"><h4>Blocked</h4><div className="value">{metrics.blocked ?? 0}</div></div>
+        <div className="card"><h4>Live</h4><div className="value">{metrics.live ?? 0}</div></div>
+        <div className="card"><h4>Maintenance SLA Risk</h4><div className="value">{metrics.maintenanceSlaRisk ?? 0}</div></div>
+      </div>
+
+      <div
+        className="conveyor-board"
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${Math.max(stages.length, 1)}, minmax(230px, 1fr))`,
+          gap: "1rem",
+          alignItems: "start",
+          overflowX: "auto",
+        }}
+      >
+        {stages.map((stage) => {
+          const cards = conveyor.byStage?.[stage] ?? [];
+          return (
+            <div key={stage} className="card stack" style={{ minWidth: 230 }}>
+              <div className="topbar" style={{ marginBottom: 0 }}>
+                <h3 className="section-title">{labels[stage] ?? stage}</h3>
+                <PillBadge value={cards.length} />
+              </div>
+              {cards.length ? cards.map((card) => (
+                <div key={card.websiteId} className={`card stack ${card.exceptionSeverity === "critical" ? "warning-card" : ""}`}>
+                  <div>
+                    <Link to={`/websites/${card.websiteId}`}><b>{card.businessName}</b></Link>
+                    <div className="muted compact-meta">{card.websiteId}</div>
+                  </div>
+                  <div className="btn-row">
+                    <PillBadge value={card.currentStage} />
+                    <PillBadge value={card.automationStatus} />
+                    {card.primaryExceptionId ? (
+                      <Link to={`/exceptions/${card.primaryExceptionId}`}><PillBadge value={card.exceptionSeverity} /></Link>
+                    ) : (
+                      <PillBadge value={card.exceptionSeverity} />
+                    )}
+                  </div>
+                  <div className="compact-meta">
+                    <b>Next:</b> {card.nextAction}
+                  </div>
+                  <div className="compact-meta">
+                    Exceptions: {card.exceptionCount} · SLA {card.slaRisk}
+                  </div>
+                  <div className="compact-meta">
+                    Billing {card.billingStatus} · Client {card.clientStatus}
+                  </div>
+                  <div className="btn-row">
+                    {card.previewUrl ? <a href={card.previewUrl} target="_blank">Preview</a> : null}
+                    {card.deployedUrl ? <a href={card.deployedUrl} target="_blank">Live</a> : null}
+                  </div>
+                  <div className="btn-row">
+                    <Link className="button-ghost" to={card.primaryExceptionId ? `/exceptions/${card.primaryExceptionId}` : `/websites/${card.websiteId}`}>
+                      {card.primaryExceptionId ? "Open Exception" : "Open Website"}
+                    </Link>
+                    <button className="button-ghost" disabled title="Retry actions are routed through Website Detail for Phase 3.">Retry Safe Action</button>
+                    <button className="button-ghost" disabled title="Manual review queue action is planned for the unified exception queue.">Manual Review</button>
+                  </div>
+                </div>
+              )) : (
+                <div className="muted compact-meta">No websites in {labels[stage] ?? stage}.</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ExceptionsPage() {
+  const [payload, setPayload] = useState(null);
+  const [filters, setFilters] = useState({ severity: "", stage: "", category: "" });
+
+  const load = async () => {
+    setPayload(await api.exceptions());
+  };
+
+  useEffect(() => {
+    load().catch((err) => notify(err.message || "Failed to load exceptions.", "error"));
+  }, []);
+
+  if (!payload) return <div className="card muted">Loading exception queue...</div>;
+
+  const exceptions = (payload.exceptions ?? []).filter((item) =>
+    (!filters.severity || item.severity === filters.severity) &&
+    (!filters.stage || item.stage === filters.stage) &&
+    (!filters.category || item.category === filters.category)
+  );
+  const metrics = payload.metrics ?? {};
+  const unique = (key) => [...new Set((payload.exceptions ?? []).map((item) => item[key]).filter(Boolean))].sort();
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">Unified Exception Queue</h2>
+          <div className="muted">Human-intervention inbox for Websites that need judgment or recovery.</div>
+        </div>
+        <button className="button-ghost" onClick={load}>Refresh</button>
+      </div>
+
+      <div className="grid-cards">
+        <div className="card"><h4>Total Exceptions</h4><div className="value">{metrics.totalExceptions ?? 0}</div></div>
+        <div className="card"><h4>Critical</h4><div className="value">{metrics.criticalExceptions ?? 0}</div></div>
+        <div className="card"><h4>Warning</h4><div className="value">{metrics.warningExceptions ?? 0}</div></div>
+        <div className="card"><h4>Websites Blocked</h4><div className="value">{metrics.websitesBlocked ?? 0}</div></div>
+        <div className="card"><h4>Avg Resolution Hours</h4><div className="value">{metrics.averageResolutionHours ?? "n/a"}</div></div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Metrics</h3>
+        <div className="detail-grid">
+          <div><b>By stage</b>{Object.entries(metrics.byStage ?? {}).map(([key, value]) => <div key={key} className="muted compact-meta">{key}: {value}</div>)}</div>
+          <div><b>By category</b>{Object.entries(metrics.byCategory ?? {}).map(([key, value]) => <div key={key} className="muted compact-meta">{key}: {value}</div>)}</div>
+          <div><b>Top recurring failures</b>{(metrics.topRecurringFailures ?? []).map((item) => <div key={item.category} className="muted compact-meta">{item.category}: {item.count}</div>)}</div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Filters</h3>
+        <div className="btn-row">
+          <select value={filters.severity} onChange={(e) => setFilters((current) => ({ ...current, severity: e.target.value }))}>
+            <option value="">All severities</option>
+            {["info", "warning", "critical"].map((value) => <option key={value} value={value}>{value}</option>)}
+          </select>
+          <select value={filters.stage} onChange={(e) => setFilters((current) => ({ ...current, stage: e.target.value }))}>
+            <option value="">All stages</option>
+            {unique("stage").map((value) => <option key={value} value={value}>{value}</option>)}
+          </select>
+          <select value={filters.category} onChange={(e) => setFilters((current) => ({ ...current, category: e.target.value }))}>
+            <option value="">All categories</option>
+            {unique("category").map((value) => <option key={value} value={value}>{value}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Queue</h3>
+        {exceptions.length ? (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Severity</th>
+                  <th>Website</th>
+                  <th>Stage</th>
+                  <th>Category</th>
+                  <th>Recommended Action</th>
+                  <th>Controls</th>
+                </tr>
+              </thead>
+              <tbody>
+                {exceptions.map((item) => (
+                  <tr key={item.exceptionId}>
+                    <td><PillBadge value={item.severity} /></td>
+                    <td><Link to={`/websites/${item.websiteId}`}>{item.businessName}</Link><div className="muted compact-meta">{item.message}</div></td>
+                    <td><PillBadge value={item.stage} /></td>
+                    <td><PillBadge value={item.category} /></td>
+                    <td>{item.recommendedAction}</td>
+                    <td><Link className="button-ghost" to={`/exceptions/${item.exceptionId}`}>Open Exception</Link></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="muted">No exceptions match these filters.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExceptionDetailPage() {
+  const { exceptionId } = useParams();
+  const [payload, setPayload] = useState(null);
+  const [busy, setBusy] = useState("");
+
+  const load = async () => {
+    setPayload(await api.exception(exceptionId));
+  };
+
+  useEffect(() => {
+    load().catch((err) => notify(err.message || "Failed to load exception.", "error"));
+  }, [exceptionId]);
+
+  const run = async (action, message) => {
+    setBusy(action);
+    try {
+      await api.exceptionAction(exceptionId, action);
+      notify(message);
+      await load();
+    } catch (err) {
+      notify(err.message || "Exception action failed.", "error");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  if (!payload) return <div className="card muted">Loading exception...</div>;
+
+  const item = payload.exception;
+  const website = payload.website;
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">Exception Detail</h2>
+          <div className="muted">{item.exceptionId}</div>
+        </div>
+        <Link className="button-ghost" to="/exceptions">Back to Exceptions</Link>
+      </div>
+
+      <div className={`card stack ${item.severity === "critical" ? "warning-card" : ""}`}>
+        <div className="btn-row">
+          <PillBadge value={item.severity} />
+          <PillBadge value={item.stage} />
+          <PillBadge value={item.category} />
+          <PillBadge value={item.status || "open"} />
+        </div>
+        <h3>{item.businessName}</h3>
+        <div>{item.message}</div>
+        <div><b>Recommended action:</b> {item.recommendedAction}</div>
+        <div className="muted compact-meta">Created {item.createdAt ? new Date(item.createdAt).toLocaleString() : "unknown"}</div>
+        {item.resolvedAt ? <div className="muted compact-meta">Resolved {new Date(item.resolvedAt).toLocaleString()}</div> : null}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Resolution Actions</h3>
+        <div className="btn-row">
+          <button disabled={Boolean(busy)} onClick={() => run("retry_automation", "Retry requested.")}>Retry Automation</button>
+          <Link className="button-ghost" to={`/websites/${item.websiteId}`}>Open Website</Link>
+          <button className="button-ghost" disabled={Boolean(busy)} onClick={() => run("mark_resolved", "Exception marked resolved.")}>Mark Resolved</button>
+          <button className="button-danger" disabled={Boolean(busy)} onClick={() => run("escalate", "Exception escalated.")}>Escalate</button>
+          <button className="button-ghost" disabled={Boolean(busy)} onClick={() => run("manual_review", "Sent to manual review.")}>Send To Manual Review</button>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Website Context</h3>
+        <div className="detail-grid">
+          <div><b>Stage</b><div>{website?.currentStage || "unknown"}</div></div>
+          <div><b>Preview</b><div>{website?.previewUrl ? <a href={website.previewUrl} target="_blank">Open preview</a> : "none"}</div></div>
+          <div><b>Deployed</b><div>{website?.deployedUrl ? <a href={website.deployedUrl} target="_blank">{website.deployedUrl}</a> : "not deployed"}</div></div>
+          <div><b>Billing</b><div>{website?.billingStatus || "unknown"}</div></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebsiteDetailPage() {
+  const { websiteId } = useParams();
+  const [payload, setPayload] = useState(null);
+  const [activeTab, setActiveTab] = useState("Intake");
+  const [busy, setBusy] = useState("");
+  const [qcNotes, setQcNotes] = useState("");
+  const [replyDraft, setReplyDraft] = useState({ channel: "email", sentiment: "interested", replyText: "", nextAction: "", followUpDate: "" });
+  const [meetingDraft, setMeetingDraft] = useState({ scheduledAt: "", channel: "phone", notes: "", expectedOutcome: "" });
+  const [proposalDraft, setProposalDraft] = useState({ amount: "150", monthlyAmount: "50", activationFee: "150", notes: "" });
+  const [siteDraft, setSiteDraft] = useState("");
+  const [maintenanceDraft, setMaintenanceDraft] = useState({ title: "", description: "", priority: "normal", requestType: "other", requestedBy: "operator", notes: "" });
+  const [requestNotes, setRequestNotes] = useState({});
+
+  useEffect(() => {
+    api.website(websiteId)
+      .then(setPayload)
+      .catch((err) => notify(err.message || "Failed to load website.", "error"));
+  }, [websiteId]);
+
+  const runWebsiteAction = async (action, payload = {}, message = "Website action completed.") => {
+    setBusy(action);
+    try {
+      const next = await api.websiteAction(websiteId, action, payload);
+      setPayload({ website: next.website, stages: next.stages });
+      notify(message);
+    } catch (err) {
+      notify(err.message || "Website action failed.", "error");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const deployPreview = async () => {
+    const confirmOverwrite = website.deployment?.deployedUrl
+      ? await confirmAction({
+        title: "Redeploy public preview?",
+        message: "A deployed URL already exists. This will create a new public preview deployment record.",
+        confirmLabel: "Redeploy Preview",
+      })
+      : false;
+    if (website.deployment?.deployedUrl && !confirmOverwrite) return;
+    await runWebsiteAction(
+      "deploy_preview",
+      { confirmOverwrite },
+      "Preview deployment started."
+    );
+  };
+
+  if (!payload) return <div className="card muted">Loading website...</div>;
+
+  const website = payload.website;
+  const tabs = [
+    "Intake",
+    "Research",
+    "Generated Site",
+    "QC",
+    "Deployment",
+    "Revenue",
+    "Client / Maintenance",
+    "Automation Log",
+  ];
+  const lead = website.lead ?? {};
+  const revenue = website.revenue ?? {};
+  const fulfillment = website.fulfillment ?? {};
+  const client = website.client ?? {};
+  const site = website.site ?? {};
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">{website.businessName}</h2>
+          <div className="muted">Website lifecycle center · {website.websiteId}</div>
+        </div>
+        <Link className="button-ghost" to="/websites">Back to Websites</Link>
+      </div>
+
+      <div className="card stack">
+        <div className="btn-row">
+          <PillBadge value={website.currentStage} />
+          <PillBadge value={website.factoryStatus || website.currentStage} />
+          <PillBadge value={website.status} />
+          <PillBadge value={`exceptions_${website.exceptionCount}`} />
+        </div>
+        <div className="detail-grid">
+          <div><b>Preview</b><div>{website.previewUrl ? <a href={website.previewUrl} target="_blank">Open preview</a> : "No preview"}</div></div>
+          <div><b>Deployed URL</b><div>{website.deployedUrl ? <a href={website.deployedUrl} target="_blank">{website.deployedUrl}</a> : "Not deployed"}</div></div>
+          <div><b>QC Status</b><div>{website.qc?.status || "not_run"}</div></div>
+          <div><b>Outreach</b><div>{website.outreach?.sendStatus || "not_queued"}</div></div>
+          <div><b>Billing</b><div>{website.billingStatus}</div></div>
+          <div><b>Client Health</b><div>{website.clientHealth ?? "unknown"}</div></div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Lifecycle Timeline</h3>
+        <div className="btn-row">
+          {(payload.stages ?? []).map((stage) => (
+            <PillBadge key={stage} value={stage === website.currentStage ? `${stage}_current` : stage} />
+          ))}
+        </div>
+        {(website.timeline ?? []).slice(-10).map((item, idx) => (
+          <div key={`${item.at}-${idx}`} className="compact-meta">
+            <b>{item.at ? new Date(item.at).toLocaleString() : "unknown"}</b> · {item.label} <span className="muted">({item.source || item.type})</span>
+          </div>
+        ))}
+        {!(website.timeline ?? []).length ? <div className="muted">No timeline events yet.</div> : null}
+      </div>
+
+      {(website.exceptions ?? []).length ? (
+        <div className="card stack warning-card">
+          <h3 className="section-title">Website Exceptions</h3>
+          {website.exceptions.map((item, idx) => (
+            <div key={`${item.type}-${idx}`}>
+              <PillBadge value={item.severity} /> <b>{item.type}</b> · {item.message}
+              <div className="muted compact-meta">Recommended action: {item.recommendedAction}</div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="card muted">No website exceptions detected.</div>
+      )}
+
+      <div className="card stack">
+        <div className="btn-row">
+          {tabs.map((tab) => (
+            <button key={tab} className={activeTab === tab ? "" : "button-ghost"} onClick={() => setActiveTab(tab)}>
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "Intake" ? (
+          <div className="detail-grid">
+            <div><b>Business</b><div>{website.businessName}</div></div>
+            <div><b>Source Website</b><div>{website.sourceWebsite || "none"}</div></div>
+            <div><b>Location</b><div>{website.location || "unknown"}</div></div>
+            <div><b>Lead ID</b><div>{website.mapping.leadId || "none"}</div></div>
+          </div>
+        ) : null}
+
+        {activeTab === "Research" ? (
+          <div className="stack">
+            <div className="btn-row">
+              <button disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("refresh_research", {}, "Research refreshed.")}>Refresh Research</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("approve_research", {}, "Research approved.")}>Approve Research</button>
+            </div>
+            <div className="detail-grid">
+              <div><b>Category</b><div>{lead.category || "unknown"}</div></div>
+              <div><b>Score</b><div>{lead.score ?? "unknown"}</div></div>
+              <div><b>Status</b><div>{lead.status || "unknown"}</div></div>
+              <div><b>Phone</b><div>{lead.phone || "none"}</div></div>
+              <div><b>Notes</b><div>{lead.notes || "none"}</div></div>
+            </div>
+          </div>
+        ) : null}
+
+        {activeTab === "Generated Site" ? (
+          <div className="stack">
+            <div className="btn-row">
+              <button disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("generate_preview", {}, "Preview generated.")}>Generate Preview</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("regenerate_preview", {}, "Preview regenerated.")}>Regenerate Preview</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("generate_assets", {}, "Assets generated.")}>Generate Assets</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("render_screenshots", {}, "Screenshots rendered.")}>Render Screenshots</button>
+            </div>
+            <div className="detail-grid">
+              <div><b>Preview Status</b><div>{lead.previewStatus || "not_generated"}</div></div>
+              <div><b>Preview Exists</b><div>{String(Boolean(website.preview?.previewExists))}</div></div>
+              <div><b>Assets Ready</b><div>{String(Boolean(website.preview?.assetsReady))}</div></div>
+              <div><b>Screenshots</b><div>Desktop {String(Boolean(website.preview?.desktopExists))} · Mobile {String(Boolean(website.preview?.mobileExists))}</div></div>
+            </div>
+          </div>
+        ) : null}
+
+        {activeTab === "QC" ? (
+          <div className="stack">
+            <div className="field">
+              <label>QC Notes</label>
+              <textarea value={qcNotes} onChange={(e) => setQcNotes(e.target.value)} />
+            </div>
+            <div className="btn-row">
+              <button disabled={Boolean(busy) || !website.preview?.previewExists} onClick={() => runWebsiteAction("run_qc", {}, "Deterministic QC completed.")}>Run Deterministic QC</button>
+              <button disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("approve_qc", { notes: qcNotes }, "QC approved.")}>Approve QC</button>
+              <button className="button-danger" disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("reject_qc", { notes: qcNotes }, "QC rejected.")}>Reject QC</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("add_qc_notes", { notes: qcNotes }, "QC notes added.")}>Add QC Notes</button>
+            </div>
+            <div className="detail-grid">
+              <div><b>Preview Approved</b><div>{lead.previewApprovedAt ? new Date(lead.previewApprovedAt).toLocaleString() : "not approved"}</div></div>
+              <div><b>Desktop Screenshot</b><div>{website.preview?.desktopRenderUrl ? <a href={website.preview.desktopRenderUrl} target="_blank">Open desktop render</a> : "none"}</div></div>
+              <div><b>Mobile Screenshot</b><div>{website.preview?.mobileRenderUrl ? <a href={website.preview.mobileRenderUrl} target="_blank">Open mobile render</a> : "none"}</div></div>
+              <div><b>QC Notes</b><div>{lead.qcNotes || "none"}</div></div>
+              <div><b>Deterministic QC</b><div>{website.qc?.status || "not_run"} · {website.qc?.checks?.filter((check) => check.status === "fail").length ?? 0} issue(s)</div></div>
+            </div>
+            {(website.qc?.checks ?? []).length ? (
+              <div className="stack">
+                {(website.qc.checks ?? []).map((check) => (
+                  <div key={check.checkId} className="compact-meta">
+                    <PillBadge value={check.status} /> <b>{check.name}</b> · {check.message}
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {activeTab === "Deployment" ? (
+          <div className="stack">
+            <div className="btn-row">
+              <input placeholder="Site ID to link" value={siteDraft} onChange={(e) => setSiteDraft(e.target.value)} />
+              <button disabled={Boolean(busy) || !website.preview?.previewExists || !website.qc?.passed} onClick={deployPreview}>Deploy Preview</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !website.mapping.fulfillmentId || !siteDraft} onClick={() => runWebsiteAction("link_site", { siteId: siteDraft }, "Site linked.")}>Link Site</button>
+              <button disabled={Boolean(busy)} onClick={() => runWebsiteAction("deployment_complete", {}, "Deployment marked complete.")}>Deployment Complete</button>
+            </div>
+            <div className="detail-grid">
+              <div><b>Site ID</b><div>{website.mapping.siteId || "none"}</div></div>
+              <div><b>Domain</b><div>{site.domain || "none"}</div></div>
+              <div><b>Deployment URL</b><div>{site.deploymentUrl || "none"}</div></div>
+              <div><b>Public Preview URL</b><div>{website.deployment?.deployedUrl ? <a href={website.deployment.deployedUrl} target="_blank">{website.deployment.deployedUrl}</a> : "not deployed"}</div></div>
+              <div><b>Deployment Status</b><div>{website.deployment?.status || "not_deployed"}</div></div>
+              <div><b>Deployment Verified</b><div>{website.deployment?.verifiedAt ? new Date(website.deployment.verifiedAt).toLocaleString() : "not verified"}</div></div>
+              <div><b>Deployment Time</b><div>{website.deployment?.updatedAt ? new Date(website.deployment.updatedAt).toLocaleString() : "none"}</div></div>
+              <div><b>SSL / Backup</b><div>{site.sslStatus || "unknown"} · {site.backupStatus || "unknown"}</div></div>
+              <div><b>Fulfillment</b><div>{fulfillment.status || "not_created"}</div></div>
+            </div>
+            {website.deployment?.logs?.length ? (
+              <div className="log-box">{website.deployment.logs.join(" | ")}</div>
+            ) : null}
+            {(fulfillment.checklist ?? []).length ? (
+              <div className="stack">
+                <b>Launch Checklist</b>
+                {fulfillment.checklist.map((item) => (
+                  <div key={item.key} className="btn-row">
+                    <span><PillBadge value={item.status} /> {item.label}</span>
+                    <button className="button-ghost" disabled={Boolean(busy) || item.status === "complete"} onClick={() => runWebsiteAction("fulfillment_checklist", { key: item.key, status: "complete", notes: "Completed from Website Detail." }, "Checklist item completed.")}>Complete</button>
+                    <button className="button-danger" disabled={Boolean(busy)} onClick={() => runWebsiteAction("fulfillment_checklist", { key: item.key, status: "blocked", notes: "Blocked from Website Detail." }, "Checklist item blocked.")}>Block</button>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {activeTab === "Revenue" ? (
+          <div className="stack">
+            <div className="detail-grid">
+              <div className="card stack">
+                <b>Add Reply</b>
+                <select value={replyDraft.sentiment} onChange={(e) => setReplyDraft((current) => ({ ...current, sentiment: e.target.value }))}>
+                  {["interested", "neutral", "not_interested", "needs_follow_up"].map((value) => <option key={value} value={value}>{value}</option>)}
+                </select>
+                <textarea placeholder="Reply text" value={replyDraft.replyText} onChange={(e) => setReplyDraft((current) => ({ ...current, replyText: e.target.value }))} />
+                <input placeholder="Next action" value={replyDraft.nextAction} onChange={(e) => setReplyDraft((current) => ({ ...current, nextAction: e.target.value }))} />
+                <button disabled={Boolean(busy)} onClick={() => runWebsiteAction("add_reply", replyDraft, "Reply logged.")}>Add Reply</button>
+              </div>
+              <div className="card stack">
+                <b>Schedule Meeting</b>
+                <input type="datetime-local" value={meetingDraft.scheduledAt} onChange={(e) => setMeetingDraft((current) => ({ ...current, scheduledAt: e.target.value }))} />
+                <input placeholder="Expected outcome" value={meetingDraft.expectedOutcome} onChange={(e) => setMeetingDraft((current) => ({ ...current, expectedOutcome: e.target.value }))} />
+                <textarea placeholder="Notes" value={meetingDraft.notes} onChange={(e) => setMeetingDraft((current) => ({ ...current, notes: e.target.value }))} />
+                <button disabled={Boolean(busy) || !meetingDraft.scheduledAt} onClick={() => runWebsiteAction("schedule_meeting", meetingDraft, "Meeting scheduled.")}>Schedule Meeting</button>
+              </div>
+              <div className="card stack">
+                <b>Create Proposal</b>
+                <input placeholder="Amount" value={proposalDraft.amount} onChange={(e) => setProposalDraft((current) => ({ ...current, amount: e.target.value }))} />
+                <input placeholder="Monthly" value={proposalDraft.monthlyAmount} onChange={(e) => setProposalDraft((current) => ({ ...current, monthlyAmount: e.target.value }))} />
+                <textarea placeholder="Notes" value={proposalDraft.notes} onChange={(e) => setProposalDraft((current) => ({ ...current, notes: e.target.value }))} />
+                <button disabled={Boolean(busy) || !website.mapping.leadId} onClick={() => runWebsiteAction("create_proposal", proposalDraft, "Proposal created.")}>Create Proposal</button>
+              </div>
+            </div>
+            <div className="btn-row">
+              <button disabled={Boolean(busy) || !website.deployedUrl} onClick={() => runWebsiteAction("draft_outreach", {}, "Outreach drafted with public URL.")}>Draft Outreach</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !website.outreach?.outreachId || website.outreach?.approvalStatus === "approved"} onClick={() => runWebsiteAction("approve_outreach", {}, "Outreach approved and queued.")}>Approve / Queue Outreach</button>
+              <button className="button-ghost" disabled={Boolean(busy) || website.outreach?.sendStatus !== "queued"} onClick={() => runWebsiteAction("mark_outreach_sent", {}, "Outreach marked sent.")}>Mark Outreach Sent</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !(revenue.proposals ?? []).length} onClick={() => runWebsiteAction("proposal_viewed", {}, "Proposal marked viewed.")}>Mark Proposal Viewed</button>
+              <button className="button-ghost" disabled={Boolean(busy) || !(revenue.proposals ?? []).length} onClick={() => runWebsiteAction("proposal_accepted", {}, "Proposal marked accepted.")}>Mark Proposal Accepted</button>
+              <button disabled={Boolean(busy) || !website.mapping.clientId} onClick={() => runWebsiteAction("start_checkout", {}, "Checkout started.")}>Start Checkout</button>
+              <button className="button-ghost" disabled={Boolean(busy)} onClick={() => runWebsiteAction("mark_won", {}, "Deal marked won.")}>Mark Won</button>
+              <button className="button-danger" disabled={Boolean(busy)} onClick={() => runWebsiteAction("mark_lost", {}, "Deal marked lost.")}>Mark Lost</button>
+            </div>
+            <div className="detail-grid">
+              <div><b>Revenue ID</b><div>{website.mapping.revenueId || "none"}</div></div>
+              <div><b>Stage</b><div>{revenue.currentStage || "none"}</div></div>
+              <div><b>Estimated / Actual</b><div>${revenue.estimatedValue ?? 0} / ${revenue.actualValue ?? 0}</div></div>
+              <div><b>Proposals</b><div>{revenue.proposals?.length ?? 0}</div></div>
+              <div><b>Activation Evidence</b><div>{revenue.activationEvidence?.length ?? 0}</div></div>
+              <div><b>Latest Outreach</b><div>{website.outreach?.sendStatus || "none"} · {website.outreach?.approvalStatus || "none"}</div></div>
+            </div>
+            {website.outreach?.body ? (
+              <div className="log-box">{website.outreach.body}</div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {activeTab === "Client / Maintenance" ? (
+          <div className="stack">
+            <div className="card stack">
+              <h4>Create Maintenance Request</h4>
+              <input placeholder="Title" value={maintenanceDraft.title} onChange={(e) => setMaintenanceDraft((current) => ({ ...current, title: e.target.value }))} />
+              <textarea placeholder="Description" value={maintenanceDraft.description} onChange={(e) => setMaintenanceDraft((current) => ({ ...current, description: e.target.value }))} />
+              <div className="btn-row">
+                <select value={maintenanceDraft.priority} onChange={(e) => setMaintenanceDraft((current) => ({ ...current, priority: e.target.value }))}>
+                  {["low", "normal", "high", "urgent"].map((value) => <option key={value} value={value}>{value}</option>)}
+                </select>
+                <select value={maintenanceDraft.requestType} onChange={(e) => setMaintenanceDraft((current) => ({ ...current, requestType: e.target.value }))}>
+                  {["text_update", "image_update", "service_update", "hours_update", "bug_fix", "new_section", "other"].map((value) => <option key={value} value={value}>{value}</option>)}
+                </select>
+                <button disabled={Boolean(busy) || !maintenanceDraft.title || !website.mapping.clientId} onClick={() => runWebsiteAction("create_maintenance_request", maintenanceDraft, "Maintenance request created.")}>Create Request</button>
+              </div>
+            </div>
+            <div className="detail-grid">
+              <div><b>Client ID</b><div>{website.mapping.clientId || "none"}</div></div>
+              <div><b>Client Status</b><div>{client.status || "none"}</div></div>
+              <div><b>Billing</b><div>{client.billingStatus || "unknown"}</div></div>
+              <div><b>Maintenance</b><div>Open {website.maintenance.open} · At risk {website.maintenance.atRisk} · Overdue {website.maintenance.overdue}</div></div>
+            </div>
+            {(website.maintenance.requests ?? []).length ? (
+              <div className="stack">
+                <b>Maintenance Requests</b>
+                {(website.maintenance.requests ?? []).map((request) => (
+                  <div key={request.requestId} className="card stack">
+                    <div><b>{request.title}</b> <PillBadge value={request.priority} /> <PillBadge value={request.status} /> <PillBadge value={request.slaRisk} /></div>
+                    <div className="muted compact-meta">{request.description || request.notes || "No notes"}</div>
+                    <div className="btn-row">
+                      <select value={request.status} onChange={(e) => runWebsiteAction("update_maintenance_request", { requestId: request.requestId, status: e.target.value, notes: request.notes }, "Request status updated.")}>
+                        {["submitted", "approved", "in_progress", "waiting_client", "completed", "cancelled"].map((status) => <option key={status} value={status}>{status}</option>)}
+                      </select>
+                      <input placeholder="Notes" value={requestNotes[request.requestId] ?? ""} onChange={(e) => setRequestNotes((current) => ({ ...current, [request.requestId]: e.target.value }))} />
+                      <button className="button-ghost" disabled={Boolean(busy)} onClick={() => runWebsiteAction("add_maintenance_notes", { requestId: request.requestId, status: request.status, notes: requestNotes[request.requestId] || request.notes }, "Maintenance notes saved.")}>Add Notes</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : <div className="muted">No maintenance requests yet.</div>}
+          </div>
+        ) : null}
+
+        {activeTab === "Automation Log" ? (
+          <div className="stack">
+            {(website.automationRuns ?? []).map((run, idx) => (
+              <div key={`${run.type}-${run.at}-${idx}`} className="compact-meta">
+                <b>{run.type}</b> · {run.status} · {run.at ? new Date(run.at).toLocaleString() : "unknown"}
+              </div>
+            ))}
+            {!(website.automationRuns ?? []).length ? <div className="muted">No automation runs detected for this website.</div> : null}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function RevenuePage() {
+  const [revenue, setRevenue] = useState(null);
+  const [leads, setLeads] = useState([]);
+  const [selectedLeadId, setSelectedLeadId] = useState("");
+  const [estimatedValue, setEstimatedValue] = useState("50");
+  const [stageDrafts, setStageDrafts] = useState({});
+  const [checkoutDrafts, setCheckoutDrafts] = useState({});
+  const [clientDrafts, setClientDrafts] = useState({});
+  const [lostDrafts, setLostDrafts] = useState({});
+  const [busy, setBusy] = useState("");
+
+  const load = async () => {
+    const [nextRevenue, nextLeads] = await Promise.all([api.revenue(), api.leads()]);
+    setRevenue(nextRevenue);
+    setLeads(nextLeads);
+  };
+
+  useEffect(() => {
+    load().catch((err) => notify(err.message || "Failed to load revenue pipeline.", "error"));
+  }, []);
+
+  const run = async (key, fn, message) => {
+    setBusy(key);
+    try {
+      await fn();
+      await load();
+      notify(message);
+    } catch (err) {
+      notify(err.message || "Revenue action failed.", "error");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  if (!revenue) return <div className="card muted">Loading revenue pipeline...</div>;
+
+  const records = revenue.records ?? [];
+  const recordLeadIds = new Set(records.map((record) => record.leadId).filter(Boolean));
+  const availableLeads = leads.filter((lead) => !recordLeadIds.has(lead.id)).slice(0, 200);
+  const summary = revenue.summary ?? {};
+  const funnel = revenue.funnel ?? {};
+  const queues = revenue.queues ?? {};
+  const money = (value) => `$${Number(value || 0).toLocaleString()}`;
+  const latestReply = (record) => [...(record.replies ?? [])].sort((a, b) => String(b.receivedAt).localeCompare(String(a.receivedAt)))[0] ?? null;
+  const latestMeeting = (record) => [...(record.meetings ?? [])].sort((a, b) => String(b.scheduledAt).localeCompare(String(a.scheduledAt)))[0] ?? null;
+  const latestProposal = (record) => [...(record.proposals ?? [])].sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))[0] ?? null;
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">Revenue Pipeline</h2>
+          <div className="muted">Track first contact through checkout and activated client status.</div>
+        </div>
+        <button className="button-ghost" onClick={load}>Refresh</button>
+      </div>
+
+      <div className="grid-cards">
+        <div className="card"><h4>Leads In Pipeline</h4><div className="value">{summary.leadsInPipeline ?? 0}</div></div>
+        <div className="card"><h4>Replies</h4><div className="value">{summary.replies ?? 0}</div></div>
+        <div className="card"><h4>Meetings</h4><div className="value">{summary.meetings ?? 0}</div></div>
+        <div className="card"><h4>Proposals</h4><div className="value">{summary.proposals ?? 0}</div></div>
+        <div className="card"><h4>Checkouts</h4><div className="value">{summary.checkouts ?? 0}</div></div>
+        <div className="card"><h4>Activations</h4><div className="value">{summary.activations ?? 0}</div></div>
+        <div className="card"><h4>Lost Deals</h4><div className="value">{summary.lostDeals ?? 0}</div></div>
+      </div>
+
+      <div className="grid-cards">
+        <div className="card"><h4>Total Opportunities</h4><div className="value">{summary.totalOpportunities ?? 0}</div></div>
+        <div className="card"><h4>Active Opportunities</h4><div className="value">{summary.activeOpportunities ?? 0}</div></div>
+        <div className="card"><h4>Won Opportunities</h4><div className="value">{summary.wonOpportunities ?? 0}</div></div>
+        <div className="card"><h4>Estimated Revenue</h4><div className="value">{money(summary.estimatedRevenue)}</div></div>
+        <div className="card"><h4>Actual Revenue</h4><div className="value">{money(summary.actualRevenue)}</div></div>
+        <div className="card"><h4>MRR</h4><div className="value">{money(summary.mrr)}</div></div>
+      </div>
+
+      <div className="grid-cards">
+        <div className="card"><h4>Proposals Sent</h4><div className="value">{summary.proposalsSent ?? 0}</div></div>
+        <div className="card"><h4>Proposals Accepted</h4><div className="value">{summary.proposalsAccepted ?? 0}</div></div>
+        <div className="card"><h4>Checkout Started</h4><div className="value">{summary.checkoutStarted ?? 0}</div></div>
+        <div className="card"><h4>Checkout Completed</h4><div className="value">{summary.checkoutCompleted ?? 0}</div></div>
+        <div className="card"><h4>Checkout Abandoned</h4><div className="value">{summary.checkoutAbandoned ?? 0}</div></div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Funnel Metrics</h3>
+        <div className="grid-cards compact-cards">
+          <div className="card"><h4>Lead to Reply</h4><div className="value">{funnel.leadToReply ?? 0}%</div></div>
+          <div className="card"><h4>Reply to Meeting</h4><div className="value">{funnel.replyToMeeting ?? 0}%</div></div>
+          <div className="card"><h4>Meeting to Proposal</h4><div className="value">{funnel.meetingToProposal ?? 0}%</div></div>
+          <div className="card"><h4>Proposal to Checkout</h4><div className="value">{funnel.proposalToCheckout ?? 0}%</div></div>
+          <div className="card"><h4>Checkout to Activation</h4><div className="value">{funnel.checkoutToActivation ?? 0}%</div></div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Reply + Meeting Work Queue</h3>
+        <div className="grid-cards compact-cards">
+          <div className="card"><h4>Replies Need Follow-Up</h4><div className="value">{summary.repliesNeedingFollowUp ?? 0}</div></div>
+          <div className="card"><h4>Interested No Meeting</h4><div className="value">{summary.interestedWithoutMeetings ?? 0}</div></div>
+          <div className="card"><h4>Meetings Scheduled</h4><div className="value">{summary.meetingsScheduled ?? 0}</div></div>
+          <div className="card"><h4>Overdue Follow-Ups</h4><div className="value">{summary.overdueFollowUps ?? 0}</div></div>
+          <div className="card"><h4>Reply to Meeting</h4><div className="value">{funnel.replyToMeeting ?? 0}%</div></div>
+        </div>
+        <div className="detail-grid">
+          <div>
+            <b>Replies needing follow-up</b>
+            {(queues.repliesNeedingFollowUp ?? []).slice(0, 6).map((record) => {
+              const reply = latestReply(record);
+              return (
+                <div key={`follow-${record.revenueId}`} className="muted compact-meta">
+                  {record.lead?.businessName || record.client?.companyName || record.revenueId} · {reply?.sentiment || "reply"} · {reply?.nextAction || "follow up"}
+                </div>
+              );
+            })}
+            {!(queues.repliesNeedingFollowUp ?? []).length ? <div className="muted compact-meta">No reply follow-ups queued.</div> : null}
+          </div>
+          <div>
+            <b>Interested without meetings</b>
+            {(queues.interestedWithoutMeetings ?? []).slice(0, 6).map((record) => (
+              <div key={`interested-${record.revenueId}`} className="muted compact-meta">
+                {record.lead?.businessName || record.client?.companyName || record.revenueId}
+              </div>
+            ))}
+            {!(queues.interestedWithoutMeetings ?? []).length ? <div className="muted compact-meta">No interested leads waiting on meetings.</div> : null}
+          </div>
+          <div>
+            <b>Meetings scheduled</b>
+            {(queues.meetingsScheduled ?? []).slice(0, 6).map((record) => {
+              const meeting = latestMeeting(record);
+              return (
+                <div key={`meeting-${record.revenueId}`} className="muted compact-meta">
+                  {record.lead?.businessName || record.client?.companyName || record.revenueId} · {meeting?.scheduledAt ? new Date(meeting.scheduledAt).toLocaleString() : "scheduled"}
+                </div>
+              );
+            })}
+            {!(queues.meetingsScheduled ?? []).length ? <div className="muted compact-meta">No meetings scheduled.</div> : null}
+          </div>
+          <div>
+            <b>Overdue follow-ups</b>
+            {(queues.overdueFollowUps ?? []).slice(0, 6).map((record) => {
+              const reply = latestReply(record);
+              return (
+                <div key={`overdue-${record.revenueId}`} className="muted compact-meta">
+                  {record.lead?.businessName || record.client?.companyName || record.revenueId} · due {reply?.followUpDate ? new Date(reply.followUpDate).toLocaleString() : "now"}
+                </div>
+              );
+            })}
+            {!(queues.overdueFollowUps ?? []).length ? <div className="muted compact-meta">No overdue follow-ups.</div> : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Proposal + Activation Proof Queues</h3>
+        <div className="grid-cards compact-cards">
+          <div className="card"><h4>Proposal Follow-Up</h4><div className="value">{summary.proposalsNeedingFollowUp ?? 0}</div></div>
+          <div className="card"><h4>Accepted No Checkout</h4><div className="value">{summary.acceptedProposalsWithoutCheckout ?? 0}</div></div>
+          <div className="card"><h4>Checkout Not Completed</h4><div className="value">{summary.checkoutStartedNotCompleted ?? 0}</div></div>
+          <div className="card"><h4>Paid Not Activated</h4><div className="value">{summary.paidClientsNotActivated ?? 0}</div></div>
+          <div className="card"><h4>Activated Missing Site</h4><div className="value">{summary.activatedClientsMissingSite ?? 0}</div></div>
+        </div>
+        <div className="detail-grid">
+          <div>
+            <b>Proposals needing follow-up</b>
+            {(queues.proposalsNeedingFollowUp ?? []).slice(0, 6).map((record) => (
+              <div key={`proposal-follow-${record.revenueId}`} className="muted compact-meta">
+                {record.lead?.businessName || record.client?.companyName || record.revenueId} · {latestProposal(record)?.status || "proposal"}
+              </div>
+            ))}
+            {!(queues.proposalsNeedingFollowUp ?? []).length ? <div className="muted compact-meta">No proposal follow-ups.</div> : null}
+          </div>
+          <div>
+            <b>Accepted without checkout</b>
+            {(queues.acceptedProposalsWithoutCheckout ?? []).slice(0, 6).map((record) => (
+              <div key={`accepted-no-checkout-${record.revenueId}`} className="muted compact-meta">
+                {record.lead?.businessName || record.client?.companyName || record.revenueId}
+              </div>
+            ))}
+            {!(queues.acceptedProposalsWithoutCheckout ?? []).length ? <div className="muted compact-meta">No accepted proposals waiting on checkout.</div> : null}
+          </div>
+          <div>
+            <b>Checkout started, not completed</b>
+            {(queues.checkoutStartedNotCompleted ?? []).slice(0, 6).map((record) => (
+              <div key={`checkout-open-${record.revenueId}`} className="muted compact-meta">
+                {record.lead?.businessName || record.client?.companyName || record.revenueId}
+              </div>
+            ))}
+            {!(queues.checkoutStartedNotCompleted ?? []).length ? <div className="muted compact-meta">No open checkouts.</div> : null}
+          </div>
+          <div>
+            <b>Activated clients missing site</b>
+            {(queues.activatedClientsMissingSite ?? []).slice(0, 6).map((record) => (
+              <div key={`activated-missing-site-${record.revenueId}`} className="muted compact-meta">
+                {record.client?.companyName || record.lead?.businessName || record.revenueId}
+              </div>
+            ))}
+            {!(queues.activatedClientsMissingSite ?? []).length ? <div className="muted compact-meta">No activated clients missing sites.</div> : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Add Lead To Pipeline</h3>
+        <div className="btn-row">
+          <select value={selectedLeadId} onChange={(e) => setSelectedLeadId(e.target.value)}>
+            <option value="">Select lead...</option>
+            {availableLeads.map((lead) => (
+              <option key={lead.id} value={lead.id}>
+                {lead.businessName} · {lead.city || "unknown city"} · {lead.status || lead.computedStatus || "unknown"}
+              </option>
+            ))}
+          </select>
+          <input
+            style={{ maxWidth: 140 }}
+            value={estimatedValue}
+            onChange={(e) => setEstimatedValue(e.target.value)}
+            placeholder="Estimated $"
+          />
+          <button
+            disabled={Boolean(busy) || !selectedLeadId}
+            onClick={() => run(
+              `add-${selectedLeadId}`,
+              () => api.addLeadToRevenue(selectedLeadId, { estimatedValue }),
+              "Lead added to revenue pipeline."
+            )}
+          >
+            Add Lead
+          </button>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Pipeline Records</h3>
+        {records.length ? (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Opportunity</th>
+                  <th>Stage</th>
+                  <th>Value</th>
+                  <th>Proposal + Stripe Proof</th>
+                  <th>History</th>
+                  <th>Move Stage</th>
+                </tr>
+              </thead>
+              <tbody>
+                {records.map((record) => {
+                  const lead = record.lead;
+                  const client = record.client;
+                  const draft = stageDrafts[record.revenueId] ?? record.currentStage;
+                  const proposal = latestProposal(record);
+                  return (
+                    <tr key={record.revenueId}>
+                      <td>
+                        <b>{lead?.businessName || client?.companyName || record.revenueId}</b>
+                        <div className="muted compact-meta">
+                          Lead {record.leadId || "none"} · Client {record.clientId || "none"}
+                        </div>
+                      </td>
+                      <td><PillBadge value={record.currentStage} /></td>
+                      <td>
+                        <div>Est. {money(record.estimatedValue)}</div>
+                        <div className="muted compact-meta">Actual {money(record.actualValue)}</div>
+                      </td>
+                      <td>
+                        <div><b>Proposal:</b> {proposal ? `${proposal.status} · ${money(proposal.amount)}` : "none"}</div>
+                        {proposal?.checkoutUrl ? <div className="compact-meta"><a href={proposal.checkoutUrl} target="_blank">Checkout link</a></div> : null}
+                        <div className="compact-meta">Customer: {client?.stripeCustomerId || "none"}</div>
+                        <div className="compact-meta">Subscription: {client?.stripeSubscriptionId || "none"}</div>
+                        <div className="compact-meta">Checkout: {record.currentStage.includes("checkout") ? record.currentStage : "not_started"}</div>
+                        <div className="compact-meta">Activation paid: {String(Boolean(client?.activationPaid))}</div>
+                        <div className="compact-meta">Billing: {client?.billingStatus || "unknown"}</div>
+                        <div className="compact-meta">Fulfillment: {record.fulfillment?.status || "not_created"}</div>
+                      </td>
+                      <td>
+                        {(record.stageHistory ?? []).slice(-3).map((entry, idx) => (
+                          <div key={`${record.revenueId}-${entry.at}-${idx}`} className="compact-meta">
+                            {entry.previousStage || "start"} to {entry.newStage} · {entry.at ? new Date(entry.at).toLocaleString() : "unknown"}
+                          </div>
+                        ))}
+                      </td>
+                      <td>
+                        <div className="stack">
+                        <div className="btn-row">
+                          <select
+                            value={draft}
+                            onChange={(e) => setStageDrafts((current) => ({
+                              ...current,
+                              [record.revenueId]: e.target.value,
+                            }))}
+                          >
+                            {(revenue.stages ?? []).map((stage) => (
+                              <option key={stage} value={stage}>{stage}</option>
+                            ))}
+                          </select>
+                          <button
+                            className="button-ghost"
+                            disabled={Boolean(busy)}
+                            onClick={() => run(
+                              `stage-${record.revenueId}`,
+                              () => api.patchRevenueStage(record.revenueId, {
+                                stage: draft,
+                                notes: "Manual dashboard stage update.",
+                              }),
+                              "Revenue stage updated."
+                            )}
+                          >
+                            Update
+                          </button>
+                        </div>
+                        <div className="btn-row">
+                          <button
+                            className="button-ghost"
+                            disabled={Boolean(busy) || !proposal}
+                            onClick={() => run(
+                              `viewed-${record.revenueId}`,
+                              () => api.patchRevenueProposal(record.revenueId, proposal.proposalId, { status: "viewed" }),
+                              "Proposal marked viewed."
+                            )}
+                          >
+                            Mark Viewed
+                          </button>
+                          <button
+                            className="button-ghost"
+                            disabled={Boolean(busy) || !proposal}
+                            onClick={() => run(
+                              `accepted-${record.revenueId}`,
+                              () => api.patchRevenueProposal(record.revenueId, proposal.proposalId, { status: "accepted" }),
+                              "Proposal marked accepted."
+                            )}
+                          >
+                            Mark Accepted
+                          </button>
+                        </div>
+                        <div className="btn-row">
+                          <input
+                            placeholder="Checkout URL"
+                            value={checkoutDrafts[record.revenueId] ?? ""}
+                            onChange={(e) => setCheckoutDrafts((current) => ({ ...current, [record.revenueId]: e.target.value }))}
+                          />
+                          <button
+                            className="button-ghost"
+                            disabled={Boolean(busy) || !checkoutDrafts[record.revenueId]}
+                            onClick={() => run(
+                              `checkout-url-${record.revenueId}`,
+                              () => api.attachRevenueCheckoutUrl(record.revenueId, { checkoutUrl: checkoutDrafts[record.revenueId] }),
+                              "Checkout URL attached."
+                            )}
+                          >
+                            Attach Checkout
+                          </button>
+                        </div>
+                        <div className="btn-row">
+                          <input
+                            placeholder="Client ID"
+                            value={clientDrafts[record.revenueId] ?? ""}
+                            onChange={(e) => setClientDrafts((current) => ({ ...current, [record.revenueId]: e.target.value }))}
+                          />
+                          <button
+                            className="button-ghost"
+                            disabled={Boolean(busy) || !clientDrafts[record.revenueId]}
+                            onClick={() => run(
+                              `client-${record.revenueId}`,
+                              () => api.attachRevenueClient(record.revenueId, { clientId: clientDrafts[record.revenueId] }),
+                              "Client attached."
+                            )}
+                          >
+                            Attach Client
+                          </button>
+                        </div>
+                        <div className="btn-row">
+                          <input
+                            placeholder="Lost reason"
+                            value={lostDrafts[record.revenueId] ?? ""}
+                            onChange={(e) => setLostDrafts((current) => ({ ...current, [record.revenueId]: e.target.value }))}
+                          />
+                          <button
+                            className="button-danger"
+                            disabled={Boolean(busy)}
+                            onClick={() => run(
+                              `lost-${record.revenueId}`,
+                              () => api.markRevenueLost(record.revenueId, { reason: lostDrafts[record.revenueId] || "Marked lost from revenue dashboard." }),
+                              "Opportunity marked lost."
+                            )}
+                          >
+                            Mark Lost
+                          </button>
+                        </div>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="muted">No revenue records yet. Add a lead to start measuring the funnel.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function OperationsPage() {
   const [ops, setOps] = useState(null);
   const [busy, setBusy] = useState("");
@@ -4044,7 +6339,12 @@ function OperationsPage() {
     clientId: "",
     siteId: "",
     title: "",
+    description: "",
     priority: "normal",
+    requestedBy: "",
+    requestType: "other",
+    dueDate: "",
+    status: "submitted",
     notes: "",
   });
   const [manualBilling, setManualBilling] = useState({});
@@ -4086,15 +6386,8 @@ function OperationsPage() {
   for (const site of ops.sites ?? []) {
     sitesByClient.set(site.clientId, [...(sitesByClient.get(site.clientId) ?? []), site]);
   }
-  const openRequests = (ops.maintenanceRequests ?? []).filter((request) =>
-    !["completed", "cancelled"].includes(request.status)
-  );
-  const overdueRequests = openRequests.filter((request) => {
-    const assigned = new Date(request.assignedDate);
-    if (Number.isNaN(assigned.getTime())) return false;
-    const ageDays = (Date.now() - assigned.getTime()) / (24 * 60 * 60 * 1000);
-    return request.priority === "urgent" ? ageDays > 1 : request.priority === "high" ? ageDays > 3 : ageDays > 7;
-  });
+  const slaQueues = ops.maintenanceSlaQueues ?? {};
+  const overdueRequests = slaQueues.overdueRequests ?? [];
   const activeClients = (ops.clients ?? []).filter((client) => client.status !== "archived");
   const daily = ops.dailyOperatorView ?? {};
   const billingSetup = ops.billingSetup ?? {};
@@ -4149,6 +6442,10 @@ function OperationsPage() {
         <h3 className="section-title">Today&apos;s Client Ops</h3>
         <div className="grid-cards">
           <div className="card"><h4>Priority Requests</h4><div className="value">{daily.priorityRequests?.length ?? 0}</div></div>
+          <div className="card"><h4>Urgent Requests</h4><div className="value">{slaQueues.urgentRequests?.length ?? 0}</div></div>
+          <div className="card"><h4>Due Soon</h4><div className="value">{slaQueues.requestsDueSoon?.length ?? 0}</div></div>
+          <div className="card"><h4>Waiting Client</h4><div className="value">{slaQueues.requestsWaitingOnClient?.length ?? 0}</div></div>
+          <div className="card"><h4>Completed This Week</h4><div className="value">{slaQueues.completedThisWeek?.length ?? 0}</div></div>
           <div className="card"><h4>Needs Onboarding</h4><div className="value">{daily.clientsNeedingOnboarding?.length ?? 0}</div></div>
           <div className="card"><h4>Sites Need Attention</h4><div className="value">{daily.sitesNeedingAttention?.length ?? 0}</div></div>
           <div className="card"><h4>Billing Issues</h4><div className="value">{daily.billingIssues?.length ?? 0}</div></div>
@@ -4161,6 +6458,30 @@ function OperationsPage() {
                 {request.title} · {request.priority} · {clientsById.get(request.clientId)?.companyName ?? "Unknown client"}
               </div>
             )) : <div className="muted compact-meta">No high-priority requests.</div>}
+          </div>
+          <div>
+            <b>Overdue requests</b>
+            {overdueRequests.length ? overdueRequests.slice(0, 8).map((request) => (
+              <div key={`overdue-${request.requestId}`} className="muted compact-meta">
+                {request.title} · due {request.dueDate ? new Date(request.dueDate).toLocaleString() : "unknown"}
+              </div>
+            )) : <div className="muted compact-meta">No overdue requests.</div>}
+          </div>
+          <div>
+            <b>Requests due soon</b>
+            {(slaQueues.requestsDueSoon ?? []).length ? slaQueues.requestsDueSoon.slice(0, 8).map((request) => (
+              <div key={`due-soon-${request.requestId}`} className="muted compact-meta">
+                {request.title} · {request.priority} · {request.dueDate ? new Date(request.dueDate).toLocaleString() : "unknown"}
+              </div>
+            )) : <div className="muted compact-meta">No requests due soon.</div>}
+          </div>
+          <div>
+            <b>Waiting on client</b>
+            {(slaQueues.requestsWaitingOnClient ?? []).length ? slaQueues.requestsWaitingOnClient.slice(0, 8).map((request) => (
+              <div key={`waiting-client-${request.requestId}`} className="muted compact-meta">
+                {request.title} · {clientsById.get(request.clientId)?.companyName ?? "Unknown client"}
+              </div>
+            )) : <div className="muted compact-meta">No maintenance requests waiting on clients.</div>}
           </div>
           <div>
             <b>Clients needing onboarding</b>
@@ -4267,10 +6588,38 @@ function OperationsPage() {
             <input value={requestForm.title} onChange={(e) => setRequestForm((form) => ({ ...form, title: e.target.value }))} />
           </div>
           <div className="field">
+            <label>Description</label>
+            <textarea value={requestForm.description} onChange={(e) => setRequestForm((form) => ({ ...form, description: e.target.value }))} />
+          </div>
+          <div className="field">
+            <label>Requested By</label>
+            <input value={requestForm.requestedBy} onChange={(e) => setRequestForm((form) => ({ ...form, requestedBy: e.target.value }))} />
+          </div>
+          <div className="field">
+            <label>Request Type</label>
+            <select value={requestForm.requestType} onChange={(e) => setRequestForm((form) => ({ ...form, requestType: e.target.value }))}>
+              {(ops.maintenanceRequestTypes ?? ["text_update", "image_update", "service_update", "hours_update", "bug_fix", "new_section", "other"]).map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
             <label>Priority</label>
             <select value={requestForm.priority} onChange={(e) => setRequestForm((form) => ({ ...form, priority: e.target.value }))}>
               {["low", "normal", "high", "urgent"].map((priority) => (
                 <option key={priority} value={priority}>{priority}</option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <label>Due Date (optional)</label>
+            <input type="datetime-local" value={requestForm.dueDate} onChange={(e) => setRequestForm((form) => ({ ...form, dueDate: e.target.value }))} />
+          </div>
+          <div className="field">
+            <label>Status</label>
+            <select value={requestForm.status} onChange={(e) => setRequestForm((form) => ({ ...form, status: e.target.value }))}>
+              {["submitted", "approved", "in_progress", "waiting_client"].map((status) => (
+                <option key={status} value={status}>{status}</option>
               ))}
             </select>
           </div>
@@ -4280,7 +6629,7 @@ function OperationsPage() {
           </div>
           <button
             disabled={Boolean(busy) || !requestForm.clientId || !requestForm.title || !requestForm.priority}
-            onClick={() => act("request", () => api.createMaintenanceRequest({ ...requestForm, status: "submitted" }), "Maintenance request created.")}
+            onClick={() => act("request", () => api.createMaintenanceRequest(requestForm), "Maintenance request created.")}
           >
             Add Request
           </button>
@@ -4430,11 +6779,16 @@ function OperationsPage() {
               <tbody>
                 {ops.maintenanceRequests.map((request) => (
                   <tr key={request.requestId}>
-                    <td><b>{request.title}</b><div className="muted compact-meta">{request.notes || "No notes"}</div></td>
+                    <td>
+                      <b>{request.title}</b>
+                      <div className="muted compact-meta">{request.description || request.notes || "No description"}</div>
+                      <div className="muted compact-meta">{request.requestType || "other"} · requested by {request.requestedBy || "operator"}</div>
+                    </td>
                     <td>{clientsById.get(request.clientId)?.companyName ?? "Unknown client"}</td>
-                    <td><PillBadge value={request.priority} /> <PillBadge value={request.status} /></td>
+                    <td><PillBadge value={request.priority} /> <PillBadge value={request.status} /> <PillBadge value={request.slaRisk || "on_track"} /></td>
                     <td>
                       Assigned {request.assignedDate ? new Date(request.assignedDate).toLocaleDateString() : "—"}
+                      <div className="muted compact-meta">Due {request.dueDate ? new Date(request.dueDate).toLocaleString() : "—"}</div>
                       <div className="muted compact-meta">Completed {request.completedDate ? new Date(request.completedDate).toLocaleDateString() : "—"}</div>
                     </td>
                     <td>
@@ -4463,6 +6817,279 @@ function OperationsPage() {
   );
 }
 
+function FulfillmentPage() {
+  const [view, setView] = useState(null);
+  const [ops, setOps] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState("");
+  const [siteDrafts, setSiteDrafts] = useState({});
+  const [noteDrafts, setNoteDrafts] = useState({});
+  const [requestDrafts, setRequestDrafts] = useState({});
+  const [busy, setBusy] = useState("");
+
+  const load = async () => {
+    const [nextView, nextOps] = await Promise.all([api.fulfillment(), api.operations()]);
+    setView(nextView);
+    setOps(nextOps);
+  };
+
+  useEffect(() => {
+    load().catch((err) => notify(err.message || "Failed to load fulfillment.", "error"));
+  }, []);
+
+  const run = async (key, fn, message) => {
+    setBusy(key);
+    try {
+      await fn();
+      await load();
+      notify(message);
+    } catch (err) {
+      notify(err.message || "Fulfillment action failed.", "error");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  if (!view || !ops) return <div className="card muted">Loading fulfillment...</div>;
+
+  const records = view.records ?? [];
+  const summary = view.summary ?? {};
+  const queues = view.queues ?? {};
+  const activeClients = (ops.clients ?? []).filter((client) => client.status !== "archived");
+  const existingFulfillmentClientIds = new Set(records.map((record) => record.clientId));
+  const clientsAvailableForFulfillment = activeClients.filter((client) => !existingFulfillmentClientIds.has(client.clientId));
+  const slaQueues = ops.maintenanceSlaQueues ?? {};
+
+  return (
+    <div className="stack">
+      <div className="topbar">
+        <div>
+          <h2 className="section-title">Fulfillment</h2>
+          <div className="muted">Activation to site launch checklist for paid clients.</div>
+        </div>
+        <button className="button-ghost" onClick={load}>Refresh</button>
+      </div>
+
+      <div className="grid-cards">
+        <div className="card"><h4>Total Fulfillments</h4><div className="value">{summary.total ?? 0}</div></div>
+        <div className="card"><h4>Pending Launch</h4><div className="value">{summary.activatedClientsPendingLaunch ?? 0}</div></div>
+        <div className="card"><h4>Blocked Items</h4><div className="value">{summary.blockedChecklistItems ?? 0}</div></div>
+        <div className="card"><h4>Launched Sites</h4><div className="value">{summary.launchedSites ?? 0}</div></div>
+        <div className="card"><h4>Missing Site Records</h4><div className="value">{summary.clientsMissingSiteRecords ?? 0}</div></div>
+        <div className="card"><h4>Urgent Requests</h4><div className="value">{slaQueues.urgentRequests?.length ?? 0}</div></div>
+        <div className="card"><h4>Overdue Requests</h4><div className="value">{slaQueues.overdueRequests?.length ?? 0}</div></div>
+        <div className="card"><h4>Due Soon</h4><div className="value">{slaQueues.requestsDueSoon?.length ?? 0}</div></div>
+        <div className="card"><h4>Waiting Client</h4><div className="value">{slaQueues.requestsWaitingOnClient?.length ?? 0}</div></div>
+        <div className="card"><h4>Completed This Week</h4><div className="value">{slaQueues.completedThisWeek?.length ?? 0}</div></div>
+      </div>
+
+      <div className="grid-cards">
+        {(view.statuses ?? []).map((status) => (
+          <div key={status} className="card"><h4>{status}</h4><div className="value">{summary.byStatus?.[status] ?? 0}</div></div>
+        ))}
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Fulfillment Queues</h3>
+        <div className="detail-grid">
+          <div>
+            <b>Activated clients pending launch</b>
+            {(queues.activatedClientsPendingLaunch ?? []).slice(0, 8).map((record) => (
+              <div key={`pending-${record.fulfillmentId}`} className="muted compact-meta">{record.client?.companyName || record.clientId} · {record.status}</div>
+            ))}
+            {!(queues.activatedClientsPendingLaunch ?? []).length ? <div className="muted compact-meta">None.</div> : null}
+          </div>
+          <div>
+            <b>Blocked checklist items</b>
+            {(queues.blockedChecklistItems ?? []).slice(0, 8).map((item) => (
+              <div key={`${item.fulfillmentId}-${item.key}`} className="muted compact-meta">{item.clientId} · {item.label} · {item.notes || "blocked"}</div>
+            ))}
+            {!(queues.blockedChecklistItems ?? []).length ? <div className="muted compact-meta">None.</div> : null}
+          </div>
+          <div>
+            <b>Clients missing site records</b>
+            {(queues.clientsMissingSiteRecords ?? []).slice(0, 8).map((record) => (
+              <div key={`missing-site-${record.fulfillmentId}`} className="muted compact-meta">{record.client?.companyName || record.clientId}</div>
+            ))}
+            {!(queues.clientsMissingSiteRecords ?? []).length ? <div className="muted compact-meta">None.</div> : null}
+          </div>
+          <div>
+            <b>Launched sites</b>
+            {(queues.launchedSites ?? []).slice(0, 8).map((record) => (
+              <div key={`launched-${record.fulfillmentId}`} className="muted compact-meta">{record.client?.companyName || record.clientId} · {record.site?.domain || record.siteId || "site linked"}</div>
+            ))}
+            {!(queues.launchedSites ?? []).length ? <div className="muted compact-meta">None launched yet.</div> : null}
+          </div>
+          <div>
+            <b>Urgent maintenance</b>
+            {(slaQueues.urgentRequests ?? []).slice(0, 8).map((request) => (
+              <div key={`fulfill-urgent-${request.requestId}`} className="muted compact-meta">
+                {request.title} · {request.dueDate ? new Date(request.dueDate).toLocaleString() : "no due date"}
+              </div>
+            ))}
+            {!(slaQueues.urgentRequests ?? []).length ? <div className="muted compact-meta">No urgent requests.</div> : null}
+          </div>
+          <div>
+            <b>Overdue maintenance</b>
+            {(slaQueues.overdueRequests ?? []).slice(0, 8).map((request) => (
+              <div key={`fulfill-overdue-${request.requestId}`} className="muted compact-meta">
+                {request.title} · {request.slaRisk}
+              </div>
+            ))}
+            {!(slaQueues.overdueRequests ?? []).length ? <div className="muted compact-meta">No overdue requests.</div> : null}
+          </div>
+          <div>
+            <b>Waiting on client</b>
+            {(slaQueues.requestsWaitingOnClient ?? []).slice(0, 8).map((request) => (
+              <div key={`fulfill-waiting-${request.requestId}`} className="muted compact-meta">
+                {request.title} · {request.requestedBy || "operator"}
+              </div>
+            ))}
+            {!(slaQueues.requestsWaitingOnClient ?? []).length ? <div className="muted compact-meta">No requests waiting on clients.</div> : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Manual Fulfillment Recovery</h3>
+        <div className="btn-row">
+          <select value={selectedClientId} onChange={(e) => setSelectedClientId(e.target.value)}>
+            <option value="">Select client...</option>
+            {clientsAvailableForFulfillment.map((client) => (
+              <option key={client.clientId} value={client.clientId}>{client.companyName} · {client.billingStatus}</option>
+            ))}
+          </select>
+          <button disabled={Boolean(busy) || !selectedClientId} onClick={() => run(`create-${selectedClientId}`, () => api.createFulfillmentFromClient(selectedClientId), "Fulfillment created.")}>
+            Create Fulfillment
+          </button>
+        </div>
+      </div>
+
+      <div className="card stack">
+        <h3 className="section-title">Fulfillment Records</h3>
+        {records.length ? (
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>Client</th><th>Status</th><th>Site</th><th>Checklist</th></tr></thead>
+              <tbody>
+                {records.map((record) => (
+                  <tr key={record.fulfillmentId}>
+                    <td>
+                      <b>{record.client?.companyName || record.clientId}</b>
+                      <div className="muted compact-meta">Revenue {record.revenueId || "none"} · Lead {record.leadId || "none"}</div>
+                      {(record.maintenanceRequests ?? []).length ? (
+                        <div className="muted compact-meta">
+                          Maintenance: {record.maintenanceRequests.map((request) => `${request.title} (${request.status}/${request.slaRisk})`).join(", ")}
+                        </div>
+                      ) : (
+                        <div className="muted compact-meta">No linked maintenance requests.</div>
+                      )}
+                    </td>
+                    <td><PillBadge value={record.status} /></td>
+                    <td>
+                      <div>{record.site?.domain || record.site?.deploymentUrl || record.siteId || "No site linked"}</div>
+                      {!record.siteId ? <div className="muted compact-meta">Create an Operations site record first if this list is empty.</div> : null}
+                      <div className="btn-row">
+                        <select value={siteDrafts[record.fulfillmentId] ?? record.siteId ?? ""} onChange={(e) => setSiteDrafts((current) => ({ ...current, [record.fulfillmentId]: e.target.value }))}>
+                          <option value="">Select site...</option>
+                          {(ops.sites ?? []).filter((site) => !record.clientId || site.clientId === record.clientId).map((site) => (
+                            <option key={site.siteId} value={site.siteId}>{site.domain || site.deploymentUrl || site.siteId}</option>
+                          ))}
+                        </select>
+                        <button className="button-ghost" disabled={Boolean(busy) || !siteDrafts[record.fulfillmentId]} onClick={() => run(`site-${record.fulfillmentId}`, () => api.linkFulfillmentSite(record.fulfillmentId, { siteId: siteDrafts[record.fulfillmentId] }), "Site linked.")}>
+                          Link Site
+                        </button>
+                      </div>
+                      <div className="card compact-mode stack">
+                        <b>First maintenance request</b>
+                        <input
+                          placeholder="Request title"
+                          value={requestDrafts[record.fulfillmentId]?.title ?? ""}
+                          onChange={(e) => setRequestDrafts((current) => ({
+                            ...current,
+                            [record.fulfillmentId]: { ...(current[record.fulfillmentId] ?? {}), title: e.target.value },
+                          }))}
+                        />
+                        <select
+                          value={requestDrafts[record.fulfillmentId]?.requestType ?? "other"}
+                          onChange={(e) => setRequestDrafts((current) => ({
+                            ...current,
+                            [record.fulfillmentId]: { ...(current[record.fulfillmentId] ?? {}), requestType: e.target.value },
+                          }))}
+                        >
+                          {(ops.maintenanceRequestTypes ?? ["text_update", "image_update", "service_update", "hours_update", "bug_fix", "new_section", "other"]).map((type) => (
+                            <option key={type} value={type}>{type}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={requestDrafts[record.fulfillmentId]?.priority ?? "normal"}
+                          onChange={(e) => setRequestDrafts((current) => ({
+                            ...current,
+                            [record.fulfillmentId]: { ...(current[record.fulfillmentId] ?? {}), priority: e.target.value },
+                          }))}
+                        >
+                          {["low", "normal", "high", "urgent"].map((priority) => (
+                            <option key={priority} value={priority}>{priority}</option>
+                          ))}
+                        </select>
+                        <textarea
+                          placeholder="Description"
+                          value={requestDrafts[record.fulfillmentId]?.description ?? ""}
+                          onChange={(e) => setRequestDrafts((current) => ({
+                            ...current,
+                            [record.fulfillmentId]: { ...(current[record.fulfillmentId] ?? {}), description: e.target.value },
+                          }))}
+                        />
+                        <button
+                          className="button-ghost"
+                          disabled={Boolean(busy) || !record.clientId || !(requestDrafts[record.fulfillmentId]?.title)}
+                          onClick={() => run(
+                            `first-request-${record.fulfillmentId}`,
+                            () => api.createFulfillmentMaintenanceRequest(record.fulfillmentId, {
+                              ...requestDrafts[record.fulfillmentId],
+                              requestedBy: "operator",
+                            }),
+                            "First maintenance request created."
+                          )}
+                        >
+                          Create First Request
+                        </button>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="stack">
+                        {record.checklist.map((item) => (
+                          <div key={`${record.fulfillmentId}-${item.key}`} className="card compact-mode">
+                            <div><b>{item.label}</b> <PillBadge value={item.status} /></div>
+                            {item.notes ? <div className="muted compact-meta">{item.notes}</div> : null}
+                            <div className="btn-row">
+                              <input placeholder="Notes" value={noteDrafts[`${record.fulfillmentId}-${item.key}`] ?? ""} onChange={(e) => setNoteDrafts((current) => ({ ...current, [`${record.fulfillmentId}-${item.key}`]: e.target.value }))} />
+                              <button className="button-ghost" disabled={Boolean(busy)} onClick={() => run(`complete-${record.fulfillmentId}-${item.key}`, () => api.patchFulfillmentChecklist(record.fulfillmentId, item.key, { status: "complete", notes: noteDrafts[`${record.fulfillmentId}-${item.key}`] || item.notes }), "Checklist item completed.")}>
+                                Complete
+                              </button>
+                              <button className="button-ghost" disabled={Boolean(busy)} onClick={() => run(`note-${record.fulfillmentId}-${item.key}`, () => api.patchFulfillmentChecklist(record.fulfillmentId, item.key, { status: item.status, notes: noteDrafts[`${record.fulfillmentId}-${item.key}`] || item.notes }), "Checklist note saved.")}>
+                                Save Note
+                              </button>
+                              <button className="button-danger" disabled={Boolean(busy)} onClick={() => run(`block-${record.fulfillmentId}-${item.key}`, () => api.patchFulfillmentChecklist(record.fulfillmentId, item.key, { status: "blocked", notes: noteDrafts[`${record.fulfillmentId}-${item.key}`] || "Blocked." }), "Checklist item blocked.")}>
+                                Block
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="muted">No fulfillment records yet. Activated clients will create them automatically.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ProtectedApp({ onLogout }) {
   return (
     <Shell onLogout={onLogout}>
@@ -4475,12 +7102,20 @@ function ProtectedApp({ onLogout }) {
         <Route path="/projects" element={<DemoProjectsPage />} />
         <Route path="/field-test" element={<FieldTestPage />} />
         <Route path="/autonomous-field-test" element={<AutonomousFieldTestPage />} />
+        <Route path="/conveyor" element={<ProductionConveyorPage />} />
+        <Route path="/exceptions" element={<ExceptionsPage />} />
+        <Route path="/exceptions/:exceptionId" element={<ExceptionDetailPage />} />
+        <Route path="/automation" element={<AutomationPage />} />
+        <Route path="/websites" element={<WebsiteRegistryPage />} />
+        <Route path="/websites/:websiteId" element={<WebsiteDetailPage />} />
         <Route path="/leads/new" element={<ManualLeadPage />} />
         <Route path="/leads/:id" element={<LeadDetailPage />} />
         <Route path="/leads/:id/preview" element={<SitePreviewPage />} />
         <Route path="/targets" element={<TargetLeadGroupsPage />} />
         <Route path="/targets/:runId" element={<TargetLeadGroupDetailPage />} />
         <Route path="/outreach" element={<OutreachQueuePage />} />
+        <Route path="/revenue" element={<RevenuePage />} />
+        <Route path="/fulfillment" element={<FulfillmentPage />} />
         <Route path="/operations" element={<OperationsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/mission-control" replace />} />
@@ -4523,6 +7158,8 @@ export default function App() {
           )
         }
       />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/terms" element={<TermsOfServicePage />} />
       <Route
         path="*"
         element={

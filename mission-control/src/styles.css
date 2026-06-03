@@ -54,8 +54,94 @@ a {
   color: #fff;
 }
 
+.sidebar-legal-links {
+  display: flex;
+  gap: 0.65rem;
+  margin: 0 0 0.75rem 0.5rem;
+  color: #9ca9c9;
+  font-size: 0.78rem;
+}
+
+.sidebar-legal-links a {
+  text-decoration: none;
+}
+
 .main {
   padding: 1.25rem;
+}
+
+.public-legal-wrap {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: #090b11;
+}
+
+.public-legal-card {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 1px solid #212a40;
+  border-radius: 18px;
+  background: #0f1320;
+  line-height: 1.6;
+}
+
+.public-legal-header,
+.public-legal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.public-brand {
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.public-legal-nav,
+.public-legal-footer {
+  color: #9ca9c9;
+  font-size: 0.9rem;
+}
+
+.public-legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.public-legal-nav a,
+.public-legal-footer a {
+  color: #c6d0ea;
+}
+
+.public-legal-card h1 {
+  margin-bottom: 0.25rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.legal-content {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.legal-content section {
+  padding-top: 1rem;
+  border-top: 1px solid #212a40;
+}
+
+.legal-content h2 {
+  margin: 0 0 0.5rem;
+}
+
+.public-legal-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #212a40;
+  justify-content: flex-start;
 }
 
 .dev-health-banner {

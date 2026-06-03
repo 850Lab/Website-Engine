@@ -9,9 +9,10 @@
   "scripts": {
     "outreach": "node src/cli.js",
     "server": "node src/server.js",
+    "build": "npm install --prefix mission-control && npm run web:build",
     "web:dev": "npm run dev --prefix mission-control",
     "web:build": "npm run build --prefix mission-control",
-    "start": "npm run server"
+    "start": "node src/server.js"
   },
   "engines": {
     "node": ">=18"
