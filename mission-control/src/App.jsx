@@ -204,7 +204,7 @@ function useAuth() {
   return { loading, authenticated, setAuthenticated };
 }
 
-const SUPPORT_EMAIL = "support@websiteengine.local"; // TODO: Replace with the production support email/domain before public launch.
+const SUPPORT_EMAIL = "support@pivotalwebsites.com";
 const SERVICE_DESCRIPTION = "The Website Engine creates custom website previews for businesses and facilitates follow-up communications regarding website services, project discussions, appointment scheduling, and customer support.";
 
 function PublicLegalLayout({ title, updated, children }) {
