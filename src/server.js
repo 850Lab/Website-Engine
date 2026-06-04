@@ -169,6 +169,12 @@ import {
   runAutomationSchedulerOnce,
   setSchedulerEnabled,
 } from "./scheduler.js";
+import {
+  getTwilioProviderStatus,
+  recordTwilioInboundSms,
+  sendTwilioSms,
+  verifyTwilioWebhookSignature,
+} from "./providers/messaging/twilio.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -210,6 +216,24 @@ function getVercelRuntimeEnvDiagnostic() {
     tokenPrefix: token ? token.slice(0, 4) : "",
     tokenLength: token.length,
     hasTeamId: Boolean(teamId),
+  };
+}
+
+function getTwilioRuntimeEnvDiagnostic() {
+  const accountSid = String(process.env.TWILIO_ACCOUNT_SID ?? "").trim();
+  const authToken = String(process.env.TWILIO_AUTH_TOKEN ?? "").trim();
+  const messagingServiceSid = String(process.env.TWILIO_MESSAGING_SERVICE_SID ?? "").trim();
+  const fromNumber = String(process.env.TWILIO_FROM_NUMBER ?? "").trim();
+  return {
+    hasAccountSid: Boolean(accountSid),
+    accountSidPrefix: accountSid ? accountSid.slice(0, 2) : "",
+    hasAuthToken: Boolean(authToken),
+    authTokenLength: authToken.length,
+    hasMessagingServiceSid: Boolean(messagingServiceSid),
+    messagingServiceSidPrefix: messagingServiceSid ? messagingServiceSid.slice(0, 2) : "",
+    hasFromNumber: Boolean(fromNumber),
+    fromNumberPrefix: fromNumber ? fromNumber.slice(0, 2) : "",
+    allowRealSmsSend: String(process.env.ALLOW_REAL_SMS_SEND ?? "").trim().toLowerCase() === "true",
   };
 }
 
@@ -443,6 +467,38 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async
   }
 });
 
+app.post("/api/webhooks/twilio/sms", express.urlencoded({ extended: false }), async (req, res) => {
+  try {
+    const forwardedProto = String(req.get("x-forwarded-proto") || "").split(",")[0].trim();
+    const protocol = forwardedProto || req.protocol;
+    const webhookUrl = `${protocol}://${req.get("host")}${req.originalUrl}`;
+    const signature = verifyTwilioWebhookSignature({
+      url: webhookUrl,
+      params: req.body ?? {},
+      signature: req.get("x-twilio-signature"),
+    });
+    if (!signature.verified && !signature.skipped) {
+      return res.status(403).json({ error: "Invalid Twilio webhook signature." });
+    }
+    const result = await recordTwilioInboundSms(req.body ?? {});
+    let enqueueResult = null;
+    if (result.websiteId && !result.duplicate) {
+      enqueueResult = await enqueueReplyRevenueChainJobs(result.websiteId, { dryRun: false });
+    }
+    return res.json({
+      received: true,
+      duplicate: Boolean(result.duplicate),
+      matched: Boolean(result.matched),
+      websiteId: result.websiteId,
+      outreachId: result.outreachId,
+      inboundReplyId: result.reply?.inboundReplyId,
+      replyPipelineEnqueued: Boolean(enqueueResult?.created?.length),
+    });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+});
+
 app.use(express.json({ limit: "8mb" }));
 app.use(cookieParser());
 
@@ -458,6 +514,14 @@ app.get("/api/health", (req, res) => {
       autonomousFieldTest: true,
     },
   });
+});
+
+app.get("/api/providers/twilio/status", (_req, res) => {
+  return res.json(getTwilioProviderStatus());
+});
+
+app.get("/api/runtime/twilio-env", (_req, res) => {
+  return res.json(getTwilioRuntimeEnvDiagnostic());
 });
 
 app.get("/api/auth/status", async (_req, res) => {
@@ -596,6 +660,27 @@ app.get("/api/deployment/status", async (req, res) => {
     return res.json(await verifyDeploymentProviderConnection());
   }
   return res.json(getDeploymentProviderStatus());
+});
+
+app.post("/api/providers/twilio/send-test", async (req, res) => {
+  try {
+    const result = await sendTwilioSms({
+      to: req.body?.to,
+      body: req.body?.body || "Website Engine SMS integration test.",
+      metadata: { source: "mission_control_twilio_test" },
+    });
+    return res.json({
+      ok: true,
+      provider: result.provider,
+      simulated: result.simulated,
+      sent: result.sent,
+      providerMessageId: result.providerMessageId,
+      status: result.status,
+      message: result.message,
+    });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
 });
 
 app.get("/api/automation/config", async (_req, res) => {

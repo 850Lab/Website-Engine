@@ -51,7 +51,7 @@ function normalizeState(input = {}) {
   return {
     version: 1,
     records: Array.isArray(input.records)
-      ? input.records.map(normalizeReply).filter((record) => record.websiteId && record.replyText)
+      ? input.records.map(normalizeReply).filter((record) => record.replyText)
       : [],
   };
 }
@@ -80,15 +80,28 @@ export async function listInboundReplies({ websiteId = "", status = "" } = {}) {
 }
 
 export async function createPlaceholderInboundReply(input = {}) {
-  const record = normalizeReply({
+  const result = await createInboundReply({
     ...input,
     provider: input.provider || "placeholder_manual",
+  });
+  return result.reply;
+}
+
+export async function createInboundReply(input = {}) {
+  const record = normalizeReply({
+    ...input,
     status: "pending",
   });
   const state = await readState();
+  const duplicate = record.provider && record.providerMessageId
+    ? state.records.find(
+      (existing) => existing.provider === record.provider && existing.providerMessageId === record.providerMessageId
+    )
+    : null;
+  if (duplicate) return { reply: duplicate, duplicate: true };
   state.records.push(record);
   await writeState(state);
-  return record;
+  return { reply: record, duplicate: false };
 }
 
 export async function updateInboundReply(inboundReplyId, patch = {}) {
