@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect, react-hooks/purity */
 import { useEffect, useState } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { api } from "./api";
 import "./styles.css";
 
@@ -7137,39 +7138,42 @@ export default function App() {
   if (auth.loading) return <div className="muted" style={{ padding: "2rem" }}>Loading session...</div>;
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          auth.authenticated ? (
-            <Navigate to="/mission-control" replace />
-          ) : (
-            <LoginPage onLogin={auth.setAuthenticated} />
-          )
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          auth.authenticated ? (
-            <Navigate to="/mission-control" replace />
-          ) : (
-            <SignupPage onLogin={auth.setAuthenticated} />
-          )
-        }
-      />
-      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-      <Route path="/terms" element={<TermsOfServicePage />} />
-      <Route
-        path="*"
-        element={
-          auth.authenticated ? (
-            <ProtectedApp onLogout={logout} />
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
-      />
-    </Routes>
+    <>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            auth.authenticated ? (
+              <Navigate to="/mission-control" replace />
+            ) : (
+              <LoginPage onLogin={auth.setAuthenticated} />
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            auth.authenticated ? (
+              <Navigate to="/mission-control" replace />
+            ) : (
+              <SignupPage onLogin={auth.setAuthenticated} />
+            )
+          }
+        />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
+        <Route
+          path="*"
+          element={
+            auth.authenticated ? (
+              <ProtectedApp onLogout={logout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+      </Routes>
+      <Analytics />
+    </>
   );
 }
