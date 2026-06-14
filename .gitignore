@@ -1,4 +1,6 @@
 node_modules/
+.env
+.env.local
 data/leads.json
 data/admin.json
 data/admin-sessions.json

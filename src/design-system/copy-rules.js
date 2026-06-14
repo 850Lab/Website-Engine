@@ -184,6 +184,45 @@ export function buildHeroCopy(category, city) {
   };
 }
 
+export function buildBusinessSpecificHero(brief, fallbackHero) {
+  const businessName = coalesce(brief.businessName, "");
+  const category = coalesce(brief.category, "Local Service");
+  const cityState =
+    coalesce(brief.localSpecificity?.cityState, "") ||
+    coalesce([brief.city, brief.state].filter(Boolean).join(", "), "");
+  const rating = Number(brief.googleRating) || 0;
+  const reviews = Number(brief.googleReviewCount) || 0;
+  const hasReviewProof = rating > 0 && reviews > 0;
+  const score = Number(brief.websiteScore) || 0;
+  const weakWebsite = score > 0 && score <= 45;
+
+  const heroLine1 = businessName ? `${businessName} Roofing Website` : fallbackHero.line1;
+  const heroLine2 = weakWebsite ? "Built to Win More Calls" : "Built for Local Trust";
+
+  const credibility = hasReviewProof
+    ? `Trusted by local customers with ${rating.toFixed(1)} stars from ${reviews}+ Google reviews.`
+    : `Built for local homeowners searching for reliable ${category.toLowerCase()} services.`;
+  const conversion = weakWebsite
+    ? "This version is focused on faster call decisions and clearer service confidence."
+    : "This version is focused on clear local trust and faster booking decisions.";
+  const location = cityState ? `Serving ${cityState}.` : "";
+
+  return {
+    ...fallbackHero,
+    badge: cityState ? `${cityState.toUpperCase()} ROOFING` : fallbackHero.badge,
+    line1: heroLine1,
+    line2: heroLine2,
+    sub: `${credibility} ${conversion} ${location}`.trim(),
+    heroTrust: hasReviewProof
+      ? [
+          `${rating.toFixed(1)}★ from ${reviews}+ Google reviews`,
+          "Licensed & Insured",
+          "Local response team",
+        ]
+      : fallbackHero.heroTrust,
+  };
+}
+
 export function getCtaLabels(category, briefCta, phone) {
   const rules = getCopyRules(category);
   const estimate = coalesce(briefCta, "Get a Free Estimate");
@@ -203,7 +242,15 @@ export function serviceDescription(service, category) {
   const cat = coalesce(category, "service").toLowerCase();
   if (!svc) return `Professional ${cat} with clear pricing and dependable results.`;
   const short = svc.length > 48 ? `${svc.slice(0, 45)}…` : svc;
-  return `${short} for residential and commercial properties.`;
+  const templates = [
+    `${short} with transparent pricing and dependable timelines.`,
+    `${short} completed by trained local technicians.`,
+    `${short} focused on quality, safety, and clean results.`,
+    `${short} with clear communication from estimate to finish.`,
+  ];
+  const index =
+    Array.from(short).reduce((sum, char) => sum + char.charCodeAt(0), 0) % templates.length;
+  return templates[index];
 }
 
 export function getSectionCopy(category, city) {

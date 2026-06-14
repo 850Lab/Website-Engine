@@ -11,6 +11,7 @@ import { getCategoryTheme } from "./design-system/category-theme.js";
 import { TOKENS, buildTokenCssVars } from "./design-system/tokens.js";
 import {
   buildHeroCopy,
+  buildBusinessSpecificHero,
   getCtaLabels,
   getSectionCopy,
   serviceDescription,
@@ -848,7 +849,7 @@ function buildHtmlV3(lead, brief, assets = {}) {
 
   const ctaLabels = getCtaLabels(category, brief.ctaText, phone);
   const sectionCopy = getSectionCopy(category, city);
-  const hero = buildHeroCopy(category, city);
+  const hero = buildBusinessSpecificHero(brief, buildHeroCopy(category, city));
 
   const nameHtml = escapeHtml(name);
   const categoryHtml = escapeHtml(category);
@@ -878,8 +879,18 @@ function buildHtmlV3(lead, brief, assets = {}) {
 
   const reviewCount = Number(lead.googleReviewCount) || 0;
   const rating = Number(lead.googleRating) || 0;
-  const displayRating = rating > 0 ? formatRating(rating) : "5.0";
-  const customerStat = reviewCount >= 10 ? `${reviewCount}+` : "100+";
+  const hasRating = rating > 0;
+  const hasReviewProof = reviewCount > 0 || hasRating;
+  const displayRating = hasRating ? formatRating(rating) : "";
+  const customerStat = reviewCount >= 10 ? `${reviewCount}+` : reviewCount > 0 ? `${reviewCount}` : "";
+  const testimonialText = hasReviewProof
+    ? `“${name} has built trust in ${city} with responsive communication and reliable roofing work.”`
+    : `${name} provides professional ${category.toLowerCase()} service with clear communication in ${city}.`;
+  const testimonialAttribution = hasReviewProof
+    ? customerStat
+      ? `Based on Google reviews in ${city}`
+      : `Serving ${city} and surrounding areas`
+    : `${name} · ${city}`;
 
   const services = (brief.servicesToHighlight?.length
     ? brief.servicesToHighlight
@@ -889,6 +900,15 @@ function buildHtmlV3(lead, brief, assets = {}) {
   const trustPoints = (brief.trustPoints?.length ? brief.trustPoints : DEFAULT_TRUST_POINTS).slice(
     0,
     4
+  );
+  const trustPointsResolved = [...trustPoints.slice(0, 2), ...(brief.insiderDetails ?? []).slice(0, 1)].slice(
+    0,
+    3
+  );
+  const cityState = coalesce(
+    brief.localSpecificity?.cityState,
+    [brief.city, brief.state].filter(Boolean).join(", "),
+    city
   );
 
   const serviceCards = services
@@ -989,7 +1009,7 @@ function buildHtmlV3(lead, brief, assets = {}) {
       <div class="section-head-center">
         <span class="section-label">Our Services</span>
         <h2>${escapeHtml(sectionCopy.servicesTitle)}</h2>
-        <p>${escapeHtml(sectionCopy.servicesBlurb)}</p>
+        <p>${escapeHtml(sectionCopy.servicesBlurb)} ${cityState ? `Focused on ${cityState}.` : ""}</p>
       </div>
       <div class="services-grid">
         ${serviceCards}
@@ -1003,7 +1023,7 @@ function buildHtmlV3(lead, brief, assets = {}) {
         <span class="section-label">Why Choose Us</span>
         <h2>${escapeHtml(sectionCopy.trustTitle)}</h2>
         <ul class="trust-checklist">
-          ${trustItems}
+          ${trustPointsResolved.map((point) => `<li>${escapeHtml(point)}</li>`).join("\n          ")}
         </ul>
         <a class="btn btn-primary" href="${tel}">${escapeHtml(ctaLabels.learnMoreAbout)}</a>
       </div>
@@ -1023,18 +1043,18 @@ function buildHtmlV3(lead, brief, assets = {}) {
     <div class="container reviews-inner">
       <div class="reviews-stats">
         <div class="stat-block">
-          <span class="num">${escapeHtml(customerStat)}</span>
-          <span class="lbl">Happy Customers</span>
+          <span class="num">${escapeHtml(customerStat || "Local")}</span>
+          <span class="lbl">${customerStat ? "Google Reviews" : "Local Service Team"}</span>
         </div>
         <div class="stat-block">
-          <span class="num">${displayRating}★</span>
-          <span class="lbl">Average Rating</span>
+          <span class="num">${displayRating ? `${displayRating}★` : "Standards"}</span>
+          <span class="lbl">${displayRating ? "Google Rating" : "Service Standards"}</span>
         </div>
       </div>
       <div class="reviews-quote-wrap">
-        <div class="testimonial-stars" aria-hidden="true">★★★★★</div>
-        <blockquote class="testimonial-quote">${escapeHtml(sectionCopy.testimonialQuote)}</blockquote>
-        <p class="testimonial-author">— Verified customer, ${cityHtml}</p>
+        ${displayRating ? `<div class="testimonial-stars" aria-hidden="true">★★★★★</div>` : ""}
+        <blockquote class="testimonial-quote">${escapeHtml(testimonialText)}</blockquote>
+        <p class="testimonial-author">${escapeHtml(testimonialAttribution)}</p>
       </div>
     </div>
   </section>
@@ -1061,7 +1081,7 @@ function buildHtmlV3(lead, brief, assets = {}) {
             <span class="logo-mark" aria-hidden="true">${LOGO_MARK_SVG}</span>
           </a>
           <span class="logo-text"><strong>${escapeHtml(logo.strong)}</strong>${logoRest}</span>
-          <p class="footer-about">${escapeHtml(sectionCopy.footerAbout)}</p>
+          <p class="footer-about">${escapeHtml(sectionCopy.footerAbout)} ${cityState ? `Serving ${cityState}.` : ""}</p>
           <div class="social-links" aria-label="Social links">
             <a href="#" aria-label="Facebook">f</a>
             <a href="#" aria-label="Google">G</a>
@@ -1090,9 +1110,7 @@ function buildHtmlV3(lead, brief, assets = {}) {
       <div class="footer-bottom">
         <span>© ${new Date().getFullYear()} ${nameHtml}. All rights reserved.</span>
         <span><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></span>
-        <span class="preview-credit">Preview · Website Outreach Engine${
-          assets.isAi ? " · AI concept imagery" : assets.isReal ? " · verified business photos" : ""
-        }</span>
+        <span class="preview-credit">${assets.isAi ? "Concept imagery shown" : assets.isReal ? "Business photos shown" : "Business website"}</span>
       </div>
     </div>
   </footer>

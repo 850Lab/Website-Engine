@@ -265,7 +265,13 @@ function buildHeroHeadline(lead, profile, angleKey) {
   const city = String(lead.city ?? "").trim();
   const serviceLabel = profile.label || "Local Service";
   const cityPart = city ? ` in ${city}` : "";
-  return `${lead.businessName} — ${serviceLabel}${cityPart} | ${angle.heroSuffix}`;
+  const score = Number(lead.websiteScore) || 0;
+  const lowScore = score > 0 && score <= 45;
+  const outcome =
+    lowScore || angleKey !== "conversion_improvement"
+      ? "Built to turn local searches into booked jobs"
+      : angle.heroSuffix;
+  return `${lead.businessName} — ${serviceLabel}${cityPart} | ${outcome}`;
 }
 
 function buildOutreachNote(lead, angleKey) {
@@ -284,17 +290,49 @@ export function generateBrief(lead) {
   const profile = resolveCategoryProfile(lead.category);
   const angleKey = resolveAngleKey(lead);
   const angle = ANGLE_TEMPLATES[angleKey] ?? ANGLE_TEMPLATES.conversion_improvement;
+  const scoreReasons = Array.isArray(lead.websiteScoreReasons) ? lead.websiteScoreReasons : [];
+  const localArea = String(lead.city ?? "").trim();
+  const serviceRanked = [...profile.services]
+    .map((service) => {
+      const serviceText = service.toLowerCase();
+      const reasonHit = scoreReasons.some((reason) => reason.toLowerCase().includes("service"));
+      const websiteStatusBoost = String(lead.websiteStatus ?? "").toLowerCase().includes("poor") ? 1 : 0;
+      const priority = (serviceText.includes("repair") ? 2 : 0) + (serviceText.includes("inspection") ? 1 : 0) + (reasonHit ? 1 : 0) + websiteStatusBoost;
+      return { service, priority };
+    })
+    .sort((a, b) => b.priority - a.priority)
+    .map((row) => row.service)
+    .slice(0, 5);
+  const insiderDetails = [
+    lead.address ? `Located near ${lead.address}` : "",
+    lead.qualificationReason ? `Qualification: ${lead.qualificationReason}` : "",
+    lead.contactMethodCategory ? `Best response channel: ${lead.contactMethodCategory.replace(/_/g, " ")}` : "",
+  ].filter(Boolean);
 
   return {
     businessName: lead.businessName,
     category: lead.category,
     city: lead.city,
+    state: lead.state ?? "",
+    address: lead.address ?? "",
+    industry: lead.industry ?? "",
+    websiteStatus: lead.websiteStatus ?? "",
+    websiteScore: Number(lead.websiteScore) || 0,
+    websiteScoreReasons: scoreReasons,
+    googleReviewCount: Number(lead.googleReviewCount) || 0,
+    googleRating: Number(lead.googleRating) || 0,
     websiteAngle: lead.outreachAngle ?? angleKey,
     homepageSections: [...angle.sections],
     heroHeadline: buildHeroHeadline(lead, profile, angleKey),
     ctaText: angle.cta,
     trustPoints: buildTrustPoints(lead),
-    servicesToHighlight: profile.services.slice(0, 5),
+    servicesToHighlight: serviceRanked,
+    localSpecificity: {
+      city: localArea,
+      state: String(lead.state ?? "").trim(),
+      cityState: [localArea, String(lead.state ?? "").trim()].filter(Boolean).join(", "),
+    },
+    insiderDetails,
     outreachNote: buildOutreachNote(lead, angleKey),
   };
 }

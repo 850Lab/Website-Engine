@@ -3,12 +3,9 @@
   "version": "1.0.0",
   "description": "Local business website opportunity scanner",
   "type": "module",
-  "bin": {
-    "outreach": "./src/cli.js"
-  },
   "scripts": {
-    "outreach": "node src/cli.js",
     "server": "node src/server.js",
+    "worker": "node src/opportunity-engine/worker.js",
     "build": "npm install --prefix mission-control && npm run web:build",
     "web:dev": "npm run dev --prefix mission-control",
     "web:build": "npm run build --prefix mission-control",
@@ -20,6 +17,7 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
+    "pg": "^8.21.0",
     "playwright": "^1.52.0",
     "stripe": "^22.2.0"
   }

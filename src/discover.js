@@ -1,33 +1,5 @@
-import * as readline from "node:readline";
-import { openSync, ReadStream } from "node:fs";
-import { stdin as input, stdout as output } from "node:process";
-import { addLead, listLeads } from "./leads.js";
-import { enrichLead } from "./enrich.js";
-
 const PHONE_RE =
   /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/;
-
-function openConsoleInput() {
-  try {
-    const path = process.platform === "win32" ? "CON" : "/dev/tty";
-    const fd = openSync(path, "r");
-    return new ReadStream(undefined, { fd });
-  } catch {
-    return null;
-  }
-}
-
-function createPromptInput() {
-  if (input.isTTY) return { stream: input, ownsStream: false };
-  const stream = openConsoleInput();
-  return stream ? { stream, ownsStream: true } : { stream: null, ownsStream: false };
-}
-
-function readlineQuestion(rl, prompt) {
-  return new Promise((resolve) => {
-    rl.question(prompt, resolve);
-  });
-}
 
 function normalizeBusinessName(name) {
   return String(name ?? "").trim().toLowerCase();
@@ -313,7 +285,7 @@ async function scrapeGoogleMaps({ searchTerm, city, maxResults }) {
       });
 
       if (detail.businessName) {
-        results.push(detail);
+        results.push({ ...detail, googleMapsUrl: href });
       }
     }
   } finally {
@@ -321,139 +293,6 @@ async function scrapeGoogleMaps({ searchTerm, city, maxResults }) {
   }
 
   return results;
-}
-
-export async function promptDiscoverOptions() {
-  const { stream, ownsStream } = createPromptInput();
-  if (!stream) {
-    throw new Error("discover requires an interactive terminal for prompts.");
-  }
-
-  const rl = readline.createInterface({ input: stream, output, terminal: true });
-  try {
-    console.log("\nGoogle Maps discovery\n");
-
-    const searchTerm = (await readlineQuestion(rl, "search term: ")).trim();
-    const city = (await readlineQuestion(rl, "city: ")).trim();
-    const maxRaw = (await readlineQuestion(rl, "max results: ")).trim();
-    const maxResults = Number.parseInt(maxRaw, 10);
-
-    if (!searchTerm || !city) {
-      throw new Error("search term and city are required.");
-    }
-    if (!Number.isFinite(maxResults) || maxResults < 1 || maxResults > 50) {
-      throw new Error("max results must be a number between 1 and 50.");
-    }
-
-    return { searchTerm, city, maxResults };
-  } finally {
-    rl.close();
-    if (ownsStream && typeof stream.destroy === "function") {
-      stream.destroy();
-    }
-  }
-}
-
-/**
- * Search Google Maps, map results to lead schema, score, dedupe, and save.
- */
-export async function runDiscover(options) {
-  const { searchTerm, city, maxResults } = options;
-  const onProgress =
-    typeof options?.onProgress === "function" ? options.onProgress : () => {};
-
-  onProgress({
-    step: "started",
-    message: "Lead generation started.",
-    searchTerm,
-    city,
-    maxResults,
-  });
-  onProgress({
-    step: "searching",
-    message: `Searching Google Maps for "${searchTerm}" in ${city}...`,
-  });
-  console.log(`\nSearching Google Maps for "${searchTerm}" in ${city}...\n`);
-
-  const discovered = await scrapeGoogleMaps({ searchTerm, city, maxResults });
-  onProgress({
-    step: "leads_found",
-    message: `Found ${discovered.length} candidate businesses.`,
-    count: discovered.length,
-  });
-  const existing = await listLeads();
-  const knownNames = new Set(existing.map((lead) => normalizeBusinessName(lead.businessName)));
-
-  const summary = {
-    found: discovered.length,
-    imported: 0,
-    enriched: 0,
-    TARGET: 0,
-    HOLD: 0,
-    SKIP: 0,
-  };
-
-  for (const result of discovered) {
-    const fields = toLeadFields(result, { searchTerm, city });
-    if (!fields.businessName || !fields.category || !fields.city) continue;
-
-    const normalizedName = normalizeBusinessName(fields.businessName);
-    if (knownNames.has(normalizedName)) continue;
-
-    const { fields: enrichedFields, enriched } = await enrichLead(fields);
-    onProgress({
-      step: "enriched",
-      message: `${fields.businessName}: enrichment ${enriched ? "completed" : "partial"}.`,
-      leadName: fields.businessName,
-      enriched,
-    });
-    const lead = await addLead(enrichedFields);
-    onProgress({
-      step: "scored",
-      message: `${lead.businessName}: scored ${lead.score} (${lead.status}).`,
-      leadId: lead.id,
-      leadName: lead.businessName,
-      score: lead.score,
-      status: lead.status,
-    });
-    knownNames.add(normalizedName);
-    summary.imported += 1;
-    if (enriched) summary.enriched += 1;
-    summary[lead.status] += 1;
-    onProgress({
-      step: "saved",
-      message: `${lead.businessName}: saved to leads.json.`,
-      leadId: lead.id,
-      leadName: lead.businessName,
-    });
-
-    console.log(
-      `  ${lead.businessName} — Enriched: ${enriched ? "yes" : "no"} | ${lead.status} (${lead.score})`
-    );
-  }
-
-  onProgress({
-    step: "completed",
-    message: "Lead generation completed.",
-    summary,
-  });
-  return summary;
-}
-
-export async function runDiscoverInteractive() {
-  const options = await promptDiscoverOptions();
-  return runDiscover(options);
-}
-
-export function formatDiscoverSummary(summary) {
-  return [
-    `Found: ${summary.found}`,
-    `Imported: ${summary.imported}`,
-    `Enriched: ${summary.enriched ?? 0}`,
-    `TARGET: ${summary.TARGET}`,
-    `HOLD: ${summary.HOLD}`,
-    `SKIP: ${summary.SKIP}`,
-  ].join("\n");
 }
 
 export { scrapeGoogleMaps, toLeadFields, normalizeBusinessName };
