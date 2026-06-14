@@ -17,6 +17,7 @@ import {
   verifyStripeWebhookPayload,
 } from "./stripe-billing.js";
 import { registerV7OperatorRoutes, registerV7Routes } from "./v7/index.js";
+import { listOpportunityProjects } from "./v7/opportunity-project-store.js";
 import { registerStage1Routes } from "./stage1/index.js";
 import { registerOpportunityEngineRoutes } from "./opportunity-engine/index.js";
 import { migrateRecordsToIdentities } from "./identity/migrate-identities.js";
@@ -179,9 +180,11 @@ async function fileExists(path) {
 
 function shouldServeSpaFallback(req) {
   if (!["GET", "HEAD"].includes(req.method)) return false;
+  if (req.path === "/mission-control") return true;
   if (req.path.startsWith("/api")) return false;
   if (req.path.startsWith("/previews")) return false;
   if (req.path.startsWith("/renders")) return false;
+  if (req.path === "/") return false;
   if (req.path.startsWith("/p/")) return false;
   if (req.path.startsWith("/launch/")) return false;
   if (req.path.startsWith("/activate/")) return false;
@@ -283,6 +286,101 @@ app.get("/api/admin/system-status", async (_req, res) => {
     return res.json(await getAdminSystemStatus());
   } catch (err) {
     return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/", async (req, res, next) => {
+  try {
+    const base = `${req.protocol}://${req.get("host")}`;
+    const projects = await listOpportunityProjects();
+    const recent = projects.slice(0, 12);
+    const projectCards = recent
+      .map((project) => {
+        const previewUrl = `${base}/p/${project.id}`;
+        const launchUrl = `${base}/launch/${project.id}`;
+        const city = project.city ? ` · ${project.city}` : "";
+        const status = project.status || "draft";
+        return `
+          <li>
+            <strong>${project.businessName || project.id}</strong>
+            <span>${status}${city}</span>
+            <div>
+              <a href="${previewUrl}">Preview</a>
+              <a href="${launchUrl}">Offer Snapshot</a>
+            </div>
+          </li>
+        `;
+      })
+      .join("");
+
+    return res.type("html").send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebLab Founder Links</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Segoe UI", system-ui, sans-serif; }
+    body { margin: 0; background: #0b1220; color: #e9f0ff; }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 28px 16px 48px; }
+    .card {
+      background: #121a2b;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+    h1 { margin: 0 0 8px; font-size: 30px; }
+    p { margin: 0; color: #b7c6e5; line-height: 1.55; }
+    .actions { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #e9f0ff;
+      background: #1a2438;
+    }
+    .btn.primary { background: #4f8cff; border-color: #4f8cff; color: #fff; }
+    ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+    li {
+      background: #1a2438;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+    }
+    li strong { font-size: 15px; }
+    li span { color: #9fb0d0; font-size: 13px; }
+    li div { display: flex; gap: 14px; }
+    li a { color: #9ec5ff; text-decoration: none; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>WebLab Founder Links</h1>
+      <p>Use the public preview and offer snapshot links below for phone/live testing. Admin tools are available separately.</p>
+      <div class="actions">
+        <a class="btn primary" href="/mission-control">Open Mission Control (Admin)</a>
+      </div>
+    </section>
+    <section class="card">
+      ${
+        projectCards
+          ? `<ul>${projectCards}</ul>`
+          : `<p>No opportunity projects found yet. Create one in Mission Control, then refresh this page.</p>`
+      }
+    </section>
+  </main>
+</body>
+</html>`);
+  } catch (err) {
+    return next(err);
   }
 });
 
