@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { randomBytes } from "node:crypto";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { access, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
@@ -64,6 +64,7 @@ const SESSION_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
 const sessions = new Map();
 let httpServer = null;
 let sessionsLoaded = false;
+let appInitialized = false;
 
 async function loadPersistedSessions() {
   if (sessionsLoaded) return;
@@ -197,7 +198,7 @@ function serveFrontendApp(req, res, next) {
   return res.sendFile(join(FRONTEND_DIST, "index.html"));
 }
 
-const app = express();
+export const app = express();
 
 app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   try {
@@ -388,22 +389,7 @@ app.use("/previews", express.static(PREVIEWS_ROOT));
 app.use("/renders", express.static(RENDERS_ROOT));
 
 async function startServer() {
-  migrateRecordsToIdentities().catch((err) => {
-    console.warn(`Identity migration skipped: ${err.message}`);
-  });
-
-  const hasFrontendDist = await fileExists(FRONTEND_DIST);
-  if (hasFrontendDist) {
-    app.use(express.static(FRONTEND_DIST));
-    app.get(/.*/, serveFrontendApp);
-  } else {
-    app.get("/", (_req, res) => {
-      res.json({
-        ok: true,
-        message: "Mission Control API is running. Run npm run build to serve the UI.",
-      });
-    });
-  }
+  await initializeApp();
 
   const port = Number(process.env.PORT || 8787);
   httpServer = app.listen(port, () => {
@@ -414,7 +400,29 @@ async function startServer() {
   }
 }
 
-startServer().catch((err) => {
-  console.error(`Failed to start server: ${err.message}`);
-  process.exit(1);
-});
+export async function initializeApp() {
+  if (appInitialized) return;
+  appInitialized = true;
+
+  migrateRecordsToIdentities().catch((err) => {
+    console.warn(`Identity migration skipped: ${err.message}`);
+  });
+
+  const hasFrontendDist = await fileExists(FRONTEND_DIST);
+  if (hasFrontendDist) {
+    app.use(express.static(FRONTEND_DIST));
+    app.get(/.*/, serveFrontendApp);
+  } else {
+    console.warn("Frontend dist not found; Mission Control SPA routes are disabled.");
+  }
+}
+
+export const appReady = initializeApp();
+
+const isDirectRun = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isDirectRun) {
+  startServer().catch((err) => {
+    console.error(`Failed to start server: ${err.message}`);
+    process.exit(1);
+  });
+}
