@@ -32,6 +32,8 @@ import {
   simulateFounderTestPurchase,
   updateFounderTestingNotes,
 } from "./founder-testing.js";
+import { registerFounderPhoneRoutes } from "../founder-phone.js";
+import { registerOutreachRoutes, renderOutreachPage } from "../outreach-page.js";
 
 function jsonError(res, status, message) {
   return res.status(status).json({ error: message });
@@ -197,6 +199,13 @@ export function registerV7Routes(app) {
       return jsonError(res, 400, err.message);
     }
   });
+
+  app.get("/outreach", (_req, res) => {
+    return res.type("html").send(renderOutreachPage());
+  });
+
+  registerOutreachRoutes(app);
+  registerFounderPhoneRoutes(app);
 
   app.get("/api/customer/projects/:projectId/dashboard", async (req, res) => {
     const project = await getOpportunityProject(req.params.projectId);

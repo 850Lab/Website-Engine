@@ -106,7 +106,7 @@ export function buildBusinessRecord(input) {
     Boolean(cleanText(input.opportunityProjectId)) &&
     Boolean(input.previewGenerated) &&
     Boolean(input.previewVerification?.ok);
-  return {
+  const built = {
     id: input.id,
     businessName: cleanText(input.businessName),
     industry: cleanText(input.industry),
@@ -158,6 +158,34 @@ export function buildBusinessRecord(input) {
     dedupKey,
     updatedAt: nowIso(),
   };
+  if (input.outreachStatus !== undefined && input.outreachStatus !== null) {
+    built.outreachStatus = normalizeOutreachStatus(input.outreachStatus);
+  }
+  if (input.outreachStatusUpdatedAt !== undefined) {
+    built.outreachStatusUpdatedAt = input.outreachStatusUpdatedAt;
+  }
+  return built;
+}
+
+export const OUTREACH_STATUSES = [
+  "not_contacted",
+  "contacted",
+  "replied",
+  "asked_price",
+  "appointment",
+  "won",
+  "lost",
+];
+
+export function normalizeOutreachStatus(value) {
+  const status = cleanText(value).toLowerCase();
+  if (OUTREACH_STATUSES.includes(status)) return status;
+  if (status === "new") return "not_contacted";
+  return "not_contacted";
+}
+
+export function isNotContacted(record) {
+  return normalizeOutreachStatus(record?.outreachStatus) === "not_contacted";
 }
 
 export async function buildDatabaseSummary(records = null) {
