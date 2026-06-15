@@ -6,7 +6,7 @@
   "scripts": {
     "server": "node src/server.js",
     "worker": "node src/opportunity-engine/worker.js",
-    "build": "echo \"No frontend build step configured\"",
+    "build": "node -e \"require('fs').mkdirSync('dist', { recursive: true }); console.log('No frontend build step configured');\"",
     "start": "node src/server.js"
   },
   "engines": {
