@@ -270,6 +270,8 @@ app.get("/", async (req, res, next) => {
       .map((project) => {
         const previewUrl = `${base}/p/${project.id}`;
         const launchUrl = `${base}/launch/${project.id}`;
+        const activateUrl = `${base}/activate/${project.id}`;
+        const dashboardUrl = `${base}/dashboard/${project.id}`;
         const city = project.city ? ` · ${project.city}` : "";
         const status = project.status || "draft";
         return `
@@ -279,6 +281,12 @@ app.get("/", async (req, res, next) => {
             <div>
               <a href="${previewUrl}">Preview</a>
               <a href="${launchUrl}">Offer Snapshot</a>
+              <a href="${activateUrl}">Activate</a>
+              <a href="${dashboardUrl}">Dashboard</a>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:8px;">
+              <button class="btn btn-mini" data-action="simulate" data-project-id="${project.id}">Simulate Purchase</button>
+              <button class="btn btn-mini primary" data-action="activate" data-project-id="${project.id}">Activate Now</button>
             </div>
           </li>
         `;
@@ -315,8 +323,31 @@ app.get("/", async (req, res, next) => {
       border: 1px solid rgba(255,255,255,0.14);
       color: #e9f0ff;
       background: #1a2438;
+      cursor: pointer;
     }
     .btn.primary { background: #4f8cff; border-color: #4f8cff; color: #fff; }
+    .btn-mini { font-size: 12px; padding: 7px 10px; border-radius: 10px; }
+    .form-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 12px;
+    }
+    .field {
+      width: 100%;
+      background: #0f1730;
+      color: #e9f0ff;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    .status {
+      margin-top: 10px;
+      color: #9fb0d0;
+      font-size: 13px;
+      min-height: 18px;
+    }
     ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
     li {
       background: #1a2438;
@@ -330,13 +361,27 @@ app.get("/", async (req, res, next) => {
     li span { color: #9fb0d0; font-size: 13px; }
     li div { display: flex; gap: 14px; }
     li a { color: #9ec5ff; text-decoration: none; font-size: 14px; }
+    @media (max-width: 720px) {
+      .wrap { padding: 16px 10px 32px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="card">
       <h1>WebLab Founder Links</h1>
-      <p>Use the public preview and offer snapshot links below for phone/live testing.</p>
+      <p>Create a project and run the full flow from your phone: Preview → Offer → Purchase simulation → Activation → Dashboard.</p>
+      <div class="form-grid">
+        <input id="bizName" class="field" placeholder="Business name" value="SETX Roofing Pros" />
+        <input id="bizCategory" class="field" placeholder="Category" value="Roofing contractor" />
+        <input id="bizCity" class="field" placeholder="City, State" value="Lumberton, TX" />
+        <input id="bizPhone" class="field" placeholder="Phone (optional)" value="" />
+      </div>
+      <div class="actions">
+        <button id="createProject" class="btn primary">Create Project</button>
+      </div>
+      <p id="createStatus" class="status"></p>
     </section>
     <section class="card">
       ${
@@ -346,6 +391,79 @@ app.get("/", async (req, res, next) => {
       }
     </section>
   </main>
+  <script>
+    (function () {
+      const createBtn = document.getElementById("createProject");
+      const createStatus = document.getElementById("createStatus");
+      function setStatus(message) {
+        createStatus.textContent = message || "";
+      }
+      async function jsonRequest(url, body) {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body || {})
+        });
+        const payload = await response.json().catch(function () { return {}; });
+        if (!response.ok) throw new Error(payload.error || "Request failed");
+        return payload;
+      }
+      createBtn.addEventListener("click", async function () {
+        try {
+          createBtn.disabled = true;
+          setStatus("Creating project...");
+          const payload = await jsonRequest("/api/public/founder/projects", {
+            businessName: document.getElementById("bizName").value,
+            category: document.getElementById("bizCategory").value,
+            city: document.getElementById("bizCity").value,
+            phone: document.getElementById("bizPhone").value
+          });
+          setStatus("Project created: " + payload.project.id + ". Refreshing...");
+          setTimeout(function () { window.location.reload(); }, 700);
+        } catch (err) {
+          setStatus(err.message);
+        } finally {
+          createBtn.disabled = false;
+        }
+      });
+
+      async function handleCardAction(button) {
+        const projectId = button.getAttribute("data-project-id");
+        const action = button.getAttribute("data-action");
+        if (!projectId || !action) return;
+        const original = button.textContent;
+        button.disabled = true;
+        button.textContent = action === "simulate" ? "Simulating..." : "Activating...";
+        try {
+          if (action === "simulate") {
+            await jsonRequest("/api/public/founder/projects/" + encodeURIComponent(projectId) + "/simulate-purchase");
+            button.textContent = "Simulated";
+          } else {
+            const result = await jsonRequest("/api/public/founder/projects/" + encodeURIComponent(projectId) + "/activate");
+            button.textContent = "Activated";
+            if (result.dashboardUrl) {
+              window.location.href = result.dashboardUrl;
+              return;
+            }
+          }
+        } catch (err) {
+          button.textContent = "Error";
+          setStatus(err.message);
+        } finally {
+          setTimeout(function () {
+            button.disabled = false;
+            button.textContent = original;
+          }, 1200);
+        }
+      }
+
+      document.addEventListener("click", function (event) {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+        handleCardAction(button);
+      });
+    })();
+  </script>
 </body>
 </html>`);
   } catch (err) {

@@ -164,6 +164,40 @@ export function registerV7Routes(app) {
     }
   });
 
+  app.post("/api/public/founder/projects", async (req, res) => {
+    try {
+      const project = await createOpportunityProject(req.body ?? {});
+      const base = publicBaseUrl(req);
+      return res.status(201).json({
+        project: publicProjectView(project),
+        links: {
+          preview: `${base}/p/${project.id}`,
+          launch: `${base}/launch/${project.id}`,
+          activate: `${base}/activate/${project.id}`,
+          dashboard: `${base}/dashboard/${project.id}`,
+        },
+      });
+    } catch (err) {
+      return jsonError(res, 400, err.message);
+    }
+  });
+
+  app.post("/api/public/founder/projects/:projectId/simulate-purchase", async (req, res) => {
+    try {
+      return res.json(await simulateFounderTestPurchase(req.params.projectId));
+    } catch (err) {
+      return jsonError(res, 400, err.message);
+    }
+  });
+
+  app.post("/api/public/founder/projects/:projectId/activate", async (req, res) => {
+    try {
+      return res.json(await runFounderWalkActivation(req.params.projectId, req));
+    } catch (err) {
+      return jsonError(res, 400, err.message);
+    }
+  });
+
   app.get("/api/customer/projects/:projectId/dashboard", async (req, res) => {
     const project = await getOpportunityProject(req.params.projectId);
     if (!project) return jsonError(res, 404, "Project not found");
