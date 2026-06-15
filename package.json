@@ -6,9 +6,7 @@
   "scripts": {
     "server": "node src/server.js",
     "worker": "node src/opportunity-engine/worker.js",
-    "build": "npm install --prefix mission-control && npm run web:build",
-    "web:dev": "npm run dev --prefix mission-control",
-    "web:build": "npm run build --prefix mission-control",
+    "build": "echo \"No frontend build step configured\"",
     "start": "node src/server.js"
   },
   "engines": {

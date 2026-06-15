@@ -1,6 +1,10 @@
 node_modules/
 .env
 .env.local
+data/
+previews-v3/
+renders/
+sales-packages/
 data/leads.json
 data/admin.json
 data/admin-sessions.json

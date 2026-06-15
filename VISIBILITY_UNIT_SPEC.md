@@ -17,7 +17,7 @@ Used for:
 
 - Launch entitlement (default: **1,000** per project)
 - **Internal** fulfillment accounting, guarantees, renewals, and dispute resolution
-- **Operator** Mission Control fulfillment views only
+- **Operator** fulfillment views only
 
 Customer dashboard presentation is defined in `CUSTOMER_DASHBOARD_SPEC.md`. Customers never see VU counts, entitlements, or quota percentages.
 

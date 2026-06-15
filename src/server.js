@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { randomBytes } from "node:crypto";
 import { join, resolve } from "node:path";
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import {
@@ -26,7 +26,6 @@ import { registerFounderOsRoutes } from "./founder-os/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
-const FRONTEND_DIST = join(ROOT, "mission-control", "dist");
 const PREVIEWS_ROOT = join(ROOT, "previews-v3");
 const RENDERS_ROOT = join(ROOT, "renders");
 const DATA_DIR = join(ROOT, "data");
@@ -59,7 +58,7 @@ async function loadRuntimeEnvFiles() {
 await loadRuntimeEnvFiles();
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
-const SESSION_COOKIE = "mission_control_session";
+const SESSION_COOKIE = "website_outreach_session";
 const SESSION_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
 const sessions = new Map();
 let httpServer = null;
@@ -170,34 +169,6 @@ async function destroySession(req, res) {
   res.clearCookie(SESSION_COOKIE);
 }
 
-async function fileExists(path) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function shouldServeSpaFallback(req) {
-  if (!["GET", "HEAD"].includes(req.method)) return false;
-  if (req.path === "/mission-control") return true;
-  if (req.path.startsWith("/api")) return false;
-  if (req.path.startsWith("/previews")) return false;
-  if (req.path.startsWith("/renders")) return false;
-  if (req.path === "/") return false;
-  if (req.path.startsWith("/p/")) return false;
-  if (req.path.startsWith("/launch/")) return false;
-  if (req.path.startsWith("/activate/")) return false;
-  if (req.path.startsWith("/dashboard/")) return false;
-  return true;
-}
-
-function serveFrontendApp(req, res, next) {
-  if (!shouldServeSpaFallback(req)) return next();
-  return res.sendFile(join(FRONTEND_DIST, "index.html"));
-}
-
 export const app = express();
 
 app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async (req, res) => {
@@ -217,7 +188,7 @@ app.get("/api/health", (req, res) => {
   const port = Number(process.env.PORT || 8787);
   return res.json({
     ok: true,
-    service: "mission-control-api",
+    service: "website-outreach-engine-api",
     version: "opportunity-engine-v1.5",
     origin: `${req.protocol}://${req.get("host")}`,
     port,
@@ -365,16 +336,13 @@ app.get("/", async (req, res, next) => {
   <main class="wrap">
     <section class="card">
       <h1>WebLab Founder Links</h1>
-      <p>Use the public preview and offer snapshot links below for phone/live testing. Admin tools are available separately.</p>
-      <div class="actions">
-        <a class="btn primary" href="/mission-control">Open Mission Control (Admin)</a>
-      </div>
+      <p>Use the public preview and offer snapshot links below for phone/live testing.</p>
     </section>
     <section class="card">
       ${
         projectCards
           ? `<ul>${projectCards}</ul>`
-          : `<p>No opportunity projects found yet. Create one in Mission Control, then refresh this page.</p>`
+          : `<p>No opportunity projects found yet. Create one through the V7 project API, then refresh this page.</p>`
       }
     </section>
   </main>
@@ -393,7 +361,7 @@ async function startServer() {
 
   const port = Number(process.env.PORT || 8787);
   httpServer = app.listen(port, () => {
-    console.log(`Mission Control server listening on http://localhost:${port}`);
+    console.log(`Website Outreach server listening on http://localhost:${port}`);
   });
   if (typeof httpServer.ref === "function") {
     httpServer.ref();
@@ -407,14 +375,6 @@ export async function initializeApp() {
   migrateRecordsToIdentities().catch((err) => {
     console.warn(`Identity migration skipped: ${err.message}`);
   });
-
-  const hasFrontendDist = await fileExists(FRONTEND_DIST);
-  if (hasFrontendDist) {
-    app.use(express.static(FRONTEND_DIST));
-    app.get(/.*/, serveFrontendApp);
-  } else {
-    console.warn("Frontend dist not found; Mission Control SPA routes are disabled.");
-  }
 }
 
 export const appReady = initializeApp();

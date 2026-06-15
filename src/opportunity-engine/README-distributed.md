@@ -1,6 +1,6 @@
 # Distributed Campaign Execution
 
-Mission Control now supports distributed discovery execution with worker machines.
+The Opportunity Engine supports distributed discovery execution with worker machines.
 
 ## Execution Modes
 

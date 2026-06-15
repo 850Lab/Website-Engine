@@ -1,102 +1,34 @@
 # Website Outreach Engine
 
-A minimal CLI to score local business leads for website outreach opportunities. Leads are stored in `data/leads.json`.
+Backend-first Opportunity Engine for discovery, project previews, launch offers, and customer dashboard flows.
 
-## Mission Control Web UI
+This repository no longer includes Mission Control.
 
-A lightweight web dashboard now wraps the existing CLI engine without replacing it.
-
-### What it adds
-
-- Login screen (`/login`) secured by `ADMIN_PASSWORD`
-- One-time signup screen (`/signup`) to create the first admin account (stored in `data/admin.json`)
-- Mission Control dashboard (`/mission-control`) with lead KPIs and action table
-- Lead Generation runner (`/lead-generation`) using existing `discover` logic
-- Lead detail page (`/leads/:id`) with score, enrichment, outreach flow, and actions
-- Site preview page (`/leads/:id/preview`) with iframe + screenshot review
-
-### Backend API (Express)
-
-Server entry: `src/server.js`
-
-Exposed endpoints:
-
-- `POST /api/login`
-- `GET /api/auth/status`
-- `POST /api/signup`
-- `GET /api/me`
-- `POST /api/logout`
-- `GET /api/leads`
-- `GET /api/leads/:id`
-- `PATCH /api/leads/:id`
-- `POST /api/leads/:id/generate-preview-v3`
-- `POST /api/leads/:id/prepare-assets`
-- `POST /api/leads/:id/render-preview-v3`
-- `POST /api/leads/:id/generate-outreach-draft`
-- `POST /api/discover`
-- `GET /api/discover/:runId`
-- `POST /api/lead-generation/workload`
-- `GET /api/lead-generation/runs`
-- `GET /api/lead-generation/runs/:runId`
-- `GET /api/lead-generation/run-modes`
-- `GET /api/lead-runs`
-- `GET /api/lead-runs/:runId`
-- `POST /api/lead-runs`
-- `PATCH /api/lead-runs/:runId`
-- `DELETE /api/lead-runs/:runId`
-- `POST /api/lead-runs/:runId/reconsider-lead`
-- `POST /api/lead-runs/:runId/move-to-qualified`
-- `GET /api/dashboard-summary`
-
-### Run locally
+## Run locally
 
 1) Install dependencies:
 
 ```bash
 npm install
-npm install --prefix mission-control
 ```
 
 2) Create `.env` in repo root:
 
 ```bash
-ADMIN_PASSWORD=your-password # optional fallback if no admin account file exists
-OPENAI_API_KEY=sk-...   # optional, only for AI asset fallback
+ADMIN_PASSWORD=your-password
+PUBLIC_BASE_URL=https://your-domain.com
 ```
 
-3) Start backend:
+3) Start server:
 
 ```bash
 npm run server
 ```
 
-4) Start frontend in another terminal:
+4) Open:
 
-```bash
-npm run web:dev
-```
-
-5) Open: `http://localhost:5173/signup` (first time) then `http://localhost:5173/login`
-
-### Lead Generation pre-run filters
-
-`/lead-generation` now includes a full pre-run filter panel for:
-
-- Location (city/state/zip/radius), niche, excluded niches
-- Website and quality filters (weak/missing/strong exclusion, min score/reviews/rating)
-- Opportunity signal filters and outreach-readiness gates
-- Preview settings (auto preview/assets/renders, approval requirement)
-- Agent run mode (`research_only`, `research_score`, `research_score_enrich`, `full_preview_package`)
-
-Behavior:
-
-- A **Run Title** is required before running lead generation.
-- Each run is saved as a **Target Lead Group** in `data/lead-runs.json`.
-- `data/leads.json` remains the source of truth for full lead records; groups store lead IDs and run-specific rejection metadata.
-- Filters are applied before preview generation.
-- Qualified leads and rejected leads (with reason) are shown per run.
-- Run config + outcomes are persisted in `data/lead-generation-runs.json`.
-- Saved Target Lead Groups are visible under `/targets`, with group detail pages at `/targets/:runId`.
+- `http://localhost:8787/` (founder links page)
+- `http://localhost:8787/api/health`
 
 ## Requirements
 

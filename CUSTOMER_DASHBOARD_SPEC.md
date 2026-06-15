@@ -308,7 +308,7 @@ Response shape (customer-safe only):
 
 ### Operator-only: `GET /api/operator/projects/:projectId/fulfillment`
 
-Returns VU ledger, counts, entitlement, dispute data — Mission Control only.
+Returns VU ledger, counts, entitlement, dispute data — operator-only.
 
 ---
 
@@ -340,7 +340,7 @@ When internal `visibilityDelivered >= entitlement` (operator knows campaign fulf
 1. **Phase 1 dashboard:** Momentum `launching`, activity feed with `campaign_started` only, visitors = 0 with encouraging copy.
 2. **Phase 2:** On VU delivery, write Activity Event + recompute momentum; still no VU numbers on customer API.
 3. **Visitor pixel:** First-party script on preview/live site; increments `visitors` only.
-4. **Operator Mission Control** retains fulfillment tab with full VU ledger for disputes and economics.
+4. **Operator tools** retain fulfillment tab with full VU ledger for disputes and economics.
 
 ---
 
