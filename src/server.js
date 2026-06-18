@@ -18,6 +18,7 @@ import { registerFounderOsRoutes } from "./founder-os/index.js";
 import {
   registerTwilioCallRoutes,
   registerTwilioVoiceWebhookRoutes,
+  syncEnvTwilioToBlobIfEmpty,
 } from "./twilio-voice/index.js";
 import {
   createOperator,
@@ -198,7 +199,7 @@ registerV7Routes(app, { requireOperatorApi, requireOperatorPage });
 
 app.use("/api", protectKnownApiRoutes);
 
-registerTwilioCallRoutes(app, { requireOperatorApi });
+registerTwilioCallRoutes(app, { requireOperatorApi, requireOwnerApi });
 
 app.get("/api/operators", requireOwnerApi, async (_req, res) => {
   try {
@@ -260,6 +261,10 @@ export async function initializeApp() {
 
   migrateRecordsToIdentities().catch((err) => {
     console.warn(`Identity migration skipped: ${err.message}`);
+  });
+
+  syncEnvTwilioToBlobIfEmpty().catch((err) => {
+    console.warn(`Twilio settings sync skipped: ${err.message}`);
   });
 }
 

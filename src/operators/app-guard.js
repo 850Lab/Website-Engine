@@ -13,6 +13,15 @@ const OPERATOR_PAGE_PATHS = new Set([
   "/angle-folders",
 ]);
 
+function isTwilioVoiceWebhookPath(path, method) {
+  if (method !== "POST") return false;
+  return (
+    path === "/api/twilio/voice/connect" ||
+    path === "/api/twilio/voice/recording" ||
+    path === "/api/twilio/voice/status"
+  );
+}
+
 function isOperatorApiPath(path) {
   return (
     path.startsWith("/api/pivotal-os") ||
@@ -21,7 +30,8 @@ function isOperatorApiPath(path) {
     path.startsWith("/api/public/angle-folders") ||
     path.startsWith("/api/public/founder") ||
     path.startsWith("/api/calls") ||
-    path.startsWith("/api/operators")
+    path.startsWith("/api/operators") ||
+    path.startsWith("/api/twilio/voice/settings")
   );
 }
 
@@ -35,7 +45,7 @@ function isPublicApiPath(path, method) {
   if (path.startsWith("/api/public/projects/")) return true;
   if (path === "/api/public/funnel/event" && method === "POST") return true;
   if (path.startsWith("/api/stripe/")) return true;
-  if (path.startsWith("/api/twilio/")) return true;
+  if (isTwilioVoiceWebhookPath(path, method)) return true;
   if (path.startsWith("/api/customer/")) return true;
   return false;
 }
