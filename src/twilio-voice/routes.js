@@ -4,8 +4,10 @@ import { cleanText, normalizePhoneNumber } from "../stage1/shared.js";
 import { getQualifiedBusiness } from "../stage1/qualified-business-store.js";
 import {
   assertTwilioVoiceConfigured,
+  buildTwilioVoiceStatus,
   getTwilioVoiceConfig,
   resolvePublicBaseUrl,
+  updateTwilioVoiceSettings,
 } from "./config.js";
 import {
   appendCallSessionEvent,
@@ -23,8 +25,16 @@ import {
   assignLeadToOperator,
   canOperatorAccessLead,
 } from "../operators/lead-assignment.js";
+import {
+  ensureTwilioTestBusiness,
+  isTwilioTestBusiness,
+} from "./test-lead.js";
 
 const VoiceResponse = twilio.twiml.VoiceResponse;
+
+function logTwilioVoiceError(scope, err) {
+  console.error(`[twilio-voice] ${scope}:`, err?.message || err);
+}
 
 function twilioFormBody(req) {
   return req.body && typeof req.body === "object" ? req.body : {};
@@ -34,18 +44,19 @@ function sessionIdFromRequest(req) {
   return cleanText(req.query?.sessionId || twilioFormBody(req).sessionId);
 }
 
-function validateTwilioWebhook(req) {
-  const { authToken } = getTwilioVoiceConfig();
-  if (!authToken) return false;
+async function validateTwilioWebhook(req) {
+  const config = await getTwilioVoiceConfig(req);
+  if (!config.authToken) return false;
 
   const signature = req.get("x-twilio-signature");
   if (!signature) return false;
 
   try {
+    const base = config.publicBaseUrl || resolvePublicBaseUrl(req);
     return twilio.validateRequest(
-      authToken,
+      config.authToken,
       signature,
-      resolvePublicBaseUrl(req) + req.originalUrl,
+      `${base}${req.originalUrl}`,
       twilioFormBody(req),
     );
   } catch {
@@ -53,19 +64,51 @@ function validateTwilioWebhook(req) {
   }
 }
 
-function rejectInvalidTwilioWebhook(req, res) {
-  if (validateTwilioWebhook(req)) return false;
+async function rejectInvalidTwilioWebhook(req, res) {
+  if (await validateTwilioWebhook(req)) return false;
   res.status(403).type("text/plain").send("Forbidden");
   return true;
 }
 
 function prospectPhoneForBusiness(business) {
-  const phone = cleanText(business.normalizedPhone) || cleanText(business.phone);
+  const phone = cleanText(business?.normalizedPhone) || cleanText(business?.phone);
   return normalizePhoneNumber(phone);
 }
 
-function webhookPath(req, path, sessionId) {
-  const base = resolvePublicBaseUrl(req);
+function prospectPhoneForSession(session, business) {
+  return (
+    prospectPhoneForBusiness(business) ||
+    normalizePhoneNumber(session?.prospectPhone)
+  );
+}
+
+async function persistCallProgress(session, callSid, status = "in-progress") {
+  if (!session?.id || !callSid) return;
+
+  try {
+    await updateCallSession(session.id, { twilioCallSid: callSid });
+  } catch (err) {
+    logTwilioVoiceError("updateCallSession", err);
+  }
+
+  try {
+    await upsertSalesCallOnBusiness(
+      session.businessId,
+      buildSalesCallRecord({
+        id: session.id,
+        twilioCallSid: callSid,
+        startedAt: session.startedAt,
+        status,
+      }),
+    );
+  } catch (err) {
+    logTwilioVoiceError("upsertSalesCallOnBusiness", err);
+  }
+}
+
+async function webhookPath(req, path, sessionId) {
+  const config = await getTwilioVoiceConfig(req);
+  const base = config.publicBaseUrl || resolvePublicBaseUrl(req);
   const qs = sessionId ? `?sessionId=${encodeURIComponent(sessionId)}` : "";
   return `${base}${path}${qs}`;
 }
@@ -78,7 +121,7 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
     parseForm,
     async (req, res) => {
       try {
-        if (rejectInvalidTwilioWebhook(req, res)) return;
+        if (await rejectInvalidTwilioWebhook(req, res)) return;
 
         const sessionId = sessionIdFromRequest(req);
         const session = sessionId ? await getCallSession(sessionId) : null;
@@ -89,8 +132,12 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
           return res.type("text/xml").send(response.toString());
         }
 
+        if (isTwilioTestBusiness(session.businessId)) {
+          await ensureTwilioTestBusiness();
+        }
+
         const business = await getQualifiedBusiness(session.businessId);
-        const prospectPhone = prospectPhoneForBusiness(business ?? {});
+        const prospectPhone = prospectPhoneForSession(session, business);
         if (!prospectPhone) {
           await updateCallSession(session.id, {
             status: "failed",
@@ -104,26 +151,13 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
         }
 
         const callSid = cleanText(twilioFormBody(req).CallSid);
-        if (callSid) {
-          await updateCallSession(session.id, { twilioCallSid: callSid });
-          await upsertSalesCallOnBusiness(
-            session.businessId,
-            buildSalesCallRecord({
-              id: session.id,
-              twilioCallSid: callSid,
-              startedAt: session.startedAt,
-              status: "in-progress",
-            }),
-          );
-        }
-
         const businessName = cleanText(session.businessName) || "the prospect";
-        const recordingCallback = webhookPath(
+        const recordingCallback = await webhookPath(
           req,
           "/api/twilio/voice/recording",
           session.id,
         );
-        const statusCallback = webhookPath(req, "/api/twilio/voice/status", session.id);
+        const statusCallback = await webhookPath(req, "/api/twilio/voice/status", session.id);
 
         const response = new VoiceResponse();
         response.say(
@@ -140,8 +174,14 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
         });
         dial.number(prospectPhone);
 
-        return res.type("text/xml").send(response.toString());
+        // Return TwiML immediately so Twilio doesn't timeout while we persist call state.
+        res.type("text/xml").send(response.toString());
+        if (callSid) {
+          await persistCallProgress(session, callSid);
+        }
+        return;
       } catch (err) {
+        logTwilioVoiceError("connect", err);
         const response = new VoiceResponse();
         response.say("Sorry, an error occurred while connecting your call.");
         response.hangup();
@@ -152,7 +192,7 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
 
   app.post("/api/twilio/voice/recording", parseForm, async (req, res) => {
     try {
-      if (rejectInvalidTwilioWebhook(req, res)) return;
+      if (await rejectInvalidTwilioWebhook(req, res)) return;
 
       const body = twilioFormBody(req);
       const sessionId = sessionIdFromRequest(req);
@@ -178,30 +218,35 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
       });
 
       if (recordingStatus === "completed" && recordingSid) {
-        await saveRecordingToBusiness({
-          businessId: session.businessId,
-          callId: session.id,
-          twilioCallSid: callSid || session.twilioCallSid,
-          twilioRecordingSid: recordingSid,
-          recordingUrl,
-          durationSec,
-          startedAt: session.startedAt,
-        });
-        await updateCallSession(session.id, {
-          status: "completed",
-          completedAt: new Date().toISOString(),
-        });
+        try {
+          await saveRecordingToBusiness({
+            businessId: session.businessId,
+            callId: session.id,
+            twilioCallSid: callSid || session.twilioCallSid,
+            twilioRecordingSid: recordingSid,
+            recordingUrl,
+            durationSec,
+            startedAt: session.startedAt,
+          });
+          await updateCallSession(session.id, {
+            status: "completed",
+            completedAt: new Date().toISOString(),
+          });
+        } catch (err) {
+          logTwilioVoiceError("recording-save", err);
+        }
       }
 
       return res.type("text/plain").send("OK");
     } catch (err) {
+      logTwilioVoiceError("recording", err);
       return res.status(500).type("text/plain").send("Error");
     }
   });
 
   app.post("/api/twilio/voice/status", parseForm, async (req, res) => {
     try {
-      if (rejectInvalidTwilioWebhook(req, res)) return;
+      if (await rejectInvalidTwilioWebhook(req, res)) return;
 
       const body = twilioFormBody(req);
       const sessionId = sessionIdFromRequest(req);
@@ -226,22 +271,26 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
           "canceled",
         ]);
         if (terminal.has(callStatus)) {
-          await updateCallSession(session.id, {
-            status: callStatus,
-            completedAt: new Date().toISOString(),
-            error: callStatus === "failed" ? cleanText(body.ErrorMessage) || callStatus : null,
-          });
-          await upsertSalesCallOnBusiness(
-            session.businessId,
-            buildSalesCallRecord({
-              id: session.id,
-              twilioCallSid: callSid || session.twilioCallSid,
-              startedAt: session.startedAt,
-              completedAt: new Date().toISOString(),
+          try {
+            await updateCallSession(session.id, {
               status: callStatus,
+              completedAt: new Date().toISOString(),
               error: callStatus === "failed" ? cleanText(body.ErrorMessage) || callStatus : null,
-            }),
-          );
+            });
+            await upsertSalesCallOnBusiness(
+              session.businessId,
+              buildSalesCallRecord({
+                id: session.id,
+                twilioCallSid: callSid || session.twilioCallSid,
+                startedAt: session.startedAt,
+                completedAt: new Date().toISOString(),
+                status: callStatus,
+                error: callStatus === "failed" ? cleanText(body.ErrorMessage) || callStatus : null,
+              }),
+            );
+          } catch (err) {
+            logTwilioVoiceError("status-terminal", err);
+          }
         } else if (callStatus === "answered" || callStatus === "in-progress") {
           await updateCallSession(session.id, { status: callStatus });
         } else if (callStatus === "ringing" || callStatus === "initiated") {
@@ -251,13 +300,31 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
 
       return res.type("text/plain").send("OK");
     } catch (err) {
+      logTwilioVoiceError("status", err);
       return res.status(500).type("text/plain").send("Error");
     }
   });
 }
 
-export function registerTwilioCallRoutes(app, { requireOperatorApi } = {}) {
+export function registerTwilioCallRoutes(app, { requireOperatorApi, requireOwnerApi } = {}) {
   const auth = requireOperatorApi ?? ((_req, _res, next) => next());
+  const ownerAuth = requireOwnerApi ?? auth;
+
+  app.get("/api/twilio/voice/settings", ownerAuth, async (req, res) => {
+    try {
+      return res.json(await buildTwilioVoiceStatus(req));
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.put("/api/twilio/voice/settings", ownerAuth, async (req, res) => {
+    try {
+      return res.json(await updateTwilioVoiceSettings(req.body ?? {}));
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  });
 
   app.post("/api/calls/start", auth, async (req, res) => {
     try {
@@ -266,7 +333,10 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi } = {}) {
         return res.status(400).json({ error: "businessId is required" });
       }
 
-      const config = assertTwilioVoiceConfigured();
+      const config = await assertTwilioVoiceConfigured(req);
+      if (isTwilioTestBusiness(businessId)) {
+        await ensureTwilioTestBusiness();
+      }
       const business = await getQualifiedBusiness(businessId);
       if (!business) {
         return res.status(404).json({ error: "Business not found" });
@@ -291,8 +361,8 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi } = {}) {
         prospectPhone,
       });
 
-      const connectUrl = webhookPath(req, "/api/twilio/voice/connect", session.id);
-      const statusCallback = webhookPath(req, "/api/twilio/voice/status", session.id);
+      const connectUrl = await webhookPath(req, "/api/twilio/voice/connect", session.id);
+      const statusCallback = await webhookPath(req, "/api/twilio/voice/status", session.id);
 
       const client = twilio(config.accountSid, config.authToken);
       const call = await client.calls.create({
@@ -305,20 +375,7 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi } = {}) {
         statusCallbackEvent: ["initiated", "ringing", "answered", "completed"],
       });
 
-      await updateCallSession(session.id, {
-        twilioCallSid: call.sid,
-        status: cleanText(call.status) || "initiated",
-      });
-
-      await upsertSalesCallOnBusiness(
-        business.id,
-        buildSalesCallRecord({
-          id: session.id,
-          twilioCallSid: call.sid,
-          startedAt: session.startedAt,
-          status: cleanText(call.status) || "initiated",
-        }),
-      );
+      await persistCallProgress(session, call.sid, cleanText(call.status) || "initiated");
 
       return res.json({
         ok: true,
@@ -327,6 +384,7 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi } = {}) {
         status: cleanText(call.status) || "initiated",
       });
     } catch (err) {
+      logTwilioVoiceError("calls/start", err);
       return res.status(400).json({ error: err.message });
     }
   });

@@ -27,6 +27,23 @@ export function renderSettingsPage() {
       <div id="teamList" class="card-body">Loading…</div>
     </div>
 
+    <div class="card hidden" id="twilioCard">
+      <div class="card-label">Twilio Voice</div>
+      <div class="card-value" id="twilioStatus" style="font-size:18px">Checking…</div>
+      <div class="card-body" id="twilioDetail" style="margin-top:8px;margin-bottom:14px"></div>
+      <form id="twilioForm">
+        <div class="field"><label class="field-label">Account SID</label><input class="field-input" id="twilioAccountSid" autocomplete="off" /></div>
+        <div class="field"><label class="field-label">Auth token</label><input class="field-input" id="twilioAuthToken" type="password" autocomplete="new-password" placeholder="Leave blank to keep current" /></div>
+        <div class="field"><label class="field-label">From number</label><input class="field-input" id="twilioFromNumber" placeholder="+15551234567" /></div>
+        <div class="field"><label class="field-label">Your phone (rings first)</label><input class="field-input" id="twilioFounderPhone" placeholder="+15551234567" /></div>
+        <div class="field"><label class="field-label">Public base URL</label><input class="field-input" id="twilioPublicBaseUrl" placeholder="https://pivotalwebsites.com" /></div>
+        <p class="auth-error hidden" id="twilioError"></p>
+        <p class="card-body hidden" id="twilioSuccess" style="color:#4ade80;margin-bottom:12px"></p>
+        <button type="submit" class="btn btn-primary btn-block">Save Twilio settings</button>
+      </form>
+      <p class="card-body" style="margin-top:12px;font-size:13px;color:var(--text-dim)">Saved to cloud storage when BLOB_READ_WRITE_TOKEN is set on Vercel — not just this machine's .env file.</p>
+    </div>
+
     <div class="card">
       <div class="card-label">Outcome storage</div>
       <div class="card-value" id="storageStatus" style="font-size:18px">Checking…</div>
@@ -73,9 +90,63 @@ export function renderSettingsPage() {
       };
       if(me.operator.role==='owner'){
         document.getElementById('teamCard').classList.remove('hidden');
+        document.getElementById('twilioCard').classList.remove('hidden');
         loadTeam();
+        loadTwilioSettings();
       }
     }
+
+    function renderTwilioSettings(data){
+      document.getElementById('twilioStatus').textContent=data.configured?'Ready for calls':'Not configured';
+      var detail=data.configured
+        ? 'Click-to-call uses '+data.storage+'. Sources: '+(data.sources||[]).join(', ')
+        : 'Missing: '+(data.missing||[]).join(', ')+'. Fill in below and save.';
+      document.getElementById('twilioDetail').textContent=detail;
+      document.getElementById('twilioAccountSid').value=data.accountSid||'';
+      document.getElementById('twilioFromNumber').value=data.fromNumber||'';
+      document.getElementById('twilioFounderPhone').value=data.founderPhone||'';
+      document.getElementById('twilioPublicBaseUrl').value=data.publicBaseUrl||'';
+      document.getElementById('twilioAuthToken').value='';
+      document.getElementById('twilioAuthToken').placeholder=data.hasAuthToken?'Leave blank to keep current':'Required';
+    }
+
+    async function loadTwilioSettings(){
+      try{
+        var data=await jsonFetch('/api/twilio/voice/settings');
+        renderTwilioSettings(data);
+      }catch(e){
+        document.getElementById('twilioStatus').textContent='Error';
+        document.getElementById('twilioDetail').textContent=e.message;
+      }
+    }
+
+    document.getElementById('twilioForm').addEventListener('submit',function(e){
+      e.preventDefault();
+      var errEl=document.getElementById('twilioError');
+      var okEl=document.getElementById('twilioSuccess');
+      errEl.classList.add('hidden');
+      okEl.classList.add('hidden');
+      var body={
+        accountSid:document.getElementById('twilioAccountSid').value.trim(),
+        fromNumber:document.getElementById('twilioFromNumber').value.trim(),
+        founderPhone:document.getElementById('twilioFounderPhone').value.trim(),
+        publicBaseUrl:document.getElementById('twilioPublicBaseUrl').value.trim()
+      };
+      var token=document.getElementById('twilioAuthToken').value;
+      if(token) body.authToken=token;
+      jsonFetch('/api/twilio/voice/settings',{
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      }).then(function(data){
+        renderTwilioSettings(data);
+        okEl.textContent='Twilio settings saved.';
+        okEl.classList.remove('hidden');
+      }).catch(function(err){
+        errEl.textContent=err.message;
+        errEl.classList.remove('hidden');
+      });
+    });
 
     async function loadTeam(){
       try{
