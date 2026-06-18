@@ -224,7 +224,9 @@ export function renderCallQueuePage() {
 
     var savedId=null;
     try{savedId=localStorage.getItem('callQueueLeadId');}catch(e){}
-    loadLead(savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
+    var params=new URLSearchParams(window.location.search);
+    var leadParam=params.get('lead');
+    loadLead(leadParam||savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
   `;
 
   return pivotalShell({

@@ -6,6 +6,11 @@ export function renderHomePage() {
     <h1 class="hero-title">Today's mission</h1>
     <p class="hero-sub" id="greeting">Loading your day…</p>
 
+    <div class="card card-highlight" id="twilioTestCard" style="margin-bottom:16px;border-color:rgba(99,102,241,0.45)">
+      <div class="card-label">Twilio test call — run this first</div>
+      <div id="twilioTestContent" class="loading">Loading test lead…</div>
+    </div>
+
     <div class="card" id="goalsCard">
       <div class="card-label">Today's goal</div>
       <div class="metric-grid">
@@ -33,6 +38,10 @@ export function renderHomePage() {
 
   const headExtra = `
     .next-name { font-size: clamp(22px, 5vw, 28px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .test-note { font-size: 14px; color: var(--text-muted); line-height: 1.45; margin-bottom: 14px; }
+    .test-status { font-size: 14px; font-weight: 600; min-height: 20px; margin-top: 10px; color: var(--accent); }
+    .test-status.error { color: #f87171; }
+    .test-status.ok { color: #4ade80; }
   `;
 
   const script = `
@@ -58,6 +67,63 @@ export function renderHomePage() {
         '<div class="btn-row single">'+btns+'</div>';
     }
 
+    async function jsonFetch(url, opts){
+      var res=await fetch(url, opts||{});
+      var data=await res.json();
+      if(!res.ok) throw new Error(data.error||res.statusText);
+      return data;
+    }
+
+    function setTestStatus(msg, kind){
+      var el=document.getElementById('twilioTestStatus');
+      if(!el) return;
+      el.textContent=msg||'';
+      el.className='test-status'+(kind?' '+kind:'');
+    }
+
+    async function startTwilioTestCall(businessId){
+      var btn=document.getElementById('twilioTestCallBtn');
+      if(btn) btn.disabled=true;
+      setTestStatus('Calling your phone…');
+      try{
+        await jsonFetch('/api/calls/start',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({businessId:businessId})
+        });
+        setTestStatus('Call started — answer your phone to connect to the test line.','ok');
+      }catch(e){
+        var msg=e.message||'Call failed';
+        if(msg.toLowerCase().indexOf('unauthorized')!==-1){
+          msg='Log in required — sign in first, then retry.';
+        }
+        setTestStatus(msg,'error');
+      }finally{
+        if(btn) btn.disabled=false;
+      }
+    }
+
+    function renderTwilioTest(test){
+      var el=document.getElementById('twilioTestContent');
+      if(!test){
+        el.innerHTML='<p class="card-body">Twilio test lead not found.</p>';
+        return;
+      }
+      el.innerHTML=
+        '<div class="next-name">'+esc(test.businessName)+'</div>'+
+        '<div class="card-body" style="margin-bottom:10px">'+esc(test.phone)+' · '+esc(test.city)+'</div>'+
+        '<p class="test-note">Run this before real leads. Your phone rings first, then connects to the test number with recording.</p>'+
+        '<div class="btn-row">'+
+          '<button type="button" class="btn btn-primary" id="twilioTestCallBtn">Call with Recording</button>'+
+          (test.callUrl?'<a class="btn btn-ghost" href="'+esc(test.callUrl)+'">Call Direct</a>':'')+
+        '</div>'+
+        '<div id="twilioTestStatus" class="test-status" aria-live="polite"></div>'+
+        '<a class="btn btn-ghost btn-block" href="'+esc(test.callQueueUrl)+'" style="margin-top:10px">Open in Call Queue</a>';
+      document.getElementById('twilioTestCallBtn').onclick=function(){
+        startTwilioTestCall(test.id);
+      };
+    }
+
     function renderDaily(d){
       var h=new Date().getHours();
       var greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
@@ -76,6 +142,7 @@ export function renderHomePage() {
 
     fetch('/api/pivotal-os/dashboard').then(function(r){return r.json();}).then(function(data){
       renderDaily(data.daily);
+      renderTwilioTest(data.twilioTest);
       renderNext(data.nextOpportunity);
     }).catch(function(err){document.getElementById('greeting').textContent=err.message;});
   `;

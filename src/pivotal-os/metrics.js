@@ -1,10 +1,11 @@
 import { cleanText } from "../stage1/shared.js";
 import { listQualifiedBusinesses } from "../stage1/qualified-business-store.js";
 import { getAngleAnalysisStore } from "../angle-analysis/store.js";
-import { buildSalesQueue } from "../mission-control/sales-queue.js";
+import { buildSalesQueue, getSalesLeadById } from "../mission-control/sales-queue.js";
 import { buildAngleFolderSummary } from "../angle-folders-page.js";
 import { FOLDER_BY_KEY } from "../angle-analysis/categories.js";
 import { blobPersistenceEnabled, persistenceBackendLabel } from "../persistence/json-document-store.js";
+import { TWILIO_TEST_BUSINESS_ID, ensureTwilioTestBusiness } from "../twilio-voice/test-lead.js";
 
 export const DEFAULT_GOALS = {
   calls: 20,
@@ -143,6 +144,21 @@ export async function buildPipelineMetrics(records = null) {
   };
 }
 
+export async function buildTwilioTestLead(req) {
+  await ensureTwilioTestBusiness();
+  const lead = await getSalesLeadById(req, TWILIO_TEST_BUSINESS_ID);
+  if (!lead?.hasPhone) return null;
+
+  return {
+    id: lead.id,
+    businessName: lead.businessName,
+    phone: lead.phone,
+    city: lead.city,
+    callUrl: lead.actions.call,
+    callQueueUrl: `/call-queue?lead=${encodeURIComponent(lead.id)}`,
+  };
+}
+
 export async function buildNextBestOpportunity(req) {
   const queue = await buildSalesQueue(req, { phoneOnly: true, excludeClosed: true });
   if (!queue.length) return null;
@@ -223,13 +239,14 @@ export async function buildOpportunityFolders(req) {
 }
 
 export async function buildPivotalDashboard(req) {
-  const [daily, pipeline, nextOpportunity] = await Promise.all([
+  const [daily, pipeline, nextOpportunity, twilioTest] = await Promise.all([
     buildDailyMetrics(),
     buildPipelineMetrics(),
     buildNextBestOpportunity(req),
+    buildTwilioTestLead(req),
   ]);
 
-  return { daily, pipeline, nextOpportunity };
+  return { daily, pipeline, nextOpportunity, twilioTest };
 }
 
 export function buildSettingsSnapshot() {

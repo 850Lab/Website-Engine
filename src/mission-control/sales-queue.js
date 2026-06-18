@@ -5,6 +5,7 @@ import { publicBaseUrl } from "../v7/shared.js";
 import { defaultFollowUpText } from "../sales-brief/outreach-copy.js";
 import { OPENING_LINES, EMERGENCY_QUESTION, FIRST_DEFLECTION_RESPONSES } from "../sales-brief/outreach-copy.js";
 import { OUTREACH_STATUS_LABELS } from "../outreach-page.js";
+import { isTwilioTestBusiness } from "../twilio-voice/test-lead.js";
 
 const PRIORITY_RANK = { Hot: 0, Warm: 1, Nurture: 2, "Manual Review": 3 };
 const OUTCOME_RANK = {
@@ -135,6 +136,9 @@ export async function buildSalesQueue(req, filters = {}) {
       if (filters.excludeClosed) {
         const status = cleanText(record.outreachStatus);
         if (status === "won" || status === "lost") return false;
+      }
+      if (filters.excludeTwilioTest !== false && isTwilioTestBusiness(record.id)) {
+        return false;
       }
       return true;
     })
