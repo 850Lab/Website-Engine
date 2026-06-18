@@ -12,8 +12,14 @@ export function renderCallQueuePage() {
     .script-card { background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); }
     .script-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
     .script-text { font-size: 17px; line-height: 1.55; font-weight: 500; }
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .action-grid .btn { min-height: var(--tap-lg); font-size: 17px; }
+    .call-status {
+      font-size: 14px; font-weight: 600; margin-bottom: 14px; min-height: 20px;
+      color: var(--accent); line-height: 1.4;
+    }
+    .call-status.error { color: #f87171; }
+    .call-status.ok { color: #4ade80; }
     .dock-actions {
       position: fixed;
       left: 0; right: 0;
@@ -90,10 +96,18 @@ export function renderCallQueuePage() {
           '<span class="badge">'+esc(lead.folderLabel)+'</span>'+
           (lead.confidenceScore?'<span class="badge accent">'+lead.confidenceScore+'%</span>':'')+
         '</div></div>'+
+        '<div id="callStatus" class="call-status" aria-live="polite"></div>'+
         '<div class="action-grid">'+
-          (lead.actions.call?'<a class="btn btn-primary" href="'+esc(lead.actions.call)+'">📞 Call</a>':'<span class="btn btn-ghost" style="opacity:0.4">No phone</span>')+
-          (lead.actions.text?'<a class="btn btn-ghost" href="'+esc(lead.actions.text)+'">💬 Text</a>':'<span class="btn btn-ghost" style="opacity:0.4">No text</span>')+
+          (lead.actions.call
+            ? '<button type="button" class="btn btn-primary" id="recordedCallBtn">📞 Call with Recording</button>'
+            : '<span class="btn btn-ghost" style="opacity:0.4">No phone</span>')+
+          (lead.actions.call
+            ? '<a class="btn btn-ghost" href="'+esc(lead.actions.call)+'">Call Direct</a>'
+            : '<span class="btn btn-ghost" style="opacity:0.4">No phone</span>')+
         '</div>'+
+        (lead.actions.text
+          ? '<a class="btn btn-ghost btn-block" href="'+esc(lead.actions.text)+'" style="margin-bottom:14px">💬 Text</a>'
+          : '')+
         (lead.previewUrl?'<a class="btn btn-ghost btn-block" href="'+esc(lead.previewUrl)+'" target="_blank" rel="noopener" style="margin-bottom:14px">Open preview</a>':'')+
         '<div class="script-card"><div class="script-label">Problem</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.problem)+'</div></div>'+
         '<div class="script-card"><div class="script-label">Angle</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.primaryAngle)+'</div></div>'+
@@ -124,10 +138,55 @@ export function renderCallQueuePage() {
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('leadView').classList.remove('hidden');
       document.getElementById('leadView').innerHTML=renderLead(currentLead);
+      bindRecordedCallButton();
       var stats=data.stats||{total:0,hot:0,notContacted:0};
       document.getElementById('queueMeta').textContent=stats.total+' in queue · '+stats.hot+' hot · '+stats.notContacted+' not contacted';
       try{localStorage.setItem('callQueueLeadId',currentLead.id);}catch(e){}
       window.scrollTo(0,0);
+    }
+
+    function setCallStatus(msg, kind){
+      var el=document.getElementById('callStatus');
+      if(!el) return;
+      el.textContent=msg||'';
+      el.className='call-status'+(kind?' '+kind:'');
+    }
+
+    async function startRecordedCall(){
+      if(!currentLead) return;
+      var btn=document.getElementById('recordedCallBtn');
+      if(btn) btn.disabled=true;
+      setCallStatus('Calling your phone…');
+      setBusy(true);
+      try{
+        var result=await jsonFetch('/api/calls/start',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({businessId:currentLead.id})
+        });
+        setCallStatus('Call started — answer your phone to connect to '+currentLead.businessName+'.','ok');
+        showToast('Calling your phone');
+      }catch(e){
+        var msg=e.message||'Call failed';
+        if(msg.toLowerCase().indexOf('unauthorized')!==-1){
+          msg='Log in required — open /api/login or sign in via admin, then retry.';
+        }
+        setCallStatus(msg,'error');
+        showToast('Call failed');
+      }finally{
+        if(btn) btn.disabled=false;
+        setBusy(false);
+      }
+    }
+
+    function bindRecordedCallButton(){
+      var btn=document.getElementById('recordedCallBtn');
+      if(!btn) return;
+      btn.onclick=function(){
+        startRecordedCall().catch(function(e){
+          setCallStatus(e.message||'Call failed','error');
+        });
+      };
     }
 
     async function saveOutcome(outcomeId, status){
@@ -165,7 +224,9 @@ export function renderCallQueuePage() {
 
     var savedId=null;
     try{savedId=localStorage.getItem('callQueueLeadId');}catch(e){}
-    loadLead(savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
+    var params=new URLSearchParams(window.location.search);
+    var leadParam=params.get('lead');
+    loadLead(leadParam||savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
   `;
 
   return pivotalShell({

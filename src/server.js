@@ -22,6 +22,10 @@ import { registerOpportunityEngineRoutes } from "./opportunity-engine/index.js";
 import { migrateRecordsToIdentities } from "./identity/migrate-identities.js";
 import { isWorkerJobPath, validateWorkerAuth } from "./worker-auth.js";
 import { registerFounderOsRoutes } from "./founder-os/index.js";
+import {
+  registerTwilioCallRoutes,
+  registerTwilioVoiceWebhookRoutes,
+} from "./twilio-voice/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -125,6 +129,7 @@ const PROTECTED_API_PREFIXES = [
   "/opportunity-engine/",
   "/founder-os/",
   "/admin/system-status",
+  "/calls/",
 ];
 
 async function protectKnownApiRoutes(req, res, next) {
@@ -179,6 +184,9 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async
     return res.status(400).json({ error: err.message });
   }
 });
+
+const twilioFormParser = express.urlencoded({ extended: false });
+registerTwilioVoiceWebhookRoutes(app, twilioFormParser);
 
 app.use(express.json({ limit: "8mb" }));
 app.use(cookieParser());
@@ -247,6 +255,7 @@ registerV7Routes(app);
 
 app.use("/api", protectKnownApiRoutes);
 
+registerTwilioCallRoutes(app);
 registerV7OperatorRoutes(app);
 registerStage1Routes(app);
 registerOpportunityEngineRoutes(app);
