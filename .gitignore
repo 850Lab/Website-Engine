@@ -1,12 +1,16 @@
 node_modules/
 .env
 .env.local
-data/
 previews-v3/
 renders/
 sales-packages/
-data/leads.json
-data/admin.json
-data/admin-sessions.json
-data/lead-generation-runs.json
-data/lead-runs.json
+
+# Runtime data — only allowlisted JSON ships to production (Sales Mode / outreach)
+data/*
+!data/qualified-businesses.json
+!data/angle-analyses.json
+!data/website-quality-scores.json
+!data/founder-os.json
+data/website-screenshots/
+data/**/*.bak
+data/**/*.tmp
