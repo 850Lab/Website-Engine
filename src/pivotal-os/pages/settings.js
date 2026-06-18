@@ -36,7 +36,7 @@ export function renderSettingsPage() {
         <div class="field"><label class="field-label">Auth token</label><input class="field-input" id="twilioAuthToken" type="password" autocomplete="new-password" placeholder="Leave blank to keep current" /></div>
         <div class="field"><label class="field-label">From number</label><input class="field-input" id="twilioFromNumber" placeholder="+15551234567" /></div>
         <div class="field"><label class="field-label">Your phone (rings first)</label><input class="field-input" id="twilioFounderPhone" placeholder="+15551234567" /></div>
-        <div class="field"><label class="field-label">Public base URL</label><input class="field-input" id="twilioPublicBaseUrl" placeholder="https://pivotalwebsites.com" /></div>
+        <div class="field"><label class="field-label">Public base URL</label><input class="field-input" id="twilioPublicBaseUrl" placeholder="https://www.pivotalwebsites.com" /></div>
         <p class="auth-error hidden" id="twilioError"></p>
         <p class="card-body hidden" id="twilioSuccess" style="color:#4ade80;margin-bottom:12px"></p>
         <button type="submit" class="btn btn-primary btn-block">Save Twilio settings</button>

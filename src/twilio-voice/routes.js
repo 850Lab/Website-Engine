@@ -52,11 +52,11 @@ async function validateTwilioWebhook(req) {
   if (!signature) return false;
 
   try {
-    const base = config.publicBaseUrl || resolvePublicBaseUrl(req);
+    const url = `${resolvePublicBaseUrl(req)}${req.originalUrl}`;
     return twilio.validateRequest(
       config.authToken,
       signature,
-      `${base}${req.originalUrl}`,
+      url,
       twilioFormBody(req),
     );
   } catch {
@@ -106,9 +106,8 @@ async function persistCallProgress(session, callSid, status = "in-progress") {
   }
 }
 
-async function webhookPath(req, path, sessionId) {
-  const config = await getTwilioVoiceConfig(req);
-  const base = config.publicBaseUrl || resolvePublicBaseUrl(req);
+function webhookPath(req, path, sessionId) {
+  const base = resolvePublicBaseUrl(req);
   const qs = sessionId ? `?sessionId=${encodeURIComponent(sessionId)}` : "";
   return `${base}${path}${qs}`;
 }
@@ -132,10 +131,6 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
           return res.type("text/xml").send(response.toString());
         }
 
-        if (isTwilioTestBusiness(session.businessId)) {
-          await ensureTwilioTestBusiness();
-        }
-
         const business = await getQualifiedBusiness(session.businessId);
         const prospectPhone = prospectPhoneForSession(session, business);
         if (!prospectPhone) {
@@ -152,12 +147,12 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
 
         const callSid = cleanText(twilioFormBody(req).CallSid);
         const businessName = cleanText(session.businessName) || "the prospect";
-        const recordingCallback = await webhookPath(
+        const recordingCallback = webhookPath(
           req,
           "/api/twilio/voice/recording",
           session.id,
         );
-        const statusCallback = await webhookPath(req, "/api/twilio/voice/status", session.id);
+        const statusCallback = webhookPath(req, "/api/twilio/voice/status", session.id);
 
         const response = new VoiceResponse();
         response.say(
@@ -178,6 +173,11 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
         res.type("text/xml").send(response.toString());
         if (callSid) {
           await persistCallProgress(session, callSid);
+        }
+        if (isTwilioTestBusiness(session.businessId)) {
+          ensureTwilioTestBusiness().catch((err) =>
+            logTwilioVoiceError("ensureTwilioTestBusiness", err),
+          );
         }
         return;
       } catch (err) {
@@ -361,8 +361,8 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi, requireOwner
         prospectPhone,
       });
 
-      const connectUrl = await webhookPath(req, "/api/twilio/voice/connect", session.id);
-      const statusCallback = await webhookPath(req, "/api/twilio/voice/status", session.id);
+      const connectUrl = webhookPath(req, "/api/twilio/voice/connect", session.id);
+      const statusCallback = webhookPath(req, "/api/twilio/voice/status", session.id);
 
       const client = twilio(config.accountSid, config.authToken);
       const call = await client.calls.create({

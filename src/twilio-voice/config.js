@@ -16,13 +16,33 @@ function fromEnv() {
   };
 }
 
+const CANONICAL_BASE_URLS = new Map([
+  ["https://pivotalwebsites.com", "https://www.pivotalwebsites.com"],
+  ["http://pivotalwebsites.com", "https://www.pivotalwebsites.com"],
+]);
+
+export function normalizePublicBaseUrl(url) {
+  const cleaned = cleanText(url).replace(/\/$/, "");
+  if (!cleaned) return "";
+  const canonical = CANONICAL_BASE_URLS.get(cleaned.toLowerCase());
+  return canonical || cleaned;
+}
+
 export function resolvePublicBaseUrl(req) {
-  const configured = cleanText(process.env.PUBLIC_BASE_URL);
-  if (configured) return configured.replace(/\/$/, "");
-  const forwardedProto = String(req.get("x-forwarded-proto") || "").split(",")[0].trim();
-  const protocol = forwardedProto || req.protocol || "http";
-  const host = req.get("host") || "localhost:8787";
-  return `${protocol}://${host}`.replace(/\/$/, "");
+  if (req) {
+    const forwardedProto = String(req.get("x-forwarded-proto") || "").split(",")[0].trim();
+    const protocol = forwardedProto || req.protocol || "http";
+    const host = cleanText(req.get("x-forwarded-host") || req.get("host"));
+    if (host) {
+      return normalizePublicBaseUrl(
+        `${protocol}://${host.split(",")[0].trim()}`,
+      );
+    }
+  }
+
+  const configured = normalizePublicBaseUrl(process.env.PUBLIC_BASE_URL);
+  if (configured) return configured;
+  return "http://localhost:8787";
 }
 
 function mergeConfig(envConfig, blobConfig, req) {
@@ -31,12 +51,12 @@ function mergeConfig(envConfig, blobConfig, req) {
     authToken: envConfig.authToken || cleanText(blobConfig?.authToken),
     fromNumber: envConfig.fromNumber || cleanText(blobConfig?.fromNumber),
     founderPhone: envConfig.founderPhone || cleanText(blobConfig?.founderPhone),
-    publicBaseUrl:
+    publicBaseUrl: normalizePublicBaseUrl(
       envConfig.publicBaseUrl ||
-      cleanText(blobConfig?.publicBaseUrl) ||
-      (req ? resolvePublicBaseUrl(req) : ""),
+        cleanText(blobConfig?.publicBaseUrl) ||
+        (req ? resolvePublicBaseUrl(req) : ""),
+    ),
   };
-  merged.publicBaseUrl = merged.publicBaseUrl.replace(/\/$/, "");
   return merged;
 }
 
@@ -100,10 +120,11 @@ export async function updateTwilioVoiceSettings(input) {
       cleanText(input.fromNumber) || current?.fromNumber || envConfig.fromNumber,
     founderPhone:
       cleanText(input.founderPhone) || current?.founderPhone || envConfig.founderPhone,
-    publicBaseUrl:
+    publicBaseUrl: normalizePublicBaseUrl(
       cleanText(input.publicBaseUrl) ||
-      current?.publicBaseUrl ||
-      envConfig.publicBaseUrl,
+        current?.publicBaseUrl ||
+        envConfig.publicBaseUrl,
+    ),
   };
 
   if (!next.accountSid) throw new Error("TWILIO_ACCOUNT_SID is required.");
