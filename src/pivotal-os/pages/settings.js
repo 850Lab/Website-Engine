@@ -36,6 +36,8 @@ export function renderSettingsPage() {
         <div class="field"><label class="field-label">Auth token</label><input class="field-input" id="twilioAuthToken" type="password" autocomplete="new-password" placeholder="Leave blank to keep current" /></div>
         <div class="field"><label class="field-label">From number</label><input class="field-input" id="twilioFromNumber" placeholder="+15551234567" /></div>
         <div class="field"><label class="field-label">Your phone (rings first)</label><input class="field-input" id="twilioFounderPhone" placeholder="+15551234567" /></div>
+        <div class="field"><label class="field-label">Test prospect phone</label><input class="field-input" id="twilioTestProspectPhone" placeholder="+15551234567" /></div>
+        <p class="card-body" style="margin:-4px 0 12px;font-size:13px;color:var(--text-dim)">Number the test call dials after you answer. On a Twilio trial, it must be verified in Twilio → Verified Caller IDs (can be a second phone you own).</p>
         <div class="field"><label class="field-label">Public base URL</label><input class="field-input" id="twilioPublicBaseUrl" placeholder="https://www.pivotalwebsites.com" /></div>
         <p class="auth-error hidden" id="twilioError"></p>
         <p class="card-body hidden" id="twilioSuccess" style="color:#4ade80;margin-bottom:12px"></p>
@@ -105,6 +107,7 @@ export function renderSettingsPage() {
       document.getElementById('twilioAccountSid').value=data.accountSid||'';
       document.getElementById('twilioFromNumber').value=data.fromNumber||'';
       document.getElementById('twilioFounderPhone').value=data.founderPhone||'';
+      document.getElementById('twilioTestProspectPhone').value=data.testProspectPhone||'';
       document.getElementById('twilioPublicBaseUrl').value=data.publicBaseUrl||'';
       document.getElementById('twilioAuthToken').value='';
       document.getElementById('twilioAuthToken').placeholder=data.hasAuthToken?'Leave blank to keep current':'Required';
@@ -130,6 +133,7 @@ export function renderSettingsPage() {
         accountSid:document.getElementById('twilioAccountSid').value.trim(),
         fromNumber:document.getElementById('twilioFromNumber').value.trim(),
         founderPhone:document.getElementById('twilioFounderPhone').value.trim(),
+        testProspectPhone:document.getElementById('twilioTestProspectPhone').value.trim(),
         publicBaseUrl:document.getElementById('twilioPublicBaseUrl').value.trim()
       };
       var token=document.getElementById('twilioAuthToken').value;

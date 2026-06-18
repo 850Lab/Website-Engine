@@ -109,7 +109,7 @@ export function renderHomePage() {
       el.innerHTML=
         '<div class="next-name">'+esc(test.businessName)+'</div>'+
         '<div class="card-body" style="margin-bottom:10px">'+esc(test.phone)+' · '+esc(test.city)+'</div>'+
-        '<p class="test-note">Run this before real leads. Your phone rings first, then connects to the test number with recording.</p>'+
+        '<p class="test-note">Run this before real leads. Your phone rings first, then connects to the test number with recording. On a Twilio trial, set a verified test prospect phone in Settings.</p>'+
         '<div class="btn-row">'+
           '<button type="button" class="btn btn-primary" id="twilioTestCallBtn">Call with Recording</button>'+
           (test.callUrl?'<a class="btn btn-ghost" href="'+esc(test.callUrl)+'">Call Direct</a>':'')+

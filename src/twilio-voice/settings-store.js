@@ -11,6 +11,7 @@ const ENV_KEYS = [
   "TWILIO_FROM_NUMBER",
   "FOUNDER_PHONE",
   "PUBLIC_BASE_URL",
+  "TWILIO_TEST_PROSPECT_PHONE",
 ];
 
 function pickEnvConfig() {
@@ -20,6 +21,7 @@ function pickEnvConfig() {
     fromNumber: cleanText(process.env.TWILIO_FROM_NUMBER),
     founderPhone: cleanText(process.env.FOUNDER_PHONE),
     publicBaseUrl: cleanText(process.env.PUBLIC_BASE_URL),
+    testProspectPhone: cleanText(process.env.TWILIO_TEST_PROSPECT_PHONE),
   };
 }
 
@@ -34,6 +36,7 @@ export async function readTwilioVoiceSettingsRecord() {
     fromNumber: cleanText(parsed.config.fromNumber),
     founderPhone: cleanText(parsed.config.founderPhone),
     publicBaseUrl: cleanText(parsed.config.publicBaseUrl),
+    testProspectPhone: cleanText(parsed.config.testProspectPhone),
     updatedAt: cleanText(parsed.config.updatedAt) || null,
   };
 }
@@ -45,6 +48,7 @@ export async function saveTwilioVoiceSettingsRecord(input) {
     fromNumber: cleanText(input.fromNumber),
     founderPhone: cleanText(input.founderPhone),
     publicBaseUrl: cleanText(input.publicBaseUrl).replace(/\/$/, ""),
+    testProspectPhone: cleanText(input.testProspectPhone),
     updatedAt: nowIso(),
   };
   await writeJsonDocument(TWILIO_VOICE_SETTINGS_FILE, { version: 1, config });
@@ -66,6 +70,7 @@ export async function syncEnvTwilioToBlobIfEmpty() {
     fromNumber: fromEnv.fromNumber || existing?.fromNumber,
     founderPhone: fromEnv.founderPhone || existing?.founderPhone,
     publicBaseUrl: fromEnv.publicBaseUrl || existing?.publicBaseUrl,
+    testProspectPhone: fromEnv.testProspectPhone || existing?.testProspectPhone,
   });
 }
 
@@ -84,6 +89,7 @@ export function twilioConfigSources(envConfig, blobConfig) {
     ["TWILIO_FROM_NUMBER", "fromNumber"],
     ["FOUNDER_PHONE", "founderPhone"],
     ["PUBLIC_BASE_URL", "publicBaseUrl"],
+    ["TWILIO_TEST_PROSPECT_PHONE", "testProspectPhone"],
   ];
   for (const [envKey, field] of fields) {
     if (cleanText(envConfig[field])) sources.push(`${envKey}:env`);
