@@ -4,6 +4,7 @@ import {
   upsertQualifiedBusiness,
 } from "../stage1/qualified-business-store.js";
 import {
+  cleanText,
   normalizePhoneNumber,
   nowIso,
 } from "../stage1/shared.js";
@@ -15,6 +16,18 @@ export function isTwilioTestBusiness(businessId) {
   return String(businessId ?? "") === TWILIO_TEST_BUSINESS_ID;
 }
 
+export function displayPhoneFromNormalized(e164) {
+  const digits = cleanText(e164).replace(/\D/g, "");
+  const ten =
+    digits.length === 11 && digits.startsWith("1")
+      ? digits.slice(1)
+      : digits.length === 10
+        ? digits
+        : "";
+  if (ten.length !== 10) return cleanText(e164);
+  return `(${ten.slice(0, 3)}) ${ten.slice(3, 6)}-${ten.slice(6)}`;
+}
+
 export function resolveTwilioTestPhone(config = {}) {
   return (
     normalizePhoneNumber(config.testProspectPhone) ||
@@ -24,13 +37,17 @@ export function resolveTwilioTestPhone(config = {}) {
 
 export async function ensureTwilioTestBusiness(config = {}) {
   const normalizedPhone = resolveTwilioTestPhone(config);
+  const displayPhone =
+    displayPhoneFromNormalized(normalizedPhone) || TWILIO_TEST_PHONE;
   const existing = await getQualifiedBusiness(TWILIO_TEST_BUSINESS_ID);
 
-  if (existing?.normalizedPhone === normalizedPhone) {
+  if (
+    existing?.normalizedPhone === normalizedPhone &&
+    existing?.phone === displayPhone
+  ) {
     return existing;
   }
 
-  const phone = normalizedPhone || TWILIO_TEST_PHONE;
   const record = buildBusinessRecord({
     id: TWILIO_TEST_BUSINESS_ID,
     businessName: "Twilio Test Company",
@@ -46,8 +63,8 @@ export async function ensureTwilioTestBusiness(config = {}) {
     websiteStatus: "no_website",
     websiteScore: null,
     websiteScoreReasons: ["Twilio Voice test record — not a real lead"],
-    phone: existing?.phone || TWILIO_TEST_PHONE,
-    normalizedPhone: phone,
+    phone: displayPhone,
+    normalizedPhone,
     email: "",
     socialUrls: [],
     contactMethodCategory: "text_first",
@@ -57,9 +74,9 @@ export async function ensureTwilioTestBusiness(config = {}) {
     dateFound: existing?.dateFound || nowIso(),
     dateScored: nowIso(),
     source: "twilio_test",
-    dedupKey: "test:twilio-voice-4095486011",
-    outreachStatus: "not_contacted",
-    outreachStatusUpdatedAt: nowIso(),
+    dedupKey: `test:twilio-voice-${normalizedPhone.replace(/\D/g, "")}`,
+    outreachStatus: existing?.outreachStatus || "not_contacted",
+    outreachStatusUpdatedAt: existing?.outreachStatusUpdatedAt || nowIso(),
   });
 
   await upsertQualifiedBusiness({ ...existing, ...record });
