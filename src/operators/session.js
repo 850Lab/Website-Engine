@@ -36,8 +36,8 @@ async function savePersistedSessions() {
   await writeJsonDocument(SESSIONS_FILE, {
     version: 1,
     sessions: activeSessions,
-    updatedAt: new Date().toISO() },
-  );
+    updatedAt: new Date().toISOString(),
+  });
 }
 
 export async function getSessionForRequest(req) {
