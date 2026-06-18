@@ -63,16 +63,20 @@ export async function appendSalesNote(businessId, text) {
   return salesNotes.slice(-5).reverse();
 }
 
+function queueFiltersFromQuery(req) {
+  return {
+    excludeClosed: req.query.excludeClosed !== "0",
+    folder: req.query.folder,
+    priority: req.query.priority,
+    phoneOnly: req.query.phoneOnly !== "0",
+    qualifiedOnly: req.query.qualifiedOnly === "1",
+  };
+}
+
 export function registerSalesModeRoutes(app) {
   app.get("/api/mission-control/sales/queue", async (req, res) => {
     try {
-      const queue = await buildSalesQueue(req, {
-        phoneOnly: req.query.phoneOnly !== "0",
-        qualifiedOnly: req.query.qualifiedOnly === "1",
-        excludeClosed: req.query.excludeClosed !== "0",
-        folder: req.query.folder,
-        priority: req.query.priority,
-      });
+      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req));
       return res.json({
         stats: getQueueStats(queue),
         queue: queue.map((row) => ({ id: row.id, businessName: row.businessName, priorityLabel: row.priorityLabel })),
@@ -86,7 +90,7 @@ export function registerSalesModeRoutes(app) {
     try {
       const lead = await getSalesLeadById(req, req.params.id);
       if (!lead) return res.status(404).json({ error: "Lead not found" });
-      const queue = await buildSalesQueue(req, { excludeClosed: true });
+      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req));
       const nextId = getNextLeadId(queue, req.params.id);
       return res.json({ lead, nextId, stats: getQueueStats(queue) });
     } catch (err) {
@@ -96,7 +100,7 @@ export function registerSalesModeRoutes(app) {
 
   app.get("/api/mission-control/sales/next", async (req, res) => {
     try {
-      const queue = await buildSalesQueue(req, { excludeClosed: true });
+      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req));
       const after = cleanText(req.query.after);
       const nextId = getNextLeadId(queue, after || null);
       if (!nextId) return res.json({ lead: null, stats: getQueueStats(queue) });

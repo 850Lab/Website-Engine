@@ -17,7 +17,6 @@ import {
   verifyStripeWebhookPayload,
 } from "./stripe-billing.js";
 import { registerV7OperatorRoutes, registerV7Routes } from "./v7/index.js";
-import { renderFounderPhonePage } from "./founder-phone.js";
 import { registerStage1Routes } from "./stage1/index.js";
 import { registerOpportunityEngineRoutes } from "./opportunity-engine/index.js";
 import { migrateRecordsToIdentities } from "./identity/migrate-identities.js";
@@ -259,10 +258,6 @@ app.get("/api/admin/system-status", async (_req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-});
-
-app.get("/", (_req, res) => {
-  return res.type("html").send(renderFounderPhonePage());
 });
 
 app.use("/previews", express.static(PREVIEWS_ROOT));

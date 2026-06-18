@@ -1,0 +1,177 @@
+import { pivotalShell } from "../shell.js";
+import { CALL_QUEUE_OUTCOMES } from "../metrics.js";
+
+export function renderCallQueuePage() {
+  const outcomeButtons = CALL_QUEUE_OUTCOMES.map(
+    (o) => `<button type="button" class="outcome-btn" data-outcome="${o.id}" data-status="${o.status}">${o.label}</button>`,
+  ).join("");
+
+  const headExtra = `
+    .lead-hero { margin-bottom: 16px; }
+    .lead-phone { font-size: 15px; color: var(--text-muted); margin-bottom: 14px; }
+    .script-card { background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); }
+    .script-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+    .script-text { font-size: 17px; line-height: 1.55; font-weight: 500; }
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .action-grid .btn { min-height: var(--tap-lg); font-size: 17px; }
+    .dock-actions {
+      position: fixed;
+      left: 0; right: 0;
+      bottom: calc(var(--nav-h) + var(--safe-bottom));
+      padding: 10px 12px;
+      background: rgba(9,9,11,0.95);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 10px;
+      z-index: 50;
+    }
+    .app { padding-bottom: calc(var(--nav-h) + 80px + var(--safe-bottom)); }
+    .sheet { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:150; align-items:flex-end; }
+    .sheet.open { display:flex; }
+    .sheet-panel {
+      width:100%; background:var(--bg-card); border-top:1px solid var(--border);
+      border-radius:20px 20px 0 0; padding:20px 16px calc(20px + var(--safe-bottom));
+      max-height:80dvh; overflow-y:auto;
+    }
+    .sheet-handle { width:40px; height:4px; background:var(--border-strong); border-radius:999px; margin:0 auto 16px; }
+    .sheet-title { font-size:18px; font-weight:800; margin:0 0 14px; }
+    .outcome-grid { display:flex; flex-direction:column; gap:8px; }
+    .outcome-btn {
+      min-height:var(--tap); border:1px solid var(--border); border-radius:var(--radius-sm);
+      background:var(--bg-elevated); color:var(--text); font-size:16px; font-weight:600;
+      padding:14px 16px; text-align:left; cursor:pointer;
+    }
+    .outcome-btn:active { transform:scale(0.99); }
+    .outcome-btn.active { background:var(--accent-soft); border-color:rgba(99,102,241,0.4); }
+    .queue-meta { font-size:13px; color:var(--text-dim); margin-bottom:12px; }
+  `;
+
+  const body = `
+    <p class="eyebrow">Call Queue</p>
+    <div class="queue-meta" id="queueMeta">Loading…</div>
+    <div id="leadView" class="hidden"></div>
+    <div class="loading" id="loading">Loading next lead…</div>
+
+    <div class="dock-actions" id="dockActions">
+      <button type="button" class="btn btn-ghost" id="outcomeBtn">Log result</button>
+      <button type="button" class="btn btn-primary" id="nextBtn">Next lead →</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="sheet" id="outcomeSheet">
+      <div class="sheet-panel">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title">What happened?</h2>
+        <div class="outcome-grid">${outcomeButtons}</div>
+        <button type="button" class="btn btn-ghost btn-block" id="outcomeCancel" style="margin-top:12px">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  const script = `
+    var currentLead=null, nextLeadId=null, toastTimer=null;
+
+    function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function showToast(msg){
+      var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+      clearTimeout(toastTimer); toastTimer=setTimeout(function(){el.classList.remove('show');},1600);
+    }
+    function setBusy(on){document.body.classList.toggle('busy',on);}
+
+    function renderLead(lead){
+      return '<div class="lead-hero">'+
+        '<h1 class="hero-title" style="margin:0">'+esc(lead.businessName)+'</h1>'+
+        '<div class="lead-phone">'+esc(lead.city)+(lead.industry?' · '+esc(lead.industry):'')+(lead.phone?' · '+esc(lead.phone):'')+'</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">'+
+          '<span class="badge hot">'+esc(lead.priorityLabel)+'</span>'+
+          '<span class="badge">'+esc(lead.folderLabel)+'</span>'+
+          (lead.confidenceScore?'<span class="badge accent">'+lead.confidenceScore+'%</span>':'')+
+        '</div></div>'+
+        '<div class="action-grid">'+
+          (lead.actions.call?'<a class="btn btn-primary" href="'+esc(lead.actions.call)+'">📞 Call</a>':'<span class="btn btn-ghost" style="opacity:0.4">No phone</span>')+
+          (lead.actions.text?'<a class="btn btn-ghost" href="'+esc(lead.actions.text)+'">💬 Text</a>':'<span class="btn btn-ghost" style="opacity:0.4">No text</span>')+
+        '</div>'+
+        (lead.previewUrl?'<a class="btn btn-ghost btn-block" href="'+esc(lead.previewUrl)+'" target="_blank" rel="noopener" style="margin-bottom:14px">Open preview</a>':'')+
+        '<div class="script-card"><div class="script-label">Problem</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.problem)+'</div></div>'+
+        '<div class="script-card"><div class="script-label">Angle</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.primaryAngle)+'</div></div>'+
+        '<div class="script-card"><div class="script-label">Opening line</div><div class="script-text">'+esc(lead.openingLine)+'</div></div>'+
+        '<div class="script-card"><div class="script-label">Offer</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.recommendedOffer)+'</div></div>';
+    }
+
+    async function jsonFetch(url,opts){
+      var res=await fetch(url,opts); var data=await res.json();
+      if(!res.ok) throw new Error(data.error||res.statusText); return data;
+    }
+
+    async function loadLead(id){
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('leadView').classList.add('hidden');
+      var params=new URLSearchParams(window.location.search);
+      var folder=params.get('folder')||'';
+      var qs=folder?'?folder='+encodeURIComponent(folder):'';
+      var url=id?'/api/mission-control/sales/lead/'+encodeURIComponent(id)+qs:'/api/mission-control/sales/next'+qs;
+      var data=await jsonFetch(url);
+      currentLead=data.lead; nextLeadId=data.nextId;
+      if(!currentLead){
+        document.getElementById('loading').textContent='Queue complete — no more callable leads.';
+        document.getElementById('dockActions').classList.add('hidden');
+        return;
+      }
+      document.getElementById('dockActions').classList.remove('hidden');
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('leadView').classList.remove('hidden');
+      document.getElementById('leadView').innerHTML=renderLead(currentLead);
+      var stats=data.stats||{total:0,hot:0,notContacted:0};
+      document.getElementById('queueMeta').textContent=stats.total+' in queue · '+stats.hot+' hot · '+stats.notContacted+' not contacted';
+      try{localStorage.setItem('callQueueLeadId',currentLead.id);}catch(e){}
+      window.scrollTo(0,0);
+    }
+
+    async function saveOutcome(outcomeId, status){
+      if(!currentLead) return;
+      setBusy(true);
+      try{
+        await jsonFetch('/api/mission-control/sales/lead/'+encodeURIComponent(currentLead.id)+'/outcome',{
+          method:'PATCH', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({status:status, outcomeId:outcomeId})
+        });
+        document.getElementById('outcomeSheet').classList.remove('open');
+        showToast('Saved — next lead');
+        await loadLead(nextLeadId||null);
+      }finally{setBusy(false);}
+    }
+
+    document.getElementById('nextBtn').addEventListener('click',function(){
+      setBusy(true);
+      loadLead(nextLeadId||null).catch(function(e){alert(e.message);}).finally(function(){setBusy(false);});
+    });
+    document.getElementById('outcomeBtn').addEventListener('click',function(){
+      document.getElementById('outcomeSheet').classList.add('open');
+    });
+    document.getElementById('outcomeCancel').addEventListener('click',function(){
+      document.getElementById('outcomeSheet').classList.remove('open');
+    });
+    document.querySelectorAll('.outcome-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        saveOutcome(btn.dataset.outcome, btn.dataset.status).catch(function(e){alert(e.message);});
+      });
+    });
+    document.getElementById('outcomeSheet').addEventListener('click',function(e){
+      if(e.target===document.getElementById('outcomeSheet')) document.getElementById('outcomeSheet').classList.remove('open');
+    });
+
+    var savedId=null;
+    try{savedId=localStorage.getItem('callQueueLeadId');}catch(e){}
+    loadLead(savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
+  `;
+
+  return pivotalShell({
+    title: "Call Queue",
+    activeNav: "queue",
+    bodyHtml: body + `<script>${script}</script>`,
+    headExtra,
+  });
+}
