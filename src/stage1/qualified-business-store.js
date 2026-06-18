@@ -1,6 +1,6 @@
-import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { DATA_DIR, writeJsonFileSafe } from "../storage.js";
+import { DATA_DIR } from "../storage.js";
+import { readJsonDocument, writeJsonDocument } from "../persistence/json-document-store.js";
 import { buildDedupKey, cleanText, nowIso } from "./shared.js";
 
 export const QUALIFIED_BUSINESSES_FILE = join(DATA_DIR, "qualified-businesses.json");
@@ -20,19 +20,15 @@ export function isReadyForOutreach(record) {
 }
 
 async function readJsonRecords(filePath, key = "records") {
-  try {
-    const parsed = JSON.parse(await readFile(filePath, "utf8"));
-    if (Array.isArray(parsed)) return parsed;
-    if (Array.isArray(parsed?.[key])) return parsed[key];
-    return [];
-  } catch (err) {
-    if (err.code === "ENOENT") return [];
-    throw err;
-  }
+  const parsed = await readJsonDocument(filePath);
+  if (!parsed) return [];
+  if (Array.isArray(parsed)) return parsed;
+  if (Array.isArray(parsed?.[key])) return parsed[key];
+  return [];
 }
 
 async function writeJsonRecords(filePath, records, key = "records") {
-  await writeJsonFileSafe(filePath, { version: 1, [key]: records });
+  await writeJsonDocument(filePath, { version: 1, [key]: records });
 }
 
 export async function listQualifiedBusinesses() {

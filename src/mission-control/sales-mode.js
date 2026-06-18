@@ -7,6 +7,10 @@ import {
 } from "../stage1/qualified-business-store.js";
 import { OUTREACH_STATUS_LABELS } from "../outreach-page.js";
 import {
+  blobPersistenceEnabled,
+  persistenceBackendLabel,
+} from "../persistence/json-document-store.js";
+import {
   buildSalesQueue,
   getNextLeadId,
   getQueueStats,
@@ -120,6 +124,13 @@ export function registerSalesModeRoutes(app) {
       return res.status(400).json({ error: err.message });
     }
   });
+
+  app.get("/api/mission-control/sales/storage", (_req, res) => {
+    return res.json({
+      backend: persistenceBackendLabel(),
+      outcomesPersist: blobPersistenceEnabled(),
+    });
+  });
 }
 
 export function renderSalesModePage() {
@@ -151,6 +162,19 @@ export function renderSalesModePage() {
     .brand { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
     .count { font-size: 13px; font-weight: 600; }
     .stats { font-size: 12px; color: #444; margin-top: 4px; }
+    .storage-pill {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 8px;
+      border: 1px solid #000;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .storage-pill.ok { background: #000; color: #fff; }
+    .storage-pill.warn { background: #fff; color: #c00; border-color: #c00; }
     .main {
       flex: 1;
       overflow-y: auto;
@@ -289,6 +313,7 @@ export function renderSalesModePage() {
       <div class="count" id="leadCount">—</div>
     </div>
     <div class="stats" id="leadStats">Loading queue…</div>
+    <div class="storage-pill warn" id="storagePill">Checking storage…</div>
   </header>
 
   <main class="main" id="main">
@@ -394,6 +419,27 @@ export function renderSalesModePage() {
         stats.hot + " hot · " + stats.notContacted + " not contacted";
     }
 
+    function updateStoragePill(info) {
+      var pill = document.getElementById("storagePill");
+      if (!pill || !info) return;
+      if (info.outcomesPersist) {
+        pill.textContent = "Outcomes saved to cloud";
+        pill.className = "storage-pill ok";
+      } else {
+        pill.textContent = "Outcomes not persisting — set BLOB token on Vercel";
+        pill.className = "storage-pill warn";
+      }
+    }
+
+    async function loadStorageStatus() {
+      try {
+        var info = await jsonFetch("/api/mission-control/sales/storage");
+        updateStoragePill(info);
+      } catch (e) {
+        updateStoragePill({ outcomesPersist: false });
+      }
+    }
+
     async function jsonFetch(url, opts) {
       var res = await fetch(url, opts);
       var data = await res.json();
@@ -484,6 +530,7 @@ export function renderSalesModePage() {
 
     var savedId = null;
     try { savedId = localStorage.getItem("salesModeLeadId"); } catch (e) {}
+    loadStorageStatus();
     loadLead(savedId).catch(function(err) {
       document.getElementById("loading").textContent = err.message;
     });

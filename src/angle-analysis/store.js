@@ -1,7 +1,7 @@
-import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { DATA_DIR, writeJsonFileSafe } from "../storage.js";
+import { DATA_DIR } from "../storage.js";
 import { nowIso } from "../stage1/shared.js";
+import { readJsonDocument, writeJsonDocument } from "../persistence/json-document-store.js";
 
 export const ANGLE_ANALYSES_FILE = join(DATA_DIR, "angle-analyses.json");
 
@@ -14,22 +14,22 @@ const EMPTY_STORE = () => ({
 
 async function readStore() {
   try {
-    const parsed = JSON.parse(await readFile(ANGLE_ANALYSES_FILE, "utf8"));
+    const parsed = await readJsonDocument(ANGLE_ANALYSES_FILE);
+    if (!parsed) return EMPTY_STORE();
     return {
       version: 1,
       updatedAt: parsed.updatedAt ?? nowIso(),
       analyses: parsed.analyses ?? {},
       lastBatchRun: parsed.lastBatchRun ?? null,
     };
-  } catch (err) {
-    if (err.code === "ENOENT") return EMPTY_STORE();
-    throw err;
+  } catch {
+    return EMPTY_STORE();
   }
 }
 
 async function writeStore(store) {
   const next = { ...store, updatedAt: nowIso() };
-  await writeJsonFileSafe(ANGLE_ANALYSES_FILE, next);
+  await writeJsonDocument(ANGLE_ANALYSES_FILE, next);
   return next;
 }
 

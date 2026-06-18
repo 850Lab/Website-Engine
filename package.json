@@ -13,12 +13,14 @@
     "brief:sales": "node scripts/generate-sales-briefs.js",
     "call:analyze": "python scripts/analyze_call_recording.py",
     "angles:reanalyze": "node scripts/reanalyze-all-businesses.js --wait",
+    "blob:seed": "node scripts/seed-blob-data.js",
     "website:pack": "node scripts/run-single-website.js"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
+    "@vercel/blob": "^2.4.1",
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
     "pg": "^8.21.0",
