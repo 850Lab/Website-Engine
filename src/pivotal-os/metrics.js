@@ -6,6 +6,7 @@ import { buildAngleFolderSummary } from "../angle-folders-page.js";
 import { FOLDER_BY_KEY } from "../angle-analysis/categories.js";
 import { blobPersistenceEnabled, persistenceBackendLabel } from "../persistence/json-document-store.js";
 import { TWILIO_TEST_BUSINESS_ID, ensureTwilioTestBusiness } from "../twilio-voice/test-lead.js";
+import { getTwilioVoiceConfig } from "../twilio-voice/config.js";
 
 export const DEFAULT_GOALS = {
   calls: 20,
@@ -156,7 +157,8 @@ export async function buildPipelineMetrics(records = null) {
 }
 
 export async function buildTwilioTestLead(req) {
-  await ensureTwilioTestBusiness();
+  const config = await getTwilioVoiceConfig(req);
+  await ensureTwilioTestBusiness(config);
   const lead = await getSalesLeadById(req, TWILIO_TEST_BUSINESS_ID);
   if (!lead?.hasPhone) return null;
 

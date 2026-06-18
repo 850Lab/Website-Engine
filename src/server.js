@@ -20,6 +20,8 @@ import {
   registerTwilioVoiceWebhookRoutes,
   syncEnvTwilioToBlobIfEmpty,
 } from "./twilio-voice/index.js";
+import { ensureTwilioTestBusiness } from "./twilio-voice/test-lead.js";
+import { getTwilioVoiceConfig } from "./twilio-voice/config.js";
 import {
   createOperator,
   createOperatorSession,
@@ -266,6 +268,12 @@ export async function initializeApp() {
   syncEnvTwilioToBlobIfEmpty().catch((err) => {
     console.warn(`Twilio settings sync skipped: ${err.message}`);
   });
+
+  getTwilioVoiceConfig()
+    .then((config) => ensureTwilioTestBusiness(config))
+    .catch((err) => {
+      console.warn(`Twilio test lead sync skipped: ${err.message}`);
+    });
 }
 
 export const appReady = initializeApp();
