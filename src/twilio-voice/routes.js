@@ -19,6 +19,10 @@ import {
   saveRecordingToBusiness,
   upsertSalesCallOnBusiness,
 } from "./sales-calls.js";
+import {
+  assignLeadToOperator,
+  canOperatorAccessLead,
+} from "../operators/lead-assignment.js";
 
 const VoiceResponse = twilio.twiml.VoiceResponse;
 
@@ -252,8 +256,10 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
   });
 }
 
-export function registerTwilioCallRoutes(app) {
-  app.post("/api/calls/start", async (req, res) => {
+export function registerTwilioCallRoutes(app, { requireOperatorApi } = {}) {
+  const auth = requireOperatorApi ?? ((_req, _res, next) => next());
+
+  app.post("/api/calls/start", auth, async (req, res) => {
     try {
       const businessId = cleanText(req.body?.businessId);
       if (!businessId) {
@@ -264,6 +270,14 @@ export function registerTwilioCallRoutes(app) {
       const business = await getQualifiedBusiness(businessId);
       if (!business) {
         return res.status(404).json({ error: "Business not found" });
+      }
+
+      if (req.operator && !canOperatorAccessLead(business, req.operator)) {
+        return res.status(403).json({ error: "Lead is assigned to another operator." });
+      }
+
+      if (req.operator) {
+        await assignLeadToOperator(businessId, req.operator);
       }
 
       const prospectPhone = prospectPhoneForBusiness(business);

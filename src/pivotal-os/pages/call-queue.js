@@ -167,12 +167,7 @@ export function renderCallQueuePage() {
         setCallStatus('Call started — answer your phone to connect to '+currentLead.businessName+'.','ok');
         showToast('Calling your phone');
       }catch(e){
-        var msg=e.message||'Call failed';
-        if(msg.toLowerCase().indexOf('unauthorized')!==-1){
-          window.location.href='/login?return='+encodeURIComponent(window.location.pathname+window.location.search);
-          return;
-        }
-        setCallStatus(msg,'error');
+        setCallStatus(e.message||'Call failed','error');
         showToast('Call failed');
       }finally{
         if(btn) btn.disabled=false;

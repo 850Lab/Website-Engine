@@ -4,16 +4,20 @@ export function renderLoginPage(returnTo = "/") {
   const safeReturn = String(returnTo ?? "/").startsWith("/") ? returnTo : "/";
 
   const body = `
-    <p class="eyebrow">Sign in</p>
-    <h1 class="hero-title">Operator access</h1>
-    <p class="hero-sub" id="loginSub">Required for recorded calls and protected tools.</p>
+    <p class="eyebrow">Pivotal OS</p>
+    <h1 class="hero-title">Sign in</h1>
+    <p class="hero-sub" id="loginSub">Your call queue and leads are private to your operator profile.</p>
 
     <div class="card" id="authCard">
       <div class="card-label" id="authModeLabel">Sign in</div>
       <form id="authForm" autocomplete="on">
-        <div id="emailWrap" class="field">
+        <div id="nameWrap" class="field hidden">
+          <label class="field-label" for="authName">Your name</label>
+          <input class="field-input" id="authName" name="name" type="text" autocomplete="name" />
+        </div>
+        <div class="field">
           <label class="field-label" for="authEmail">Email</label>
-          <input class="field-input" id="authEmail" name="email" type="email" autocomplete="username" />
+          <input class="field-input" id="authEmail" name="email" type="email" autocomplete="username" required />
         </div>
         <div class="field">
           <label class="field-label" for="authPassword">Password</label>
@@ -24,8 +28,6 @@ export function renderLoginPage(returnTo = "/") {
         <button type="submit" class="btn btn-primary btn-block" id="authSubmit">Sign in</button>
       </form>
     </div>
-
-    <a class="btn btn-ghost btn-block" href="${safeReturn.replace(/"/g, "&quot;")}">Back</a>
   `;
 
   const headExtra = `
@@ -64,21 +66,19 @@ export function renderLoginPage(returnTo = "/") {
 
     function setSignupMode(on){
       signupMode=on;
-      document.getElementById('authModeLabel').textContent=on?'Create account':'Sign in';
+      document.getElementById('authModeLabel').textContent=on?'Create owner account':'Sign in';
       document.getElementById('authSubmit').textContent=on?'Create account':'Sign in';
+      document.getElementById('nameWrap').classList.toggle('hidden',!on);
       document.getElementById('loginSub').textContent=on
-        ? 'Set up the first operator account for this deployment.'
-        : 'Required for recorded calls and protected tools.';
+        ? 'First-time setup for this deployment. You will be the owner and can invite operators later.'
+        : 'Your call queue and leads are private to your operator profile.';
       document.getElementById('authHint').textContent=on
-        ? 'This creates the admin account for Pivotal OS.'
-        : 'Use your admin email and password. If only ADMIN_PASSWORD is configured, email can be blank.';
+        ? 'After setup, new users must be invited from Settings.'
+        : 'Need access? Ask the account owner to invite you from Settings.';
     }
 
     fetch('/api/auth/status').then(function(r){return r.json();}).then(function(status){
       if(status.signupRequired) setSignupMode(true);
-      if(status.adminEmail && !status.signupRequired){
-        document.getElementById('authEmail').value=status.adminEmail;
-      }
     }).catch(function(){});
 
     fetch('/api/me').then(function(r){return r.json();}).then(function(me){
@@ -88,11 +88,12 @@ export function renderLoginPage(returnTo = "/") {
     document.getElementById('authForm').addEventListener('submit',function(e){
       e.preventDefault();
       showError('');
+      var name=document.getElementById('authName').value.trim();
       var email=document.getElementById('authEmail').value.trim();
       var password=document.getElementById('authPassword').value;
       var url=signupMode?'/api/signup':'/api/login';
-      var body={password:password};
-      if(email) body.email=email;
+      var body={email:email,password:password};
+      if(signupMode) body.name=name;
       document.getElementById('authSubmit').disabled=true;
       jsonFetch(url,{
         method:'POST',

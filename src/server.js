@@ -1,16 +1,9 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import { randomBytes } from "node:crypto";
-import { join, resolve } from "node:path";
 import { readFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import {
-  createAdminAccount,
-  getStoredAdminAccount,
-  verifyAdminCredentials,
-} from "./admin-auth.js";
-import { writeJsonFileSafe } from "./storage.js";
 import { getAdminSystemStatus } from "./admin-tools.js";
 import {
   handleStripeWebhookEvent,
@@ -26,13 +19,27 @@ import {
   registerTwilioCallRoutes,
   registerTwilioVoiceWebhookRoutes,
 } from "./twilio-voice/index.js";
+import {
+  createOperator,
+  createOperatorSession,
+  destroyOperatorSession,
+  getSessionForRequest,
+  hasOperators,
+  listOperators,
+  migrateLegacyAdminAccountIfNeeded,
+  requireOperatorApi,
+  requireOperatorPage,
+  requireOwnerApi,
+  sanitizeOperator,
+  verifyOperatorCredentials,
+} from "./operators/index.js";
+import { cleanText } from "./stage1/shared.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const PREVIEWS_ROOT = join(ROOT, "previews-v3");
 const RENDERS_ROOT = join(ROOT, "renders");
 const DATA_DIR = join(ROOT, "data");
-const SESSIONS_FILE = join(DATA_DIR, "admin-sessions.json");
 
 async function loadRuntimeEnvFiles() {
   for (const filename of [".env", ".env.local"]) {
@@ -60,67 +67,8 @@ async function loadRuntimeEnvFiles() {
 
 await loadRuntimeEnvFiles();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
-const SESSION_COOKIE = "website_outreach_session";
-const SESSION_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
-const sessions = new Map();
 let httpServer = null;
-let sessionsLoaded = false;
 let appInitialized = false;
-
-async function loadPersistedSessions() {
-  if (sessionsLoaded) return;
-  sessionsLoaded = true;
-  try {
-    const raw = await readFile(SESSIONS_FILE, "utf8");
-    const parsed = JSON.parse(raw);
-    const now = Date.now();
-    for (const [token, session] of Object.entries(parsed ?? {})) {
-      if (session?.expiresAt && session.expiresAt > now) {
-        sessions.set(token, session);
-      }
-    }
-  } catch (err) {
-    if (err.code !== "ENOENT") throw err;
-  }
-}
-
-async function savePersistedSessions() {
-  const now = Date.now();
-  const activeSessions = {};
-  for (const [token, session] of sessions.entries()) {
-    if (session?.expiresAt && session.expiresAt > now) {
-      activeSessions[token] = session;
-    } else {
-      sessions.delete(token);
-    }
-  }
-  await writeJsonFileSafe(SESSIONS_FILE, activeSessions);
-}
-
-async function getSessionForRequest(req) {
-  await loadPersistedSessions();
-  const token = req.cookies?.[SESSION_COOKIE];
-  if (!token) return null;
-  const session = sessions.get(token);
-  if (!session || !session.expiresAt || session.expiresAt <= Date.now()) {
-    if (token) {
-      sessions.delete(token);
-      await savePersistedSessions();
-    }
-    return null;
-  }
-  return session;
-}
-
-async function requireAuth(req, res, next) {
-  const session = await getSessionForRequest(req);
-  if (!session) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  req.session = session;
-  return next();
-}
 
 const PROTECTED_API_PREFIXES = [
   "/v7/projects",
@@ -130,6 +78,7 @@ const PROTECTED_API_PREFIXES = [
   "/founder-os/",
   "/admin/system-status",
   "/calls/",
+  "/operators/",
 ];
 
 async function protectKnownApiRoutes(req, res, next) {
@@ -146,31 +95,7 @@ async function protectKnownApiRoutes(req, res, next) {
   if (!matched) {
     return res.status(404).json({ error: "Not found" });
   }
-  return requireAuth(req, res, next);
-}
-
-async function createSession(res) {
-  const token = randomBytes(24).toString("hex");
-  const now = Date.now();
-  sessions.set(token, {
-    createdAt: now,
-    expiresAt: now + SESSION_MAX_AGE_MS,
-  });
-  await savePersistedSessions();
-  res.cookie(SESSION_COOKIE, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: false,
-    maxAge: SESSION_MAX_AGE_MS,
-  });
-}
-
-async function destroySession(req, res) {
-  await loadPersistedSessions();
-  const token = req.cookies?.[SESSION_COOKIE];
-  if (token) sessions.delete(token);
-  await savePersistedSessions();
-  res.clearCookie(SESSION_COOKIE);
+  return requireOperatorApi(req, res, next);
 }
 
 export const app = express();
@@ -203,59 +128,98 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/api/auth/status", async (_req, res) => {
-  const account = await getStoredAdminAccount();
+  await migrateLegacyAdminAccountIfNeeded();
+  const signupRequired = !(await hasOperators());
   return res.json({
-    signupRequired: !account,
-    hasAdminAccount: Boolean(account),
-    adminEmail: account?.email ?? null,
+    signupRequired,
+    hasOperators: !signupRequired,
   });
 });
 
 app.post("/api/signup", async (req, res) => {
   try {
-    const { email, password } = req.body ?? {};
-    const created = await createAdminAccount({ email, password });
-    await createSession(res);
-    return res.json({ ok: true, account: created });
+    await migrateLegacyAdminAccountIfNeeded();
+    if (await hasOperators()) {
+      return res.status(403).json({ error: "Signup is closed. Ask the owner for an account." });
+    }
+    const { name, email, password } = req.body ?? {};
+    const created = await createOperator({
+      name,
+      email,
+      password,
+      role: "owner",
+    });
+    await createOperatorSession(res, created);
+    return res.json({ ok: true, operator: created });
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
 });
 
 app.post("/api/login", async (req, res) => {
-  const { email, password } = req.body ?? {};
-  const account = await getStoredAdminAccount();
-  const isValid = account
-    ? await verifyAdminCredentials({ email, password })
-    : Boolean(ADMIN_PASSWORD && password && password === ADMIN_PASSWORD);
-  if (!isValid) {
-    return res.status(401).json({ error: "Invalid password" });
+  try {
+    await migrateLegacyAdminAccountIfNeeded();
+    const { email, password } = req.body ?? {};
+    const operator = await verifyOperatorCredentials({ email, password });
+    if (!operator) {
+      return res.status(401).json({ error: "Invalid email or password." });
+    }
+    await createOperatorSession(res, operator);
+    return res.json({ ok: true, operator });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
   }
-  await createSession(res);
-  return res.json({
-    ok: true,
-    account: {
-      email: account?.email ?? "env-admin",
-      source: account ? "file" : "env",
-    },
-  });
 });
 
 app.get("/api/me", async (req, res) => {
   const session = await getSessionForRequest(req);
-  return res.json({ authenticated: Boolean(session) });
+  if (!session?.operatorId) {
+    return res.json({ authenticated: false, operator: null });
+  }
+  return res.json({
+    authenticated: true,
+    operator: {
+      id: session.operatorId,
+      name: session.operatorName,
+      email: session.operatorEmail,
+      role: session.operatorRole,
+    },
+  });
 });
 
 app.post("/api/logout", async (req, res) => {
-  await destroySession(req, res);
+  await destroyOperatorSession(req, res);
   return res.json({ ok: true });
 });
 
-registerV7Routes(app);
+registerV7Routes(app, { requireOperatorApi, requireOperatorPage });
 
 app.use("/api", protectKnownApiRoutes);
 
-registerTwilioCallRoutes(app);
+registerTwilioCallRoutes(app, { requireOperatorApi });
+
+app.get("/api/operators", requireOwnerApi, async (_req, res) => {
+  try {
+    return res.json({ operators: await listOperators() });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/operators", requireOwnerApi, async (req, res) => {
+  try {
+    const created = await createOperator({
+      name: req.body?.name,
+      email: req.body?.email,
+      password: req.body?.password,
+      role: "operator",
+    });
+    return res.status(201).json({ operator: created });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+});
+
 registerV7OperatorRoutes(app);
 registerStage1Routes(app);
 registerOpportunityEngineRoutes(app);
@@ -287,6 +251,10 @@ async function startServer() {
 export async function initializeApp() {
   if (appInitialized) return;
   appInitialized = true;
+
+  migrateLegacyAdminAccountIfNeeded().catch((err) => {
+    console.warn(`Operator migration skipped: ${err.message}`);
+  });
 
   migrateRecordsToIdentities().catch((err) => {
     console.warn(`Identity migration skipped: ${err.message}`);

@@ -41,7 +41,7 @@ function jsonError(res, status, message) {
   return res.status(status).json({ error: message });
 }
 
-export function registerV7Routes(app) {
+export function registerV7Routes(app, options = {}) {
   app.get("/p/:projectId", async (req, res, next) => {
     try {
       const project = await getOpportunityProject(req.params.projectId);
@@ -210,7 +210,7 @@ export function registerV7Routes(app) {
     return res.type("html").send(renderFounderPhonePage());
   });
 
-  registerPivotalOsRoutes(app);
+  registerPivotalOsRoutes(app, options);
   registerOutreachRoutes(app);
   registerAngleFolderRoutes(app);
   registerFounderPhoneRoutes(app);
