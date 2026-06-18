@@ -13,6 +13,7 @@ function fromEnv() {
     fromNumber: cleanText(process.env.TWILIO_FROM_NUMBER),
     founderPhone: cleanText(process.env.FOUNDER_PHONE),
     publicBaseUrl: cleanText(process.env.PUBLIC_BASE_URL),
+    testProspectPhone: cleanText(process.env.TWILIO_TEST_PROSPECT_PHONE),
   };
 }
 
@@ -56,6 +57,8 @@ function mergeConfig(envConfig, blobConfig, req) {
         cleanText(blobConfig?.publicBaseUrl) ||
         (req ? resolvePublicBaseUrl(req) : ""),
     ),
+    testProspectPhone:
+      envConfig.testProspectPhone || cleanText(blobConfig?.testProspectPhone),
   };
   return merged;
 }
@@ -101,6 +104,7 @@ export async function buildTwilioVoiceStatus(req = null) {
     fromNumber: merged.fromNumber || "",
     founderPhone: merged.founderPhone || "",
     publicBaseUrl: merged.publicBaseUrl || "",
+    testProspectPhone: merged.testProspectPhone || "",
     hasAuthToken: Boolean(merged.authToken),
     updatedAt: blob?.updatedAt ?? null,
   };
@@ -125,6 +129,10 @@ export async function updateTwilioVoiceSettings(input) {
         current?.publicBaseUrl ||
         envConfig.publicBaseUrl,
     ),
+    testProspectPhone:
+      cleanText(input.testProspectPhone) ||
+      current?.testProspectPhone ||
+      envConfig.testProspectPhone,
   };
 
   if (!next.accountSid) throw new Error("TWILIO_ACCOUNT_SID is required.");

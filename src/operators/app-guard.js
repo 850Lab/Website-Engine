@@ -18,7 +18,8 @@ function isTwilioVoiceWebhookPath(path, method) {
   return (
     path === "/api/twilio/voice/connect" ||
     path === "/api/twilio/voice/recording" ||
-    path === "/api/twilio/voice/status"
+    path === "/api/twilio/voice/status" ||
+    path === "/api/twilio/voice/dial-status"
   );
 }
 

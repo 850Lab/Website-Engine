@@ -82,6 +82,28 @@ function prospectPhoneForSession(session, business) {
   );
 }
 
+async function resolveProspectPhone(session, business, req) {
+  let phone = prospectPhoneForSession(session, business);
+  if (isTwilioTestBusiness(session.businessId)) {
+    const config = await getTwilioVoiceConfig(req);
+    const testPhone = normalizePhoneNumber(config.testProspectPhone);
+    if (testPhone) phone = testPhone;
+  }
+  return phone;
+}
+
+function twimlDialFailureMessage(dialStatus, errorMessage) {
+  const status = cleanText(dialStatus).toLowerCase() || "failed";
+  const detail = cleanText(errorMessage);
+  if (status === "completed") return null;
+  let message = "We could not connect to the prospect.";
+  if (detail) message += ` ${detail}.`;
+  else if (status !== "failed") message += ` Status: ${status}.`;
+  message +=
+    " On a Twilio trial account, verify the prospect number under Verified Caller IDs in Twilio console, or set a test prospect phone in Settings.";
+  return message;
+}
+
 async function persistCallProgress(session, callSid, status = "in-progress") {
   if (!session?.id || !callSid) return;
 
@@ -132,7 +154,7 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
         }
 
         const business = await getQualifiedBusiness(session.businessId);
-        const prospectPhone = prospectPhoneForSession(session, business);
+        const prospectPhone = await resolveProspectPhone(session, business, req);
         if (!prospectPhone) {
           await updateCallSession(session.id, {
             status: "failed",
@@ -152,7 +174,11 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
           "/api/twilio/voice/recording",
           session.id,
         );
-        const statusCallback = webhookPath(req, "/api/twilio/voice/status", session.id);
+        const dialStatusCallback = webhookPath(
+          req,
+          "/api/twilio/voice/dial-status",
+          session.id,
+        );
 
         const response = new VoiceResponse();
         response.say(
@@ -164,8 +190,9 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
           recordingStatusCallback: recordingCallback,
           recordingStatusCallbackMethod: "POST",
           recordingStatusCallbackEvent: "completed",
-          action: statusCallback,
+          action: dialStatusCallback,
           method: "POST",
+          timeout: 30,
         });
         dial.number(prospectPhone);
 
@@ -175,9 +202,9 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
           await persistCallProgress(session, callSid);
         }
         if (isTwilioTestBusiness(session.businessId)) {
-          ensureTwilioTestBusiness().catch((err) =>
-            logTwilioVoiceError("ensureTwilioTestBusiness", err),
-          );
+          getTwilioVoiceConfig(req)
+            .then((config) => ensureTwilioTestBusiness(config))
+            .catch((err) => logTwilioVoiceError("ensureTwilioTestBusiness", err));
         }
         return;
       } catch (err) {
@@ -241,6 +268,62 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
     } catch (err) {
       logTwilioVoiceError("recording", err);
       return res.status(500).type("text/plain").send("Error");
+    }
+  });
+
+  app.post("/api/twilio/voice/dial-status", parseForm, async (req, res) => {
+    try {
+      if (await rejectInvalidTwilioWebhook(req, res)) return;
+
+      const body = twilioFormBody(req);
+      const sessionId = sessionIdFromRequest(req);
+      const callSid = cleanText(body.CallSid);
+      const dialCallStatus = cleanText(body.DialCallStatus).toLowerCase();
+      const errorMessage = cleanText(body.ErrorMessage);
+
+      const session =
+        (sessionId ? await getCallSession(sessionId) : null) ||
+        (callSid ? await getCallSessionByCallSid(callSid) : null);
+
+      if (session) {
+        if (dialCallStatus && dialCallStatus !== "completed") {
+          logTwilioVoiceError(
+            "dial-status",
+            new Error(
+              `session=${session.id} dial=${dialCallStatus} error=${errorMessage || "none"}`,
+            ),
+          );
+        }
+        try {
+          await appendCallSessionEvent(session.id, "dial", {
+            callSid,
+            dialCallStatus,
+            errorMessage,
+          });
+          if (dialCallStatus && dialCallStatus !== "completed") {
+            await updateCallSession(session.id, {
+              status: dialCallStatus,
+              error: errorMessage || dialCallStatus,
+            });
+          }
+        } catch (err) {
+          logTwilioVoiceError("dial-status-persist", err);
+        }
+      }
+
+      const response = new VoiceResponse();
+      const dialMessage = twimlDialFailureMessage(dialCallStatus, errorMessage);
+      if (dialMessage) {
+        response.say({ voice: "Polly.Joanna" }, dialMessage);
+      }
+      response.hangup();
+      return res.type("text/xml").send(response.toString());
+    } catch (err) {
+      logTwilioVoiceError("dial-status", err);
+      const response = new VoiceResponse();
+      response.say("Sorry, an error occurred after the dial attempt.");
+      response.hangup();
+      return res.type("text/xml").send(response.toString());
     }
   });
 
@@ -335,7 +418,7 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi, requireOwner
 
       const config = await assertTwilioVoiceConfigured(req);
       if (isTwilioTestBusiness(businessId)) {
-        await ensureTwilioTestBusiness();
+        await ensureTwilioTestBusiness(config);
       }
       const business = await getQualifiedBusiness(businessId);
       if (!business) {

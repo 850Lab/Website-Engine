@@ -15,13 +15,22 @@ export function isTwilioTestBusiness(businessId) {
   return String(businessId ?? "") === TWILIO_TEST_BUSINESS_ID;
 }
 
-export async function ensureTwilioTestBusiness() {
+export function resolveTwilioTestPhone(config = {}) {
+  return (
+    normalizePhoneNumber(config.testProspectPhone) ||
+    normalizePhoneNumber(TWILIO_TEST_PHONE)
+  );
+}
+
+export async function ensureTwilioTestBusiness(config = {}) {
+  const normalizedPhone = resolveTwilioTestPhone(config);
   const existing = await getQualifiedBusiness(TWILIO_TEST_BUSINESS_ID);
-  if (existing?.phone || existing?.normalizedPhone) {
+
+  if (existing?.normalizedPhone === normalizedPhone) {
     return existing;
   }
 
-  const phone = TWILIO_TEST_PHONE;
+  const phone = normalizedPhone || TWILIO_TEST_PHONE;
   const record = buildBusinessRecord({
     id: TWILIO_TEST_BUSINESS_ID,
     businessName: "Twilio Test Company",
@@ -37,15 +46,15 @@ export async function ensureTwilioTestBusiness() {
     websiteStatus: "no_website",
     websiteScore: null,
     websiteScoreReasons: ["Twilio Voice test record — not a real lead"],
-    phone,
-    normalizedPhone: normalizePhoneNumber(phone),
+    phone: existing?.phone || TWILIO_TEST_PHONE,
+    normalizedPhone: phone,
     email: "",
     socialUrls: [],
     contactMethodCategory: "text_first",
     qualificationStatus: "qualified",
     qualificationReason: "Manual test record for Twilio Voice V1",
     manualOverride: true,
-    dateFound: nowIso(),
+    dateFound: existing?.dateFound || nowIso(),
     dateScored: nowIso(),
     source: "twilio_test",
     dedupKey: "test:twilio-voice-4095686011",
@@ -53,6 +62,6 @@ export async function ensureTwilioTestBusiness() {
     outreachStatusUpdatedAt: nowIso(),
   });
 
-  await upsertQualifiedBusiness(record);
+  await upsertQualifiedBusiness({ ...existing, ...record });
   return getQualifiedBusiness(TWILIO_TEST_BUSINESS_ID);
 }
