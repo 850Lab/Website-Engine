@@ -169,7 +169,8 @@ export function renderCallQueuePage() {
       }catch(e){
         var msg=e.message||'Call failed';
         if(msg.toLowerCase().indexOf('unauthorized')!==-1){
-          msg='Log in required — open /api/login or sign in via admin, then retry.';
+          window.location.href='/login?return='+encodeURIComponent(window.location.pathname+window.location.search);
+          return;
         }
         setCallStatus(msg,'error');
         showToast('Call failed');
