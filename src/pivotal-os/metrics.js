@@ -63,15 +63,26 @@ function classifyPipelineStage(record) {
   return "ready";
 }
 
-export async function buildDailyMetrics(records = null) {
+export async function buildDailyMetrics(records = null, operator = null) {
   const list = records ?? (await listQualifiedBusinesses());
-  const callable = list.filter((r) => normalizePhone(r));
+  const callable = list.filter((r) => {
+    if (!normalizePhone(r)) return false;
+    if (operator && operator.role !== "owner") {
+      const assigned = cleanText(r.assignedOperatorId);
+      if (assigned && assigned !== operator.id) return false;
+    }
+    return true;
+  });
 
   let callsToday = 0;
   let conversationsToday = 0;
   let appointmentsToday = 0;
 
   for (const record of list) {
+    if (operator && operator.role !== "owner") {
+      const assigned = cleanText(record.assignedOperatorId);
+      if (assigned && assigned !== operator.id) continue;
+    }
     if (!isToday(record.outreachStatusUpdatedAt)) continue;
     const status = cleanText(record.outreachStatus) || "not_contacted";
     if (status !== "not_contacted") callsToday += 1;
@@ -159,8 +170,8 @@ export async function buildTwilioTestLead(req) {
   };
 }
 
-export async function buildNextBestOpportunity(req) {
-  const queue = await buildSalesQueue(req, { phoneOnly: true, excludeClosed: true });
+export async function buildNextBestOpportunity(req, operator = null) {
+  const queue = await buildSalesQueue(req, { phoneOnly: true, excludeClosed: true }, operator);
   if (!queue.length) return null;
 
   const lead = queue[0];
@@ -238,15 +249,23 @@ export async function buildOpportunityFolders(req) {
   return { folders, totalAnalyzed: summary.totalAnalyzed };
 }
 
-export async function buildPivotalDashboard(req) {
+export async function buildPivotalDashboard(req, operator = null) {
   const [daily, pipeline, nextOpportunity, twilioTest] = await Promise.all([
-    buildDailyMetrics(),
+    buildDailyMetrics(null, operator),
     buildPipelineMetrics(),
-    buildNextBestOpportunity(req),
+    buildNextBestOpportunity(req, operator),
     buildTwilioTestLead(req),
   ]);
 
-  return { daily, pipeline, nextOpportunity, twilioTest };
+  return {
+    daily,
+    pipeline,
+    nextOpportunity,
+    twilioTest,
+    operator: operator
+      ? { id: operator.id, name: operator.name, email: operator.email, role: operator.role }
+      : null,
+  };
 }
 
 export function buildSettingsSnapshot() {

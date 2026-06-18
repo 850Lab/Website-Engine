@@ -5,6 +5,7 @@ import { publicBaseUrl } from "../v7/shared.js";
 import { defaultFollowUpText } from "../sales-brief/outreach-copy.js";
 import { OPENING_LINES, EMERGENCY_QUESTION, FIRST_DEFLECTION_RESPONSES } from "../sales-brief/outreach-copy.js";
 import { OUTREACH_STATUS_LABELS } from "../outreach-page.js";
+import { canOperatorAccessLead, assignLeadToOperator } from "../operators/lead-assignment.js";
 import { isTwilioTestBusiness } from "../twilio-voice/test-lead.js";
 
 const PRIORITY_RANK = { Hot: 0, Warm: 1, Nurture: 2, "Manual Review": 3 };
@@ -93,6 +94,8 @@ export function mergeSalesLead(record, analysis, baseUrl) {
     deflectionLine: angle.suggested_deflection_response,
     emergencyQuestion: angle.emergency_question,
     nextAction: angle.next_action,
+    assignedOperatorId: cleanText(record.assignedOperatorId) || null,
+    assignedOperatorName: cleanText(record.assignedOperatorName) || null,
     salesNotes: salesNotes.slice(-5).reverse(),
     actions: {
       call: phone ? `tel:${phone}` : "",
@@ -114,13 +117,14 @@ export function sortSalesQueue(leads) {
   });
 }
 
-export async function buildSalesQueue(req, filters = {}) {
+export async function buildSalesQueue(req, filters = {}, operator = null) {
   const baseUrl = publicBaseUrl(req);
   const [records, store] = await Promise.all([listQualifiedBusinesses(), getAngleAnalysisStore()]);
   const analysisMap = store.analyses ?? {};
 
   let leads = records
     .filter((record) => {
+      if (operator && !canOperatorAccessLead(record, operator)) return false;
       const phone = normalizePhoneDigits(record.phone || record.normalizedPhone);
       if (filters.phoneOnly !== false && !phone) return false;
       if (filters.qualifiedOnly && record.qualificationStatus !== "qualified") return false;
@@ -148,9 +152,15 @@ export async function buildSalesQueue(req, filters = {}) {
   return leads;
 }
 
-export async function getSalesLeadById(req, businessId) {
-  const record = await getQualifiedBusiness(businessId);
+export async function getSalesLeadById(req, businessId, operator = null, { claim = false } = {}) {
+  let record = await getQualifiedBusiness(businessId);
   if (!record) return null;
+  if (operator && !canOperatorAccessLead(record, operator)) return null;
+
+  if (claim && operator) {
+    record = await assignLeadToOperator(businessId, operator);
+  }
+
   const store = await getAngleAnalysisStore();
   return mergeSalesLead(record, store.analyses?.[businessId], publicBaseUrl(req));
 }

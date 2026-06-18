@@ -94,30 +94,16 @@ export function renderHomePage() {
         setTestStatus('Call started — answer your phone to connect to the test line.','ok');
       }catch(e){
         var msg=e.message||'Call failed';
-        if(msg.toLowerCase().indexOf('unauthorized')!==-1){
-          msg='Sign in required.';
-          window.location.href='/login?return='+encodeURIComponent(window.location.pathname+window.location.search);
-          return;
-        }
         setTestStatus(msg,'error');
       }finally{
         if(btn) btn.disabled=false;
       }
     }
 
-    function renderTwilioTest(test, authenticated){
+    function renderTwilioTest(test){
       var el=document.getElementById('twilioTestContent');
       if(!test){
         el.innerHTML='<p class="card-body">Twilio test lead not found.</p>';
-        return;
-      }
-      if(!authenticated){
-        el.innerHTML=
-          '<div class="next-name">'+esc(test.businessName)+'</div>'+
-          '<div class="card-body" style="margin-bottom:10px">'+esc(test.phone)+' · '+esc(test.city)+'</div>'+
-          '<p class="test-note">Sign in first to use Call with Recording.</p>'+
-          '<a class="btn btn-primary btn-block" href="/login?return='+encodeURIComponent('/')+'">Sign in</a>'+
-          '<a class="btn btn-ghost btn-block" href="'+esc(test.callQueueUrl)+'" style="margin-top:10px">Open in Call Queue</a>';
         return;
       }
       el.innerHTML=
@@ -135,10 +121,11 @@ export function renderHomePage() {
       };
     }
 
-    function renderDaily(d){
+    function renderDaily(d, operator){
       var h=new Date().getHours();
       var greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-      document.getElementById('greeting').textContent=greet+', Jaylan. '+d.callableLeads+' leads ready to call.';
+      var name=operator&&operator.name?operator.name.split(' ')[0]:'Jaylan';
+      document.getElementById('greeting').textContent=greet+', '+name+'. '+d.callableLeads+' leads in your queue.';
       var p=d.progress;
       document.getElementById('callsNum').textContent=p.calls.completed;
       document.getElementById('callsTarget').textContent='of '+p.calls.target;
@@ -151,14 +138,9 @@ export function renderHomePage() {
       document.getElementById('revenueToday').textContent=money(d.potentialRevenueToday);
     }
 
-    Promise.all([
-      fetch('/api/pivotal-os/dashboard').then(function(r){return r.json();}),
-      fetch('/api/me').then(function(r){return r.json();})
-    ]).then(function(results){
-      var data=results[0];
-      var me=results[1];
-      renderDaily(data.daily);
-      renderTwilioTest(data.twilioTest, Boolean(me.authenticated));
+    fetch('/api/pivotal-os/dashboard').then(function(r){return r.json();}).then(function(data){
+      renderDaily(data.daily, data.operator);
+      renderTwilioTest(data.twilioTest);
       renderNext(data.nextOpportunity);
     }).catch(function(err){document.getElementById('greeting').textContent=err.message;});
   `;

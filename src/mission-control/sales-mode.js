@@ -16,6 +16,7 @@ import {
   getQueueStats,
   getSalesLeadById,
 } from "./sales-queue.js";
+import { assignLeadToOperator } from "../operators/lead-assignment.js";
 
 function esc(value) {
   return String(value ?? "")
@@ -25,10 +26,13 @@ function esc(value) {
     .replace(/"/g, "&quot;");
 }
 
-export async function updateSalesOutcome(businessId, status) {
+export async function updateSalesOutcome(businessId, status, operator = null) {
   const nextStatus = normalizeOutreachStatus(status);
   if (!OUTREACH_STATUSES.includes(nextStatus)) {
     throw new Error(`Invalid outcome: ${status}`);
+  }
+  if (operator) {
+    await assignLeadToOperator(businessId, operator);
   }
   const record = await getQualifiedBusiness(businessId);
   if (!record) throw new Error("Business not found");
@@ -37,6 +41,8 @@ export async function updateSalesOutcome(businessId, status) {
     ...record,
     outreachStatus: nextStatus,
     outreachStatusUpdatedAt: nowIso(),
+    lastOperatorId: operator?.id ?? record.lastOperatorId ?? null,
+    lastOperatorName: operator?.name ?? record.lastOperatorName ?? null,
   };
   await upsertQualifiedBusiness(updated);
 
@@ -47,15 +53,23 @@ export async function updateSalesOutcome(businessId, status) {
   };
 }
 
-export async function appendSalesNote(businessId, text) {
+export async function appendSalesNote(businessId, text, operator = null) {
   const noteText = cleanText(text);
   if (!noteText) throw new Error("Note cannot be empty.");
 
+  if (operator) {
+    await assignLeadToOperator(businessId, operator);
+  }
   const record = await getQualifiedBusiness(businessId);
   if (!record) throw new Error("Business not found");
 
   const salesNotes = Array.isArray(record.salesNotes) ? [...record.salesNotes] : [];
-  salesNotes.push({ at: nowIso(), text: noteText });
+  salesNotes.push({
+    at: nowIso(),
+    text: noteText,
+    operatorId: operator?.id ?? null,
+    operatorName: operator?.name ?? null,
+  });
 
   const updated = { ...record, salesNotes };
   await upsertQualifiedBusiness(updated);
@@ -73,10 +87,12 @@ function queueFiltersFromQuery(req) {
   };
 }
 
-export function registerSalesModeRoutes(app) {
-  app.get("/api/mission-control/sales/queue", async (req, res) => {
+export function registerSalesModeRoutes(app, { requireOperatorApi } = {}) {
+  const auth = requireOperatorApi ?? ((_req, _res, next) => next());
+
+  app.get("/api/mission-control/sales/queue", auth, async (req, res) => {
     try {
-      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req));
+      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req), req.operator);
       return res.json({
         stats: getQueueStats(queue),
         queue: queue.map((row) => ({ id: row.id, businessName: row.businessName, priorityLabel: row.priorityLabel })),
@@ -86,11 +102,11 @@ export function registerSalesModeRoutes(app) {
     }
   });
 
-  app.get("/api/mission-control/sales/lead/:id", async (req, res) => {
+  app.get("/api/mission-control/sales/lead/:id", auth, async (req, res) => {
     try {
-      const lead = await getSalesLeadById(req, req.params.id);
+      const lead = await getSalesLeadById(req, req.params.id, req.operator, { claim: true });
       if (!lead) return res.status(404).json({ error: "Lead not found" });
-      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req));
+      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req), req.operator);
       const nextId = getNextLeadId(queue, req.params.id);
       return res.json({ lead, nextId, stats: getQueueStats(queue) });
     } catch (err) {
@@ -98,38 +114,38 @@ export function registerSalesModeRoutes(app) {
     }
   });
 
-  app.get("/api/mission-control/sales/next", async (req, res) => {
+  app.get("/api/mission-control/sales/next", auth, async (req, res) => {
     try {
-      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req));
+      const queue = await buildSalesQueue(req, queueFiltersFromQuery(req), req.operator);
       const after = cleanText(req.query.after);
       const nextId = getNextLeadId(queue, after || null);
       if (!nextId) return res.json({ lead: null, stats: getQueueStats(queue) });
-      const lead = await getSalesLeadById(req, nextId);
+      const lead = await getSalesLeadById(req, nextId, req.operator, { claim: true });
       return res.json({ lead, nextId: getNextLeadId(queue, nextId), stats: getQueueStats(queue) });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }
   });
 
-  app.patch("/api/mission-control/sales/lead/:id/outcome", async (req, res) => {
+  app.patch("/api/mission-control/sales/lead/:id/outcome", auth, async (req, res) => {
     try {
-      const result = await updateSalesOutcome(req.params.id, req.body?.status);
+      const result = await updateSalesOutcome(req.params.id, req.body?.status, req.operator);
       return res.json(result);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
   });
 
-  app.post("/api/mission-control/sales/lead/:id/note", async (req, res) => {
+  app.post("/api/mission-control/sales/lead/:id/note", auth, async (req, res) => {
     try {
-      const notes = await appendSalesNote(req.params.id, req.body?.text);
+      const notes = await appendSalesNote(req.params.id, req.body?.text, req.operator);
       return res.json({ notes });
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
   });
 
-  app.get("/api/mission-control/sales/storage", (_req, res) => {
+  app.get("/api/mission-control/sales/storage", auth, (_req, res) => {
     return res.json({
       backend: persistenceBackendLabel(),
       outcomesPersist: blobPersistenceEnabled(),
