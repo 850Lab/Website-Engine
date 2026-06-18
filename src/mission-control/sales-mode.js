@@ -145,116 +145,266 @@ export function renderSalesModePage() {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#ffffff" />
   <title>Sales Mode — Mission Control</title>
   <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; height: 100%; background: #fff; color: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --tap: 56px;
+      --tap-lg: 64px;
+      --radius: 14px;
+      --border: 2px solid #000;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: #fff; color: #000;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      touch-action: manipulation;
+    }
     body { display: flex; flex-direction: column; min-height: 100dvh; }
+
     .top {
       flex-shrink: 0;
-      padding: 14px 16px 10px;
-      border-bottom: 2px solid #000;
+      padding: calc(10px + var(--safe-top)) 16px 10px;
+      border-bottom: var(--border);
       background: #fff;
-      padding-top: max(14px, env(safe-area-inset-top));
     }
-    .top-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-    .brand { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-    .count { font-size: 13px; font-weight: 600; }
-    .stats { font-size: 12px; color: #444; margin-top: 4px; }
-    .storage-pill {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 3px 8px;
-      border: 1px solid #000;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-    .storage-pill.ok { background: #000; color: #fff; }
-    .storage-pill.warn { background: #fff; color: #c00; border-color: #c00; }
+    .count {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .stats {
+      font-size: 13px;
+      color: #444;
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+    .storage-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+      background: #ccc;
+    }
+    .storage-dot.ok { background: #000; }
+    .storage-dot.warn { background: #e00; }
+
     .main {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 16px 120px;
+      overflow-x: hidden;
+      padding: 16px 16px calc(100px + var(--safe-bottom));
       -webkit-overflow-scrolling: touch;
     }
-    .empty { padding: 40px 16px; text-align: center; font-size: 16px; line-height: 1.5; color: #333; }
-    .lead-name { font-size: 28px; font-weight: 800; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.02em; }
-    .lead-meta { font-size: 15px; color: #333; margin-bottom: 14px; }
-    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .tag {
-      border: 2px solid #000;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 11px;
+    .empty {
+      padding: 48px 8px;
+      text-align: center;
+      font-size: 17px;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    .lead-name {
+      font-size: clamp(26px, 7vw, 34px);
       font-weight: 800;
-      letter-spacing: 0.04em;
+      line-height: 1.1;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+      word-break: break-word;
+    }
+    .lead-meta {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      border: var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
     }
     .tag.hot { background: #000; color: #fff; }
-    .block {
-      border: 2px solid #000;
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      background: #fff;
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
     }
-    .block-label {
-      font-size: 10px;
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: var(--tap-lg);
+      border: var(--border);
+      border-radius: var(--radius);
+      font-size: 18px;
       font-weight: 800;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      color: #000;
+      background: #fff;
+      cursor: pointer;
+      padding: 12px 16px;
+      user-select: none;
+    }
+    .action-btn.primary {
+      background: #000;
+      color: #fff;
+    }
+    .action-btn.disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    .action-btn:active:not(.disabled) {
+      transform: scale(0.98);
+    }
+    .action-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .card {
+      border: var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .card-static {
+      padding: 14px 16px;
+    }
+    .card-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #555;
       margin-bottom: 6px;
     }
-    .block-body { font-size: 15px; line-height: 1.45; }
-    .script { font-size: 16px; line-height: 1.5; font-weight: 500; }
+    .card-body {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .card-body.script {
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    details.card {
+      padding: 0;
+    }
+    details.card summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: var(--tap);
+    }
+    details.card summary::-webkit-details-marker { display: none; }
+    details.card summary::after {
+      content: "+";
+      font-size: 20px;
+      font-weight: 400;
+      flex-shrink: 0;
+    }
+    details.card[open] summary::after { content: "−"; }
+    details.card .card-inner {
+      padding: 0 16px 14px;
+      border-top: 1px solid #ddd;
+    }
+    details.card[open] summary {
+      border-bottom: 1px solid #ddd;
+    }
+
     .notes-list { margin: 0; padding: 0; list-style: none; }
-    .notes-list li { font-size: 14px; line-height: 1.4; padding: 8px 0; border-bottom: 1px solid #ddd; }
+    .notes-list li {
+      font-size: 15px;
+      line-height: 1.45;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
     .notes-list li:last-child { border-bottom: none; }
-    .note-time { font-size: 11px; color: #666; display: block; margin-bottom: 2px; }
+    .note-time {
+      font-size: 12px;
+      color: #666;
+      display: block;
+      margin-bottom: 4px;
+    }
+
     .dock {
       position: fixed;
       left: 0; right: 0; bottom: 0;
       background: #fff;
-      border-top: 2px solid #000;
-      padding: 10px 10px max(10px, env(safe-area-inset-bottom));
+      border-top: var(--border);
+      padding: 10px 12px calc(10px + var(--safe-bottom));
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 10px;
       z-index: 20;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.06);
     }
     .dock-btn {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      min-height: 56px;
-      border: 2px solid #000;
-      border-radius: 12px;
+      min-height: var(--tap-lg);
+      border: var(--border);
+      border-radius: var(--radius);
       background: #fff;
       color: #000;
-      font-size: 11px;
+      font-size: 16px;
       font-weight: 800;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      text-decoration: none;
+      letter-spacing: 0.01em;
       cursor: pointer;
-      padding: 6px 4px;
-      -webkit-tap-highlight-color: transparent;
+      padding: 12px 8px;
     }
-    .dock-btn.primary { background: #000; color: #fff; }
-    .dock-btn:disabled, .dock-btn.disabled { opacity: 0.35; pointer-events: none; }
-    .dock-icon { font-size: 18px; line-height: 1; }
+    .dock-btn.primary {
+      background: #000;
+      color: #fff;
+    }
+    .dock-btn:active { transform: scale(0.98); }
+    .dock-btn:disabled { opacity: 0.35; pointer-events: none; }
+
     .sheet {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0,0,0,0.5);
       z-index: 30;
       align-items: flex-end;
     }
@@ -262,58 +412,120 @@ export function renderSalesModePage() {
     .sheet-panel {
       width: 100%;
       background: #fff;
-      border-top: 2px solid #000;
-      border-radius: 16px 16px 0 0;
-      padding: 16px 16px max(20px, env(safe-area-inset-bottom));
-      max-height: 70dvh;
+      border-top: var(--border);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 16px calc(20px + var(--safe-bottom));
+      max-height: 85dvh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .sheet-title { font-size: 18px; font-weight: 800; margin: 0 0 12px; }
-    .outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: #ccc;
+      border-radius: 999px;
+      margin: 0 auto 16px;
+    }
+    .sheet-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 0 16px;
+    }
+    .outcome-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     .outcome-btn {
-      min-height: 48px;
-      border: 2px solid #000;
-      border-radius: 10px;
+      min-height: var(--tap-lg);
+      border: var(--border);
+      border-radius: var(--radius);
       background: #fff;
-      font-size: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 14px 16px;
+      text-align: left;
+    }
+    .outcome-btn:active { transform: scale(0.99); }
+    .outcome-btn.active {
+      background: #000;
+      color: #fff;
+    }
+    .sheet-close {
+      width: 100%;
+      min-height: var(--tap);
+      margin-top: 12px;
+      border: var(--border);
+      border-radius: var(--radius);
+      background: #f5f5f5;
+      font-size: 16px;
       font-weight: 700;
       cursor: pointer;
     }
-    .outcome-btn.active { background: #000; color: #fff; }
+
     .note-input {
       width: 100%;
-      min-height: 100px;
-      border: 2px solid #000;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 16px;
+      min-height: 120px;
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 17px;
       font-family: inherit;
-      resize: vertical;
-      margin-bottom: 10px;
+      line-height: 1.45;
+      resize: none;
+      margin-bottom: 12px;
     }
-    .sheet-actions { display: flex; gap: 8px; }
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+    }
     .sheet-actions button {
-      flex: 1;
-      min-height: 48px;
-      border: 2px solid #000;
-      border-radius: 10px;
-      font-size: 15px;
+      min-height: var(--tap-lg);
+      border: var(--border);
+      border-radius: var(--radius);
+      font-size: 17px;
       font-weight: 800;
       cursor: pointer;
     }
     .sheet-actions .save { background: #000; color: #fff; }
     .sheet-actions .cancel { background: #fff; color: #000; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(90px + var(--safe-bottom));
+      transform: translateX(-50%) translateY(12px);
+      background: #000;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 40;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     .hidden { display: none !important; }
+    .busy { opacity: 0.6; pointer-events: none; }
   </style>
 </head>
 <body>
   <header class="top">
     <div class="top-row">
-      <div class="brand">Mission Control · Sales</div>
+      <div class="brand">Sales Mode</div>
       <div class="count" id="leadCount">—</div>
     </div>
     <div class="stats" id="leadStats">Loading queue…</div>
-    <div class="storage-pill warn" id="storagePill">Checking storage…</div>
+    <div class="stats" id="storageLine"><span class="storage-dot" id="storageDot"></span><span id="storageText">Checking sync…</span></div>
   </header>
 
   <main class="main" id="main">
@@ -322,27 +534,27 @@ export function renderSalesModePage() {
   </main>
 
   <nav class="dock" id="dock">
-    <a class="dock-btn primary" id="callBtn" href="#"><span class="dock-icon">C</span>Call</a>
-    <a class="dock-btn" id="textBtn" href="#"><span class="dock-icon">T</span>Text</a>
-    <button type="button" class="dock-btn" id="outcomeBtn"><span class="dock-icon">O</span>Outcome</button>
-    <button type="button" class="dock-btn" id="noteBtn"><span class="dock-icon">N</span>Note</button>
-    <button type="button" class="dock-btn primary" id="nextBtn"><span class="dock-icon">›</span>Next</button>
+    <button type="button" class="dock-btn" id="outcomeBtn">Outcome</button>
+    <button type="button" class="dock-btn" id="noteBtn">Note</button>
+    <button type="button" class="dock-btn primary" id="nextBtn">Next lead</button>
   </nav>
+
+  <div class="toast" id="toast"></div>
 
   <div class="sheet" id="outcomeSheet">
     <div class="sheet-panel">
-      <h2 class="sheet-title">Update outcome</h2>
+      <div class="sheet-handle"></div>
+      <h2 class="sheet-title">Set outcome</h2>
       <div class="outcome-grid">${outcomeButtons}</div>
-      <div class="sheet-actions" style="margin-top:12px;">
-        <button type="button" class="cancel" id="outcomeCancel">Close</button>
-      </div>
+      <button type="button" class="sheet-close" id="outcomeCancel">Close</button>
     </div>
   </div>
 
   <div class="sheet" id="noteSheet">
     <div class="sheet-panel">
+      <div class="sheet-handle"></div>
       <h2 class="sheet-title">Add note</h2>
-      <textarea class="note-input" id="noteInput" placeholder="What happened on the call?"></textarea>
+      <textarea class="note-input" id="noteInput" placeholder="What happened on the call?" rows="4"></textarea>
       <div class="sheet-actions">
         <button type="button" class="cancel" id="noteCancel">Cancel</button>
         <button type="button" class="save" id="noteSave">Save note</button>
@@ -353,6 +565,7 @@ export function renderSalesModePage() {
   <script>
     var currentLead = null;
     var nextLeadId = null;
+    var toastTimer = null;
 
     function esc(s) {
       return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -368,10 +581,27 @@ export function renderSalesModePage() {
       return label === "Hot" ? "tag hot" : "tag";
     }
 
+    function showToast(msg) {
+      var el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() { el.classList.remove("show"); }, 1800);
+    }
+
+    function setBusy(on) {
+      document.body.classList.toggle("busy", on);
+    }
+
     function renderLead(lead) {
       var notes = (lead.salesNotes || []).map(function(n) {
         return '<li><span class="note-time">' + esc(formatTime(n.at)) + '</span>' + esc(n.text) + '</li>';
       }).join("");
+
+      var callClass = lead.actions.call ? "action-btn primary" : "action-btn primary disabled";
+      var textClass = lead.actions.text ? "action-btn" : "action-btn disabled";
+      var callHref = lead.actions.call || "#";
+      var textHref = lead.actions.text || "#";
 
       return '' +
         '<h1 class="lead-name">' + esc(lead.businessName) + '</h1>' +
@@ -381,35 +611,46 @@ export function renderSalesModePage() {
           '<span class="tag">' + esc(lead.outreachStatusLabel) + '</span>' +
           (lead.folderLabel ? '<span class="tag">' + esc(lead.folderLabel) + '</span>' : '') +
         '</div>' +
-        '<div class="block"><div class="block-label">Problem</div><div class="block-body">' + esc(lead.problem) + '</div></div>' +
-        '<div class="block"><div class="block-label">Angle</div><div class="block-body">' + esc(lead.primaryAngle) + '</div></div>' +
-        '<div class="block"><div class="block-label">Opening line</div><div class="block-body script">' + esc(lead.openingLine) + '</div></div>' +
-        '<div class="block"><div class="block-label">If deflected</div><div class="block-body script">' + esc(lead.deflectionLine) + '</div></div>' +
-        '<div class="block"><div class="block-label">Emergency question</div><div class="block-body script">' + esc(lead.emergencyQuestion) + '</div></div>' +
-        '<div class="block"><div class="block-label">Offer (after discovery)</div><div class="block-body">' + esc(lead.recommendedOffer) + '</div></div>' +
-        '<div class="block"><div class="block-label">Next action</div><div class="block-body">' + esc(lead.nextAction) + '</div></div>' +
-        (notes ? '<div class="block"><div class="block-label">Notes</div><ul class="notes-list">' + notes + '</ul></div>' : '');
+        '<div class="action-row">' +
+          '<a class="' + callClass + '" id="callBtn" href="' + esc(callHref) + '"><span class="action-icon">📞</span> Call</a>' +
+          '<a class="' + textClass + '" id="textBtn" href="' + esc(textHref) + '"><span class="action-icon">💬</span> Text</a>' +
+        '</div>' +
+        '<div class="card card-static">' +
+          '<div class="card-label">Opening line</div>' +
+          '<div class="card-body script">' + esc(lead.openingLine) + '</div>' +
+        '</div>' +
+        '<details class="card">' +
+          '<summary>Problem &amp; angle</summary>' +
+          '<div class="card-inner">' +
+            '<div class="card-label">Problem</div>' +
+            '<div class="card-body" style="margin-bottom:12px">' + esc(lead.problem) + '</div>' +
+            '<div class="card-label">Angle</div>' +
+            '<div class="card-body">' + esc(lead.primaryAngle) + '</div>' +
+          '</div>' +
+        '</details>' +
+        '<details class="card">' +
+          '<summary>If deflected</summary>' +
+          '<div class="card-inner"><div class="card-body script">' + esc(lead.deflectionLine) + '</div></div>' +
+        '</details>' +
+        '<details class="card">' +
+          '<summary>Emergency question</summary>' +
+          '<div class="card-inner"><div class="card-body script">' + esc(lead.emergencyQuestion) + '</div></div>' +
+        '</details>' +
+        '<details class="card">' +
+          '<summary>Offer &amp; next step</summary>' +
+          '<div class="card-inner">' +
+            '<div class="card-label">Offer (after discovery)</div>' +
+            '<div class="card-body" style="margin-bottom:12px">' + esc(lead.recommendedOffer) + '</div>' +
+            '<div class="card-label">Next action</div>' +
+            '<div class="card-body">' + esc(lead.nextAction) + '</div>' +
+          '</div>' +
+        '</details>' +
+        (notes ? '<div class="card card-static"><div class="card-label">Notes</div><ul class="notes-list">' + notes + '</ul></div>' : '');
     }
 
-    function updateDock(lead) {
-      var callBtn = document.getElementById("callBtn");
-      var textBtn = document.getElementById("textBtn");
-      if (lead.actions.call) {
-        callBtn.href = lead.actions.call;
-        callBtn.classList.remove("disabled");
-      } else {
-        callBtn.href = "#";
-        callBtn.classList.add("disabled");
-      }
-      if (lead.actions.text) {
-        textBtn.href = lead.actions.text;
-        textBtn.classList.remove("disabled");
-      } else {
-        textBtn.href = "#";
-        textBtn.classList.add("disabled");
-      }
+    function syncOutcomeButtons(status) {
       document.querySelectorAll(".outcome-btn").forEach(function(btn) {
-        btn.classList.toggle("active", btn.dataset.outcome === lead.outreachStatus);
+        btn.classList.toggle("active", btn.dataset.outcome === status);
       });
     }
 
@@ -420,14 +661,15 @@ export function renderSalesModePage() {
     }
 
     function updateStoragePill(info) {
-      var pill = document.getElementById("storagePill");
-      if (!pill || !info) return;
+      var dot = document.getElementById("storageDot");
+      var text = document.getElementById("storageText");
+      if (!dot || !text || !info) return;
       if (info.outcomesPersist) {
-        pill.textContent = "Outcomes saved to cloud";
-        pill.className = "storage-pill ok";
+        dot.className = "storage-dot ok";
+        text.textContent = "Outcomes sync to cloud";
       } else {
-        pill.textContent = "Outcomes not persisting — set BLOB token on Vercel";
-        pill.className = "storage-pill warn";
+        dot.className = "storage-dot warn";
+        text.textContent = "Outcomes not saving — check Blob token";
       }
     }
 
@@ -459,46 +701,64 @@ export function renderSalesModePage() {
       if (!currentLead) {
         document.getElementById("loading").textContent = "No leads with phone numbers in queue.";
         document.getElementById("leadView").classList.add("hidden");
+        document.getElementById("dock").classList.add("hidden");
         return;
       }
+      document.getElementById("dock").classList.remove("hidden");
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("leadView").classList.remove("hidden");
       document.getElementById("leadView").innerHTML = renderLead(currentLead);
-      updateDock(currentLead);
+      syncOutcomeButtons(currentLead.outreachStatus);
       updateHeader(data.stats || { total: 0, hot: 0, notContacted: 0 });
       try { localStorage.setItem("salesModeLeadId", currentLead.id); } catch (e) {}
+      window.scrollTo(0, 0);
     }
 
     async function saveOutcome(status) {
       if (!currentLead) return;
-      await jsonFetch("/api/mission-control/sales/lead/" + encodeURIComponent(currentLead.id) + "/outcome", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: status })
-      });
-      currentLead.outreachStatus = status;
-      document.getElementById("outcomeSheet").classList.remove("open");
-      await loadLead(currentLead.id);
+      setBusy(true);
+      try {
+        await jsonFetch("/api/mission-control/sales/lead/" + encodeURIComponent(currentLead.id) + "/outcome", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: status })
+        });
+        document.getElementById("outcomeSheet").classList.remove("open");
+        showToast("Outcome saved");
+        await loadLead(currentLead.id);
+      } finally {
+        setBusy(false);
+      }
     }
 
     async function saveNote() {
       var text = document.getElementById("noteInput").value.trim();
       if (!text || !currentLead) return;
-      await jsonFetch("/api/mission-control/sales/lead/" + encodeURIComponent(currentLead.id) + "/note", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text })
-      });
-      document.getElementById("noteInput").value = "";
-      document.getElementById("noteSheet").classList.remove("open");
-      await loadLead(currentLead.id);
+      setBusy(true);
+      try {
+        await jsonFetch("/api/mission-control/sales/lead/" + encodeURIComponent(currentLead.id) + "/note", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: text })
+        });
+        document.getElementById("noteInput").value = "";
+        document.getElementById("noteSheet").classList.remove("open");
+        showToast("Note saved");
+        await loadLead(currentLead.id);
+      } finally {
+        setBusy(false);
+      }
     }
 
     document.getElementById("nextBtn").addEventListener("click", function() {
-      loadLead(nextLeadId || null).catch(function(err) { alert(err.message); });
+      setBusy(true);
+      loadLead(nextLeadId || null)
+        .catch(function(err) { alert(err.message); })
+        .finally(function() { setBusy(false); });
     });
 
     document.getElementById("outcomeBtn").addEventListener("click", function() {
+      syncOutcomeButtons(currentLead ? currentLead.outreachStatus : "");
       document.getElementById("outcomeSheet").classList.add("open");
     });
     document.getElementById("outcomeCancel").addEventListener("click", function() {
@@ -512,7 +772,7 @@ export function renderSalesModePage() {
 
     document.getElementById("noteBtn").addEventListener("click", function() {
       document.getElementById("noteSheet").classList.add("open");
-      document.getElementById("noteInput").focus();
+      setTimeout(function() { document.getElementById("noteInput").focus(); }, 200);
     });
     document.getElementById("noteCancel").addEventListener("click", function() {
       document.getElementById("noteSheet").classList.remove("open");
