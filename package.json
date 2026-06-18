@@ -7,7 +7,13 @@
     "server": "node src/server.js",
     "worker": "node src/opportunity-engine/worker.js",
     "build": "node -e \"require('fs').mkdirSync('dist', { recursive: true }); console.log('No frontend build step configured');\"",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "snapshot:outreach": "node scripts/screenshot-outreach-websites.js",
+    "snapshot:backfill-metadata": "node scripts/screenshot-outreach-websites.js --metadata-only",
+    "brief:sales": "node scripts/generate-sales-briefs.js",
+    "call:analyze": "python scripts/analyze_call_recording.py",
+    "angles:reanalyze": "node scripts/reanalyze-all-businesses.js --wait",
+    "website:pack": "node scripts/run-single-website.js"
   },
   "engines": {
     "node": ">=20"

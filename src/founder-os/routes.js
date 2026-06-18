@@ -1,5 +1,10 @@
 import { cleanText } from "../stage1/shared.js";
 import {
+  defaultEmailBody,
+  defaultEmailSubject,
+  defaultFollowUpText,
+} from "../sales-brief/outreach-copy.js";
+import {
   addFounderTimelineEntry,
   attachFounderAsset,
   founderDashboard,
@@ -28,15 +33,10 @@ function encodeMail(text) {
 }
 
 function defaultTextMessage(business) {
-  return `Hi ${business.businessName}, I noticed your website could be improved for mobile speed and conversion. I can show you a quick preview to get more local leads. Open to seeing it?`;
-}
-
-function defaultEmailSubject(business) {
-  return `${business.businessName} website growth idea`;
-}
-
-function defaultEmailBody(business) {
-  return `Hi ${business.businessName} team,\n\nI reviewed your website and found a few quick wins for mobile speed and lead conversion. I can send a simple preview showing what this could look like.\n\nWould you like me to send it?\n\n- WebLab`;
+  return defaultFollowUpText(
+    { businessName: business.businessName },
+    business.previewUrl || business.website,
+  );
 }
 
 function actionLinks(business) {
@@ -58,14 +58,14 @@ function actionLinks(business) {
 }
 
 function recommendedAction(business) {
-  if (business.outreachStatus === "new") return "Call this business.";
-  if (business.outreachStatus === "follow_up") return "Send a follow-up email.";
-  if (business.outreachStatus === "contacted") return "Send website preview.";
-  if (business.outreachStatus === "responded") return "Book an appointment.";
-  if (business.outreachStatus === "interested") return "Send proposal and close.";
-  if (business.outreachStatus === "appointment_scheduled") return "Prepare appointment notes.";
+  if (business.outreachStatus === "new") return "Call — lead with how they get customers, not websites.";
+  if (business.outreachStatus === "follow_up") return "Call back or send a growth-first follow-up.";
+  if (business.outreachStatus === "contacted") return "Continue discovery — ask how they get new business today.";
+  if (business.outreachStatus === "responded") return "Book a short follow-up after discovery.";
+  if (business.outreachStatus === "interested") return "Present the right problem (trust, contact path, conversion) — not a generic redesign.";
+  if (business.outreachStatus === "appointment_scheduled") return "Prepare discovery notes and emergency question.";
   if (business.outreachStatus === "proposal_sent") return "Follow up on proposal.";
-  return "Review and choose next outreach step.";
+  return "Review sales brief and choose the next discovery step.";
 }
 
 function businessView(business) {

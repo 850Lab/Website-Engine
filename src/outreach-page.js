@@ -10,6 +10,11 @@ import {
   upsertQualifiedBusiness,
 } from "./stage1/qualified-business-store.js";
 import { publicBaseUrl } from "./v7/shared.js";
+import {
+  defaultEmailBody,
+  defaultEmailSubject,
+  defaultFollowUpText,
+} from "./sales-brief/outreach-copy.js";
 
 const FOUNDER_OS_FILE = join(DATA_DIR, "founder-os.json");
 
@@ -73,17 +78,7 @@ function normalizePhoneDigits(phone) {
 }
 
 function defaultPreviewText(business, previewUrl) {
-  const name = business.businessName || "your business";
-  return `Hi ${name}, I put together a quick website preview for ${name}. Take a look: ${previewUrl}`;
-}
-
-function defaultEmailSubject(business) {
-  return `${business.businessName || "Your business"} website preview`;
-}
-
-function defaultEmailBody(business, previewUrl) {
-  const name = business.businessName || "there";
-  return `Hi ${name},\n\nI built a quick website preview showing what a stronger mobile-first site could look like for your business.\n\nPreview: ${previewUrl}\n\nOpen to a quick call?\n\n- WebLab`;
+  return defaultFollowUpText(business, previewUrl);
 }
 
 function resolveLinks(record, baseUrl) {
@@ -101,11 +96,9 @@ export function buildOutreachItem(record, baseUrl, founderOsMap = new Map()) {
   const email = cleanText(record.email);
   const website = cleanText(record.websiteUrl);
   const outreachStatus = resolveOutreachStatus(record, founderOsMap);
-  const smsBody = previewUrl ? defaultPreviewText(record, previewUrl) : defaultPreviewText(record, baseUrl);
+  const smsBody = defaultFollowUpText(record, previewUrl || website);
   const emailSubject = defaultEmailSubject(record);
-  const emailBody = previewUrl
-    ? defaultEmailBody(record, previewUrl)
-    : defaultEmailBody(record, baseUrl);
+  const emailBody = defaultEmailBody(record, previewUrl);
 
   return {
     id: record.id,
@@ -372,8 +365,8 @@ export function renderOutreachPage() {
   <main class="wrap">
     <section class="card">
       <h1>Outreach Queue</h1>
-      <p class="muted">Your existing businesses — call, text, or email manually and track status.</p>
-      <p><a class="top-link" href="/">← Founder OS</a></p>
+      <p class="muted">Call growth-first, track status, and use follow-up text/email after discovery — not website-first cold opens.</p>
+      <p><a class="top-link" href="/">← Founder OS</a> · <a class="top-link" href="/angle-folders">Angle Folders</a></p>
       <div class="summary" id="summaryPills"></div>
     </section>
 
@@ -494,8 +487,8 @@ export function renderOutreachPage() {
             '</div>' +
             '<div class="actions">' +
               (actions.call ? '<a class="btn primary" href="' + esc(actions.call) + '">Call</a>' : '<span class="btn primary disabled">Call</span>') +
-              (actions.text ? '<a class="btn" href="' + esc(actions.text) + '">Text w/ Preview</a>' : '<span class="btn disabled">Text w/ Preview</span>') +
-              (actions.email ? '<a class="btn" href="' + esc(actions.email) + '">Email w/ Preview</a>' : '<span class="btn disabled">Email w/ Preview</span>') +
+              (actions.text ? '<a class="btn" href="' + esc(actions.text) + '">Text Follow-Up</a>' : '<span class="btn disabled">Text Follow-Up</span>') +
+              (actions.email ? '<a class="btn" href="' + esc(actions.email) + '">Email Follow-Up</a>' : '<span class="btn disabled">Email Follow-Up</span>') +
               (actions.preview ? '<a class="btn success" href="' + esc(actions.preview) + '" target="_blank" rel="noopener">Open Preview</a>' : '<span class="btn success disabled">Open Preview</span>') +
               (actions.offer ? '<a class="btn warn" href="' + esc(actions.offer) + '" target="_blank" rel="noopener">Open Offer</a>' : '<span class="btn warn disabled">Open Offer</span>') +
             '</div>' +

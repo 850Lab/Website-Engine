@@ -19,6 +19,11 @@ import {
 import { enrichCampaignView } from "./opportunity-engine/campaign-progress.js";
 import { refreshCampaignFromJobs } from "./opportunity-engine/distributed-job-store.js";
 import { publicBaseUrl } from "./v7/shared.js";
+import {
+  defaultEmailBody,
+  defaultEmailSubject,
+  defaultFollowUpText,
+} from "./sales-brief/outreach-copy.js";
 
 function queueCampaignRun(runner) {
   runner().catch(() => {});
@@ -91,17 +96,7 @@ function normalizePhoneDigits(phone) {
 }
 
 function defaultPreviewText(business, previewUrl) {
-  const name = business.businessName || "your business";
-  return `Hi ${name}, I put together a quick website preview for ${name}. Take a look: ${previewUrl}`;
-}
-
-function defaultEmailSubject(business) {
-  return `${business.businessName || "Your business"} website preview`;
-}
-
-function defaultEmailBody(business, previewUrl) {
-  const name = business.businessName || "there";
-  return `Hi ${name},\n\nI reviewed your online presence and built a quick website preview showing what a stronger mobile-first site could look like for your business.\n\nPreview: ${previewUrl}\n\nOpen to a quick call?\n\n- WebLab`;
+  return defaultFollowUpText(business, previewUrl);
 }
 
 export function buildPreviewQueueItem(record, baseUrl) {
@@ -282,6 +277,7 @@ export function renderFounderPhonePage() {
     h1 { margin: 0 0 6px; font-size: 26px; }
     h2 { margin: 0 0 10px; font-size: 18px; }
     p, .muted { margin: 0; color: #b7c6e5; line-height: 1.5; font-size: 14px; }
+    .nav-links a { color: #8ec5ff; text-decoration: none; font-size: 14px; }
     .form-grid {
       display: grid;
       gap: 10px;
@@ -370,7 +366,8 @@ export function renderFounderPhonePage() {
   <main class="wrap">
     <section class="card">
       <h1>WebLab Founder OS</h1>
-      <p class="muted">Run discovery, generate previews, and contact businesses from your phone.</p>
+      <p class="muted">Run discovery, call businesses growth-first, and follow up after learning how they get customers.</p>
+      <p class="nav-links"><a href="/outreach">Outreach Queue</a> · <a href="/angle-folders">Angle Folders</a></p>
       <p class="muted"><a href="/outreach" style="color:#9ec5ff;">Open Outreach Queue →</a></p>
     </section>
 

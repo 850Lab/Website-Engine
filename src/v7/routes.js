@@ -34,6 +34,11 @@ import {
 } from "./founder-testing.js";
 import { registerFounderPhoneRoutes } from "../founder-phone.js";
 import { registerOutreachRoutes, renderOutreachPage } from "../outreach-page.js";
+import {
+  registerAngleFolderRoutes,
+  renderAngleFoldersPage,
+} from "../angle-folders-page.js";
+import { registerSalesModeRoutes, renderSalesModePage } from "../mission-control/index.js";
 
 function jsonError(res, status, message) {
   return res.status(status).json({ error: message });
@@ -204,7 +209,21 @@ export function registerV7Routes(app) {
     return res.type("html").send(renderOutreachPage());
   });
 
+  app.get("/angle-folders", (_req, res) => {
+    return res.type("html").send(renderAngleFoldersPage());
+  });
+
+  app.get("/mission-control", (_req, res) => {
+    return res.type("html").send(renderSalesModePage());
+  });
+
+  app.get("/mission-control/sales", (_req, res) => {
+    return res.type("html").send(renderSalesModePage());
+  });
+
   registerOutreachRoutes(app);
+  registerAngleFolderRoutes(app);
+  registerSalesModeRoutes(app);
   registerFounderPhoneRoutes(app);
 
   app.get("/api/customer/projects/:projectId/dashboard", async (req, res) => {
