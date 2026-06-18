@@ -17368,8 +17368,8 @@
         "Twilio Voice test record — not a real lead"
       ],
       "websiteScoreConfidence": "estimated",
-      "phone": "(409) 568-6011",
-      "normalizedPhone": "+14095686011",
+      "phone": "(409) 548-6011",
+      "normalizedPhone": "+14095486011",
       "email": "",
       "socialUrls": [],
       "contactMethodCategory": "text_first",
@@ -17398,7 +17398,7 @@
       "projectGenerationDurationMs": null,
       "readyForOutreach": false,
       "readyForOutreachAt": null,
-      "dedupKey": "name:twilio test company|beaumont|+14095686011",
+      "dedupKey": "name:twilio test company|beaumont|+14095486011",
       "updatedAt": "2026-06-18T18:28:57.870Z",
       "outreachStatus": "not_contacted",
       "outreachStatusUpdatedAt": "2026-06-18T18:17:57.410Z"

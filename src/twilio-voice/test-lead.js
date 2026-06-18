@@ -9,7 +9,7 @@ import {
 } from "../stage1/shared.js";
 
 export const TWILIO_TEST_BUSINESS_ID = "qbd_twilio_test";
-export const TWILIO_TEST_PHONE = "(409) 568-6011";
+export const TWILIO_TEST_PHONE = "(409) 548-6011";
 
 export function isTwilioTestBusiness(businessId) {
   return String(businessId ?? "") === TWILIO_TEST_BUSINESS_ID;
@@ -57,7 +57,7 @@ export async function ensureTwilioTestBusiness(config = {}) {
     dateFound: existing?.dateFound || nowIso(),
     dateScored: nowIso(),
     source: "twilio_test",
-    dedupKey: "test:twilio-voice-4095686011",
+    dedupKey: "test:twilio-voice-4095486011",
     outreachStatus: "not_contacted",
     outreachStatusUpdatedAt: nowIso(),
   });
