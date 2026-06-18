@@ -3,6 +3,7 @@ import { renderCallQueuePage } from "./pages/call-queue.js";
 import { renderPipelinePage } from "./pages/pipeline.js";
 import { renderOpportunitiesPage } from "./pages/opportunities.js";
 import { renderSettingsPage } from "./pages/settings.js";
+import { renderLoginPage } from "./pages/login.js";
 import {
   buildPivotalDashboard,
   buildPipelineMetrics,
@@ -10,6 +11,7 @@ import {
   buildSettingsSnapshot,
 } from "./metrics.js";
 import { registerSalesModeRoutes } from "../mission-control/sales-mode.js";
+import { cleanText } from "../stage1/shared.js";
 
 export function registerPivotalOsRoutes(app) {
   app.get("/", (_req, res) => res.type("html").send(renderHomePage()));
@@ -17,6 +19,10 @@ export function registerPivotalOsRoutes(app) {
   app.get("/pipeline", (_req, res) => res.type("html").send(renderPipelinePage()));
   app.get("/opportunities", (_req, res) => res.type("html").send(renderOpportunitiesPage()));
   app.get("/settings", (_req, res) => res.type("html").send(renderSettingsPage()));
+  app.get("/login", (req, res) => {
+    const returnTo = cleanText(req.query.return) || "/";
+    return res.type("html").send(renderLoginPage(returnTo));
+  });
 
   app.get("/mission-control", (_req, res) => res.redirect(302, "/"));
   app.get("/mission-control/sales", (_req, res) => res.redirect(302, "/call-queue"));
