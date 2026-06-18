@@ -222,7 +222,10 @@ export function renderCallQueuePage() {
     try{savedId=localStorage.getItem('callQueueLeadId');}catch(e){}
     var params=new URLSearchParams(window.location.search);
     var leadParam=params.get('lead');
-    loadLead(leadParam||savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
+    fetch('/api/me').then(function(r){return r.json();}).then(function(me){
+      if(!me.authenticated){window.location.href='/login?return='+encodeURIComponent(window.location.pathname+window.location.search);return;}
+      loadLead(leadParam||savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
+    }).catch(function(){window.location.href='/login?return='+encodeURIComponent(window.location.pathname+window.location.search);});
   `;
 
   return pivotalShell({

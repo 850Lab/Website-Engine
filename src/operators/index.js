@@ -26,3 +26,4 @@ export {
   assignLeadToOperator,
   canOperatorAccessLead,
 } from "./lead-assignment.js";
+export { registerOperatorAppGuard } from "./app-guard.js";

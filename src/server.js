@@ -32,6 +32,7 @@ import {
   requireOwnerApi,
   sanitizeOperator,
   verifyOperatorCredentials,
+  registerOperatorAppGuard,
 } from "./operators/index.js";
 import { cleanText } from "./stage1/shared.js";
 
@@ -115,6 +116,7 @@ registerTwilioVoiceWebhookRoutes(app, twilioFormParser);
 
 app.use(express.json({ limit: "8mb" }));
 app.use(cookieParser());
+registerOperatorAppGuard(app);
 
 app.get("/api/health", (req, res) => {
   const port = Number(process.env.PORT || 8787);
