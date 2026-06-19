@@ -20,6 +20,10 @@ import {
   registerTwilioVoiceWebhookRoutes,
   syncEnvTwilioToBlobIfEmpty,
 } from "./twilio-voice/index.js";
+import {
+  registerPressureWashingRoutes,
+  seedPressureWashingLeadsIfEmpty,
+} from "./pressure-washing/index.js";
 import { ensureTwilioTestBusiness } from "./twilio-voice/test-lead.js";
 import { getTwilioVoiceConfig } from "./twilio-voice/config.js";
 import {
@@ -198,6 +202,7 @@ app.post("/api/logout", async (req, res) => {
 });
 
 registerV7Routes(app, { requireOperatorApi, requireOperatorPage });
+registerPressureWashingRoutes(app, { requireOperatorApi, requireOperatorPage });
 
 app.use("/api", protectKnownApiRoutes);
 
@@ -274,6 +279,10 @@ export async function initializeApp() {
     .catch((err) => {
       console.warn(`Twilio test lead sync skipped: ${err.message}`);
     });
+
+  seedPressureWashingLeadsIfEmpty().catch((err) => {
+    console.warn(`Pressure washing seed skipped: ${err.message}`);
+  });
 }
 
 export const appReady = initializeApp();

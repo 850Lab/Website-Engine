@@ -6,6 +6,9 @@ const OPERATOR_PAGE_PATHS = new Set([
   "/pipeline",
   "/opportunities",
   "/settings",
+  "/pw",
+  "/pw/queue",
+  "/pw/search-targets",
   "/outreach",
   "/founder",
   "/mission-control",
@@ -23,9 +26,16 @@ function isTwilioVoiceWebhookPath(path, method) {
   );
 }
 
+function isOperatorPagePath(path) {
+  if (OPERATOR_PAGE_PATHS.has(path)) return true;
+  return path.startsWith("/pw/");
+}
+
 function isOperatorApiPath(path) {
   return (
     path.startsWith("/api/pivotal-os") ||
+    path.startsWith("/api/pw/") ||
+    path.startsWith("/api/pressure-washing") ||
     path.startsWith("/api/mission-control") ||
     path.startsWith("/api/public/outreach") ||
     path.startsWith("/api/public/angle-folders") ||
@@ -58,10 +68,6 @@ function isPublicPagePath(path) {
   if (path.startsWith("/activate/")) return true;
   if (path.startsWith("/dashboard/")) return true;
   return false;
-}
-
-function isOperatorPagePath(path) {
-  return OPERATOR_PAGE_PATHS.has(path);
 }
 
 export function registerOperatorAppGuard(app) {

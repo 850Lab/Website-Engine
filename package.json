@@ -15,7 +15,8 @@
     "angles:reanalyze": "node scripts/reanalyze-all-businesses.js --wait",
     "blob:seed": "node scripts/seed-blob-data.js",
     "blob:seed-twilio": "node scripts/seed-twilio-settings.js",
-    "website:pack": "node scripts/run-single-website.js"
+    "website:pack": "node scripts/run-single-website.js",
+    "pw:find-leads": "node scripts/pw-find-leads.js"
   },
   "engines": {
     "node": ">=20"
