@@ -5,6 +5,11 @@ import { readJsonDocument, writeJsonDocument } from "../persistence/json-documen
 import { cleanText, normalizePhoneNumber, nowIso } from "../stage1/shared.js";
 import { computePriorityScore } from "./scoring.js";
 import { defaultAngle, defaultOffer } from "./scripts.js";
+import {
+  buildPwDiscoveryQuestions,
+  buildPwGoldenQuestion,
+  buildPwOpeningLine,
+} from "./discovery-questions.js";
 import { normalizePwStatus, PW_CLOSED_STATUSES, getPwQuickAction } from "./statuses.js";
 import {
   applyOutcomeQueueState,
@@ -68,6 +73,11 @@ export function buildPwLead(input = {}) {
     contactSource: cleanText(input.contactSource) || "manual",
     pressureWashingAngle: cleanText(input.pressureWashingAngle),
     likelyNeeds: Array.isArray(input.likelyNeeds) ? input.likelyNeeds.map(cleanText).filter(Boolean) : [],
+    openingLine: cleanText(input.openingLine),
+    discoveryQuestions: Array.isArray(input.discoveryQuestions)
+      ? input.discoveryQuestions.map(cleanText).filter(Boolean).slice(0, 5)
+      : [],
+    goldenQuestion: cleanText(input.goldenQuestion),
     offer: cleanText(input.offer),
     priorityScore: 0,
     status: normalizePwStatus(input.status),
@@ -110,6 +120,9 @@ export function buildPwLead(input = {}) {
   if (!lead.likelyNeeds.length) {
     lead.likelyNeeds = defaultAngle(lead).replace("Likely needs: ", "").replace(/\.$/, "").split(", ");
   }
+  if (!lead.openingLine) lead.openingLine = buildPwOpeningLine(lead);
+  if (!lead.discoveryQuestions.length) lead.discoveryQuestions = buildPwDiscoveryQuestions(lead);
+  if (!lead.goldenQuestion) lead.goldenQuestion = buildPwGoldenQuestion(lead);
   lead.priorityScore = computePriorityScore(lead);
   return lead;
 }

@@ -12,6 +12,8 @@ export function renderCallQueuePage() {
     .script-card { background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); }
     .script-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
     .script-text { font-size: 17px; line-height: 1.55; font-weight: 500; }
+    .discovery-q { font-size: 15px; margin-bottom: 8px; color: var(--text); font-weight: 500; }
+    .discovery-q:last-child { margin-bottom: 0; }
     .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .action-grid .btn { min-height: var(--tap-lg); font-size: 17px; }
     .call-status {
@@ -87,6 +89,14 @@ export function renderCallQueuePage() {
     }
     function setBusy(on){document.body.classList.toggle('busy',on);}
 
+    function renderDiscoveryQuestions(questions){
+      if(!questions||!questions.length) return '';
+      var items=questions.slice(0,5).map(function(q,i){
+        return '<div class="script-text discovery-q">'+(i+1)+'. '+esc(q)+'</div>';
+      }).join('');
+      return '<div class="script-card"><div class="script-label">Discovery Questions</div>'+items+'</div>';
+    }
+
     function renderLead(lead){
       return '<div class="lead-hero">'+
         '<h1 class="hero-title" style="margin:0">'+esc(lead.businessName)+'</h1>'+
@@ -112,7 +122,9 @@ export function renderCallQueuePage() {
         '<div class="script-card"><div class="script-label">Problem</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.problem)+'</div></div>'+
         '<div class="script-card"><div class="script-label">Angle</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.primaryAngle)+'</div></div>'+
         '<div class="script-card"><div class="script-label">Opening line</div><div class="script-text">'+esc(lead.openingLine)+'</div></div>'+
-        '<div class="script-card"><div class="script-label">Offer</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.recommendedOffer)+'</div></div>';
+        renderDiscoveryQuestions(lead.discoveryQuestions)+
+        '<div class="script-card"><div class="script-label">Offer</div><div class="script-text" style="font-size:15px;color:var(--text-muted)">'+esc(lead.recommendedOffer)+'</div></div>'+
+        (lead.goldenQuestion?'<div class="script-card"><div class="script-label">Golden Question</div><div class="script-text">'+esc(lead.goldenQuestion)+'</div></div>':'');
     }
 
     async function jsonFetch(url,opts){

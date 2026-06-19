@@ -35,6 +35,8 @@ export function renderPwQueuePage() {
     .script-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
     .script-text { font-size: 16px; line-height: 1.55; white-space: pre-wrap; }
     .script-text.muted { font-size: 15px; color: var(--text-muted); }
+    .discovery-q { font-size: 15px; margin-bottom: 8px; font-weight: 500; }
+    .discovery-q:last-child { margin-bottom: 0; }
     .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .quick-btn { min-height: var(--tap); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-elevated); color: var(--text); font-size: 14px; font-weight: 600; padding: 12px; cursor: pointer; }
@@ -244,10 +246,12 @@ export function renderPwQueuePage() {
         needsCard.querySelector('.script-text').classList.add('muted');
         root.appendChild(needsCard);
       }
+      root.appendChild(makeScriptCard('Opening Line', lead.openingLine));
+      root.appendChild(makeDiscoveryQuestionsCard(lead.discoveryQuestions));
       var offerCard=makeScriptCard('Offer', lead.offer);
       offerCard.querySelector('.script-text').classList.add('muted');
       root.appendChild(offerCard);
-      root.appendChild(makeScriptCard('Restaurant opener', PW_SCRIPTS.restaurantOpener));
+      root.appendChild(makeScriptCard('Golden Question', lead.goldenQuestion));
       root.appendChild(makeScriptCard('If owner available', PW_SCRIPTS.ownerAvailable));
 
       var callRow=makeEl('div','action-grid');

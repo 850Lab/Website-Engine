@@ -79,5 +79,20 @@ function makeScriptCard(label,text){
   card.appendChild(body);
   return card;
 }
+function makeDiscoveryQuestionsCard(questions){
+  var card=makeEl('div','script-card');
+  card.appendChild(makeEl('div','script-label','Discovery Questions'));
+  var list=Array.isArray(questions)?questions.slice(0,5):[];
+  if(!list.length){
+    card.appendChild(makeEl('div','script-text muted','No discovery questions yet.'));
+    return card;
+  }
+  list.forEach(function(q,i){
+    var row=makeEl('div','script-text discovery-q');
+    setPlainText(row,String(i+1)+'. '+q);
+    card.appendChild(row);
+  });
+  return card;
+}
 `.trim();
 }

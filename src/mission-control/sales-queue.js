@@ -4,6 +4,8 @@ import { getAngleAnalysisStore } from "../angle-analysis/store.js";
 import { publicBaseUrl } from "../v7/shared.js";
 import { defaultFollowUpText } from "../sales-brief/outreach-copy.js";
 import { OPENING_LINES, EMERGENCY_QUESTION, FIRST_DEFLECTION_RESPONSES } from "../sales-brief/outreach-copy.js";
+import { buildWebsiteDiscoveryQuestions } from "../sales-brief/website-discovery.js";
+import { fillTemplate, resolveIndustryRules } from "../sales-brief/industry-rules.js";
 import { OUTREACH_STATUS_LABELS } from "../outreach-page.js";
 import { canOperatorAccessLead, assignLeadToOperator } from "../operators/lead-assignment.js";
 import { isTwilioTestBusiness } from "../twilio-voice/test-lead.js";
@@ -34,6 +36,17 @@ function resolvePreviewUrl(record, baseUrl) {
   return "";
 }
 
+function resolveGoldenQuestion(record, analysis) {
+  const stored = cleanText(record.goldenQuestion || analysis?.golden_question);
+  if (stored) return stored;
+  const rules = resolveIndustryRules(record.industry || record.category);
+  return fillTemplate(rules.goldenQuestion, {
+    city: record.city || "",
+    businessName: record.businessName || "",
+    industry: record.industry || record.category || "",
+  });
+}
+
 function fallbackAnalysis(record) {
   return {
     businessId: record.id,
@@ -54,6 +67,7 @@ function fallbackAnalysis(record) {
     suggested_deflection_response: FIRST_DEFLECTION_RESPONSES[0],
     emergency_question: EMERGENCY_QUESTION,
     next_action: "Call with discovery opener — ask how they get new business today.",
+    golden_question: resolveGoldenQuestion(record, null),
   };
 }
 
@@ -91,6 +105,8 @@ export function mergeSalesLead(record, analysis, baseUrl) {
     priorityScore: Number(angle.priority_score) || 0,
     confidenceScore: Number(angle.confidence_score) || 0,
     openingLine: angle.suggested_opening_line,
+    discoveryQuestions: buildWebsiteDiscoveryQuestions(record, angle),
+    goldenQuestion: resolveGoldenQuestion(record, angle),
     deflectionLine: angle.suggested_deflection_response,
     emergencyQuestion: angle.emergency_question,
     nextAction: angle.next_action,

@@ -639,6 +639,24 @@ export function renderSalesModePage() {
           '<div class="card-label">Opening line</div>' +
           '<div class="card-body script">' + esc(lead.openingLine) + '</div>' +
         '</div>' +
+        (function(){
+          var qs=lead.discoveryQuestions||[];
+          if(!qs.length) return '';
+          var items=qs.slice(0,5).map(function(q,i){
+            return '<div class="card-body script" style="margin-bottom:8px">'+(i+1)+'. '+esc(q)+'</div>';
+          }).join('');
+          return '<div class="card card-static">' +
+            '<div class="card-label">Discovery Questions</div>' + items +
+          '</div>';
+        })() +
+        '<div class="card card-static">' +
+          '<div class="card-label">Offer</div>' +
+          '<div class="card-body">' + esc(lead.recommendedOffer) + '</div>' +
+        '</div>' +
+        '<div class="card card-static">' +
+          '<div class="card-label">Golden Question</div>' +
+          '<div class="card-body script">' + esc(lead.goldenQuestion || '') + '</div>' +
+        '</div>' +
         '<details class="card">' +
           '<summary>Problem &amp; angle</summary>' +
           '<div class="card-inner">' +
@@ -659,8 +677,6 @@ export function renderSalesModePage() {
         '<details class="card">' +
           '<summary>Offer &amp; next step</summary>' +
           '<div class="card-inner">' +
-            '<div class="card-label">Offer (after discovery)</div>' +
-            '<div class="card-body" style="margin-bottom:12px">' + esc(lead.recommendedOffer) + '</div>' +
             '<div class="card-label">Next action</div>' +
             '<div class="card-body">' + esc(lead.nextAction) + '</div>' +
           '</div>' +
