@@ -11,7 +11,7 @@ import {
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 async function loadEnv() {
-  for (const name of [".env", ".env.local"]) {
+  for (const name of [".env", ".env.local", ".env.vercel.local"]) {
     try {
       const text = await readFile(join(ROOT, name), "utf8");
       for (const line of text.split(/\r?\n/)) {
@@ -20,7 +20,7 @@ async function loadEnv() {
         const eq = trimmed.indexOf("=");
         const key = trimmed.slice(0, eq).trim();
         let value = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, "");
-        if (key && process.env[key] === undefined) process.env[key] = value;
+        if (key && value && process.env[key] === undefined) process.env[key] = value;
       }
     } catch {
       // optional
@@ -29,9 +29,16 @@ async function loadEnv() {
 }
 
 const RELEASE_FILES = [
+  // Website OS
   "data/qualified-businesses.json",
   "data/angle-analyses.json",
   "data/website-quality-scores.json",
+  "data/website-search-targets.json",
+  // Pressure Washing OS
+  "data/pressure-washing-leads.json",
+  "data/pw-search-targets.json",
+  // Shared focus + baseline config
+  "data/outreach-focus.json",
   "data/founder-os.json",
 ];
 
@@ -55,7 +62,7 @@ async function main() {
     }
   }
 
-  console.log("\nDone. Outcomes and notes will persist on pivotalwebsites.com.");
+  console.log("\nDone. Website OS + PW OS lead data is on Vercel Blob for production.");
 }
 
 main().catch((err) => {

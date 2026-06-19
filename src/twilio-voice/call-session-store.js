@@ -29,13 +29,14 @@ export function newCallSessionId() {
   return `call_${randomUUID().slice(0, 8)}`;
 }
 
-export async function createCallSession({ businessId, businessName, prospectPhone }) {
+export async function createCallSession({ businessId, businessName, prospectPhone, leadMode = "website" }) {
   const id = newCallSessionId();
   const session = {
     id,
     businessId: cleanText(businessId),
     businessName: cleanText(businessName),
     prospectPhone: cleanText(prospectPhone),
+    leadMode: cleanText(leadMode) || "website",
     twilioCallSid: null,
     status: "initiated",
     events: [],

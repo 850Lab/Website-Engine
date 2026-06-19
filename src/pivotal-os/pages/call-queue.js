@@ -173,14 +173,40 @@ export function renderCallQueuePage() {
       }
     }
 
-    async function loadLead(id){
+    async function loadFocusPreview(){
+      try{
+        var data=await jsonFetch('/api/mission-control/sales/queue');
+        renderFocusCard(data.focus);
+        if(data.stats){
+          document.getElementById('queueMeta').textContent=
+            data.stats.total+' in queue · '+data.stats.hot+' hot · '+data.stats.notContacted+' not contacted';
+        }
+      }catch(e){
+        document.getElementById('focusBody').textContent='Could not load focus.';
+      }
+    }
+
+    async function loadLead(id, opts){
+      opts=opts||{};
       document.getElementById('loading').classList.remove('hidden');
       document.getElementById('leadView').classList.add('hidden');
       var params=new URLSearchParams(window.location.search);
       var folder=params.get('folder')||'';
       var qs=folder?'?folder='+encodeURIComponent(folder):'';
       var url=id?'/api/mission-control/sales/lead/'+encodeURIComponent(id)+qs:'/api/mission-control/sales/next'+qs;
-      var data=await jsonFetch(url);
+      var data;
+      try{
+        data=await jsonFetch(url);
+      }catch(e){
+        if(id&&!opts.retried&&(String(e.message||'').indexOf('not found')>=0||String(e.message||'').indexOf('not in current focus')>=0)){
+          try{localStorage.removeItem('callQueueLeadId');}catch(x){}
+          return loadLead(null,{retried:true});
+        }
+        throw e;
+      }
+      if(data.staleLead&&!opts.retried){
+        try{localStorage.removeItem('callQueueLeadId');}catch(x){}
+      }
       currentLead=data.lead; nextLeadId=data.nextId;
       if(!currentLead){
         var msg='No matching focused leads in queue.';
@@ -287,7 +313,11 @@ export function renderCallQueuePage() {
     var leadParam=params.get('lead');
     fetch('/api/me').then(function(r){return r.json();}).then(function(me){
       if(!me.authenticated){window.location.href='/login?return='+encodeURIComponent(window.location.pathname+window.location.search);return;}
-      loadLead(leadParam||savedId).catch(function(e){document.getElementById('loading').textContent=e.message;});
+      loadFocusPreview();
+      loadLead(leadParam||savedId).catch(function(e){
+        document.getElementById('loading').textContent=e.message;
+        loadFocusPreview();
+      });
     }).catch(function(){window.location.href='/login?return='+encodeURIComponent(window.location.pathname+window.location.search);});
   `;
 

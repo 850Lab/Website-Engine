@@ -18,7 +18,6 @@ import {
 } from "./sales-queue.js";
 import { assignLeadToOperator } from "../operators/lead-assignment.js";
 import { buildFocusQueueMeta } from "../outreach-focus/metrics.js";
-import { getFocus, leadMatchesFocus } from "../outreach-focus/routes.js";
 
 function esc(value) {
   return String(value ?? "")
@@ -115,16 +114,34 @@ export function registerSalesModeRoutes(app, { requireOperatorApi } = {}) {
 
   app.get("/api/mission-control/sales/lead/:id", auth, async (req, res) => {
     try {
-      const focus = await getFocus("website");
-      const lead = await getSalesLeadById(req, req.params.id, req.operator, { claim: true });
-      if (!lead) return res.status(404).json({ error: "Lead not found" });
-      if (!leadMatchesFocus(lead, focus)) {
-        return res.status(404).json({ error: "Lead not in current focus. Edit focus on Mission home or add matching leads." });
-      }
       const queue = await buildSalesQueue(req, queueFiltersFromQuery(req), req.operator);
-      const nextId = getNextLeadId(queue, req.params.id);
       const focusMeta = await buildFocusQueueMeta("website");
-      return res.json({ lead, nextId, stats: getQueueStats(queue), focus: focusMeta });
+      const stats = getQueueStats(queue);
+      const requestedId = cleanText(req.params.id);
+      const queueIds = new Set(queue.map((row) => row.id));
+      const staleLead = Boolean(requestedId && !queueIds.has(requestedId));
+
+      if (!requestedId || staleLead) {
+        const nextId = getNextLeadId(queue, staleLead ? requestedId : null);
+        if (!nextId) {
+          return res.json({ lead: null, nextId: null, stats, focus: focusMeta, staleLead });
+        }
+        const lead = await getSalesLeadById(req, nextId, req.operator, { claim: true });
+        return res.json({
+          lead,
+          nextId: getNextLeadId(queue, nextId),
+          stats,
+          focus: focusMeta,
+          staleLead,
+        });
+      }
+
+      const lead = await getSalesLeadById(req, requestedId, req.operator, { claim: true });
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found", focus: focusMeta, stats });
+      }
+      const nextId = getNextLeadId(queue, requestedId);
+      return res.json({ lead, nextId, stats, focus: focusMeta });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }

@@ -1,7 +1,6 @@
 import twilio from "twilio";
 import express from "express";
 import { cleanText, normalizePhoneNumber } from "../stage1/shared.js";
-import { getQualifiedBusiness } from "../stage1/qualified-business-store.js";
 import {
   assertTwilioVoiceConfigured,
   buildTwilioVoiceStatus,
@@ -18,8 +17,8 @@ import {
 } from "./call-session-store.js";
 import {
   buildSalesCallRecord,
-  saveRecordingToBusiness,
-  upsertSalesCallOnBusiness,
+  saveRecordingToLead,
+  upsertSalesCallOnLead,
 } from "./sales-calls.js";
 import {
   assignLeadToOperator,
@@ -29,6 +28,8 @@ import {
   ensureTwilioTestBusiness,
   isTwilioTestBusiness,
 } from "./test-lead.js";
+import { getCallTarget, prospectPhoneForLead } from "./lead-target.js";
+import { updatePwLeadStatus } from "../pressure-washing/lead-store.js";
 
 const VoiceResponse = twilio.twiml.VoiceResponse;
 
@@ -71,19 +72,18 @@ async function rejectInvalidTwilioWebhook(req, res) {
 }
 
 function prospectPhoneForBusiness(business) {
-  const phone = cleanText(business?.normalizedPhone) || cleanText(business?.phone);
-  return normalizePhoneNumber(phone);
+  return prospectPhoneForLead(business);
 }
 
-function prospectPhoneForSession(session, business) {
+function prospectPhoneForSession(session, target) {
   return (
-    prospectPhoneForBusiness(business) ||
+    prospectPhoneForLead(target) ||
     normalizePhoneNumber(session?.prospectPhone)
   );
 }
 
-async function resolveProspectPhone(session, business, req) {
-  let phone = prospectPhoneForSession(session, business);
+async function resolveProspectPhone(session, target, req) {
+  let phone = prospectPhoneForSession(session, target);
   if (isTwilioTestBusiness(session.businessId)) {
     const config = await getTwilioVoiceConfig(req);
     const testPhone = normalizePhoneNumber(config.testProspectPhone);
@@ -114,7 +114,7 @@ async function persistCallProgress(session, callSid, status = "in-progress") {
   }
 
   try {
-    await upsertSalesCallOnBusiness(
+    await upsertSalesCallOnLead(
       session.businessId,
       buildSalesCallRecord({
         id: session.id,
@@ -124,7 +124,7 @@ async function persistCallProgress(session, callSid, status = "in-progress") {
       }),
     );
   } catch (err) {
-    logTwilioVoiceError("upsertSalesCallOnBusiness", err);
+    logTwilioVoiceError("upsertSalesCallOnLead", err);
   }
 }
 
@@ -153,8 +153,8 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
           return res.type("text/xml").send(response.toString());
         }
 
-        const business = await getQualifiedBusiness(session.businessId);
-        const prospectPhone = await resolveProspectPhone(session, business, req);
+        const target = await getCallTarget(session.businessId);
+        const prospectPhone = await resolveProspectPhone(session, target, req);
         if (!prospectPhone) {
           await updateCallSession(session.id, {
             status: "failed",
@@ -246,8 +246,9 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
 
       if (recordingStatus === "completed" && recordingSid) {
         try {
-          await saveRecordingToBusiness({
-            businessId: session.businessId,
+          await saveRecordingToLead({
+            leadId: session.businessId,
+            leadMode: session.leadMode,
             callId: session.id,
             twilioCallSid: callSid || session.twilioCallSid,
             twilioRecordingSid: recordingSid,
@@ -360,7 +361,7 @@ export function registerTwilioVoiceWebhookRoutes(app, formParser) {
               completedAt: new Date().toISOString(),
               error: callStatus === "failed" ? cleanText(body.ErrorMessage) || callStatus : null,
             });
-            await upsertSalesCallOnBusiness(
+            await upsertSalesCallOnLead(
               session.businessId,
               buildSalesCallRecord({
                 id: session.id,
@@ -420,28 +421,31 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi, requireOwner
       if (isTwilioTestBusiness(businessId)) {
         await ensureTwilioTestBusiness(config);
       }
-      const business = await getQualifiedBusiness(businessId);
-      if (!business) {
-        return res.status(404).json({ error: "Business not found" });
+
+      const target = await getCallTarget(businessId);
+      if (!target) {
+        return res.status(404).json({ error: "Lead not found" });
       }
 
-      if (req.operator && !canOperatorAccessLead(business, req.operator)) {
-        return res.status(403).json({ error: "Lead is assigned to another operator." });
+      if (target.mode === "website") {
+        if (req.operator && !canOperatorAccessLead(target.record, req.operator)) {
+          return res.status(403).json({ error: "Lead is assigned to another operator." });
+        }
+        if (req.operator) {
+          await assignLeadToOperator(businessId, req.operator);
+        }
       }
 
-      if (req.operator) {
-        await assignLeadToOperator(businessId, req.operator);
-      }
-
-      const prospectPhone = prospectPhoneForBusiness(business);
+      const prospectPhone = prospectPhoneForLead(target);
       if (!prospectPhone) {
-        return res.status(400).json({ error: "Business has no phone number" });
+        return res.status(400).json({ error: "Lead has no phone number" });
       }
 
       const session = await createCallSession({
-        businessId: business.id,
-        businessName: business.businessName,
+        businessId: target.id,
+        businessName: target.businessName,
         prospectPhone,
+        leadMode: target.mode,
       });
 
       const connectUrl = webhookPath(req, "/api/twilio/voice/connect", session.id);
@@ -461,8 +465,25 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi, requireOwner
       await persistCallProgress(session, call.sid, cleanText(call.status) || "initiated");
 
       try {
-        const { recordWebsiteFocusActivity } = await import("../outreach-focus/routes.js");
-        await recordWebsiteFocusActivity({ business, kind: "call" });
+        if (target.mode === "pressure-washing") {
+          const updatedLead = await updatePwLeadStatus(businessId, {
+            actionId: "called",
+            status: "called",
+            touchContact: true,
+            incrementCall: true,
+            lastContactResult: "called",
+          });
+          const { recordPwFocusActivity } = await import("../outreach-focus/routes.js");
+          await recordPwFocusActivity({
+            lead: updatedLead,
+            patch: { touchContact: true },
+            actionId: "called",
+            quick: { id: "called" },
+          });
+        } else {
+          const { recordWebsiteFocusActivity } = await import("../outreach-focus/routes.js");
+          await recordWebsiteFocusActivity({ business: target.record, kind: "call" });
+        }
       } catch {
         /* focus logging is best-effort */
       }

@@ -38,6 +38,12 @@ export function renderPwQueuePage() {
     .discovery-q { font-size: 15px; margin-bottom: 8px; font-weight: 500; }
     .discovery-q:last-child { margin-bottom: 0; }
     .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .call-status {
+      font-size: 14px; font-weight: 600; margin-bottom: 14px; min-height: 20px;
+      color: var(--accent); line-height: 1.4;
+    }
+    .call-status.error { color: #f87171; }
+    .call-status.ok { color: #4ade80; }
     .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .quick-btn { min-height: var(--tap); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-elevated); color: var(--text); font-size: 14px; font-weight: 600; padding: 12px; cursor: pointer; }
     .quick-btn:active { transform: scale(0.98); background: var(--accent-soft); }
@@ -302,25 +308,36 @@ export function renderPwQueuePage() {
       root.appendChild(makeScriptCard('Golden Question', lead.goldenQuestion));
       root.appendChild(makeScriptCard('If owner available', PW_SCRIPTS.ownerAvailable));
 
+      var callStatusEl=makeEl('div','call-status');
+      callStatusEl.id='callStatus';
+      callStatusEl.setAttribute('aria-live','polite');
+      root.appendChild(callStatusEl);
+
       var callRow=makeEl('div','action-grid');
       if(lead.actions&&lead.actions.call){
-        var callBtn=document.createElement('button');
-        callBtn.type='button';
-        callBtn.className='btn btn-primary';
-        callBtn.id='callBtn';
-        callBtn.textContent='📞 Call';
-        callRow.appendChild(callBtn);
+        var recordedBtn=document.createElement('button');
+        recordedBtn.type='button';
+        recordedBtn.className='btn btn-primary';
+        recordedBtn.id='recordedCallBtn';
+        recordedBtn.textContent='📞 Call with Recording';
+        callRow.appendChild(recordedBtn);
+
+        var directLink=makeLink(lead.actions.call,'btn btn-ghost','Call Direct',['tel:']);
+        if(directLink) callRow.appendChild(directLink);
+        else{
+          var noDirect=makeEl('span','btn btn-ghost','No phone');
+          noDirect.style.opacity='0.4';
+          callRow.appendChild(noDirect);
+        }
       }else{
         var noCall=makeEl('span','btn btn-ghost','No phone');
         noCall.style.opacity='0.4';
         callRow.appendChild(noCall);
       }
       var textLink=makeLink(lead.actions&&lead.actions.text,'btn btn-ghost','💬 Text',['sms:']);
-      if(textLink) callRow.appendChild(textLink);
-      else{
-        var noText=makeEl('span','btn btn-ghost','No text');
-        noText.style.opacity='0.4';
-        callRow.appendChild(noText);
+      if(textLink){
+        textLink.style.gridColumn='1 / -1';
+        callRow.appendChild(textLink);
       }
       root.appendChild(callRow);
 
@@ -345,20 +362,44 @@ export function renderPwQueuePage() {
       return data;
     }
 
-    async function logCallAndDial(){
-      if(!currentLead||!currentLead.actions||!currentLead.actions.call) return;
-      var dialUrl=currentLead.actions.call;
+    function setCallStatus(msg, kind){
+      var el=document.getElementById('callStatus');
+      if(!el) return;
+      el.textContent=msg||'';
+      el.className='call-status'+(kind?' '+kind:'');
+    }
+
+    async function startRecordedCall(){
+      if(!currentLead) return;
+      var btn=document.getElementById('recordedCallBtn');
+      if(btn) btn.disabled=true;
+      setCallStatus('Calling your phone…');
       setBusy(true);
       try{
-        var data=await jsonFetch('/api/pressure-washing/lead/'+encodeURIComponent(currentLead.id)+'/call',{method:'POST'});
-        applyPayload(data);
-        showToast('Call logged');
-        window.location.href=dialUrl;
+        await jsonFetch('/api/calls/start',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ businessId: currentLead.id, mode: 'pressure-washing' })
+        });
+        setCallStatus('Call started — answer your phone to connect to '+currentLead.businessName+'.','ok');
+        showToast('Calling your phone');
       }catch(e){
-        showToast(e.message||'Could not log call');
+        setCallStatus(e.message||'Call failed','error');
+        showToast('Call failed');
       }finally{
+        if(btn) btn.disabled=false;
         setBusy(false);
       }
+    }
+
+    function bindRecordedCallButton(){
+      var btn=document.getElementById('recordedCallBtn');
+      if(!btn) return;
+      btn.onclick=function(){
+        startRecordedCall().catch(function(e){
+          setCallStatus(e.message||'Call failed','error');
+        });
+      };
     }
 
     function applyPayload(data){
@@ -391,8 +432,7 @@ export function renderPwQueuePage() {
       view.classList.remove('hidden');
       view.replaceChildren();
       view.appendChild(mountLead(data.lead));
-      var callBtn=document.getElementById('callBtn');
-      if(callBtn) callBtn.onclick=function(){ logCallAndDial(); };
+      bindRecordedCallButton();
       document.querySelectorAll('.quick-btn').forEach(function(btn){
         btn.onclick=function(){ handleAction(btn.getAttribute('data-action')); };
       });

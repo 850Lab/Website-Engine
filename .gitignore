@@ -19,3 +19,4 @@ data/*
 data/website-screenshots/
 data/**/*.bak
 data/**/*.tmp
+.vercel

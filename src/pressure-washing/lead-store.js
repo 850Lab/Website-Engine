@@ -102,6 +102,7 @@ export function buildPwLead(input = {}) {
     notes: Array.isArray(input.notes) ? input.notes : [],
     objections: Array.isArray(input.objections) ? input.objections : [],
     followUpNotes: Array.isArray(input.followUpNotes) ? input.followUpNotes : [],
+    salesCalls: Array.isArray(input.salesCalls) ? input.salesCalls : [],
     callable: input.callable === false ? false : Boolean(normalizedPhone || cleanText(input.phone)),
     cityConfidence: cleanText(input.cityConfidence) || "",
     possibleDuplicate: Boolean(input.possibleDuplicate),
