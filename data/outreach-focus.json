@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "website": {
+    "mode": "website",
+    "industry": "Restaurant",
+    "city": "Beaumont",
+    "offer": "Website Preview",
+    "salesperson": "Jaylan"
+  },
+  "pressure-washing": {
+    "mode": "pressure-washing",
+    "industry": "Restaurant",
+    "city": "Beaumont",
+    "offer": "Dumpster Pad Cleaning",
+    "salesperson": "Jaylan"
+  },
+  "events": [
+    {
+      "id": "foc_f16ee86c",
+      "mode": "pressure-washing",
+      "type": "call",
+      "leadId": "pwl_badc1974",
+      "at": "2026-06-19T14:23:27.194Z",
+      "dayOfWeek": "Friday",
+      "timeBucket": "8am-10am",
+      "industry": "Restaurant",
+      "city": "Beaumont",
+      "offer": "Dumpster Pad Cleaning",
+      "salesperson": "Jaylan",
+      "revenue": null
+    }
+  ],
+  "updatedAt": "2026-06-19T14:23:27.195Z"
+}

@@ -11,6 +11,8 @@ import {
 import { priorityLabel } from "./scoring.js";
 import { pwStatusLabel } from "./statuses.js";
 import { isFoodIndustry } from "./industries.js";
+import { getFocus, sortLeadsByFocus, filterLeadsToFocus } from "../outreach-focus/routes.js";
+import { buildFocusQueueMeta } from "../outreach-focus/metrics.js";
 
 function startOfToday() {
   const d = new Date();
@@ -176,24 +178,23 @@ export async function buildPwQueueStats() {
 }
 
 export async function buildPwQueueResponse(leadId = null, { view = "" } = {}) {
-  const fullQueue = await getActiveQueueLeads();
+  const focus = await getFocus("pressure-washing");
+  const fullQueueRaw = await getActiveQueueLeads();
+  const focusedQueue = filterLeadsToFocus(fullQueueRaw, focus);
+  const fullQueue = sortLeadsByFocus(focusedQueue, focus);
   const queue = filterQueueByView(fullQueue, view);
-  const allLeads = await listPwLeads();
   const health = await buildPwQueueHealth();
-  const nextBestId = queue[0]?.id ?? fullQueue[0]?.id ?? null;
+  const nextBestId = queue[0]?.id ?? null;
 
   let record = null;
   if (leadId) {
-    record =
-      queue.find((l) => l.id === cleanText(leadId)) ??
-      fullQueue.find((l) => l.id === cleanText(leadId)) ??
-      allLeads.find((l) => l.id === cleanText(leadId)) ??
-      null;
+    record = queue.find((l) => l.id === cleanText(leadId)) ?? null;
   } else {
     record = queue[0] ?? null;
   }
 
   if (!record) {
+    const focusQueue = await buildFocusQueueMeta("pressure-washing");
     return {
       lead: null,
       nextId: null,
@@ -201,12 +202,15 @@ export async function buildPwQueueResponse(leadId = null, { view = "" } = {}) {
       daily: await buildPwQueueDailyMetrics(),
       health,
       view: cleanText(view) || null,
+      focus: focusQueue,
     };
   }
 
   const inQueue = queue.some((l) => l.id === record.id);
   const displayRecord = inQueue ? record : queue[0] ?? record;
   const nextId = getNextPwLeadId(queue, displayRecord.id);
+
+  const focusQueue = await buildFocusQueueMeta("pressure-washing");
 
   return {
     lead: formatPwLeadForQueue(displayRecord, { isNextBestLead: displayRecord.id === nextBestId }),
@@ -215,6 +219,7 @@ export async function buildPwQueueResponse(leadId = null, { view = "" } = {}) {
     daily: await buildPwQueueDailyMetrics(),
     health,
     view: cleanText(view) || null,
+    focus: focusQueue,
   };
 }
 

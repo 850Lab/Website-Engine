@@ -54,10 +54,17 @@ export function renderCallQueuePage() {
     .outcome-btn:active { transform:scale(0.99); }
     .outcome-btn.active { background:var(--accent-soft); border-color:rgba(99,102,241,0.4); }
     .queue-meta { font-size:13px; color:var(--text-dim); margin-bottom:12px; }
+    .focus-banner {
+      font-size: 14px; line-height: 1.45; padding: 12px 14px; margin-bottom: 12px;
+      border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-elevated);
+    }
+    .focus-banner.warn { border-color: rgba(251,191,36,0.45); background: rgba(251,191,36,0.08); color: var(--text); }
+    .focus-banner strong { color: var(--text); }
   `;
 
   const body = `
     <p class="eyebrow">Call Queue</p>
+    <div class="focus-banner" id="focusBanner">Loading focus…</div>
     <div class="queue-meta" id="queueMeta">Loading…</div>
     <div id="leadView" class="hidden"></div>
     <div class="loading" id="loading">Loading next lead…</div>
@@ -132,6 +139,33 @@ export function renderCallQueuePage() {
       if(!res.ok) throw new Error(data.error||res.statusText); return data;
     }
 
+    function renderFocusBanner(focusMeta){
+      var el=document.getElementById('focusBanner');
+      if(!focusMeta||!focusMeta.focus){
+        el.textContent='Focus config unavailable.';
+        return;
+      }
+      var f=focusMeta.focus;
+      var parts=[
+        'Focus: '+f.industry+' / '+f.city,
+        f.offer,
+        f.salesperson
+      ].filter(Boolean);
+      var text=parts.join(' · ');
+      if(focusMeta.lowFocusedLeads){
+        el.className='focus-banner warn';
+        text=(focusMeta.warning||'You are low on focused leads.')+' '+text;
+        if(focusMeta.leadDiscovery&&focusMeta.leadDiscovery.command){
+          text+=' Run: '+focusMeta.leadDiscovery.command;
+        }
+        text+=' ('+(focusMeta.matchingCallable||0)+' matching callable / '+(focusMeta.callable||0)+' total)';
+      }else{
+        el.className='focus-banner';
+        text+=' · '+(focusMeta.matchingCallable||0)+' matching leads prioritized';
+      }
+      el.textContent=text;
+    }
+
     async function loadLead(id){
       document.getElementById('loading').classList.remove('hidden');
       document.getElementById('leadView').classList.add('hidden');
@@ -142,7 +176,16 @@ export function renderCallQueuePage() {
       var data=await jsonFetch(url);
       currentLead=data.lead; nextLeadId=data.nextId;
       if(!currentLead){
-        document.getElementById('loading').textContent='Queue complete — no more callable leads.';
+        var msg='No matching focused leads in queue.';
+        if(data.focus){
+          if(data.focus.warning) msg=data.focus.warning;
+          if(data.focus.leadDiscovery&&data.focus.leadDiscovery.command){
+            msg+=' Run: '+data.focus.leadDiscovery.command;
+          }
+          msg+=' ('+(data.focus.matchingCallable||0)+' matching / '+(data.focus.callable||0)+' total callable)';
+        }
+        document.getElementById('loading').textContent=msg;
+        renderFocusBanner(data.focus);
         document.getElementById('dockActions').classList.add('hidden');
         return;
       }
@@ -153,6 +196,7 @@ export function renderCallQueuePage() {
       bindRecordedCallButton();
       var stats=data.stats||{total:0,hot:0,notContacted:0};
       document.getElementById('queueMeta').textContent=stats.total+' in queue · '+stats.hot+' hot · '+stats.notContacted+' not contacted';
+      renderFocusBanner(data.focus);
       try{localStorage.setItem('callQueueLeadId',currentLead.id);}catch(e){}
       window.scrollTo(0,0);
     }

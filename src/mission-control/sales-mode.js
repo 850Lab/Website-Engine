@@ -17,6 +17,8 @@ import {
   getSalesLeadById,
 } from "./sales-queue.js";
 import { assignLeadToOperator } from "../operators/lead-assignment.js";
+import { buildFocusQueueMeta } from "../outreach-focus/metrics.js";
+import { getFocus, leadMatchesFocus } from "../outreach-focus/routes.js";
 
 function esc(value) {
   return String(value ?? "")
@@ -45,6 +47,13 @@ export async function updateSalesOutcome(businessId, status, operator = null) {
     lastOperatorName: operator?.name ?? record.lastOperatorName ?? null,
   };
   await upsertQualifiedBusiness(updated);
+
+  try {
+    const { recordWebsiteFocusActivity } = await import("../outreach-focus/routes.js");
+    await recordWebsiteFocusActivity({ business: updated, status: nextStatus });
+  } catch {
+    /* focus logging is best-effort */
+  }
 
   return {
     id: updated.id,
@@ -93,9 +102,11 @@ export function registerSalesModeRoutes(app, { requireOperatorApi } = {}) {
   app.get("/api/mission-control/sales/queue", auth, async (req, res) => {
     try {
       const queue = await buildSalesQueue(req, queueFiltersFromQuery(req), req.operator);
+      const focus = await buildFocusQueueMeta("website");
       return res.json({
         stats: getQueueStats(queue),
         queue: queue.map((row) => ({ id: row.id, businessName: row.businessName, priorityLabel: row.priorityLabel })),
+        focus,
       });
     } catch (err) {
       return res.status(500).json({ error: err.message });
@@ -104,11 +115,16 @@ export function registerSalesModeRoutes(app, { requireOperatorApi } = {}) {
 
   app.get("/api/mission-control/sales/lead/:id", auth, async (req, res) => {
     try {
+      const focus = await getFocus("website");
       const lead = await getSalesLeadById(req, req.params.id, req.operator, { claim: true });
       if (!lead) return res.status(404).json({ error: "Lead not found" });
+      if (!leadMatchesFocus(lead, focus)) {
+        return res.status(404).json({ error: "Lead not in current focus. Edit focus on Mission home or add matching leads." });
+      }
       const queue = await buildSalesQueue(req, queueFiltersFromQuery(req), req.operator);
       const nextId = getNextLeadId(queue, req.params.id);
-      return res.json({ lead, nextId, stats: getQueueStats(queue) });
+      const focusMeta = await buildFocusQueueMeta("website");
+      return res.json({ lead, nextId, stats: getQueueStats(queue), focus: focusMeta });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -119,9 +135,10 @@ export function registerSalesModeRoutes(app, { requireOperatorApi } = {}) {
       const queue = await buildSalesQueue(req, queueFiltersFromQuery(req), req.operator);
       const after = cleanText(req.query.after);
       const nextId = getNextLeadId(queue, after || null);
-      if (!nextId) return res.json({ lead: null, stats: getQueueStats(queue) });
+      const focus = await buildFocusQueueMeta("website");
+      if (!nextId) return res.json({ lead: null, stats: getQueueStats(queue), focus });
       const lead = await getSalesLeadById(req, nextId, req.operator, { claim: true });
-      return res.json({ lead, nextId: getNextLeadId(queue, nextId), stats: getQueueStats(queue) });
+      return res.json({ lead, nextId: getNextLeadId(queue, nextId), stats: getQueueStats(queue), focus });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }

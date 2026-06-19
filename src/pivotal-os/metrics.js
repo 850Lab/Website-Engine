@@ -1,12 +1,11 @@
 import { cleanText } from "../stage1/shared.js";
 import { listQualifiedBusinesses } from "../stage1/qualified-business-store.js";
 import { getAngleAnalysisStore } from "../angle-analysis/store.js";
-import { buildSalesQueue, getSalesLeadById } from "../mission-control/sales-queue.js";
+import { buildSalesQueue } from "../mission-control/sales-queue.js";
 import { buildAngleFolderSummary } from "../angle-folders-page.js";
 import { FOLDER_BY_KEY } from "../angle-analysis/categories.js";
 import { blobPersistenceEnabled, persistenceBackendLabel } from "../persistence/json-document-store.js";
-import { TWILIO_TEST_BUSINESS_ID, ensureTwilioTestBusiness } from "../twilio-voice/test-lead.js";
-import { getTwilioVoiceConfig } from "../twilio-voice/config.js";
+import { buildFocusMetrics } from "../outreach-focus/metrics.js";
 
 export const DEFAULT_GOALS = {
   calls: 20,
@@ -156,22 +155,6 @@ export async function buildPipelineMetrics(records = null) {
   };
 }
 
-export async function buildTwilioTestLead(req) {
-  const config = await getTwilioVoiceConfig(req);
-  await ensureTwilioTestBusiness(config);
-  const lead = await getSalesLeadById(req, TWILIO_TEST_BUSINESS_ID);
-  if (!lead?.hasPhone) return null;
-
-  return {
-    id: lead.id,
-    businessName: lead.businessName,
-    phone: lead.phone,
-    city: lead.city,
-    callUrl: lead.actions.call,
-    callQueueUrl: `/call-queue?lead=${encodeURIComponent(lead.id)}`,
-  };
-}
-
 export async function buildNextBestOpportunity(req, operator = null) {
   const queue = await buildSalesQueue(req, { phoneOnly: true, excludeClosed: true }, operator);
   if (!queue.length) return null;
@@ -252,18 +235,25 @@ export async function buildOpportunityFolders(req) {
 }
 
 export async function buildPivotalDashboard(req, operator = null) {
-  const [daily, pipeline, nextOpportunity, twilioTest] = await Promise.all([
-    buildDailyMetrics(null, operator),
+  const [focusMetrics, pipeline] = await Promise.all([
+    buildFocusMetrics("website"),
     buildPipelineMetrics(),
-    buildNextBestOpportunity(req, operator),
-    buildTwilioTestLead(req),
   ]);
 
   return {
-    daily,
+    focus: focusMetrics,
+    daily: {
+      goals: { calls: focusMetrics.progress.target, conversations: 0, appointments: 0 },
+      progress: {
+        calls: { target: focusMetrics.progress.target, completed: focusMetrics.progress.current },
+        conversations: { target: 0, completed: focusMetrics.funnel.conversations },
+        appointments: { target: 0, completed: focusMetrics.funnel.estimates },
+      },
+      potentialRevenueToday: focusMetrics.funnel.revenue,
+      callableLeads: focusMetrics.queue.matchingCallable,
+    },
     pipeline,
-    nextOpportunity,
-    twilioTest,
+    nextOpportunity: null,
     operator: operator
       ? { id: operator.id, name: operator.name, email: operator.email, role: operator.role }
       : null,

@@ -1,4 +1,6 @@
 import { getQualifiedBusiness } from "./stage1/qualified-business-store.js";
+import { listQualifiedBusinesses } from "./stage1/qualified-business-store.js";
+import { trulyHasNoWebsite } from "./stage1/website-presence.js";
 import { publicBaseUrl } from "./v7/shared.js";
 import { ANGLE_FOLDERS, folderLabel } from "./angle-analysis/categories.js";
 import { listAngleAnalyses, getAngleAnalysis, getAngleAnalysisStore } from "./angle-analysis/store.js";
@@ -15,11 +17,16 @@ function esc(value) {
 }
 
 export async function buildAngleFolderSummary() {
-  const analyses = await listAngleAnalyses();
+  const [analyses, records] = await Promise.all([listAngleAnalyses(), listQualifiedBusinesses()]);
+  const recordMap = new Map(records.map((row) => [row.id, row]));
   const byFolder = new Map(ANGLE_FOLDERS.map((f) => [f.key, []]));
 
   for (const row of analyses) {
-    const key = byFolder.has(row.folder) ? row.folder : "unknown";
+    let key = byFolder.has(row.folder) ? row.folder : "unknown";
+    if (key === "no_website") {
+      const record = recordMap.get(row.businessId);
+      if (record && !trulyHasNoWebsite(record)) continue;
+    }
     byFolder.get(key).push(row);
   }
 
@@ -61,9 +68,15 @@ export async function buildAngleFolderSummary() {
 }
 
 export async function listBusinessesInFolder(folderKey) {
-  const analyses = await listAngleAnalyses();
+  const [analyses, records] = await Promise.all([listAngleAnalyses(), listQualifiedBusinesses()]);
+  const recordMap = new Map(records.map((row) => [row.id, row]));
   const rows = analyses
     .filter((row) => row.folder === folderKey)
+    .filter((row) => {
+      if (folderKey !== "no_website") return true;
+      const record = recordMap.get(row.businessId);
+      return !record || trulyHasNoWebsite(record);
+    })
     .sort((a, b) => (b.priority_score || 0) - (a.priority_score || 0));
 
   return {

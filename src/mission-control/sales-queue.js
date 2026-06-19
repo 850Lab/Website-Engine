@@ -9,6 +9,8 @@ import { fillTemplate, resolveIndustryRules } from "../sales-brief/industry-rule
 import { OUTREACH_STATUS_LABELS } from "../outreach-page.js";
 import { canOperatorAccessLead, assignLeadToOperator } from "../operators/lead-assignment.js";
 import { isTwilioTestBusiness } from "../twilio-voice/test-lead.js";
+import { trulyHasNoWebsite } from "../stage1/website-presence.js";
+import { getFocus, sortLeadsByFocus, filterLeadsToFocus } from "../outreach-focus/routes.js";
 
 const PRIORITY_RANK = { Hot: 0, Warm: 1, Nurture: 2, "Manual Review": 3 };
 const OUTCOME_RANK = {
@@ -120,8 +122,8 @@ export function mergeSalesLead(record, analysis, baseUrl) {
   };
 }
 
-export function sortSalesQueue(leads) {
-  return [...leads].sort((a, b) => {
+export function sortSalesQueue(leads, focus = null) {
+  const sorted = [...leads].sort((a, b) => {
     const pa = PRIORITY_RANK[a.priorityLabel] ?? 9;
     const pb = PRIORITY_RANK[b.priorityLabel] ?? 9;
     if (pa !== pb) return pa - pb;
@@ -131,6 +133,7 @@ export function sortSalesQueue(leads) {
     if (oa !== ob) return oa - ob;
     return String(a.businessName).localeCompare(String(b.businessName));
   });
+  return focus ? sortLeadsByFocus(sorted, focus) : sorted;
 }
 
 export async function buildSalesQueue(req, filters = {}, operator = null) {
@@ -146,7 +149,9 @@ export async function buildSalesQueue(req, filters = {}, operator = null) {
       if (filters.qualifiedOnly && record.qualificationStatus !== "qualified") return false;
       if (cleanText(filters.folder)) {
         const analysis = analysisMap[record.id];
-        if ((analysis?.folder ?? "unknown") !== cleanText(filters.folder)) return false;
+        const folder = analysis?.folder ?? "unknown";
+        if (folder !== cleanText(filters.folder)) return false;
+        if (folder === "no_website" && !trulyHasNoWebsite(record)) return false;
       }
       if (cleanText(filters.priority)) {
         const analysis = analysisMap[record.id];
@@ -164,7 +169,11 @@ export async function buildSalesQueue(req, filters = {}, operator = null) {
     })
     .map((record) => mergeSalesLead(record, analysisMap[record.id], baseUrl));
 
-  leads = sortSalesQueue(leads);
+  const focus = await getFocus("website").catch(() => null);
+  if (filters.focusOnly !== false && focus) {
+    leads = filterLeadsToFocus(leads, focus);
+  }
+  leads = sortSalesQueue(leads, focus);
   return leads;
 }
 

@@ -269,7 +269,14 @@ export async function updatePwLeadStatus(id, patch = {}) {
     next.status = "not_interested";
   }
 
-  return upsertPwLead(next);
+  const saved = await upsertPwLead(next);
+  try {
+    const { recordPwFocusActivity } = await import("../outreach-focus/routes.js");
+    await recordPwFocusActivity({ lead: saved, patch, actionId, quick });
+  } catch {
+    /* focus logging is best-effort */
+  }
+  return saved;
 }
 
 export function mergePwLeadActions(lead) {

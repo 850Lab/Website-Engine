@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { DATA_DIR } from "../storage.js";
 import { readJsonDocument, writeJsonDocument } from "../persistence/json-document-store.js";
 import { buildDedupKey, cleanText, nowIso } from "./shared.js";
+import { trulyHasNoWebsite } from "./website-presence.js";
 
 export const QUALIFIED_BUSINESSES_FILE = join(DATA_DIR, "qualified-businesses.json");
 export const DISCOVERY_RUNS_FILE = join(DATA_DIR, "business-discovery-runs.json");
@@ -200,7 +201,7 @@ export async function buildDatabaseSummary(records = null) {
     businessesFound: list.length,
     opportunitiesFoundToday,
     qualifiedBusinesses: qualified.length,
-    noWebsite: list.filter((row) => row.websiteStatus === "no_website").length,
+    noWebsite: list.filter((row) => trulyHasNoWebsite(row)).length,
     poorWebsite: list.filter((row) => row.websiteStatus === "poor_website").length,
     goodWebsite: list.filter((row) => row.websiteStatus === "good_website").length,
     phoneAvailable: list.filter((row) => row.phone || row.normalizedPhone).length,
@@ -239,7 +240,7 @@ export function filterBusinesses(records, filters = {}) {
     rows = rows.filter((row) => row.qualificationStatus === "qualified");
   }
   if (filters.noWebsite) {
-    rows = rows.filter((row) => row.websiteStatus === "no_website");
+    rows = rows.filter((row) => trulyHasNoWebsite(row));
   }
   if (filters.poorWebsite) {
     rows = rows.filter((row) => row.websiteStatus === "poor_website");

@@ -11,6 +11,7 @@ import {
   buildSettingsSnapshot,
 } from "./metrics.js";
 import { registerSalesModeRoutes } from "../mission-control/sales-mode.js";
+import { registerOutreachFocusRoutes } from "../outreach-focus/routes.js";
 import { cleanText } from "../stage1/shared.js";
 import { requireOperatorApi, requireOperatorPage } from "../operators/middleware.js";
 
@@ -62,6 +63,7 @@ export function registerPivotalOsRoutes(app, options = {}) {
   });
 
   registerSalesModeRoutes(app, { requireOperatorApi: operatorApi });
+  registerOutreachFocusRoutes(app, { requireOperatorApi: operatorApi });
 }
 
 export { renderHomePage, renderCallQueuePage };

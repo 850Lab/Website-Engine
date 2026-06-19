@@ -54,10 +54,17 @@ export function renderPwQueuePage() {
     .badge-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
     .health-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 14px; }
     .health-note { font-size: 13px; color: var(--text-dim); margin: 10px 0 0; line-height: 1.45; }
+    .focus-banner {
+      font-size: 14px; line-height: 1.45; padding: 12px 14px; margin-bottom: 12px;
+      border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-elevated);
+    }
+    .focus-banner.warn { border-color: rgba(251,191,36,0.45); background: rgba(251,191,36,0.08); color: var(--text); }
   `;
 
   const body = `
     <p class="eyebrow">Power Washing Queue</p>
+
+    <div class="focus-banner" id="focusBanner">Loading focus…</div>
 
     <div class="metrics-bar" id="metricsBar">
       <div class="m-item"><div class="m-num" id="mCalls">—</div><div class="m-label">Calls</div></div>
@@ -187,6 +194,33 @@ export function renderPwQueuePage() {
       document.getElementById('mRev').textContent=money(d.revenueWonToday);
     }
 
+    function renderFocusBanner(focusMeta){
+      var el=document.getElementById('focusBanner');
+      if(!focusMeta||!focusMeta.focus){
+        el.textContent='Focus config unavailable.';
+        return;
+      }
+      var f=focusMeta.focus;
+      var parts=[
+        'Focus: '+sanitizeText(f.industry)+' / '+sanitizeText(f.city),
+        sanitizeText(f.offer),
+        sanitizeText(f.salesperson)
+      ].filter(Boolean);
+      var text=parts.join(' · ');
+      if(focusMeta.lowFocusedLeads){
+        el.className='focus-banner warn';
+        text=(focusMeta.warning||'You are low on focused leads.')+' '+text;
+        if(focusMeta.leadDiscovery&&focusMeta.leadDiscovery.command){
+          text+=' Run: '+focusMeta.leadDiscovery.command;
+        }
+        text+=' ('+(focusMeta.matchingCallable||0)+' matching callable / '+(focusMeta.callable||0)+' total)';
+      }else{
+        el.className='focus-banner';
+        text+=' · '+(focusMeta.matchingCallable||0)+' matching leads prioritized';
+      }
+      el.textContent=text;
+    }
+
     function renderHealth(h){
       if(!h) return;
       var el=document.getElementById('healthBody');
@@ -255,10 +289,13 @@ export function renderPwQueuePage() {
       root.appendChild(makeScriptCard('If owner available', PW_SCRIPTS.ownerAvailable));
 
       var callRow=makeEl('div','action-grid');
-      var callLink=makeLink(lead.actions&&lead.actions.call,'btn btn-primary','📞 Call',['tel:']);
-      if(callLink){
-        callLink.id='callBtn';
-        callRow.appendChild(callLink);
+      if(lead.actions&&lead.actions.call){
+        var callBtn=document.createElement('button');
+        callBtn.type='button';
+        callBtn.className='btn btn-primary';
+        callBtn.id='callBtn';
+        callBtn.textContent='📞 Call';
+        callRow.appendChild(callBtn);
       }else{
         var noCall=makeEl('span','btn btn-ghost','No phone');
         noCall.style.opacity='0.4';
@@ -294,19 +331,45 @@ export function renderPwQueuePage() {
       return data;
     }
 
+    async function logCallAndDial(){
+      if(!currentLead||!currentLead.actions||!currentLead.actions.call) return;
+      var dialUrl=currentLead.actions.call;
+      setBusy(true);
+      try{
+        var data=await jsonFetch('/api/pressure-washing/lead/'+encodeURIComponent(currentLead.id)+'/call',{method:'POST'});
+        applyPayload(data);
+        showToast('Call logged');
+        window.location.href=dialUrl;
+      }catch(e){
+        showToast(e.message||'Could not log call');
+      }finally{
+        setBusy(false);
+      }
+    }
+
     function applyPayload(data){
       if(data.lead) currentLead=data.lead;
       if(data.nextId!==undefined) nextLeadId=data.nextId;
       renderDailyMetrics(data.daily);
       renderHealth(data.health);
+      renderFocusBanner(data.focus);
       if(data.stats){
         document.getElementById('queueMeta').textContent=
           String(data.stats.callable||0)+' in queue · '+(data.stats.followUpsDue||0)+' follow-ups due';
       }
       if(!data.lead){
-        document.getElementById('loading').textContent='Queue complete — no more callable leads.';
+        var msg='No matching focused leads in queue.';
+        if(data.focus){
+          if(data.focus.warning) msg=data.focus.warning;
+          if(data.focus.leadDiscovery&&data.focus.leadDiscovery.command){
+            msg+=' Run: '+data.focus.leadDiscovery.command;
+          }
+          msg+=' ('+(data.focus.matchingCallable||0)+' matching / '+(data.focus.callable||0)+' total callable)';
+        }
+        document.getElementById('loading').textContent=msg;
         document.getElementById('loading').classList.remove('hidden');
         document.getElementById('leadView').classList.add('hidden');
+        renderFocusBanner(data.focus);
         return;
       }
       document.getElementById('loading').classList.add('hidden');
@@ -315,12 +378,7 @@ export function renderPwQueuePage() {
       view.replaceChildren();
       view.appendChild(mountLead(data.lead));
       var callBtn=document.getElementById('callBtn');
-      if(callBtn) callBtn.addEventListener('click',function(){
-        fetch('/api/pressure-washing/lead/'+encodeURIComponent(currentLead.id)+'/call',{method:'POST'})
-          .then(function(r){return r.json();})
-          .then(function(d){ applyPayload(d); showToast('Call logged'); })
-          .catch(function(e){ showToast(e.message); });
-      });
+      if(callBtn) callBtn.onclick=function(){ logCallAndDial(); };
       document.querySelectorAll('.quick-btn').forEach(function(btn){
         btn.onclick=function(){ handleAction(btn.getAttribute('data-action')); };
       });

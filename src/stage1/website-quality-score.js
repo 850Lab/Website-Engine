@@ -115,9 +115,13 @@ export async function scoreWebsiteQuality({
 
   if (!url || url === "[EXISTS]") {
     return {
-      websiteStatus: "no_website",
+      websiteStatus: url === "[EXISTS]" ? "unknown" : "no_website",
       websiteScore: null,
-      websiteScoreReasons: ["No website listed on Google Maps"],
+      websiteScoreReasons: [
+        url === "[EXISTS]"
+          ? "Google lists a website but the URL was not captured"
+          : "No website listed on Google Maps",
+      ],
       websiteScoreConfidence: "measured",
       performanceScore: null,
       html: null,

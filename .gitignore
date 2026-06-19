@@ -12,6 +12,7 @@ data/*
 !data/website-quality-scores.json
 !data/founder-os.json
 !data/pw-search-targets.json
+!data/outreach-focus.json
 data/website-screenshots/
 data/**/*.bak
 data/**/*.tmp

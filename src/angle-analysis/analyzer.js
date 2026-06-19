@@ -153,16 +153,14 @@ function scoreCategory(key, ctx) {
 
   switch (key) {
     case "no_website":
-      if (!ctx.hasWebsite) {
+      if (ctx.websiteUrl === "[EXISTS]") {
+        break;
+      }
+      if (!ctx.hasWebsite && !ctx.facebookUrl && !ctx.instagramUrl) {
         score = 95;
         problem = "No owned website on Google profile";
         angle = "Get found and trusted when customers search for you";
         reason = "Business has no website URL — searches may dead-end on Google or social.";
-      } else if (ctx.websiteUrl === "[EXISTS]") {
-        score = 80;
-        problem = "Website listed but URL unknown";
-        angle = "Clarify online presence and capture leads";
-        reason = "Google shows a website exists but no URL is available to evaluate.";
       }
       break;
 

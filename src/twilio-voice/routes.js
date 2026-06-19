@@ -460,6 +460,13 @@ export function registerTwilioCallRoutes(app, { requireOperatorApi, requireOwner
 
       await persistCallProgress(session, call.sid, cleanText(call.status) || "initiated");
 
+      try {
+        const { recordWebsiteFocusActivity } = await import("../outreach-focus/routes.js");
+        await recordWebsiteFocusActivity({ business, kind: "call" });
+      } catch {
+        /* focus logging is best-effort */
+      }
+
       return res.json({
         ok: true,
         callSid: call.sid,
