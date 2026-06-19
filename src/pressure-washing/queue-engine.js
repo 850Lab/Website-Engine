@@ -1,3 +1,4 @@
+import { buildDedupKeys } from "../discovery/dedup.js";
 import { cleanText, nowIso } from "../stage1/shared.js";
 import { isFoodIndustry, isTargetCity } from "./industries.js";
 import { isFollowUpDue } from "./queue-state.js";
@@ -94,13 +95,21 @@ export function summarizeQueueHealth(leads, { lastUpdatedAt = null } = {}) {
   };
 }
 
-export function planBatchPromotion(leads) {
-  const activeCount = leads.filter((l) => l.queueState === "active").length;
+export function planBatchPromotion(leads, { matchLead = null } = {}) {
+  const inFocus = matchLead || (() => true);
+
+  const activeCount = leads.filter((l) => l.queueState === "active" && inFocus(l)).length;
   const need = Math.max(0, ACTIVE_BATCH_SIZE - activeCount);
   if (!need) return { need: 0, toPromote: [], batchId: null };
 
   const available = sortAvailableForPromotion(
-    leads.filter((l) => l.queueState === "available" && (l.normalizedPhone || l.phone)),
+    leads.filter(
+      (l) =>
+        l.queueState === "available" &&
+        l.callable !== false &&
+        (l.normalizedPhone || l.phone) &&
+        inFocus(l),
+    ),
   );
 
   return {
@@ -134,23 +143,9 @@ export function applyBatchPromotion(leads, plan) {
 }
 
 export function leadDedupKey(lead = {}) {
-  const phone = cleanText(lead.normalizedPhone || lead.phone).replace(/\D/g, "");
-  if (phone.length >= 10) return `phone:${phone.slice(-10)}`;
-  const name = cleanText(lead.businessName).toLowerCase();
-  const city = cleanText(lead.city).toLowerCase();
-  if (name && city) return `name:${name}|${city}`;
-  const maps = cleanText(lead.googleMapsUrl);
-  if (maps) return `maps:${maps}`;
-  return null;
-}
-
-export function buildDedupIndex(leads) {
-  const index = new Map();
-  for (const lead of leads) {
-    const key = leadDedupKey(lead);
-    if (key) index.set(key, lead.id);
-  }
-  return index;
+  const keys = buildDedupKeys(lead);
+  const exact = keys.find((k) => k.strength === "exact");
+  return exact?.key ?? keys[0]?.key ?? null;
 }
 
 export { resolveQueueState };

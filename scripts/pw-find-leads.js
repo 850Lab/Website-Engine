@@ -1,154 +1,93 @@
 #!/usr/bin/env node
-/**
- * Pressure washing lead discovery — adds leads to data/pressure-washing-leads.json
- *
- * Usage:
- *   node scripts/pw-find-leads.js              # summary + TODO (no scrape)
- *   node scripts/pw-find-leads.js --scrape     # Google Maps via Playwright (requires chromium)
- */
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { scrapeGoogleMaps } from "../src/discover.js";
+import { listPwLeads, upsertPwLead, replenishFocusActiveBatch } from "../src/pressure-washing/lead-store.js";
+import { buildFocusInventory } from "../src/outreach-focus/inventory.js";
+import { getFocus } from "../src/outreach-focus/store.js";
+import { FOCUS_MIN_AVAILABLE } from "../src/outreach-focus/constants.js";
+import { cleanText } from "../src/stage1/shared.js";
+import { buildDedupIndex } from "../src/discovery/dedup.js";
 import {
-  buildDedupIndex,
-  leadDedupKey,
-  listPwLeads,
-  upsertPwLead,
-} from "../src/pressure-washing/lead-store.js";
-import { buildPwQueueHealth } from "../src/pressure-washing/metrics.js";
-import { cleanText, nowIso } from "../src/stage1/shared.js";
+  filterTargetsForFocus,
+  finalizeDiscoveryReport,
+  runQueryDiscovery,
+} from "../src/discovery/run-query.js";
+import { buildFocusedInventoryDebug } from "../src/outreach-focus/diagnostics.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TARGETS_FILE = join(ROOT, "data", "pw-search-targets.json");
 
 async function loadTargets() {
-  try {
-    const raw = await readFile(TARGETS_FILE, "utf8");
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) throw new Error("Expected array in pw-search-targets.json");
-    return parsed;
-  } catch (err) {
-    if (err.code === "ENOENT") {
-      throw new Error(`Missing ${TARGETS_FILE}. Create search targets first.`);
-    }
-    throw err;
-  }
-}
-
-function placeToLead(place, target) {
-  const city = cleanText(target.city) || cleanText(place.city);
-  return {
-    businessName: cleanText(place.businessName),
-    industry: cleanText(target.industry) || "Restaurants",
-    address: cleanText(place.address),
-    city,
-    phone: cleanText(place.phone),
-    website: cleanText(place.websiteUrl),
-    googleMapsUrl: cleanText(place.googleMapsUrl),
-    googleRating: Number(place.googleRating) || 0,
-    reviewCount: Number(place.googleReviewCount) || 0,
-    source: "google_maps",
-    sourceQuery: cleanText(target.query) + " " + city,
-    queueState: "available",
-    status: "new",
-    discoveredAt: nowIso(),
-  };
+  const raw = await readFile(TARGETS_FILE, "utf8");
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed)) throw new Error("Expected array in pw-search-targets.json");
+  return parsed;
 }
 
 async function main() {
   const scrape = process.argv.includes("--scrape");
-  const targets = await loadTargets();
-  const existing = await listPwLeads();
-  const dedup = buildDedupIndex(existing);
+  const focus = await getFocus("pressure-washing");
+  const targets = filterTargetsForFocus(await loadTargets(), focus);
+  const debugBefore = await buildFocusedInventoryDebug("pressure-washing");
 
-  let searchesProcessed = 0;
-  let leadsFound = 0;
-  let newLeadsAdded = 0;
-  let duplicatesSkipped = 0;
-
-  console.log(`\nZeal PW lead finder — ${targets.length} search targets loaded`);
-  console.log(`Existing leads in database: ${existing.length}\n`);
+  console.log(`\nPW lead finder — focus: ${focus.industry} in ${focus.city}`);
+  console.log(`Search targets: ${targets.length}`);
+  console.log(`Current focused callable: ${debugBefore.totals.callableFocusMatches}`);
+  console.log(`Target: ${FOCUS_MIN_AVAILABLE}+\n`);
 
   if (!scrape) {
-    console.log("Mode: dry run (no scraping)");
-    console.log("");
-    console.log("TODO: Run with --scrape to search Google Maps:");
-    console.log("  node scripts/pw-find-leads.js --scrape");
-    console.log("");
-    console.log("Requires Playwright + Chromium:");
-    console.log("  npx playwright install chromium");
-    console.log("");
-    console.log("Reuses scrapeGoogleMaps() from src/discover.js (same as website outreach).");
-    console.log("");
+    console.log("Mode: dry run\nRun: npm run pw:find-leads -- --scrape\n");
     for (const target of targets) {
-      console.log(`  • ${target.query} — ${target.city} (${target.industry})`);
+      console.log(`  • ${target.query} — ${target.city} (max ${target.maxResults || 50})`);
     }
-    const health = await buildPwQueueHealth();
-    console.log("");
-    console.log("Current queue health:");
-    console.log(`  available: ${health.available}`);
-    console.log(`  active:    ${health.active}`);
-    console.log(`  needs replenishment: ${health.needsReplenishment}`);
+    console.log("\nDiagnostics:", JSON.stringify(debugBefore.totals, null, 2));
     return;
   }
 
-  console.log("Mode: Google Maps scrape\n");
+  const existing = await listPwLeads();
+  const dedupIndex = buildDedupIndex(existing);
+  const funnels = [];
+
+  async function storePwLead({ candidate, dup, phoneOk }) {
+    const saved = await upsertPwLead({
+      ...candidate,
+      industry: candidate.industry || "Restaurants",
+      queueState: phoneOk ? "available" : "available",
+      status: "new",
+      callable: phoneOk,
+      possibleDuplicate: dup.action === "add_possible_duplicate",
+      possibleDuplicateOf: dup.matchedLeadId || "",
+    });
+    return { record: saved, action: "added" };
+  }
 
   for (const target of targets) {
-    const cityLabel = `${cleanText(target.city)}, TX`;
-    const searchTerm = cleanText(target.query) || cleanText(target.industry);
-    const maxResults = Number(target.maxResults) || 10;
+    console.log(`\n=== ${target.query} — ${target.city} ===`);
+    const { funnel } = await runQueryDiscovery({
+      target,
+      focus,
+      mode: "pressure-washing",
+      dedupIndex,
+      storeLead: storePwLead,
+      storeNoPhone: true,
+    });
+    funnels.push(funnel);
 
-    console.log(`Searching: "${searchTerm}" in ${cityLabel}…`);
-    searchesProcessed += 1;
-
-    let places = [];
-    try {
-      places = await scrapeGoogleMaps({
-        searchTerm,
-        city: cityLabel,
-        maxResults,
-      });
-    } catch (err) {
-      console.warn(`  Search failed: ${err.message}`);
-      continue;
-    }
-
-    leadsFound += places.length;
-    console.log(`  Found ${places.length} places`);
-
-    for (const place of places) {
-      if (!cleanText(place.businessName)) continue;
-      const candidate = placeToLead(place, target);
-      if (!candidate.phone) {
-        console.log(`  Skip (no phone): ${candidate.businessName}`);
-        continue;
-      }
-
-      const key = leadDedupKey(candidate);
-      if (key && dedup.has(key)) {
-        duplicatesSkipped += 1;
-        continue;
-      }
-
-      const saved = await upsertPwLead(candidate);
-      if (key) dedup.set(key, saved.id);
-      newLeadsAdded += 1;
-      console.log(`  + ${saved.businessName} (${saved.city}) score ${saved.priorityScore}`);
+    const mid = await buildFocusInventory("pressure-washing", { replenish: false });
+    if (mid.callableFocused >= FOCUS_MIN_AVAILABLE) {
+      console.log(`\nReached ${mid.callableFocused} callable focused leads — stopping early.`);
+      break;
     }
   }
 
-  const health = await buildPwQueueHealth();
-  console.log("\n--- Summary ---");
-  console.log(`Searches processed:  ${searchesProcessed}`);
-  console.log(`Leads found:         ${leadsFound}`);
-  console.log(`New leads added:     ${newLeadsAdded}`);
-  console.log(`Duplicates skipped:  ${duplicatesSkipped}`);
-  console.log(`Available leads:     ${health.available}`);
-  console.log(`Active leads:        ${health.active}`);
-  console.log(`Needs replenishment: ${health.needsReplenishment}`);
-  console.log("");
+  await replenishFocusActiveBatch(focus);
+  const inventoryAfter = await buildFocusInventory("pressure-washing", { replenish: false });
+  const debugAfter = await buildFocusedInventoryDebug("pressure-washing");
+  await finalizeDiscoveryReport("pressure-washing", focus, funnels, {
+    inventory: inventoryAfter,
+    debug: debugAfter.totals,
+  });
 }
 
 main().catch((err) => {

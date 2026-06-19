@@ -83,6 +83,7 @@ export function applyOutcomeQueueState(lead, { actionId, status, callAttempts, n
 }
 
 export function isVisibleInActiveQueue(lead) {
+  if (lead.callable === false) return false;
   if (!lead.normalizedPhone && !lead.phone) return false;
   if (lead.queueState === "active") return true;
   if (lead.queueState === "follow_up" && isFollowUpDue(lead)) return true;

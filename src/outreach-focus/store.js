@@ -4,6 +4,27 @@ import { DATA_DIR } from "../storage.js";
 import { readJsonDocument, writeJsonDocument } from "../persistence/json-document-store.js";
 import { cleanText, nowIso } from "../stage1/shared.js";
 import { getFocusTimeContext } from "./time.js";
+import {
+  industryMatches,
+  cityMatches,
+  leadMatchesFocus,
+  evaluateFocusMatch,
+  industryMatchesLead,
+  cityMatchesLead,
+  hasCallablePhone,
+  normalizeLeadCity,
+} from "./matching.js";
+
+export {
+  industryMatches,
+  cityMatches,
+  leadMatchesFocus,
+  evaluateFocusMatch,
+  industryMatchesLead,
+  cityMatchesLead,
+  hasCallablePhone,
+  normalizeLeadCity,
+};
 
 export const OUTREACH_FOCUS_FILE = join(DATA_DIR, "outreach-focus.json");
 export const FOCUS_CALL_TARGET = 100;
@@ -11,14 +32,14 @@ export const FOCUS_CALL_TARGET = 100;
 export const DEFAULT_FOCUS = {
   website: {
     mode: "website",
-    industry: "Restaurant",
+    industry: "Fence Companies",
     city: "Beaumont",
-    offer: "Website Preview",
+    offer: "Website Preview + More Estimate Requests",
     salesperson: "Jaylan",
   },
   "pressure-washing": {
     mode: "pressure-washing",
-    industry: "Restaurant",
+    industry: "Restaurants",
     city: "Beaumont",
     offer: "Dumpster Pad Cleaning",
     salesperson: "Jaylan",
@@ -73,31 +94,6 @@ async function writeDoc(doc) {
 
 export function normalizeMatch(value) {
   return cleanText(value).toLowerCase().replace(/\s+/g, " ").trim();
-}
-
-export function industryMatches(leadIndustry, focusIndustry) {
-  const a = normalizeMatch(leadIndustry);
-  const b = normalizeMatch(focusIndustry);
-  if (!b) return true;
-  if (!a) return false;
-  if (a === b) return true;
-  if (a.includes(b) || b.includes(a)) return true;
-  if (b === "restaurant" && /restaurant|food|cafe|fast food/.test(a)) return true;
-  return false;
-}
-
-export function cityMatches(leadCity, focusCity) {
-  const a = normalizeMatch(leadCity);
-  const b = normalizeMatch(focusCity);
-  if (!b) return true;
-  if (!a) return false;
-  if (a === b) return true;
-  if (a.startsWith(`${b},`) || a.startsWith(`${b} `)) return true;
-  return false;
-}
-
-export function leadMatchesFocus(lead = {}, focus = {}) {
-  return industryMatches(lead.industry || lead.category, focus.industry) && cityMatches(lead.city, focus.city);
 }
 
 export function eventMatchesFocus(event = {}, focus = {}, mode = "") {

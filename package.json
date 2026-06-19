@@ -16,6 +16,7 @@
     "blob:seed": "node scripts/seed-blob-data.js",
     "blob:seed-twilio": "node scripts/seed-twilio-settings.js",
     "website:pack": "node scripts/run-single-website.js",
+    "website:find-leads": "node scripts/website-find-leads.js",
     "pw:find-leads": "node scripts/pw-find-leads.js"
   },
   "engines": {

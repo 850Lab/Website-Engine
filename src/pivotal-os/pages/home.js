@@ -16,17 +16,17 @@ export function renderHomePage() {
 
     <div id="websitePanel">
       <div class="card card-highlight" id="webFocusCard">
-        <div class="card-label">Website Focus</div>
+        <div class="card-label">Current Focus</div>
         <div id="webFocusBody" class="focus-body">Loading…</div>
         <button type="button" class="btn btn-ghost btn-block" id="webEditFocusBtn" style="margin-top:12px">Edit Focus</button>
       </div>
-      <div class="card" id="webMetricsCard">
-        <div class="card-label">Focused Test Progress</div>
-        <div id="webMetricsBody">Loading…</div>
+      <div class="card" id="webInventoryCard">
+        <div class="card-label">Focused Lead Inventory</div>
+        <div id="webInventoryBody">Loading…</div>
       </div>
-      <div class="card hidden" id="webAnalyticsCard">
-        <div class="card-label">Baseline Results</div>
-        <div id="webAnalyticsBody"></div>
+      <div class="card" id="webBaselineCard">
+        <div class="card-label">Baseline Progress</div>
+        <div id="webBaselineBody">Loading…</div>
       </div>
       <div class="card hidden warn-card" id="webLowLeadsCard">
         <div class="card-body" id="webLowLeadsBody"></div>
@@ -39,17 +39,17 @@ export function renderHomePage() {
 
     <div id="pwPanel" class="hidden">
       <div class="card card-highlight pw-highlight" id="pwFocusCard">
-        <div class="card-label">Pressure Washing Focus</div>
+        <div class="card-label">Current Focus</div>
         <div id="pwFocusBody" class="focus-body">Loading…</div>
         <button type="button" class="btn btn-ghost btn-block" id="pwEditFocusBtn" style="margin-top:12px">Edit Focus</button>
       </div>
-      <div class="card" id="pwMetricsCard">
-        <div class="card-label">Focused Test Progress</div>
-        <div id="pwMetricsBody">Loading…</div>
+      <div class="card" id="pwInventoryCard">
+        <div class="card-label">Focused Lead Inventory</div>
+        <div id="pwInventoryBody">Loading…</div>
       </div>
-      <div class="card hidden" id="pwAnalyticsCard">
-        <div class="card-label">Baseline Results</div>
-        <div id="pwAnalyticsBody"></div>
+      <div class="card" id="pwBaselineCard">
+        <div class="card-label">Baseline Progress</div>
+        <div id="pwBaselineBody">Loading…</div>
       </div>
       <div class="card hidden warn-card" id="pwLowLeadsCard">
         <div class="card-body" id="pwLowLeadsBody"></div>
@@ -136,6 +136,10 @@ export function renderHomePage() {
     .focus-insight { margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.5; }
     .focus-metric { margin-bottom: 10px; font-size: 15px; }
     .focus-metric strong { color: var(--text); }
+    .inventory-status { font-weight: 800; margin-top: 8px; }
+    .inventory-status.low { color: #fbbf24; }
+    .inventory-status.critical { color: #f87171; }
+    .discovery-cmd { font-family: ui-monospace, monospace; font-size: 13px; margin-top: 8px; color: var(--text-muted); word-break: break-all; }
     .progress-wrap { margin-top: 12px; }
     .progress-bar { height: 10px; background: var(--bg-elevated); border-radius: 999px; overflow: hidden; }
     .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.2s; }
@@ -212,85 +216,71 @@ export function renderHomePage() {
       body.appendChild(renderFocusRow('City', f.city||''));
       body.appendChild(renderFocusRow('Offer', f.offer||''));
       body.appendChild(renderFocusRow('Salesperson', f.salesperson||''));
-      body.appendChild(renderFocusRow('Date', c.dateLabel||''));
       body.appendChild(renderFocusRow('Day', c.dayOfWeek||''));
-      body.appendChild(renderFocusRow('Time bucket', c.timeBucket||''));
-      body.appendChild(renderFocusRow('Status', data.baselineComplete?'Baseline established':'Baseline collection'));
-      var mission=makeEl('p','focus-insight',
-        'This is the industry, city, offer, salesperson, day, and time we are testing right now. Make calls until 100 calls are logged.');
-      body.appendChild(mission);
+      body.appendChild(renderFocusRow('Time Bucket', c.timeBucket||''));
+      body.appendChild(renderFocusRow('Status', data.baselineComplete?'Baseline Established':'Baseline Collection'));
     }
 
-    function renderFocusMetrics(mode, data){
+    function inventoryStatusClass(status){
+      if(status==='Healthy') return 'healthy';
+      if(status==='Low Inventory') return 'low';
+      return 'critical';
+    }
+
+    function renderInventoryCard(mode, data){
       var p=focusPrefix(mode);
-      var body=document.getElementById(p+'MetricsBody');
-      var funnel=data.funnel||{};
-      var progress=data.progress||{};
+      var body=document.getElementById(p+'InventoryBody');
+      var inv=data.inventory||{};
+      var targets=inv.targets||{available:50,active:25};
       body.replaceChildren();
+      body.appendChild(makeEl('div','focus-metric','Available: '+String(inv.available||0)));
+      body.appendChild(makeEl('div','focus-metric','Active: '+String(inv.active||0)));
+      body.appendChild(makeEl('div','focus-metric','Target: '+targets.available+' Available · '+targets.active+' Active'));
+      var statusEl=makeEl('div','inventory-status '+inventoryStatusClass(inv.status||''),'Status: '+(inv.status||'Unknown'));
+      body.appendChild(statusEl);
+    }
 
-      body.appendChild(makeEl('p','card-body','Today\\'s Mission: Continue the focused test.'));
-      body.appendChild(makeEl('div','focus-metric','Target: '+progress.target+' calls'));
-      body.appendChild(makeEl('div','focus-metric','Current: '+progress.current+' calls'));
-      body.appendChild(makeEl('div','focus-metric','Remaining: '+progress.remaining+' calls'));
-
-      var wrap=makeEl('div','progress-wrap');
-      wrap.appendChild(makeEl('div','card-label','Calls'));
-      var bar=makeEl('div','progress-bar');
-      var fill=makeEl('div','progress-fill');
-      fill.style.width=(progress.percent||0)+'%';
-      bar.appendChild(fill);
-      wrap.appendChild(bar);
-      body.appendChild(wrap);
-
-      body.appendChild(makeEl('div','focus-metric','Calls: '+progress.label));
-      body.appendChild(makeEl('div','focus-metric','Conversations: '+String(funnel.conversations||0)));
-      body.appendChild(makeEl('div','focus-metric','Interested: '+String(funnel.interested||0)));
-      var estLabel=mode==='website'?'Appointments':'Estimates';
-      body.appendChild(makeEl('div','focus-metric', estLabel+': '+String(funnel.estimates||0)));
-      body.appendChild(makeEl('div','focus-metric','Sales: '+String(funnel.sales||0)));
-      body.appendChild(makeEl('div','focus-metric','Revenue: '+money(funnel.revenue||0)));
-
-      var ratios=data.ratios||{};
-      if(ratios.conversationToSale){
-        body.appendChild(makeEl('div','focus-metric','Conversation-to-sale: '+ratios.conversationToSale));
+    function renderBaselineCard(mode, data){
+      var p=focusPrefix(mode);
+      var body=document.getElementById(p+'BaselineBody');
+      var b=data.baseline||{};
+      var funnel=data.funnel||{};
+      body.replaceChildren();
+      body.appendChild(makeEl('div','focus-metric','Calls: '+String(b.calls||0)+' / '+String(b.target||100)));
+      body.appendChild(makeEl('div','focus-metric','Conversations: '+String(b.conversations||funnel.conversations||0)));
+      if(mode==='pressure-washing'){
+        body.appendChild(makeEl('div','focus-metric','Estimates: '+String(b.estimates||funnel.estimates||0)));
       }
-      if(ratios.callToSale){
-        body.appendChild(makeEl('div','focus-metric','Call-to-sale: '+ratios.callToSale));
-      }
-      if(!data.baselineComplete){
-        body.appendChild(makeEl('p','focus-insight', data.insight||'Stay focused. Complete 100 calls for this setup before changing variables.'));
-      }
+      body.appendChild(makeEl('div','focus-metric','Sales: '+String(b.sales||funnel.sales||0)));
+      body.appendChild(makeEl('div','focus-metric','Current Ratio: '+(b.currentRatio||data.ratios?.currentRatio||'Not enough data')));
+    }
 
-      var analyticsEl=document.getElementById(p+'AnalyticsCard');
-      var analyticsBody=document.getElementById(p+'AnalyticsBody');
-      if(data.analytics&&data.analytics.unlocked){
-        analyticsEl.classList.remove('hidden');
-        analyticsBody.replaceChildren();
-        analyticsBody.appendChild(makeEl('p','card-body','Baseline established.'));
-        if(ratios.callToConversation) analyticsBody.appendChild(makeEl('div','focus-metric','Call-to-conversation: '+ratios.callToConversation));
-        if(ratios.estimateToSale) analyticsBody.appendChild(makeEl('div','focus-metric','Estimate-to-sale: '+ratios.estimateToSale));
-        if(data.analytics.averageTicket!=null) analyticsBody.appendChild(makeEl('div','focus-metric','Average ticket: '+money(data.analytics.averageTicket)));
-        (data.analytics.recommendations||[]).forEach(function(rec){
-          analyticsBody.appendChild(makeEl('div','focus-metric','Recommendation: '+rec));
-        });
-      }else{
-        analyticsEl.classList.add('hidden');
-      }
-
+    function renderLowLeadsWarning(mode, data){
+      var p=focusPrefix(mode);
       var lowEl=document.getElementById(p+'LowLeadsCard');
+      var inv=data.inventory||{};
       var q=data.queue||{};
-      if(q.lowFocusedLeads){
+      if(inv.lowInventory||q.lowFocusedLeads){
         lowEl.classList.remove('hidden');
-        var lowText=q.warning||'You are low on focused leads.';
+        var lowText=q.warning||inv.warning||'Low focused lead inventory.';
         if(q.leadDiscovery&&q.leadDiscovery.command){
           lowText+=' Run: '+q.leadDiscovery.command;
-        }else if(q.leadDiscovery&&q.leadDiscovery.label){
-          lowText+=' '+q.leadDiscovery.label;
         }
-        document.getElementById(p+'LowLeadsBody').textContent=sanitizeText(lowText+' ('+(q.matchingCallable||0)+' matching callable / '+(q.callable||0)+' total callable)');
+        var body=document.getElementById(p+'LowLeadsBody');
+        body.replaceChildren();
+        body.appendChild(makeEl('div','',sanitizeText(lowText)));
+        if(q.leadDiscovery&&q.leadDiscovery.command){
+          body.appendChild(makeEl('div','discovery-cmd',q.leadDiscovery.command));
+        }
       }else{
         lowEl.classList.add('hidden');
       }
+    }
+
+    function renderFocusMetrics(mode, data){
+      renderInventoryCard(mode, data);
+      renderBaselineCard(mode, data);
+      renderLowLeadsWarning(mode, data);
     }
 
     function loadFocusMetrics(mode){

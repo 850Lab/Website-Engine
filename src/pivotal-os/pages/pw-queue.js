@@ -59,12 +59,18 @@ export function renderPwQueuePage() {
       border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-elevated);
     }
     .focus-banner.warn { border-color: rgba(251,191,36,0.45); background: rgba(251,191,36,0.08); color: var(--text); }
+    .focus-body { font-size: 14px; line-height: 1.55; }
+    .focus-line { margin-bottom: 4px; }
   `;
 
   const body = `
     <p class="eyebrow">Power Washing Queue</p>
 
-    <div class="focus-banner" id="focusBanner">Loading focus…</div>
+    <div class="card card-highlight" id="focusCard">
+      <div class="card-label">Current Focus</div>
+      <div id="focusBody" class="focus-body">Loading…</div>
+    </div>
+    <div class="focus-banner warn hidden" id="focusLowBanner"></div>
 
     <div class="metrics-bar" id="metricsBar">
       <div class="m-item"><div class="m-num" id="mCalls">—</div><div class="m-label">Calls</div></div>
@@ -194,31 +200,39 @@ export function renderPwQueuePage() {
       document.getElementById('mRev').textContent=money(d.revenueWonToday);
     }
 
-    function renderFocusBanner(focusMeta){
-      var el=document.getElementById('focusBanner');
+    function renderFocusCard(focusMeta){
+      var bodyEl=document.getElementById('focusBody');
+      var lowEl=document.getElementById('focusLowBanner');
       if(!focusMeta||!focusMeta.focus){
-        el.textContent='Focus config unavailable.';
+        bodyEl.textContent='Focus config unavailable.';
+        lowEl.classList.add('hidden');
         return;
       }
       var f=focusMeta.focus;
-      var parts=[
-        'Focus: '+sanitizeText(f.industry)+' / '+sanitizeText(f.city),
-        sanitizeText(f.offer),
-        sanitizeText(f.salesperson)
-      ].filter(Boolean);
-      var text=parts.join(' · ');
+      var c=focusMeta.clock||{};
+      bodyEl.replaceChildren();
+      [
+        ['Industry', f.industry],
+        ['City', f.city],
+        ['Offer', f.offer],
+        ['Salesperson', f.salesperson],
+        ['Day', c.dayOfWeek||''],
+        ['Time Bucket', c.timeBucket||''],
+        ['Status', focusMeta.status||'Baseline Collection']
+      ].forEach(function(pair){
+        var line=makeEl('div','focus-line');
+        line.innerHTML='<strong>'+sanitizeText(pair[0])+':</strong> '+sanitizeText(pair[1]);
+        bodyEl.appendChild(line);
+      });
       if(focusMeta.lowFocusedLeads){
-        el.className='focus-banner warn';
-        text=(focusMeta.warning||'You are low on focused leads.')+' '+text;
-        if(focusMeta.leadDiscovery&&focusMeta.leadDiscovery.command){
-          text+=' Run: '+focusMeta.leadDiscovery.command;
-        }
-        text+=' ('+(focusMeta.matchingCallable||0)+' matching callable / '+(focusMeta.callable||0)+' total)';
+        var inv=focusMeta.inventory||{};
+        var lowText=focusMeta.warning||'Not enough focused pressure washing leads available.';
+        if(focusMeta.leadDiscovery&&focusMeta.leadDiscovery.command) lowText+=' Run: '+focusMeta.leadDiscovery.command;
+        lowEl.textContent=sanitizeText(lowText+' ('+(inv.available||0)+' available · '+(inv.active||0)+' active · target '+String(focusMeta.minAvailable||50)+' available)');
+        lowEl.classList.remove('hidden');
       }else{
-        el.className='focus-banner';
-        text+=' · '+(focusMeta.matchingCallable||0)+' matching leads prioritized';
+        lowEl.classList.add('hidden');
       }
-      el.textContent=text;
     }
 
     function renderHealth(h){
@@ -352,7 +366,7 @@ export function renderPwQueuePage() {
       if(data.nextId!==undefined) nextLeadId=data.nextId;
       renderDailyMetrics(data.daily);
       renderHealth(data.health);
-      renderFocusBanner(data.focus);
+      renderFocusCard(data.focus);
       if(data.stats){
         document.getElementById('queueMeta').textContent=
           String(data.stats.callable||0)+' in queue · '+(data.stats.followUpsDue||0)+' follow-ups due';
@@ -369,7 +383,7 @@ export function renderPwQueuePage() {
         document.getElementById('loading').textContent=msg;
         document.getElementById('loading').classList.remove('hidden');
         document.getElementById('leadView').classList.add('hidden');
-        renderFocusBanner(data.focus);
+        renderFocusCard(data.focus);
         return;
       }
       document.getElementById('loading').classList.add('hidden');

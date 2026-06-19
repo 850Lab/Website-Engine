@@ -12,6 +12,7 @@ import { priorityLabel } from "./scoring.js";
 import { pwStatusLabel } from "./statuses.js";
 import { isFoodIndustry } from "./industries.js";
 import { getFocus, sortLeadsByFocus, filterLeadsToFocus } from "../outreach-focus/routes.js";
+import { applyPwFocusToLead } from "../outreach-focus/content.js";
 import { buildFocusQueueMeta } from "../outreach-focus/metrics.js";
 
 function startOfToday() {
@@ -95,8 +96,9 @@ export function filterQueueByView(queue, view) {
 }
 
 export async function buildPwDashboard() {
+  const focus = await getFocus("pressure-washing");
   const leads = await listPwLeads();
-  const queue = await getActiveQueueLeads();
+  const queue = await getActiveQueueLeads(focus);
   const daily = aggregatePwDaily(leads);
   const industryStats = {};
 
@@ -140,16 +142,18 @@ export async function buildPwDashboard() {
 }
 
 export async function buildPwQueueDailyMetrics() {
+  const focus = await getFocus("pressure-washing");
   const leads = await listPwLeads();
-  const queue = await getActiveQueueLeads();
+  const queue = await getActiveQueueLeads(focus);
   return {
     ...aggregatePwDaily(leads),
     callableLeads: queue.length,
   };
 }
 
-export function formatPwLeadForQueue(lead, { isNextBestLead = false } = {}) {
-  const merged = mergePwLeadActions(lead);
+export function formatPwLeadForQueue(lead, { isNextBestLead = false, focus = null } = {}) {
+  let merged = mergePwLeadActions(lead);
+  if (focus) merged = applyPwFocusToLead(merged, focus);
   return {
     ...merged,
     priorityLabel: priorityLabel(merged.priorityScore),
@@ -164,8 +168,9 @@ export function formatPwLeadForQueue(lead, { isNextBestLead = false } = {}) {
 }
 
 export async function buildPwQueueStats() {
+  const focus = await getFocus("pressure-washing");
   const leads = await listPwLeads();
-  const queue = await getActiveQueueLeads();
+  const queue = await getActiveQueueLeads(focus);
   const health = await buildPwQueueHealth();
   return {
     total: leads.length,
@@ -179,7 +184,7 @@ export async function buildPwQueueStats() {
 
 export async function buildPwQueueResponse(leadId = null, { view = "" } = {}) {
   const focus = await getFocus("pressure-washing");
-  const fullQueueRaw = await getActiveQueueLeads();
+  const fullQueueRaw = await getActiveQueueLeads(focus);
   const focusedQueue = filterLeadsToFocus(fullQueueRaw, focus);
   const fullQueue = sortLeadsByFocus(focusedQueue, focus);
   const queue = filterQueueByView(fullQueue, view);
@@ -213,7 +218,7 @@ export async function buildPwQueueResponse(leadId = null, { view = "" } = {}) {
   const focusQueue = await buildFocusQueueMeta("pressure-washing");
 
   return {
-    lead: formatPwLeadForQueue(displayRecord, { isNextBestLead: displayRecord.id === nextBestId }),
+    lead: formatPwLeadForQueue(displayRecord, { isNextBestLead: displayRecord.id === nextBestId, focus }),
     nextId,
     stats: await buildPwQueueStats(),
     daily: await buildPwQueueDailyMetrics(),

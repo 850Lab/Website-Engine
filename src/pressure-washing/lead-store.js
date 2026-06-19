@@ -19,15 +19,15 @@ import {
 import {
   applyBatchPromotion,
   buildActiveQueue,
-  buildDedupIndex,
-  leadDedupKey,
   planBatchPromotion,
   summarizeQueueHealth,
 } from "./queue-engine.js";
+import { buildDedupIndex } from "../discovery/dedup.js";
 
 export const PW_LEADS_FILE = join(DATA_DIR, "pressure-washing-leads.json");
 
-export { isFollowUpDue, leadDedupKey, buildDedupIndex };
+export { isFollowUpDue } from "./queue-state.js";
+export { leadDedupKey, buildDedupIndex } from "../discovery/dedup.js";
 
 async function readLeadsDocument() {
   const parsed = await readJsonDocument(PW_LEADS_FILE);
@@ -102,6 +102,10 @@ export function buildPwLead(input = {}) {
     notes: Array.isArray(input.notes) ? input.notes : [],
     objections: Array.isArray(input.objections) ? input.objections : [],
     followUpNotes: Array.isArray(input.followUpNotes) ? input.followUpNotes : [],
+    callable: input.callable === false ? false : Boolean(normalizedPhone || cleanText(input.phone)),
+    cityConfidence: cleanText(input.cityConfidence) || "",
+    possibleDuplicate: Boolean(input.possibleDuplicate),
+    possibleDuplicateOf: cleanText(input.possibleDuplicateOf) || "",
     flags: {
       hasDriveThru: Boolean(input.flags?.hasDriveThru),
       hasOutdoorSeating: Boolean(input.flags?.hasOutdoorSeating),
@@ -140,9 +144,20 @@ export async function getPwLeadsFileUpdatedAt() {
 }
 
 export async function replenishActiveBatch() {
+  return replenishFocusActiveBatch(null);
+}
+
+export async function replenishFocusActiveBatch(focus = null) {
   const raw = await readLeads();
   let leads = raw.map((row) => buildPwLead({ ...row, id: row.id }));
-  const plan = planBatchPromotion(leads);
+
+  let plan;
+  if (focus) {
+    const { leadMatchesFocus } = await import("../outreach-focus/store.js");
+    plan = planBatchPromotion(leads, { matchLead: (lead) => leadMatchesFocus(lead, focus) });
+  } else {
+    plan = planBatchPromotion(leads);
+  }
 
   if (!plan.toPromote.length) {
     return { leads, promoted: 0, batchId: null };
@@ -152,7 +167,6 @@ export async function replenishActiveBatch() {
     leads.map((l) => ({ ...l })),
     plan,
   );
-  const promoted = plan.toPromote.map((row) => buildPwLead(promotedRows.find((l) => l.id === row.id)));
   const merged = leads.map((lead) => {
     const updated = promotedRows.find((row) => row.id === lead.id);
     return updated ? buildPwLead(updated) : lead;
@@ -162,8 +176,12 @@ export async function replenishActiveBatch() {
   return { leads: merged, promoted: plan.toPromote.length, batchId: plan.batchId };
 }
 
-export async function getActiveQueueLeads() {
-  await replenishActiveBatch();
+export async function getActiveQueueLeads(focus = null) {
+  if (focus) {
+    await replenishFocusActiveBatch(focus);
+  } else {
+    await replenishActiveBatch();
+  }
   return buildActiveQueue(await listPwLeads());
 }
 
@@ -281,12 +299,14 @@ export async function updatePwLeadStatus(id, patch = {}) {
 
 export function mergePwLeadActions(lead) {
   const phone = lead.normalizedPhone || normalizePhoneNumber(lead.phone);
+  const callable = lead.callable !== false && Boolean(phone);
   const textBody = encodeURIComponent(
     `Hey, this is Jaylan with Zeal Power Washing. I called about cleaning the dumpster pad, entrance, or concrete around ${lead.businessName}. I can send a quick estimate if you'd like.`,
   );
   return {
     ...lead,
-    hasPhone: Boolean(phone),
+    hasPhone: callable,
+    callable,
     actions: {
       call: phone ? `tel:${phone}` : "",
       text: phone ? `sms:${phone}?body=${textBody}` : "",
@@ -314,7 +334,9 @@ export async function buildPwQueueHealth() {
 }
 
 export async function refreshPwQueue() {
-  const result = await replenishActiveBatch();
+  const { getFocus } = await import("../outreach-focus/store.js");
+  const focus = await getFocus("pressure-washing");
+  const result = await replenishFocusActiveBatch(focus);
   const health = summarizeQueueHealth(result.leads, {
     lastUpdatedAt: await getPwLeadsFileUpdatedAt(),
   });

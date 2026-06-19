@@ -1,12 +1,15 @@
 [
-  { "query": "restaurants", "city": "Beaumont", "industry": "Restaurants", "maxResults": 10 },
-  { "query": "fast food", "city": "Port Arthur", "industry": "Fast food", "maxResults": 10 },
-  { "query": "tire shops", "city": "Nederland", "industry": "Tire shops", "maxResults": 8 },
-  { "query": "cafes", "city": "Groves", "industry": "Cafes", "maxResults": 8 },
-  { "query": "auto repair", "city": "Orange", "industry": "Auto repair", "maxResults": 8 },
-  { "query": "gas stations", "city": "Bridge City", "industry": "Gas stations", "maxResults": 8 },
-  { "query": "restaurants", "city": "Vidor", "industry": "Restaurants", "maxResults": 8 },
-  { "query": "laundromats", "city": "Lumberton", "industry": "Laundromats", "maxResults": 6 },
-  { "query": "churches", "city": "Silsbee", "industry": "Churches", "maxResults": 6 },
-  { "query": "restaurants", "city": "Sour Lake", "industry": "Restaurants", "maxResults": 6 }
+  { "query": "restaurants Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 75 },
+  { "query": "fast food Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 60 },
+  { "query": "Mexican restaurants Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 55 },
+  { "query": "seafood restaurants Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 50 },
+  { "query": "barbecue restaurants Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 50 },
+  { "query": "cafes Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 50 },
+  { "query": "diners Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 45 },
+  { "query": "pizza restaurants Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 45 },
+  { "query": "burger restaurants Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 45 },
+  { "query": "breakfast restaurants Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 45 },
+  { "query": "restaurants near Dowlen Road Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 40 },
+  { "query": "restaurants near College Street Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 40 },
+  { "query": "restaurants near Calder Avenue Beaumont TX", "city": "Beaumont", "industry": "Restaurants", "maxResults": 40 }
 ]

@@ -1,0 +1,175 @@
+{
+  "mode": "pressure-washing",
+  "focus": {
+    "mode": "pressure-washing",
+    "industry": "Restaurant",
+    "city": "Beaumont",
+    "offer": "Dumpster Pad Cleaning",
+    "salesperson": "Jaylan"
+  },
+  "queries": [
+    {
+      "query": "restaurants Beaumont TX Beaumont, TX",
+      "startedAt": "2026-06-19T16:42:02.080Z",
+      "rawMapsResults": 78,
+      "parsedBusinesses": 62,
+      "withPhone": 60,
+      "withoutPhone": 2,
+      "cityMatched": 62,
+      "industryMatched": 62,
+      "focusMatched": 62,
+      "callableFocusMatched": 60,
+      "duplicatesSkipped": 0,
+      "possibleDuplicatesAdded": 0,
+      "newLeadsAdded": 62,
+      "newFocusedLeadsAdded": 62,
+      "storedNoPhone": 2,
+      "rejected": {
+        "no_phone_not_stored": 0,
+        "no_business_name": 0,
+        "city_mismatch": 0,
+        "industry_mismatch": 0,
+        "duplicate": 0,
+        "ingest_error": 0,
+        "outside_focus_after_ingest": 0
+      },
+      "scrapeStats": {
+        "cardsSeen": 78,
+        "detailPagesOpened": 62,
+        "scrollRounds": 15,
+        "query": "restaurants Beaumont TX Beaumont, TX",
+        "requestedMax": 75,
+        "parsedResults": 62
+      },
+      "samples": {
+        "rejected": [],
+        "added": [
+          {
+            "businessName": "Riverside Grille",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Beaumont Food District",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "BB's Tex-Orleans",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Hearsay Beaumont",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "JWilson's",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Hole in the Wall",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "JW's Patio",
+            "city": "Beaumont",
+            "callable": false
+          },
+          {
+            "businessName": "The Lounge",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Sultan Mediterranean Grill & Lounge",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Pappadeaux Seafood Kitchen",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Fiery Crab Seafood Restaurant And Bar",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Wicked Casian - Beaumont",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Tia Juanita's Fish Camp",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "\"ALMOST LIKE MAMA'S.\"",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Floyds Seafood - Beaumont",
+            "city": "Beaumont",
+            "callable": true
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "rawMapsResults": 78,
+    "parsedBusinesses": 62,
+    "withPhone": 60,
+    "withoutPhone": 2,
+    "focusMatched": 62,
+    "newLeadsAdded": 62,
+    "newFocusedLeadsAdded": 62,
+    "duplicatesSkipped": 0
+  },
+  "inventoryAfter": {
+    "inventory": {
+      "mode": "pressure-washing",
+      "focus": {
+        "mode": "pressure-washing",
+        "industry": "Restaurant",
+        "city": "Beaumont",
+        "offer": "Dumpster Pad Cleaning",
+        "salesperson": "Jaylan"
+      },
+      "available": 37,
+      "active": 25,
+      "totalFocused": 64,
+      "callableFocused": 62,
+      "targets": {
+        "available": 50,
+        "active": 25
+      },
+      "status": "Low Inventory",
+      "lowInventory": true,
+      "needsReplenishment": false,
+      "warning": "Low focused lead inventory — 37 available (target 50).",
+      "leadDiscovery": {
+        "command": "npm run pw:find-leads -- --scrape",
+        "label": "Scrape Google Maps for focused restaurant leads in Beaumont"
+      }
+    },
+    "debug": {
+      "totalLeads": 74,
+      "industryMatches": 68,
+      "cityMatches": 64,
+      "focusMatches": 64,
+      "callableFocusMatches": 62,
+      "availableFocused": 37,
+      "activeFocused": 25,
+      "noPhoneFocused": 2
+    }
+  },
+  "writtenAt": "2026-06-19T16:43:49.945Z"
+}

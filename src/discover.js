@@ -84,14 +84,25 @@ async function dismissConsent(page) {
   }
 }
 
-async function scrollResultsFeed(page, targetCount) {
+async function countPlaceCards(page) {
+  return page.locator('a[href*="/maps/place/"]').count();
+}
+
+async function scrollResultsFeed(page, targetCount, stats) {
   const feed = page.locator('[role="feed"]');
   let previousCount = 0;
+  let stagnantRounds = 0;
 
-  for (let attempt = 0; attempt < 20; attempt += 1) {
-    const count = await page.locator('a[href*="/maps/place/"]').count();
-    if (count >= targetCount) return;
-    if (count === previousCount && attempt > 4) break;
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    stats.scrollRounds = attempt + 1;
+    const count = await countPlaceCards(page);
+    stats.cardsSeen = Math.max(stats.cardsSeen, count);
+
+    if (count >= targetCount) return count;
+    if (count === previousCount) stagnantRounds += 1;
+    else stagnantRounds = 0;
+
+    if (stagnantRounds >= 3 && attempt > 6) break;
 
     previousCount = count;
     try {
@@ -99,10 +110,12 @@ async function scrollResultsFeed(page, targetCount) {
         el.scrollTop = el.scrollHeight;
       });
     } catch {
-      break;
+      await page.mouse.wheel(0, 2400);
     }
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(1400);
   }
+
+  return countPlaceCards(page);
 }
 
 async function collectPlaceLinks(page, maxResults) {
@@ -128,120 +141,148 @@ async function collectPlaceLinks(page, maxResults) {
 }
 
 async function extractPlaceDetails(page, defaults) {
-  return page.evaluate(({ defaultCategory, defaultCity }) => {
-    function parseRatingReviews(text) {
-      const source = String(text ?? "");
-      const ratingMatch = source.match(/([\d.]+)\s*(?:stars?|★)/i);
-      const reviewMatch = source.match(/([\d,]+)\s+reviews?/i);
-      return {
-        rating: ratingMatch ? Number(ratingMatch[1]) : 0,
-        reviews: reviewMatch ? Number(reviewMatch[1].replace(/,/g, "")) : 0,
-      };
-    }
-
-    function parseCityFromAddress(address, fallbackCity) {
-      const fallback = String(fallbackCity ?? "").trim();
-      const text = String(address ?? "").trim();
-      if (!text) return fallback;
-
-      const parts = text.split(",").map((part) => part.trim()).filter(Boolean);
-      if (parts.length >= 2) {
-        const last = parts[parts.length - 1];
-        const stateZip = last.match(/^([A-Z]{2})\b/);
-        if (stateZip) {
-          return `${parts[parts.length - 2]}, ${stateZip[1]}`;
-        }
-        return parts.slice(-2).join(", ");
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const detail = await page.evaluate(({ defaultCategory, defaultCity }) => {
+      function parseRatingReviews(text) {
+        const source = String(text ?? "");
+        const ratingMatch = source.match(/([\d.]+)\s*(?:stars?|★)/i);
+        const reviewMatch = source.match(/([\d,]+)\s+reviews?/i);
+        return {
+          rating: ratingMatch ? Number(ratingMatch[1]) : 0,
+          reviews: reviewMatch ? Number(reviewMatch[1].replace(/,/g, "")) : 0,
+        };
       }
 
-      return fallback || text;
-    }
+      function parseCityFromAddress(address, fallbackCity) {
+        const fallback = String(fallbackCity ?? "").trim();
+        const text = String(address ?? "").trim();
+        if (!text) return fallback;
 
-    const name =
-      document.querySelector("h1")?.textContent?.trim() ??
-      document.querySelector('[data-attrid="title"]')?.textContent?.trim() ??
-      "";
+        const parts = text.split(",").map((part) => part.trim()).filter(Boolean);
+        if (parts.length >= 2) {
+          const last = parts[parts.length - 1];
+          const stateZip = last.match(/^([A-Z]{2})\b/);
+          if (stateZip) {
+            return `${parts[parts.length - 2]}, ${stateZip[1]}`;
+          }
+          return parts.slice(-2).join(", ");
+        }
 
-    let category = defaultCategory;
-    const categoryCandidates = [
-      ...document.querySelectorAll("button[jsaction*='category']"),
-      ...document.querySelectorAll("button"),
-    ];
-    for (const button of categoryCandidates) {
-      const text = button.textContent?.trim() ?? "";
-      if (!text || text.length > 80) continue;
-      if (/^(Directions|Save|Share|Website|Menu|Order|Reserve)$/i.test(text)) continue;
-      if (text.includes("·")) {
-        const part = text.split("·").map((piece) => piece.trim()).find(Boolean);
-        if (part) {
-          category = part;
+        return fallback || text;
+      }
+
+      const name =
+        document.querySelector("h1")?.textContent?.trim() ??
+        document.querySelector('[data-attrid="title"]')?.textContent?.trim() ??
+        "";
+
+      let category = defaultCategory;
+      const categoryCandidates = [
+        ...document.querySelectorAll("button[jsaction*='category']"),
+        ...document.querySelectorAll("button"),
+      ];
+      for (const button of categoryCandidates) {
+        const text = button.textContent?.trim() ?? "";
+        if (!text || text.length > 80) continue;
+        if (/^(Directions|Save|Share|Website|Menu|Order|Reserve)$/i.test(text)) continue;
+        if (text.includes("·")) {
+          const part = text.split("·").map((piece) => piece.trim()).find(Boolean);
+          if (part) {
+            category = part;
+            break;
+          }
+        } else if (!/^\d/.test(text) && !/stars?/i.test(text)) {
+          category = text;
           break;
         }
-      } else if (!/^\d/.test(text) && !/stars?/i.test(text)) {
-        category = text;
-        break;
       }
-    }
 
-    let rating = 0;
-    let reviews = 0;
-    for (const el of document.querySelectorAll('[role="img"][aria-label*="star"], [aria-label*="stars"]')) {
-      const parsed = parseRatingReviews(el.getAttribute("aria-label"));
-      if (parsed.rating > 0 || parsed.reviews > 0) {
-        rating = parsed.rating;
-        reviews = parsed.reviews;
-        break;
+      let rating = 0;
+      let reviews = 0;
+      for (const el of document.querySelectorAll('[role="img"][aria-label*="star"], [aria-label*="stars"]')) {
+        const parsed = parseRatingReviews(el.getAttribute("aria-label"));
+        if (parsed.rating > 0 || parsed.reviews > 0) {
+          rating = parsed.rating;
+          reviews = parsed.reviews;
+          break;
+        }
       }
-    }
 
-    if (!reviews) {
-      const reviewText = document.body.innerText.match(/([\d,]+)\s+reviews?/i);
-      if (reviewText) reviews = Number(reviewText[1].replace(/,/g, ""));
-    }
+      if (!reviews) {
+        const reviewText = document.body.innerText.match(/([\d,]+)\s+reviews?/i);
+        if (reviewText) reviews = Number(reviewText[1].replace(/,/g, ""));
+      }
 
-    let phone = "";
-    const phoneButton = document.querySelector(
-      'button[data-item-id*="phone"], button[aria-label*="Phone:"], button[aria-label*="phone:"]'
-    );
-    if (phoneButton) {
-      phone =
-        phoneButton.getAttribute("aria-label")?.replace(/^Phone:\s*/i, "") ??
-        phoneButton.textContent?.trim() ??
+      let phone = "";
+      const phoneButton = document.querySelector(
+        'button[data-item-id*="phone"], button[aria-label*="Phone:"], button[aria-label*="phone:"]'
+      );
+      if (phoneButton) {
+        phone =
+          phoneButton.getAttribute("aria-label")?.replace(/^Phone:\s*/i, "") ??
+          phoneButton.textContent?.trim() ??
+          "";
+      }
+      if (!phone) {
+        phone = document.querySelector('a[href^="tel:"]')?.textContent?.trim() ?? "";
+      }
+      if (!phone) {
+        const bodyMatch = document.body.innerText.match(
+          /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/
+        );
+        phone = bodyMatch ? bodyMatch[0] : "";
+      }
+
+      const websiteLink = document.querySelector(
+        'a[data-item-id="authority"], a[aria-label*="Website"], a[href^="http"]:not([href*="google.com"])'
+      );
+      const websiteUrl = websiteLink?.href ?? "";
+      const hasWebsite = Boolean(websiteUrl);
+
+      const addressButton = document.querySelector(
+        'button[data-item-id="address"], button[aria-label*="Address:"]'
+      );
+      const address =
+        addressButton?.getAttribute("aria-label")?.replace(/^Address:\s*/i, "") ??
+        addressButton?.textContent?.trim() ??
         "";
-    }
-    if (!phone) {
-      phone = document.querySelector('a[href^="tel:"]')?.textContent?.trim() ?? "";
-    }
 
-    const websiteLink = document.querySelector(
-      'a[data-item-id="authority"], a[aria-label*="Website"], a[href^="http"]:not([href*="google.com"])'
-    );
-    const websiteUrl = websiteLink?.href ?? "";
-    const hasWebsite = Boolean(websiteUrl);
+      return {
+        businessName: name,
+        category,
+        city: parseCityFromAddress(address, defaultCity),
+        address,
+        phone,
+        hasWebsite,
+        websiteUrl,
+        googleReviewCount: reviews,
+        googleRating: rating,
+      };
+    }, defaults);
 
-    const addressButton = document.querySelector(
-      'button[data-item-id="address"], button[aria-label*="Address:"]'
-    );
-    const address =
-      addressButton?.getAttribute("aria-label")?.replace(/^Address:\s*/i, "") ??
-      addressButton?.textContent?.trim() ??
-      "";
+    if (detail.businessName && (detail.phone || attempt === 2)) return detail;
+    await page.waitForTimeout(900);
+  }
 
-    return {
-      businessName: name,
-      category,
-      city: parseCityFromAddress(address, defaultCity),
-      address,
-      phone,
-      hasWebsite,
-      websiteUrl,
-      googleReviewCount: reviews,
-      googleRating: rating,
-    };
-  }, defaults);
+  return {
+    businessName: "",
+    category: defaults.defaultCategory,
+    city: defaults.defaultCity,
+    address: "",
+    phone: "",
+    hasWebsite: false,
+    websiteUrl: "",
+    googleReviewCount: 0,
+    googleRating: 0,
+  };
 }
 
 async function scrapeGoogleMaps({ searchTerm, city, maxResults }) {
+  const { results } = await scrapeGoogleMapsWithStats({ searchTerm, city, maxResults });
+  return results;
+}
+
+async function scrapeGoogleMapsWithStats({ searchTerm, city, maxResults }) {
   let chromium;
   try {
     ({ chromium } = await import("playwright"));
@@ -250,6 +291,14 @@ async function scrapeGoogleMaps({ searchTerm, city, maxResults }) {
       "Playwright is required for discover. Run: npm install && npx playwright install chromium"
     );
   }
+
+  const stats = {
+    cardsSeen: 0,
+    detailPagesOpened: 0,
+    scrollRounds: 0,
+    query: `${searchTerm} ${city}`,
+    requestedMax: maxResults,
+  };
 
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
@@ -268,16 +317,18 @@ async function scrapeGoogleMaps({ searchTerm, city, maxResults }) {
     );
     await dismissConsent(page);
     await page.waitForSelector('[role="feed"], h1', { timeout: 45000 });
-    await scrollResultsFeed(page, maxResults);
+    await scrollResultsFeed(page, maxResults, stats);
 
     const placeLinks = await collectPlaceLinks(page, maxResults);
+    stats.cardsSeen = Math.max(stats.cardsSeen, placeLinks.length);
     if (placeLinks.length === 0) {
       throw new Error("No Google Maps results found for that search.");
     }
 
     for (const href of placeLinks) {
       await page.goto(href, { waitUntil: "domcontentloaded", timeout: 45000 });
-      await page.waitForTimeout(1200);
+      await page.waitForTimeout(1000);
+      stats.detailPagesOpened += 1;
 
       const detail = await extractPlaceDetails(page, {
         defaultCategory: searchTerm,
@@ -285,14 +336,15 @@ async function scrapeGoogleMaps({ searchTerm, city, maxResults }) {
       });
 
       if (detail.businessName) {
-        results.push({ ...detail, googleMapsUrl: href });
+        results.push({ ...detail, googleMapsUrl: href, searchCity: city, searchTerm });
       }
     }
   } finally {
     await browser.close();
   }
 
-  return results;
+  stats.parsedResults = results.length;
+  return { results, stats };
 }
 
-export { scrapeGoogleMaps, toLeadFields, normalizeBusinessName };
+export { scrapeGoogleMaps, scrapeGoogleMapsWithStats, toLeadFields, normalizeBusinessName };

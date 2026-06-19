@@ -12403,6 +12403,942 @@
         "noGoogleBusinessProfileWebsiteLink": false
       },
       "scoredAt": "2026-06-13T19:41:03.442Z"
+    },
+    {
+      "businessId": "qbd_eb56bad4",
+      "businessName": "Assess Construction",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:46.910Z"
+    },
+    {
+      "businessId": "qbd_19897c50",
+      "businessName": "Foster Fence LTD.",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:47.121Z"
+    },
+    {
+      "businessId": "qbd_eee08cbb",
+      "businessName": "AE Fencing Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:48.194Z"
+    },
+    {
+      "businessId": "qbd_73f7dd15",
+      "businessName": "Texas Ranch Fence Company LLC",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:48.359Z"
+    },
+    {
+      "businessId": "qbd_374d549c",
+      "businessName": "Cactus Fence & Construction Inc. | Pearland",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:49.037Z"
+    },
+    {
+      "businessId": "qbd_96bfe0ff",
+      "businessName": "G&G Enterprises",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:49.728Z"
+    },
+    {
+      "businessId": "qbd_73ff7055",
+      "businessName": "Texas Fence Specialist",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:49.881Z"
+    },
+    {
+      "businessId": "qbd_c459c3b3",
+      "businessName": "Salgados Fence Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:50.067Z"
+    },
+    {
+      "businessId": "qbd_30295e76",
+      "businessName": "Greak Fence and Deck, LLC",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:50.199Z"
+    },
+    {
+      "businessId": "qbd_57188b68",
+      "businessName": "Pride Of Texas Fence Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:50.346Z"
+    },
+    {
+      "businessId": "qbd_a3fabfbf",
+      "businessName": "Pioneer Fence Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:50.478Z"
+    },
+    {
+      "businessId": "qbd_06548bb1",
+      "businessName": "Carter & Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:50.630Z"
+    },
+    {
+      "businessId": "qbd_181a8fb4",
+      "businessName": "Anderson Homes",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:50.776Z"
+    },
+    {
+      "businessId": "qbd_5f75f2bf",
+      "businessName": "Texas Rural Fence",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:50.905Z"
+    },
+    {
+      "businessId": "qbd_5f4f480f",
+      "businessName": "Beaumont Garage Door Center Co.",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:51.060Z"
+    },
+    {
+      "businessId": "qbd_61b3da62",
+      "businessName": "Steelcraft Welding Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:51.208Z"
+    },
+    {
+      "businessId": "qbd_0194cdcf",
+      "businessName": "Quality Fence & Outdoor",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:51.347Z"
+    },
+    {
+      "businessId": "qbd_c1bf4fb3",
+      "businessName": "Matt Thompson Construction LLC",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:51.532Z"
+    },
+    {
+      "businessId": "qbd_6ebf7d08",
+      "businessName": "St. Clair Construction",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:51.659Z"
+    },
+    {
+      "businessId": "qbd_c8436b0d",
+      "businessName": "Washington Construction & Fencing",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:51.807Z"
+    },
+    {
+      "businessId": "qbd_ecf2c5c9",
+      "businessName": "A & A Fence & Iron",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:51.939Z"
+    },
+    {
+      "businessId": "qbd_b8fb8a62",
+      "businessName": "SETEX Construction Corp.",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:52.089Z"
+    },
+    {
+      "businessId": "qbd_77e81280",
+      "businessName": "Rock Solid Home Inspections LLC",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:52.240Z"
+    },
+    {
+      "businessId": "qbd_6738858a",
+      "businessName": "Fresh Coat Painters of Beaumont",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:52.374Z"
+    },
+    {
+      "businessId": "qbd_7ad8f0e5",
+      "businessName": "Ritter Lumber Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:52.529Z"
+    },
+    {
+      "businessId": "qbd_e58802ef",
+      "businessName": "Sutherlands",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:52.681Z"
+    },
+    {
+      "businessId": "qbd_9c33c19a",
+      "businessName": "Peak and Perimeter LLC",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:38:52.842Z"
+    },
+    {
+      "businessId": "qbd_4b7e5d0d",
+      "businessName": "Gulf Coast Outdoor Works",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:19.259Z"
+    },
+    {
+      "businessId": "qbd_ff1d1080",
+      "businessName": "Texas Fence",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:20.238Z"
+    },
+    {
+      "businessId": "qbd_50faa388",
+      "businessName": "KZ FENCE CORP",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:20.659Z"
+    },
+    {
+      "businessId": "qbd_35a2c75a",
+      "businessName": "Bayou City Fence Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:20.914Z"
+    },
+    {
+      "businessId": "qbd_b76b4784",
+      "businessName": "KJ Contractors",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:21.141Z"
+    },
+    {
+      "businessId": "qbd_59cf6e7e",
+      "businessName": "Sublette Carpentry",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:21.415Z"
+    },
+    {
+      "businessId": "qbd_800f4c69",
+      "businessName": "Rockin D Fencing",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:21.575Z"
+    },
+    {
+      "businessId": "qbd_628c8aa7",
+      "businessName": "Homestead Fence",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:21.740Z"
+    },
+    {
+      "businessId": "qbd_d0bab8e6",
+      "businessName": "HomeWorks Foundation Repair",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:40:21.906Z"
+    },
+    {
+      "businessId": "qbd_ee21c7cb",
+      "businessName": "Beaumont Deck Builders",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:41:43.070Z"
+    },
+    {
+      "businessId": "qbd_9ba4eba8",
+      "businessName": "Bay Area Fence Company",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:41:43.212Z"
+    },
+    {
+      "businessId": "qbd_18e4756c",
+      "businessName": "Brothers Fence Co.",
+      "websiteUrl": "",
+      "websiteScore": null,
+      "websiteStatus": "no_website",
+      "reasons": [
+        "No website listed on Google Maps"
+      ],
+      "confidence": "measured",
+      "performanceScore": null,
+      "signals": {
+        "missingCTA": true,
+        "noBookingForm": true,
+        "noMobileFriendlySignal": true,
+        "lowTrustSignals": true,
+        "weakHomepageCopy": true,
+        "noBeforeAfterGallery": true,
+        "noServiceAreaPage": true,
+        "noReviewsTestimonialsShown": true,
+        "noGoogleBusinessProfileWebsiteLink": false
+      },
+      "scoredAt": "2026-06-19T16:41:43.519Z"
     }
   ]
 }

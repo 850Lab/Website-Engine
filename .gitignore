@@ -12,7 +12,10 @@ data/*
 !data/website-quality-scores.json
 !data/founder-os.json
 !data/pw-search-targets.json
+!data/website-search-targets.json
+!data/pressure-washing-leads.json
 !data/outreach-focus.json
+!data/discovery-reports/
 data/website-screenshots/
 data/**/*.bak
 data/**/*.tmp

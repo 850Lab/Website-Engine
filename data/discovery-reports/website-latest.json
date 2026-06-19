@@ -1,0 +1,616 @@
+{
+  "mode": "website",
+  "focus": {
+    "mode": "website",
+    "industry": "Fence Companies",
+    "city": "Beaumont",
+    "offer": "Website Preview + More Estimate Requests",
+    "salesperson": "Jaylan"
+  },
+  "queries": [
+    {
+      "query": "fence companies Beaumont TX Beaumont, TX",
+      "startedAt": "2026-06-19T16:37:12.512Z",
+      "rawMapsResults": 60,
+      "parsedBusinesses": 53,
+      "withPhone": 53,
+      "withoutPhone": 0,
+      "cityMatched": 53,
+      "industryMatched": 53,
+      "focusMatched": 53,
+      "callableFocusMatched": 53,
+      "duplicatesSkipped": 22,
+      "possibleDuplicatesAdded": 0,
+      "newLeadsAdded": 27,
+      "newFocusedLeadsAdded": 27,
+      "storedNoPhone": 0,
+      "rejected": {
+        "no_phone_not_stored": 0,
+        "no_business_name": 0,
+        "city_mismatch": 0,
+        "industry_mismatch": 0,
+        "duplicate": 22,
+        "ingest_error": 0,
+        "outside_focus_after_ingest": 0
+      },
+      "scrapeStats": {
+        "cardsSeen": 60,
+        "detailPagesOpened": 54,
+        "scrollRounds": 9,
+        "query": "fence companies Beaumont TX Beaumont, TX",
+        "requestedMax": 60,
+        "parsedResults": 53
+      },
+      "samples": {
+        "rejected": [
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "BEAUMONT FENCE CO.",
+            "matchedLeadId": "qbd_d0c32a57"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "JD's Fence Company",
+            "matchedLeadId": "qbd_6fcc9240"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "A-1 Maida Fence Co",
+            "matchedLeadId": "qbd_9dab3ea0"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Bell Fence Beaumont",
+            "matchedLeadId": "qbd_90ba3a7b"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "BPO Fence Building Pros",
+            "matchedLeadId": "qbd_672fd980"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Ace Fencing",
+            "matchedLeadId": "qbd_468ff669"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Brown Fencing & Construction",
+            "matchedLeadId": "qbd_abb78115"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "That Fence Company - Lumberton",
+            "matchedLeadId": "qbd_afb56fdc"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hurricane Fence Co",
+            "matchedLeadId": "qbd_5b4beb92"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Next Level Fence Company",
+            "matchedLeadId": "qbd_e7b85295"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Clint's Fencing",
+            "matchedLeadId": "qbd_41fdc243"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Absolute Roofing & Fencing",
+            "matchedLeadId": "qbd_1eb49fea"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Liberty Custom Gates and Fencing",
+            "matchedLeadId": "qbd_f32981cb"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hensley Fence Co.",
+            "matchedLeadId": "qbd_9beedd32"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Port Arthur Fencing Company",
+            "matchedLeadId": "qbd_78444bac"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hinds Quality Fence Inc.",
+            "matchedLeadId": "qbd_c01abe4d"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "City Fence Co",
+            "matchedLeadId": "qbd_a3a3f6ce"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "That 1 Painter Beaumont - Port Arthur",
+            "matchedLeadId": "qbd_07111fde"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Jays Landscape",
+            "matchedLeadId": "qbd_c0971207"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Red Stag Dirt and Tree Services",
+            "matchedLeadId": "qbd_c394cc4b"
+          }
+        ],
+        "added": [
+          {
+            "businessName": "Assess Construction",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Foster Fence LTD.",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "AE Fencing Company",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Texas Ranch Fence Company LLC",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Cactus Fence & Construction Inc. | Pearland",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "G&G Enterprises",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Texas Fence Specialist",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Salgados Fence Company",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Greak Fence and Deck, LLC",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Pride Of Texas Fence Company",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Pioneer Fence Company",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Carter & Company",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Anderson Homes",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Texas Rural Fence",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Beaumont Garage Door Center Co.",
+            "city": "Beaumont",
+            "callable": true
+          }
+        ]
+      }
+    },
+    {
+      "query": "fencing contractors Beaumont TX Beaumont, TX",
+      "startedAt": "2026-06-19T16:38:52.948Z",
+      "rawMapsResults": 60,
+      "parsedBusinesses": 56,
+      "withPhone": 56,
+      "withoutPhone": 0,
+      "cityMatched": 56,
+      "industryMatched": 56,
+      "focusMatched": 56,
+      "callableFocusMatched": 56,
+      "duplicatesSkipped": 42,
+      "possibleDuplicatesAdded": 0,
+      "newLeadsAdded": 9,
+      "newFocusedLeadsAdded": 9,
+      "storedNoPhone": 0,
+      "rejected": {
+        "no_phone_not_stored": 0,
+        "no_business_name": 0,
+        "city_mismatch": 0,
+        "industry_mismatch": 0,
+        "duplicate": 42,
+        "ingest_error": 0,
+        "outside_focus_after_ingest": 0
+      },
+      "scrapeStats": {
+        "cardsSeen": 60,
+        "detailPagesOpened": 56,
+        "scrollRounds": 9,
+        "query": "fencing contractors Beaumont TX Beaumont, TX",
+        "requestedMax": 60,
+        "parsedResults": 56
+      },
+      "samples": {
+        "rejected": [
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "BEAUMONT FENCE CO.",
+            "matchedLeadId": "qbd_d0c32a57"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "JD's Fence Company",
+            "matchedLeadId": "qbd_6fcc9240"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "BPO Fence Building Pros",
+            "matchedLeadId": "qbd_672fd980"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "A-1 Maida Fence Co",
+            "matchedLeadId": "qbd_9dab3ea0"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Brown Fencing & Construction",
+            "matchedLeadId": "qbd_abb78115"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Ace Fencing",
+            "matchedLeadId": "qbd_468ff669"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Bell Fence Beaumont",
+            "matchedLeadId": "qbd_90ba3a7b"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "That Fence Company - Lumberton",
+            "matchedLeadId": "qbd_afb56fdc"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hurricane Fence Co",
+            "matchedLeadId": "qbd_5b4beb92"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Clint's Fencing",
+            "matchedLeadId": "qbd_41fdc243"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "S & S Fencing and Construction",
+            "matchedLeadId": "qbd_9e33de2f"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Port Arthur Fencing Company",
+            "matchedLeadId": "qbd_78444bac"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Next Level Fence Company",
+            "matchedLeadId": "qbd_e7b85295"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Liberty Custom Gates and Fencing",
+            "matchedLeadId": "qbd_f32981cb"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Absolute Roofing & Fencing",
+            "matchedLeadId": "qbd_1eb49fea"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hensley Fence Co.",
+            "matchedLeadId": "qbd_9beedd32"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hinds Quality Fence Inc.",
+            "matchedLeadId": "qbd_c01abe4d"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Assess Construction",
+            "matchedLeadId": "qbd_eb56bad4"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Barnett Fence Co",
+            "matchedLeadId": "qbd_34a26519"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "City Fence Co",
+            "matchedLeadId": "qbd_a3a3f6ce"
+          }
+        ],
+        "added": [
+          {
+            "businessName": "Gulf Coast Outdoor Works",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Texas Fence",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "KZ FENCE CORP",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Bayou City Fence Company",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "KJ Contractors",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Sublette Carpentry",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Rockin D Fencing",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Homestead Fence",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "HomeWorks Foundation Repair",
+            "city": "Beaumont",
+            "callable": true
+          }
+        ]
+      }
+    },
+    {
+      "query": "fence installation Beaumont TX Beaumont, TX",
+      "startedAt": "2026-06-19T16:40:22.024Z",
+      "rawMapsResults": 56,
+      "parsedBusinesses": 52,
+      "withPhone": 52,
+      "withoutPhone": 0,
+      "cityMatched": 52,
+      "industryMatched": 52,
+      "focusMatched": 52,
+      "callableFocusMatched": 52,
+      "duplicatesSkipped": 43,
+      "possibleDuplicatesAdded": 0,
+      "newLeadsAdded": 3,
+      "newFocusedLeadsAdded": 3,
+      "storedNoPhone": 0,
+      "rejected": {
+        "no_phone_not_stored": 0,
+        "no_business_name": 0,
+        "city_mismatch": 0,
+        "industry_mismatch": 0,
+        "duplicate": 43,
+        "ingest_error": 0,
+        "outside_focus_after_ingest": 0
+      },
+      "scrapeStats": {
+        "cardsSeen": 56,
+        "detailPagesOpened": 52,
+        "scrollRounds": 8,
+        "query": "fence installation Beaumont TX Beaumont, TX",
+        "requestedMax": 55,
+        "parsedResults": 52
+      },
+      "samples": {
+        "rejected": [
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "BEAUMONT FENCE CO.",
+            "matchedLeadId": "qbd_d0c32a57"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "JD's Fence Company",
+            "matchedLeadId": "qbd_6fcc9240"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "A-1 Maida Fence Co",
+            "matchedLeadId": "qbd_9dab3ea0"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "BPO Fence Building Pros",
+            "matchedLeadId": "qbd_672fd980"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Bell Fence Beaumont",
+            "matchedLeadId": "qbd_90ba3a7b"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "That Fence Company - Lumberton",
+            "matchedLeadId": "qbd_afb56fdc"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Ace Fencing",
+            "matchedLeadId": "qbd_468ff669"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Brown Fencing & Construction",
+            "matchedLeadId": "qbd_abb78115"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hurricane Fence Co",
+            "matchedLeadId": "qbd_5b4beb92"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Next Level Fence Company",
+            "matchedLeadId": "qbd_e7b85295"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Clint's Fencing",
+            "matchedLeadId": "qbd_41fdc243"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Port Arthur Fencing Company",
+            "matchedLeadId": "qbd_78444bac"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Absolute Roofing & Fencing",
+            "matchedLeadId": "qbd_1eb49fea"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Liberty Custom Gates and Fencing",
+            "matchedLeadId": "qbd_f32981cb"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Hensley Fence Co.",
+            "matchedLeadId": "qbd_9beedd32"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Assess Construction",
+            "matchedLeadId": "qbd_eb56bad4"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "City Fence Co",
+            "matchedLeadId": "qbd_a3a3f6ce"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "AE Fencing Company",
+            "matchedLeadId": "qbd_eee08cbb"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Foster Fence LTD.",
+            "matchedLeadId": "qbd_19897c50"
+          },
+          {
+            "reason": "google_maps_place_id",
+            "businessName": "Texas Ranch Fence Company LLC",
+            "matchedLeadId": "qbd_73f7dd15"
+          }
+        ],
+        "added": [
+          {
+            "businessName": "Beaumont Deck Builders",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Bay Area Fence Company",
+            "city": "Beaumont",
+            "callable": true
+          },
+          {
+            "businessName": "Brothers Fence Co.",
+            "city": "Beaumont",
+            "callable": true
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "rawMapsResults": 176,
+    "parsedBusinesses": 161,
+    "withPhone": 161,
+    "withoutPhone": 0,
+    "focusMatched": 161,
+    "newLeadsAdded": 39,
+    "newFocusedLeadsAdded": 39,
+    "duplicatesSkipped": 107
+  },
+  "inventoryAfter": {
+    "inventory": {
+      "mode": "website",
+      "focus": {
+        "mode": "website",
+        "industry": "Fence Companies",
+        "city": "Beaumont",
+        "offer": "Website Preview + More Estimate Requests",
+        "salesperson": "Jaylan"
+      },
+      "available": 25,
+      "active": 25,
+      "totalFocused": 50,
+      "callableFocused": 50,
+      "targets": {
+        "available": 50,
+        "active": 25
+      },
+      "status": "Low Inventory",
+      "lowInventory": true,
+      "needsReplenishment": false,
+      "warning": "Low focused lead inventory — 25 available (target 50).",
+      "leadDiscovery": {
+        "command": "npm run website:find-leads -- --scrape",
+        "label": "Scrape Google Maps for focused fence company leads in Beaumont"
+      }
+    },
+    "debug": {
+      "totalLeads": 520,
+      "industryMatches": 74,
+      "cityMatches": 257,
+      "focusMatches": 50,
+      "callableFocusMatches": 50,
+      "availableFocused": 25,
+      "activeFocused": 25,
+      "noPhoneFocused": 0
+    }
+  },
+  "writtenAt": "2026-06-19T16:41:43.941Z"
+}

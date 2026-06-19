@@ -59,12 +59,17 @@ export function renderCallQueuePage() {
       border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-elevated);
     }
     .focus-banner.warn { border-color: rgba(251,191,36,0.45); background: rgba(251,191,36,0.08); color: var(--text); }
-    .focus-banner strong { color: var(--text); }
+    .focus-body { font-size: 14px; line-height: 1.55; }
+    .focus-line { margin-bottom: 4px; }
   `;
 
   const body = `
     <p class="eyebrow">Call Queue</p>
-    <div class="focus-banner" id="focusBanner">Loading focus…</div>
+    <div class="card card-highlight" id="focusCard">
+      <div class="card-label">Current Focus</div>
+      <div id="focusBody" class="focus-body">Loading…</div>
+    </div>
+    <div class="focus-banner warn hidden" id="focusLowBanner"></div>
     <div class="queue-meta" id="queueMeta">Loading…</div>
     <div id="leadView" class="hidden"></div>
     <div class="loading" id="loading">Loading next lead…</div>
@@ -139,31 +144,33 @@ export function renderCallQueuePage() {
       if(!res.ok) throw new Error(data.error||res.statusText); return data;
     }
 
-    function renderFocusBanner(focusMeta){
-      var el=document.getElementById('focusBanner');
+    function renderFocusCard(focusMeta){
+      var bodyEl=document.getElementById('focusBody');
+      var lowEl=document.getElementById('focusLowBanner');
       if(!focusMeta||!focusMeta.focus){
-        el.textContent='Focus config unavailable.';
+        bodyEl.textContent='Focus config unavailable.';
+        lowEl.classList.add('hidden');
         return;
       }
       var f=focusMeta.focus;
-      var parts=[
-        'Focus: '+f.industry+' / '+f.city,
-        f.offer,
-        f.salesperson
-      ].filter(Boolean);
-      var text=parts.join(' · ');
+      var c=focusMeta.clock||{};
+      bodyEl.innerHTML=
+        '<div class="focus-line"><strong>Industry:</strong> '+esc(f.industry)+'</div>'+
+        '<div class="focus-line"><strong>City:</strong> '+esc(f.city)+'</div>'+
+        '<div class="focus-line"><strong>Offer:</strong> '+esc(f.offer)+'</div>'+
+        '<div class="focus-line"><strong>Salesperson:</strong> '+esc(f.salesperson)+'</div>'+
+        '<div class="focus-line"><strong>Day:</strong> '+esc(c.dayOfWeek||'')+'</div>'+
+        '<div class="focus-line"><strong>Time Bucket:</strong> '+esc(c.timeBucket||'')+'</div>'+
+        '<div class="focus-line"><strong>Status:</strong> '+esc(focusMeta.status||'Baseline Collection')+'</div>';
       if(focusMeta.lowFocusedLeads){
-        el.className='focus-banner warn';
-        text=(focusMeta.warning||'You are low on focused leads.')+' '+text;
-        if(focusMeta.leadDiscovery&&focusMeta.leadDiscovery.command){
-          text+=' Run: '+focusMeta.leadDiscovery.command;
-        }
-        text+=' ('+(focusMeta.matchingCallable||0)+' matching callable / '+(focusMeta.callable||0)+' total)';
+        var inv=focusMeta.inventory||{};
+        var lowText=focusMeta.warning||'Not enough focused website leads available.';
+        if(focusMeta.leadDiscovery&&focusMeta.leadDiscovery.command) lowText+=' Run: '+focusMeta.leadDiscovery.command;
+        lowEl.textContent=lowText+' ('+(inv.available||0)+' available · '+(inv.active||0)+' active · target '+String(focusMeta.minAvailable||50)+' available)';
+        lowEl.classList.remove('hidden');
       }else{
-        el.className='focus-banner';
-        text+=' · '+(focusMeta.matchingCallable||0)+' matching leads prioritized';
+        lowEl.classList.add('hidden');
       }
-      el.textContent=text;
     }
 
     async function loadLead(id){
@@ -185,7 +192,7 @@ export function renderCallQueuePage() {
           msg+=' ('+(data.focus.matchingCallable||0)+' matching / '+(data.focus.callable||0)+' total callable)';
         }
         document.getElementById('loading').textContent=msg;
-        renderFocusBanner(data.focus);
+        renderFocusCard(data.focus);
         document.getElementById('dockActions').classList.add('hidden');
         return;
       }
@@ -196,7 +203,7 @@ export function renderCallQueuePage() {
       bindRecordedCallButton();
       var stats=data.stats||{total:0,hot:0,notContacted:0};
       document.getElementById('queueMeta').textContent=stats.total+' in queue · '+stats.hot+' hot · '+stats.notContacted+' not contacted';
-      renderFocusBanner(data.focus);
+      renderFocusCard(data.focus);
       try{localStorage.setItem('callQueueLeadId',currentLead.id);}catch(e){}
       window.scrollTo(0,0);
     }

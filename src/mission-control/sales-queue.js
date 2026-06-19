@@ -11,6 +11,8 @@ import { canOperatorAccessLead, assignLeadToOperator } from "../operators/lead-a
 import { isTwilioTestBusiness } from "../twilio-voice/test-lead.js";
 import { trulyHasNoWebsite } from "../stage1/website-presence.js";
 import { getFocus, sortLeadsByFocus, filterLeadsToFocus } from "../outreach-focus/routes.js";
+import { applyWebsiteFocusToLead } from "../outreach-focus/content.js";
+import { listWebsiteActiveLeads, replenishWebsiteActiveQueue } from "../outreach-focus/website-queue.js";
 
 const PRIORITY_RANK = { Hot: 0, Warm: 1, Nurture: 2, "Manual Review": 3 };
 const OUTCOME_RANK = {
@@ -73,7 +75,7 @@ function fallbackAnalysis(record) {
   };
 }
 
-export function mergeSalesLead(record, analysis, baseUrl) {
+export function mergeSalesLead(record, analysis, baseUrl, focus = null) {
   const angle = analysis ?? fallbackAnalysis(record);
   const phone = normalizePhoneDigits(record.phone || record.normalizedPhone);
   const previewUrl = resolvePreviewUrl(record, baseUrl);
@@ -85,7 +87,7 @@ export function mergeSalesLead(record, analysis, baseUrl) {
   const outreachStatus = cleanText(record.outreachStatus) || "not_contacted";
   const salesNotes = Array.isArray(record.salesNotes) ? record.salesNotes : [];
 
-  return {
+  const lead = {
     id: record.id,
     businessName: record.businessName,
     industry: record.industry || record.category || "",
@@ -120,6 +122,8 @@ export function mergeSalesLead(record, analysis, baseUrl) {
       text: phone ? `sms:${phone}?body=${encodeSmsBody(smsBody)}` : "",
     },
   };
+
+  return focus ? applyWebsiteFocusToLead(lead, focus) : lead;
 }
 
 export function sortSalesQueue(leads, focus = null) {
@@ -138,10 +142,21 @@ export function sortSalesQueue(leads, focus = null) {
 
 export async function buildSalesQueue(req, filters = {}, operator = null) {
   const baseUrl = publicBaseUrl(req);
-  const [records, store] = await Promise.all([listQualifiedBusinesses(), getAngleAnalysisStore()]);
+  const [store, focus] = await Promise.all([
+    getAngleAnalysisStore(),
+    getFocus("website").catch(() => null),
+  ]);
   const analysisMap = store.analyses ?? {};
 
-  let leads = records
+  let sourceRecords;
+  if (filters.focusOnly !== false && focus) {
+    await replenishWebsiteActiveQueue(focus);
+    sourceRecords = await listWebsiteActiveLeads(focus);
+  } else {
+    sourceRecords = await listQualifiedBusinesses();
+  }
+
+  let leads = sourceRecords
     .filter((record) => {
       if (operator && !canOperatorAccessLead(record, operator)) return false;
       const phone = normalizePhoneDigits(record.phone || record.normalizedPhone);
@@ -167,9 +182,8 @@ export async function buildSalesQueue(req, filters = {}, operator = null) {
       }
       return true;
     })
-    .map((record) => mergeSalesLead(record, analysisMap[record.id], baseUrl));
+    .map((record) => mergeSalesLead(record, analysisMap[record.id], baseUrl, focus));
 
-  const focus = await getFocus("website").catch(() => null);
   if (filters.focusOnly !== false && focus) {
     leads = filterLeadsToFocus(leads, focus);
   }
@@ -187,7 +201,8 @@ export async function getSalesLeadById(req, businessId, operator = null, { claim
   }
 
   const store = await getAngleAnalysisStore();
-  return mergeSalesLead(record, store.analyses?.[businessId], publicBaseUrl(req));
+  const focus = await getFocus("website").catch(() => null);
+  return mergeSalesLead(record, store.analyses?.[businessId], publicBaseUrl(req), focus);
 }
 
 export function getNextLeadId(queue, currentId) {

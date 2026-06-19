@@ -37,9 +37,21 @@ export function registerOutreachFocusRoutes(app, { requireOperatorApi } = {}) {
       return res.status(500).json({ error: err.message });
     }
   });
+
+  app.get("/api/outreach/focused-inventory/debug", auth, async (req, res) => {
+    try {
+      const mode = normalizeFocusMode(req.query.mode);
+      const { buildFocusedInventoryDebug } = await import("./diagnostics.js");
+      return res.json(await buildFocusedInventoryDebug(mode));
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
 }
 
 export { buildFocusMetrics, buildFocusQueueMeta } from "./metrics.js";
+export { buildFocusInventory, inventoryStatus, ratioLabel } from "./inventory.js";
+export { buildFocusedInventoryDebug } from "./diagnostics.js";
 export {
   FOCUS_CALL_TARGET,
   getFocus,

@@ -14,14 +14,14 @@ Each mode stores its current focus in `data/outreach-focus.json`:
 {
   "website": {
     "mode": "website",
-    "industry": "Restaurant",
+    "industry": "Fence Companies",
     "city": "Beaumont",
-    "offer": "Website Preview",
+    "offer": "Website Preview + More Estimate Requests",
     "salesperson": "Jaylan"
   },
   "pressure-washing": {
     "mode": "pressure-washing",
-    "industry": "Restaurant",
+    "industry": "Restaurants",
     "city": "Beaumont",
     "offer": "Dumpster Pad Cleaning",
     "salesperson": "Jaylan"
@@ -96,9 +96,8 @@ Call queues prioritize leads matching the current focus **industry** and **city*
 
 When fewer than 5 matching callable leads exist:
 
-- Warning: *You are low on focused leads.*
-- **PW Mode:** run `npm run pw:find-leads -- --scrape`
-- **Website Mode:** run `npm run website:pack` to generate previews for the focused segment
+- **Website Mode:** *Not enough focused website leads available.* → run `npm run website:pack`
+- **PW Mode:** *Not enough focused pressure washing leads available.* → run `npm run pw:find-leads -- --scrape`
 
 Queue pages and home show matching vs total callable counts.
 
