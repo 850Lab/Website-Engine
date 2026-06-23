@@ -5,6 +5,7 @@ import { listQualifiedBusinesses } from "../../stage1/qualified-business-store.j
 import { inferWebsiteQueueStateFromRecord } from "./legacy-helpers.js";
 import { getCampaignByOfferSlug } from "../campaigns.js";
 import { buildSchemaSalesQueue } from "../schema-queue/website-queue-read.js";
+import { logWebsiteQueueDualReadDiag } from "../schema-queue/website-queue-diagnostics.js";
 import { compareQueueSnapshots, SCHEMA_TO_WEBSITE_QUEUE } from "./compare-queues.js";
 import { listQueueItems } from "../queue-items.js";
 import { listBusinesses } from "../businesses.js";
@@ -19,7 +20,7 @@ function mockRequest() {
   };
 }
 
-export async function readLegacyWebsiteQueue() {
+export async function readLegacyWebsiteQueue({ requestId = null } = {}) {
   const focus = await getFocus("website").catch(() => null);
   const req = mockRequest();
   const [leads, records] = await Promise.all([
@@ -32,7 +33,7 @@ export async function readLegacyWebsiteQueue() {
         excludeClosed: false,
       },
       null,
-      { forceLegacy: true },
+      { forceLegacy: true, requestId, diagRole: "dual-read-parity" },
     ),
     listQualifiedBusinesses(),
   ]);
@@ -64,7 +65,7 @@ export async function readLegacyWebsiteQueue() {
   };
 }
 
-export async function readSchemaWebsiteQueue() {
+export async function readSchemaWebsiteQueue({ requestId = null } = {}) {
   const campaign = await getCampaignByOfferSlug("website");
   if (!campaign) {
     return { campaignId: null, entries: [] };
@@ -82,6 +83,13 @@ export async function readSchemaWebsiteQueue() {
     listBusinesses(),
     listQualifiedBusinesses(),
   ]);
+
+  logWebsiteQueueDualReadDiag({
+    requestId,
+    dualReadSource: "schema",
+    queueCount: leads.length,
+    servedToUser: false,
+  });
 
   const businessById = Object.fromEntries(businesses.map((row) => [row.id, row]));
   const itemByBusinessId = Object.fromEntries(items.map((row) => [row.businessId, row]));
@@ -113,8 +121,11 @@ export async function readSchemaWebsiteQueue() {
   };
 }
 
-export async function compareWebsiteQueues() {
-  const [legacy, schema] = await Promise.all([readLegacyWebsiteQueue(), readSchemaWebsiteQueue()]);
+export async function compareWebsiteQueues({ requestId = null } = {}) {
+  const [legacy, schema] = await Promise.all([
+    readLegacyWebsiteQueue({ requestId }),
+    readSchemaWebsiteQueue({ requestId }),
+  ]);
   const comparison = compareQueueSnapshots({
     label: "website-call-queue",
     legacyEntries: legacy.entries,

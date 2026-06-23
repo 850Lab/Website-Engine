@@ -15,6 +15,11 @@ import { applyWebsiteFocusToLead } from "../outreach-focus/content.js";
 import { listWebsiteActiveLeads, replenishWebsiteActiveQueue } from "../outreach-focus/website-queue.js";
 import { useSchemaQueueReads, dualReadValidationEnabled } from "../services/feature-flags.js";
 import { compareWebsiteQueueRows, WEBSITE_OUTREACH_RANK, PRIORITY_RANK } from "../services/queue-sort.js";
+import {
+  createWebsiteQueueRequestId,
+  logWebsiteQueuePrimaryDiag,
+  logWebsiteQueueDualReadSummary,
+} from "../services/schema-queue/website-queue-diagnostics.js";
 
 const OUTCOME_RANK = WEBSITE_OUTREACH_RANK;
 
@@ -135,16 +140,37 @@ export function sortSalesQueue(leads, focus = null) {
 
 export async function buildSalesQueue(req, filters = {}, operator = null, options = {}) {
   const forceLegacy = options.forceLegacy === true;
+  const requestId = createWebsiteQueueRequestId(options.requestId);
+  const diagRole = cleanText(options.diagRole) || (forceLegacy ? "dual-read-parity" : "primary");
+
   if (useSchemaQueueReads() && !forceLegacy) {
     console.info("[schema-queue-read] source=schema queue=website");
     const { buildSchemaSalesQueue } = await import("../services/schema-queue/website-queue-read.js");
     const queue = await buildSchemaSalesQueue(req, filters, operator);
+    logWebsiteQueuePrimaryDiag({
+      requestId,
+      primarySource: "schema",
+      queueCount: queue.length,
+      servedToUser: true,
+    });
     if (dualReadValidationEnabled()) {
-      import("../services/dual-read/index.js")
-        .then(({ logDualReadIfEnabled }) =>
-          logDualReadIfEnabled("website", import("../services/dual-read/website-queue.js").then((m) => m.compareWebsiteQueues())),
-        )
-        .catch(() => {});
+      import("../services/dual-read/website-queue.js")
+        .then((m) => m.compareWebsiteQueues({ requestId }))
+        .then((result) => {
+          logWebsiteQueueDualReadSummary({
+            requestId,
+            dualReadLegacyCount: result.comparison.counts.legacy,
+            dualReadSchemaCount: result.comparison.counts.schema,
+            parityOk:
+              result.comparison.parity.countMatch &&
+              result.comparison.parity.idSetMatch &&
+              result.comparison.parity.orderingMatch &&
+              result.comparison.parity.stateMatch,
+          });
+        })
+        .catch((err) => {
+          console.warn(`[website-queue-diag] requestId=${requestId} dualReadSource=parity-error`, err.message);
+        });
     }
     return queue;
   }
@@ -198,10 +224,41 @@ export async function buildSalesQueue(req, filters = {}, operator = null, option
   }
   leads = sortSalesQueue(leads, focus);
 
+  if (diagRole === "dual-read-parity") {
+    const { logWebsiteQueueDualReadDiag } = await import("../services/schema-queue/website-queue-diagnostics.js");
+    logWebsiteQueueDualReadDiag({
+      requestId,
+      dualReadSource: "legacy",
+      queueCount: leads.length,
+      servedToUser: false,
+    });
+  } else {
+    logWebsiteQueuePrimaryDiag({
+      requestId,
+      primarySource: "legacy",
+      queueCount: leads.length,
+      servedToUser: true,
+    });
+  }
+
   if (process.env.DUAL_READ_VALIDATION === "1") {
-    import("../services/dual-read/index.js")
-      .then(({ logDualReadIfEnabled }) => logDualReadIfEnabled("website", import("../services/dual-read/website-queue.js").then((m) => m.compareWebsiteQueues())))
-      .catch(() => {});
+    import("../services/dual-read/website-queue.js")
+      .then((m) => m.compareWebsiteQueues({ requestId }))
+      .then((result) => {
+        logWebsiteQueueDualReadSummary({
+          requestId,
+          dualReadLegacyCount: result.comparison.counts.legacy,
+          dualReadSchemaCount: result.comparison.counts.schema,
+          parityOk:
+            result.comparison.parity.countMatch &&
+            result.comparison.parity.idSetMatch &&
+            result.comparison.parity.orderingMatch &&
+            result.comparison.parity.stateMatch,
+        });
+      })
+      .catch((err) => {
+        console.warn(`[website-queue-diag] requestId=${requestId} dualReadSource=parity-error`, err.message);
+      });
   }
 
   return leads;
