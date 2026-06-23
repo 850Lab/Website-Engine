@@ -1,0 +1,123 @@
+[
+  {
+    "id": "camp_website_fence_beaumont_phone",
+    "offerId": "offer_website",
+    "offerName": "Website",
+    "buyer": "Fence Companies",
+    "region": "Beaumont",
+    "channel": "Phone",
+    "goal": "Sell website preview + more estimate requests",
+    "status": "active",
+    "dailyTarget": 20,
+    "configVersion": "1",
+    "searchTargetsFile": "data/website-search-targets.json",
+    "config": {
+      "discovery": {
+        "adapterId": "google_maps",
+        "buyerMatchRules": {
+          "industryPatterns": ["fence", "fencing", "gate", "chain link", "chain-link"],
+          "namePatterns": ["fence", "fencing", "gate"],
+          "excludePatterns": []
+        }
+      },
+      "qualificationRules": [
+        { "signal": "hasPhone", "op": "eq", "value": true }
+      ],
+      "scoringRules": [
+        { "signal": "websiteQualityScore", "op": "lt", "value": 70, "weight": 10 },
+        { "signal": "hasWebsite", "op": "eq", "value": false, "weight": 15 }
+      ],
+      "contactRules": {
+        "preferredMethods": ["phone"],
+        "requireCallablePhone": true
+      },
+      "scripts": {
+        "openingLine": "Hey, this is {{salesperson}} with Pivotal Websites. I'm calling fence companies in Beaumont — I put together a quick website preview concept and wanted to see who handles marketing or estimates on your side.",
+        "followUpLine": "",
+        "goldenQuestion": "When someone in Beaumont requests three fence quotes, what helps them pick the company they trust?",
+        "discoveryQuestions": [
+          "Which fence types drive most of your revenue — wood, vinyl, chain link, or commercial?",
+          "Do customers usually call after seeing project photos, or are they mostly price shopping?"
+        ],
+        "offerPitch": "Website Preview + More Estimate Requests"
+      },
+      "outcomeLabels": [
+        { "id": "no_answer", "label": "No Answer", "normalized": "attempted" },
+        { "id": "interested", "label": "Interested", "normalized": "interested" },
+        { "id": "appointment", "label": "Appointment", "normalized": "appointment" },
+        { "id": "won", "label": "Won", "normalized": "sale" },
+        { "id": "lost", "label": "Lost", "normalized": "closed_lost" }
+      ],
+      "learningGoals": { "calls": 20, "conversations": 5, "appointments": 1, "sales": 0 }
+    }
+  },
+  {
+    "id": "camp_pw_restaurants_beaumont_phone",
+    "offerId": "offer_pressure_washing",
+    "offerName": "Pressure Washing",
+    "buyer": "Restaurants",
+    "region": "Beaumont",
+    "channel": "Phone",
+    "goal": "Sell entryway/sidewalk/dumpster pad cleaning",
+    "status": "active",
+    "dailyTarget": 10,
+    "configVersion": "1",
+    "searchTargetsFile": "data/pw-search-targets.json",
+    "config": {
+      "discovery": {
+        "adapterId": "google_maps",
+        "buyerMatchRules": {
+          "industryPatterns": [
+            "restaurant",
+            "fast food",
+            "cafe",
+            "café",
+            "diner",
+            "grill",
+            "barbecue",
+            "bbq",
+            "pizza",
+            "seafood",
+            "mexican",
+            "cajun",
+            "kitchen",
+            "food"
+          ],
+          "namePatterns": ["grill", "kitchen", "cafe", "diner", "pizza", "bbq", "seafood"],
+          "excludePatterns": []
+        }
+      },
+      "qualificationRules": [
+        { "signal": "hasPhone", "op": "eq", "value": true }
+      ],
+      "scoringRules": [
+        { "signal": "buyerTag", "tag": "dumpsterPadLikely", "weight": 12 },
+        { "signal": "buyerTag", "tag": "hasDriveThru", "weight": 10 },
+        { "signal": "reviewCount", "op": "gte", "value": 50, "weight": 5 }
+      ],
+      "contactRules": {
+        "preferredMethods": ["phone"],
+        "requireCallablePhone": true
+      },
+      "scripts": {
+        "openingLine": "Hey, this is {{salesperson}} with Zeal Power Washing. I'm local here in Southeast Texas. I'm calling restaurants in Beaumont because we're helping clean up dumpster pads, entrances, and concrete areas that build up grease and traffic stains. Who usually handles exterior cleaning for {{businessName}}?",
+        "followUpLine": "",
+        "goldenQuestion": "If you could fix one exterior area customers see first — the entrance, sidewalk, or dumpster pad — which would make the biggest difference?",
+        "discoveryQuestions": [
+          "How often do you have the dumpster area cleaned?",
+          "Does grease buildup around the dumpster or back door ever become an issue?"
+        ],
+        "offerPitch": "Free walkthrough + quote for dumpster pad, entrance, and sidewalk cleaning."
+      },
+      "outcomeLabels": [
+        { "id": "called", "label": "Called", "normalized": "attempted" },
+        { "id": "no_answer", "label": "No Answer", "normalized": "attempted" },
+        { "id": "interested", "label": "Interested", "normalized": "interested" },
+        { "id": "estimate_sent", "label": "Estimate Sent", "normalized": "proposal" },
+        { "id": "won", "label": "Won", "normalized": "sale" },
+        { "id": "lost", "label": "Lost", "normalized": "closed_lost" }
+      ],
+      "learningGoals": { "calls": 10, "conversations": 3, "appointments": 1, "sales": 0 }
+    }
+  }
+]

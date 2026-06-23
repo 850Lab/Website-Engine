@@ -1,0 +1,16 @@
+[
+  {
+    "id": "offer_website",
+    "slug": "website",
+    "name": "Website",
+    "category": "digital",
+    "status": "active"
+  },
+  {
+    "id": "offer_pressure_washing",
+    "slug": "pressure-washing",
+    "name": "Pressure Washing",
+    "category": "field_service",
+    "status": "active"
+  }
+]
