@@ -208,6 +208,15 @@ export async function upsertPwLead(input) {
   return next;
 }
 
+async function trySchemaPwOutcomeWrite(work) {
+  try {
+    return await work();
+  } catch (err) {
+    console.warn("[schema-outcome-write]", err.message);
+    return null;
+  }
+}
+
 export async function appendPwNote(id, text, kind = "notes") {
   const record = await getPwLead(id);
   if (!record) throw new Error("Lead not found");
@@ -216,7 +225,14 @@ export async function appendPwNote(id, text, kind = "notes") {
   const entry = { at: nowIso(), text: noteText };
   const field = kind === "objections" ? "objections" : kind === "followUpNotes" ? "followUpNotes" : "notes";
   const list = Array.isArray(record[field]) ? [...record[field], entry] : [entry];
-  return upsertPwLead({ ...record, [field]: list });
+  const saved = await upsertPwLead({ ...record, [field]: list });
+
+  await trySchemaPwOutcomeWrite(async () => {
+    const { recordPwNoteWrite } = await import("../services/schema-outcomes/record-write.js");
+    return recordPwNoteWrite({ legacyId: id, text: noteText, kind });
+  });
+
+  return saved;
 }
 
 export async function updatePwLeadStatus(id, patch = {}) {
@@ -295,6 +311,21 @@ export async function updatePwLeadStatus(id, patch = {}) {
   } catch {
     /* focus logging is best-effort */
   }
+
+  await trySchemaPwOutcomeWrite(async () => {
+    const { recordPwStatusWrite } = await import("../services/schema-outcomes/record-write.js");
+    return recordPwStatusWrite({
+      legacyId: id,
+      patch: {
+        ...patch,
+        actionId: actionId || quick?.id,
+        status: saved.status,
+        callAttempts: saved.callAttempts,
+        nextFollowUpAt: saved.nextFollowUpAt,
+      },
+    });
+  });
+
   return saved;
 }
 

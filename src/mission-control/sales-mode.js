@@ -10,6 +10,7 @@ import {
   blobPersistenceEnabled,
   persistenceBackendLabel,
 } from "../persistence/json-document-store.js";
+import { getSchemaRuntimeDiagnostics } from "../services/schema-diagnostics.js";
 import {
   buildSalesQueue,
   getNextLeadId,
@@ -54,11 +55,25 @@ export async function updateSalesOutcome(businessId, status, operator = null) {
     /* focus logging is best-effort */
   }
 
+  await trySchemaOutcomeWrite(async () => {
+    const { recordWebsiteOutcomeWrite } = await import("../services/schema-outcomes/record-write.js");
+    return recordWebsiteOutcomeWrite({ legacyId: businessId, status: nextStatus, operator });
+  });
+
   return {
     id: updated.id,
     outreachStatus: nextStatus,
     outreachStatusLabel: OUTREACH_STATUS_LABELS[nextStatus],
   };
+}
+
+async function trySchemaOutcomeWrite(work) {
+  try {
+    return await work();
+  } catch (err) {
+    console.warn("[schema-outcome-write]", err.message);
+    return null;
+  }
 }
 
 export async function appendSalesNote(businessId, text, operator = null) {
@@ -81,6 +96,11 @@ export async function appendSalesNote(businessId, text, operator = null) {
 
   const updated = { ...record, salesNotes };
   await upsertQualifiedBusiness(updated);
+
+  await trySchemaOutcomeWrite(async () => {
+    const { recordWebsiteNoteWrite } = await import("../services/schema-outcomes/record-write.js");
+    return recordWebsiteNoteWrite({ legacyId: businessId, text: noteText, operator });
+  });
 
   return salesNotes.slice(-5).reverse();
 }
@@ -183,6 +203,7 @@ export function registerSalesModeRoutes(app, { requireOperatorApi } = {}) {
     return res.json({
       backend: persistenceBackendLabel(),
       outcomesPersist: blobPersistenceEnabled(),
+      schema: getSchemaRuntimeDiagnostics(),
     });
   });
 }
