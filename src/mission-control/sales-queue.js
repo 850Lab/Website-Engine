@@ -10,20 +10,13 @@ import { OUTREACH_STATUS_LABELS } from "../outreach-page.js";
 import { canOperatorAccessLead, assignLeadToOperator } from "../operators/lead-assignment.js";
 import { isTwilioTestBusiness } from "../twilio-voice/test-lead.js";
 import { trulyHasNoWebsite } from "../stage1/website-presence.js";
-import { getFocus, sortLeadsByFocus, filterLeadsToFocus } from "../outreach-focus/routes.js";
+import { getFocus, sortLeadsByFocus, filterLeadsToFocus } from "../outreach-focus/store.js";
 import { applyWebsiteFocusToLead } from "../outreach-focus/content.js";
 import { listWebsiteActiveLeads, replenishWebsiteActiveQueue } from "../outreach-focus/website-queue.js";
+import { useSchemaQueueReads, dualReadValidationEnabled } from "../services/feature-flags.js";
+import { compareWebsiteQueueRows, WEBSITE_OUTREACH_RANK, PRIORITY_RANK } from "../services/queue-sort.js";
 
-const PRIORITY_RANK = { Hot: 0, Warm: 1, Nurture: 2, "Manual Review": 3 };
-const OUTCOME_RANK = {
-  not_contacted: 0,
-  contacted: 1,
-  replied: 2,
-  asked_price: 3,
-  appointment: 4,
-  won: 5,
-  lost: 6,
-};
+const OUTCOME_RANK = WEBSITE_OUTREACH_RANK;
 
 function normalizePhoneDigits(phone) {
   return cleanText(phone).replace(/[^\d+]/g, "");
@@ -140,8 +133,24 @@ export function sortSalesQueue(leads, focus = null) {
   return focus ? sortLeadsByFocus(sorted, focus) : sorted;
 }
 
-export async function buildSalesQueue(req, filters = {}, operator = null) {
+export async function buildSalesQueue(req, filters = {}, operator = null, options = {}) {
+  const forceLegacy = options.forceLegacy === true;
+  if (useSchemaQueueReads() && !forceLegacy) {
+    console.info("[schema-queue-read] source=schema queue=website");
+    const { buildSchemaSalesQueue } = await import("../services/schema-queue/website-queue-read.js");
+    const queue = await buildSchemaSalesQueue(req, filters, operator);
+    if (dualReadValidationEnabled()) {
+      import("../services/dual-read/index.js")
+        .then(({ logDualReadIfEnabled }) =>
+          logDualReadIfEnabled("website", import("../services/dual-read/website-queue.js").then((m) => m.compareWebsiteQueues())),
+        )
+        .catch(() => {});
+    }
+    return queue;
+  }
+
   const baseUrl = publicBaseUrl(req);
+  console.info("[schema-queue-read] source=legacy queue=website");
   const [store, focus] = await Promise.all([
     getAngleAnalysisStore(),
     getFocus("website").catch(() => null),
@@ -188,10 +197,22 @@ export async function buildSalesQueue(req, filters = {}, operator = null) {
     leads = filterLeadsToFocus(leads, focus);
   }
   leads = sortSalesQueue(leads, focus);
+
+  if (process.env.DUAL_READ_VALIDATION === "1") {
+    import("../services/dual-read/index.js")
+      .then(({ logDualReadIfEnabled }) => logDualReadIfEnabled("website", import("../services/dual-read/website-queue.js").then((m) => m.compareWebsiteQueues())))
+      .catch(() => {});
+  }
+
   return leads;
 }
 
 export async function getSalesLeadById(req, businessId, operator = null, { claim = false } = {}) {
+  if (useSchemaQueueReads()) {
+    const { getSchemaSalesLeadById } = await import("../services/schema-queue/website-queue-read.js");
+    return getSchemaSalesLeadById(req, businessId, operator, { claim });
+  }
+
   let record = await getQualifiedBusiness(businessId);
   if (!record) return null;
   if (operator && !canOperatorAccessLead(record, operator)) return null;

@@ -14,6 +14,7 @@ import { isFoodIndustry } from "./industries.js";
 import { getFocus, sortLeadsByFocus, filterLeadsToFocus } from "../outreach-focus/routes.js";
 import { applyPwFocusToLead } from "../outreach-focus/content.js";
 import { buildFocusQueueMeta } from "../outreach-focus/metrics.js";
+import { dualReadValidationEnabled, useSchemaQueueReads } from "../services/feature-flags.js";
 
 function startOfToday() {
   const d = new Date();
@@ -183,6 +184,27 @@ export async function buildPwQueueStats() {
 }
 
 export async function buildPwQueueResponse(leadId = null, { view = "" } = {}) {
+  if (useSchemaQueueReads()) {
+    console.info("[schema-queue-read] source=schema queue=pressure-washing");
+    const { buildSchemaPwQueueResponse } = await import("../services/schema-queue/pw-queue-read.js");
+    const payload = await buildSchemaPwQueueResponse(leadId, { view });
+    if (dualReadValidationEnabled()) {
+      import("../services/dual-read/index.js")
+        .then(({ logDualReadIfEnabled }) =>
+          logDualReadIfEnabled("pw", import("../services/dual-read/pw-queue.js").then((m) => m.comparePwQueues())),
+        )
+        .catch(() => {});
+    }
+    return payload;
+  }
+
+  if (process.env.DUAL_READ_VALIDATION === "1") {
+    import("../services/dual-read/index.js")
+      .then(({ logDualReadIfEnabled }) => logDualReadIfEnabled("pw", import("../services/dual-read/pw-queue.js").then((m) => m.comparePwQueues())))
+      .catch(() => {});
+  }
+
+  console.info("[schema-queue-read] source=legacy queue=pressure-washing");
   const focus = await getFocus("pressure-washing");
   const fullQueueRaw = await getActiveQueueLeads(focus);
   const focusedQueue = filterLeadsToFocus(fullQueueRaw, focus);
