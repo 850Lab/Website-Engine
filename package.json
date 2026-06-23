@@ -22,6 +22,7 @@
     "migrate:schema:dry": "node scripts/migrate-legacy-to-schema.js",
     "validate:dual-read": "node scripts/run-dual-read-validation.js",
     "validate:schema-outcome-writes": "node scripts/validate-schema-outcome-writes.js",
+    "validate:id-bridge-without-map": "node scripts/validate-id-bridge-without-map.js",
     "validate:schema-production-mode": "node scripts/validate-schema-production-mode.js",
     "verify:production-schema": "node scripts/verify-production-schema-effect.js",
     "server:schema-production": "node scripts/run-schema-production-server.js"

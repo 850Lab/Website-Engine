@@ -8,6 +8,7 @@ import { getOpportunity } from "./opportunities.js";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ID_MAP_FILE = join(ROOT, "data", "migration", "id-map.json");
 
+/** Null = not loaded yet; object (possibly empty) = loaded or intentionally absent. */
 let cachedEntries = null;
 
 export function clearIdMapCache() {
@@ -15,10 +16,19 @@ export function clearIdMapCache() {
 }
 
 export async function loadIdMapEntries() {
-  if (cachedEntries) return cachedEntries;
-  const raw = await readFile(ID_MAP_FILE, "utf8");
-  const parsed = JSON.parse(raw);
-  cachedEntries = parsed.entries ?? parsed;
+  if (cachedEntries !== null) return cachedEntries;
+
+  try {
+    const raw = await readFile(ID_MAP_FILE, "utf8");
+    const parsed = JSON.parse(raw);
+    cachedEntries = parsed.entries ?? parsed;
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      console.warn(`[id-bridge] id-map unavailable (${err.code}): ${err.message}`);
+    }
+    cachedEntries = {};
+  }
+
   return cachedEntries;
 }
 
@@ -37,11 +47,11 @@ export async function resolveLegacyToBusinessId(legacyId) {
   if (!needle) return null;
   if (isSchemaBusinessId(needle)) return needle;
 
-  const map = await loadIdMapEntries();
-  if (map[needle]?.businessId) return map[needle].businessId;
-
   const business = await getBusinessByLegacyId(needle);
-  return business?.id ?? null;
+  if (business?.id) return business.id;
+
+  const map = await loadIdMapEntries();
+  return map[needle]?.businessId ?? null;
 }
 
 export async function resolveLegacyToOpportunityId(legacyId, campaignId) {
@@ -49,32 +59,29 @@ export async function resolveLegacyToOpportunityId(legacyId, campaignId) {
   const campaign = cleanText(campaignId);
   if (!legacy || !campaign) return null;
 
-  const map = await loadIdMapEntries();
-  const mapped = map[legacy]?.opportunities?.[campaign];
-  if (mapped) return mapped;
-
   const businessId = await resolveLegacyToBusinessId(legacy);
   if (!businessId) return null;
 
   const { listOpportunitiesForBusiness } = await import("./opportunities.js");
   const opportunities = await listOpportunitiesForBusiness(businessId);
   const match = opportunities.find((row) => row.campaignId === campaign);
-  return match?.id ?? null;
+  if (match?.id) return match.id;
+
+  const map = await loadIdMapEntries();
+  return map[legacy]?.opportunities?.[campaign] ?? null;
 }
 
 export async function resolveBusinessToLegacyIds(businessId) {
   const needle = cleanText(businessId);
   if (!needle) return [];
 
+  const business = await getBusiness(needle);
+  if (business?.legacyId) return [business.legacyId];
+
   const map = await loadIdMapEntries();
   const legacyIds = [];
   for (const [legacyId, entry] of Object.entries(map)) {
     if (entry?.businessId === needle) legacyIds.push(legacyId);
-  }
-
-  if (!legacyIds.length) {
-    const business = await getBusiness(needle);
-    if (business?.legacyId) legacyIds.push(business.legacyId);
   }
 
   return [...new Set(legacyIds)];
@@ -87,6 +94,24 @@ export async function resolvePrimaryLegacyId(businessId) {
   return legacyIds[0] ?? null;
 }
 
+async function opportunityIdsForLegacyLead(legacyId, businessId) {
+  const { listOpportunitiesForBusiness } = await import("./opportunities.js");
+  const opportunities = await listOpportunitiesForBusiness(businessId);
+  const opportunityIds = Object.fromEntries(
+    opportunities.map((row) => [row.campaignId, row.id]),
+  );
+
+  const map = await loadIdMapEntries();
+  const mapped = map[cleanText(legacyId)]?.opportunities;
+  if (mapped && typeof mapped === "object") {
+    for (const [campaignId, opportunityId] of Object.entries(mapped)) {
+      if (!opportunityIds[campaignId]) opportunityIds[campaignId] = opportunityId;
+    }
+  }
+
+  return opportunityIds;
+}
+
 export async function resolveLegacyLeadId(legacyId) {
   const businessId = await resolveLegacyToBusinessId(legacyId);
   if (!businessId) {
@@ -97,18 +122,10 @@ export async function resolveLegacyLeadId(legacyId) {
     };
   }
 
-  const map = await loadIdMapEntries();
-  const opportunityIds = { ...(map[cleanText(legacyId)]?.opportunities ?? {}) };
-  const { listOpportunitiesForBusiness } = await import("./opportunities.js");
-  const opportunities = await listOpportunitiesForBusiness(businessId);
-  for (const opportunity of opportunities) {
-    opportunityIds[opportunity.campaignId] = opportunity.id;
-  }
-
   return {
     legacyId: cleanText(legacyId),
     businessId,
-    opportunityIds,
+    opportunityIds: await opportunityIdsForLegacyLead(legacyId, businessId),
   };
 }
 
