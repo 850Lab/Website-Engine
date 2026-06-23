@@ -41,7 +41,8 @@ import {
   verifyOperatorCredentials,
   registerOperatorAppGuard,
 } from "./operators/index.js";
-import { cleanText } from "./stage1/shared.js";
+import { ensureSchemaFiles } from "./schema/init.js";
+import { getSchemaRuntimeDiagnostics } from "./services/schema-diagnostics.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -133,6 +134,7 @@ app.get("/api/health", (req, res) => {
     version: "opportunity-engine-v1.5",
     origin: `${req.protocol}://${req.get("host")}`,
     port,
+    schema: getSchemaRuntimeDiagnostics(),
   });
 });
 

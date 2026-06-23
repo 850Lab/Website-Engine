@@ -29,6 +29,15 @@ async function loadEnv() {
 }
 
 const RELEASE_FILES = [
+  // Locked Outreach OS schema (source of truth)
+  "data/offers.json",
+  "data/campaigns.json",
+  "data/businesses.json",
+  "data/contacts.json",
+  "data/opportunities.json",
+  "data/queue-items.json",
+  "data/attempts.json",
+  "data/learning-reports.json",
   // Website OS
   "data/qualified-businesses.json",
   "data/angle-analyses.json",
