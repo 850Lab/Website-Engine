@@ -20,3 +20,13 @@ data/website-screenshots/
 data/**/*.bak
 data/**/*.tmp
 .vercel
+
+# Local/private files
+.env.vercel.local
+.cursor/
+scripts/__pycache__/
+scripts/_check-blob-env.mjs
+
+# Seed configs required for schema migration
+!data/seeds/
+!data/seeds/**

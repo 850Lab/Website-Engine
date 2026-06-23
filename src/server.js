@@ -283,6 +283,10 @@ export async function initializeApp() {
   seedPressureWashingLeadsIfEmpty().catch((err) => {
     console.warn(`Pressure washing seed skipped: ${err.message}`);
   });
+
+  ensureSchemaFiles().catch((err) => {
+    console.warn(`Schema file init skipped: ${err.message}`);
+  });
 }
 
 export const appReady = initializeApp();
