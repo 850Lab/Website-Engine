@@ -1,10 +1,11 @@
 const NAV = [
-  { id: "home", href: "/", label: "Mission", icon: "◎" },
-  { id: "queue", href: "/call-queue", label: "Queue", icon: "☎" },
-  { id: "pipeline", href: "/pipeline", label: "Pipeline", icon: "▤" },
-  { id: "opportunities", href: "/opportunities", label: "Opps", icon: "◆" },
-  { id: "settings", href: "/settings", label: "Settings", icon: "⚙" },
+  { id: "home", href: "/", label: "Mission", icon: "?" },
+  { id: "campaigns", href: "/campaigns", label: "Campaigns", icon: "?" },
+  { id: "actions", href: "/actions", label: "Actions", icon: "?" },
+  { id: "opportunities", href: "/opportunities", label: "Opps", icon: "?" },
+  { id: "settings", href: "/settings", label: "Settings", icon: "?" },
 ];
+
 
 export function esc(value) {
   return String(value ?? "")
@@ -347,3 +348,4 @@ export function pivotalShell({ title, activeNav, bodyHtml, headExtra = "" }) {
 </body>
 </html>`;
 }
+

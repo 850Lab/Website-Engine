@@ -17,9 +17,6 @@ import {
   formatPwLeadForQueue,
 } from "./metrics.js";
 import { PW_QUICK_ACTIONS, getPwQuickAction, normalizePwStatus } from "./statuses.js";
-import { renderPwHomePage } from "../pivotal-os/pages/pw-home.js";
-import { renderPwQueuePage } from "../pivotal-os/pages/pw-queue.js";
-import { renderPwSearchTargetsPage } from "../pivotal-os/pages/pw-search-targets.js";
 import {
   buildPwFounderControl,
   loadPwSearchTargets,
@@ -49,11 +46,6 @@ export function registerPressureWashingRoutes(app, { requireOperatorApi, require
   const pageAuth = requireOperatorPage ?? ((_req, _res, next) => next());
   const apiAuth = requireOperatorApi ?? ((_req, _res, next) => next());
 
-  app.get("/pw", pageAuth, (_req, res) => res.type("html").send(renderPwHomePage()));
-  app.get("/pw/queue", pageAuth, (_req, res) => res.type("html").send(renderPwQueuePage()));
-  app.get("/pw/search-targets", pageAuth, (_req, res) =>
-    res.type("html").send(renderPwSearchTargetsPage()),
-  );
 
   app.get("/api/pw/founder-control", apiAuth, async (_req, res) => {
     try {
