@@ -1,0 +1,34 @@
+[
+  {
+    "id": "mission_hospitality_maintenance_setx",
+    "name": "Create Maintenance Opportunity",
+    "offer": "Maintenance",
+    "target": {
+      "buyer": "Hospitality Companies",
+      "industry": "Hospitality",
+      "region": "Southeast Texas",
+      "decisionMakers": ["General Manager", "Owner", "Operations Manager"],
+      "keywords": ["Hotel", "Motel", "Inn", "Lodging", "Resort"]
+    },
+    "channels": ["Phone", "Email", "Text", "Visit"],
+    "goal": "Create 1 opportunity fast",
+    "strategy": "Fastest Path",
+    "status": "ready"
+  },
+  {
+    "id": "mission_firewatch_construction_setx",
+    "name": "Create Fire Watch Opportunity",
+    "offer": "Fire Watch",
+    "target": {
+      "buyer": "Commercial Construction",
+      "industry": "Construction",
+      "region": "Southeast Texas",
+      "decisionMakers": ["Project Manager", "Superintendent", "Safety Manager"],
+      "keywords": ["Concrete", "Roofing", "Electrical", "HVAC", "Plumbing", "Construction", "Contractor"]
+    },
+    "channels": ["Phone", "Email", "Visit"],
+    "goal": "Create 1 KTM opportunity fast",
+    "strategy": "Fastest Path",
+    "status": "active"
+  }
+]
