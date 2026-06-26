@@ -1,0 +1,35 @@
+[
+  {
+    "id": "offer_website_growth",
+    "name": "Website Growth",
+    "category": "Digital",
+    "pain": ["Losing leads", "Weak credibility", "Low conversion"],
+    "promise": "More estimate requests and better buyer trust.",
+    "urgency": "Every day with a weak website can mean lost calls, lost estimates, and lost revenue.",
+    "kpis": ["Estimate requests", "Calls", "Form submissions", "Conversion rate"],
+    "channels": ["Phone", "Email"],
+    "bestBuyers": ["Fence Companies", "Roofing", "HVAC", "Plumbing", "Concrete"]
+  },
+  {
+    "id": "offer_pressure_washing",
+    "name": "Exterior Cleaning",
+    "category": "Property Services",
+    "pain": ["Dirty property", "Poor first impression", "Neglected entrance"],
+    "promise": "Visible property transformation.",
+    "urgency": "Appearance affects customer perception immediately.",
+    "kpis": ["Jobs booked", "Before-after improvement", "Repeat service", "Monthly contracts"],
+    "channels": ["Visit", "Text", "Phone"],
+    "bestBuyers": ["Restaurants", "Gas stations", "Strip centers", "Medical offices"]
+  },
+  {
+    "id": "offer_ktm_manpower",
+    "name": "KTM Manpower and Safety Support",
+    "category": "Labor and Safety",
+    "pain": ["Labor shortages", "Safety coverage gaps", "Schedule delays", "Compliance needs"],
+    "promise": "Reliable manpower and safety support when work needs to move.",
+    "urgency": "Delays, downtime, and safety gaps can cost thousands per day.",
+    "kpis": ["Jobs filled", "Time to fill", "Hours worked", "Safety performance", "Contract value"],
+    "channels": ["Phone", "Email", "Visit"],
+    "bestBuyers": ["Chemical Plants", "Commercial Construction", "Hospitals", "Ports", "School Districts"]
+  }
+]
