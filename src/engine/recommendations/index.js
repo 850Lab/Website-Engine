@@ -1,8 +1,22 @@
 import { discoverMissionBuyers } from "../discovery/index.js";
+import { scoreBuyerForMission } from "../scoring/index.js";
 
 export async function getNextRecommendedAction(mission) {
   const buyers = await discoverMissionBuyers(mission);
-  const buyer = buyers[0];
+
+  const rankedBuyers = buyers
+    .map((buyer) => {
+      const scoring = scoreBuyerForMission(buyer, mission);
+      return {
+        ...buyer,
+        opportunityScore: scoring.score,
+        opportunityReasons: scoring.reasons,
+        opportunityAnalyses: scoring.analyses,
+      };
+    })
+    .sort((a, b) => b.opportunityScore - a.opportunityScore);
+
+  const buyer = rankedBuyers[0];
 
   if (!buyer) {
     return {
@@ -31,13 +45,9 @@ export async function getNextRecommendedAction(mission) {
     recommendation: {
       channel: buyer.phoneAvailable ? "Phone" : mission.channels[0],
       action: buyer.phoneAvailable ? "Call" : "Research Contact",
-      confidence: buyer.score,
+      confidence: buyer.opportunityScore,
     },
-    reasons: [
-      "Highest ranked buyer",
-      `Matches ${mission.target.buyer}`,
-      buyer.phoneAvailable ? "Phone available" : "Phone not available",
-      buyer.emailAvailable ? "Email available" : "Email not available",
-    ],
+    reasons: buyer.opportunityReasons,
+    analyses: buyer.opportunityAnalyses,
   };
 }
