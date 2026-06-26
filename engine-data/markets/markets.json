@@ -1,0 +1,47 @@
+[
+  {
+    "id": "chemical-plants",
+    "name": "Chemical Plants",
+    "estimatedAnnualRevenue": 50000000,
+    "estimatedContractValue": 5000000,
+    "recurring": true,
+    "difficulty": 10,
+    "priority": 100,
+    "confidence": "Low - needs validation",
+    "rationale": [
+      "Large industrial sites can support recurring maintenance, fire watch, hole watch, turnaround support, and labor services.",
+      "This is the highest ceiling market, but hardest to enter without relationships, compliance, and procurement access."
+    ],
+    "keywords": ["chemical plant", "refinery", "industrial", "turnaround", "maintenance"]
+  },
+  {
+    "id": "hospitals",
+    "name": "Hospitals",
+    "estimatedAnnualRevenue": 12000000,
+    "estimatedContractValue": 1200000,
+    "recurring": true,
+    "difficulty": 8,
+    "priority": 95,
+    "confidence": "Low - needs validation",
+    "rationale": [
+      "Hospitals need recurring maintenance, facility support, emergency response, vendor reliability, and compliance-driven services.",
+      "Contract values can be meaningful, but procurement access may be slow."
+    ],
+    "keywords": ["hospital", "medical center", "health system"]
+  },
+  {
+    "id": "commercial-construction",
+    "name": "Commercial Construction",
+    "estimatedAnnualRevenue": 7000000,
+    "estimatedContractValue": 750000,
+    "recurring": false,
+    "difficulty": 5,
+    "priority": 82,
+    "confidence": "Medium - database supported",
+    "rationale": [
+      "Existing database already contains roofing, concrete, electrical, HVAC, plumbing, and contractor businesses.",
+      "This market is easier to contact quickly and can validate KTM offers faster than institutional buyers."
+    ],
+    "keywords": ["concrete", "roofing", "electrical", "hvac", "plumbing", "construction", "contractor"]
+  }
+]
