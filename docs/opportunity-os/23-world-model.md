@@ -127,7 +127,7 @@ Reality
 | **What creates it** | Entity resolver, graph writer, problem/capability matcher |
 | **What consumes it** | Problem inference, opportunity factory, execution planner, evidence walks |
 | **Immutable** | Edges expire (`validTo`); history retained |
-| **Lives today** | Implicit in `data/businesses.json` links; not first-class |
+| **Lives today** | Implicit in `data/businesses.json` links; `runtime/graph/graph.json` (Phase 2.5) |
 | **Lives long-term** | Knowledge graph — [03-knowledge-graph.md](./03-knowledge-graph.md) |
 | **Example** | `Company:Regional Hospital —HAS_PROJECT→ Project:East Campus Expansion` |
 
@@ -326,7 +326,30 @@ classified Signal → buildFactsFromSignal() → createFact() → runtime/facts/
   → buildGraphProjectionFromFacts() → STOP
 ```
 
-Phase 2.5 is **Relationship Builder / graph enrichment** — not Problem Inference.
+Phase 2.5 is **Relationship Builder / persistent graph enrichment** — not Problem Inference.
+
+Phase 2.6 is **Problem Inference**.
+
+### Relationship Builder Rule (Phase 2.5)
+
+| Rule | Detail |
+|---|---|
+| **R1** | Relationships are **structure** derived from facts — not interpretation |
+| **R2** | Every relationship edge must reference ≥1 `factId` |
+| **R3** | Entity resolution is **rules-only** — no LLM, no fuzzy over-merge |
+| **R4** | Persistent graph lives in `runtime/graph/graph.json` only |
+| **R5** | Relationship events are **append-only** audit trail |
+| **R6** | Do **not** infer problems, match capabilities, or create opportunities |
+| **R7** | Do **not** write graph data to `engine-data/` |
+
+Implementation: `src/engine/graph-store/`, `src/engine/entity-resolution/`, `src/engine/relationship-builder/`
+
+Flow:
+
+```
+Facts → resolveEntity() → buildRelationshipsFromFact() → runtime/graph/
+  → getKnowledgeGraphSummary() → STOP
+```
 
 ### Canonical Fact schema
 

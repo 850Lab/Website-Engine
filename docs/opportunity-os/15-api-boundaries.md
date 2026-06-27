@@ -21,9 +21,12 @@ See [World Model § Fact Builder Rule](./23-world-model.md#6-fact-builder-rule):
 | **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `linkFactsToSignal()`, `initializeRuntimeSignalStore()` | Sensors, fact builder, CLI, Mission Control metrics (read) |
 | **Facts** | `engine/facts` (Phase 2.4) | `createFact()`, `listFacts()`, `getFactsBySignalId()`, `getFactSummary()` | Graph bridge, future problem inference |
 | **Fact Builder** | `engine/fact-builder` | `buildFactsFromSignal()`, `processSignalIntoFacts()` | Signal → fact pipeline only |
-| **Knowledge Graph Bridge** | `engine/knowledge-graph` | `buildGraphProjectionFromFacts()`, `mapFactToGraphRefs()`, `getGraphSummary()` | Future graph writer, evidence |
-| **Relationships** | Future Graph Writer | `writeEdge()`, `querySubgraph()` | Phase 2.5+ enrichment |
-| **Problems** | Future `engine/problems` | `inferProblems()`, `getProblemById()` | **Blocked** until after Phase 2.5 |
+| **Knowledge Graph Bridge** | `engine/knowledge-graph` | `buildGraphProjectionFromFacts()`, `buildGraphFromFactsAndPersist()`, `findRelatedNodes()` | Graph enrichment, future evidence |
+| **Graph Store** | `engine/graph-store` (Phase 2.5) | `readGraphStore()`, `upsertGraphNode()`, `upsertGraphEdge()`, `recordRelationshipEvent()` | Persistent runtime graph |
+| **Entity Resolution** | `engine/entity-resolution` | `resolveEntity()`, `mergeEntityAliases()`, `normalizeEntityLabel()` | Relationship builder |
+| **Relationship Builder** | `engine/relationship-builder` | `buildRelationshipsFromFact()`, `processFactsIntoRelationships()` | Fact → graph structure only |
+| **Relationships** | Future Graph Writer | `writeEdge()`, `querySubgraph()` | Phase 2.6+ problem inference prep |
+| **Problems** | Future `engine/problems` | `inferProblems()`, `getProblemById()` | **Blocked** until Phase 2.6 |
 | **Capability Match** | `engine/capabilities` + future matcher | `matchCapabilities(problem)` | Offer selector, factory |
 | **Knowledge Graph** | Future Graph Writer / Reader | `writeNode`, `writeEdge`, `querySubgraph` | All intelligence modules |
 | **Capabilities** | `engine/capabilities` + `engine-data/capabilities` | `listCapabilities()`, `getCapabilityById()` | Offers join, factory, scoring, agents |
@@ -79,6 +82,18 @@ See [World Model § Fact Builder Rule](./23-world-model.md#6-fact-builder-rule):
 | Append-only facts with `signalIds` | Write facts to `engine-data/` |
 
 Facts, Problems, and Opportunities are **separate engine owners** — see [23-world-model.md §3](./23-world-model.md#3-object-definitions).
+
+---
+
+## Relationship Builder Boundary (Phase 2.5)
+
+| Allowed | Forbidden |
+|---|---|
+| `processFactsIntoRelationships()` → `runtime/graph/graph.json` | Infer problems |
+| `resolveEntity()` + alias merge (exact normalized match only) | Create opportunities |
+| `recordRelationshipEvent()` append-only audit trail | Match capabilities to problems |
+| `findRelatedNodes()` / `findEntityNeighborhood()` read queries | LLM or external API calls |
+| Edges must reference ≥1 `factId` | Write graph to `engine-data/` |
 
 ---
 

@@ -24,6 +24,7 @@ export async function ensureRuntimeDirectories() {
     getRuntimePath("signals"),
     getRuntimePath("signals", "raw"),
     getRuntimePath("facts"),
+    getRuntimePath("graph"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
   ];
@@ -43,6 +44,14 @@ export function getRuntimeRawSignalPath(...parts) {
 
 export function getRuntimeFactStorePath() {
   return getRuntimePath("facts", "facts.json");
+}
+
+export function getRuntimeGraphDirectory() {
+  return getRuntimePath("graph");
+}
+
+export function getRuntimeGraphStorePath() {
+  return getRuntimePath("graph", "graph.json");
 }
 
 export function getLegacySignalStorePath() {

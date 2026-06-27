@@ -7,49 +7,50 @@
 
 ## Current Phase
 
-**Phase 2.4 — Fact Builder + Knowledge Graph Bridge** — **COMPLETE**
+**Phase 2.5 — Relationship Builder + Graph Enrichment** — **COMPLETE**
 
-Phase 2.5 is **blocked** until owner approves and issues an explicit implementation prompt.
-
----
-
-## Phase 2.4 Objective
-
-Extract deterministic **Facts** from classified **Signals** and project them into a lightweight **Knowledge Graph Bridge** (nodes + edges in memory/runtime JSON). No problem inference. No opportunities.
-
-Run: `node scripts/opportunity-engine/validate-phase-2-4.js`
+Phase 2.6 is **blocked** until owner approves and issues an explicit implementation prompt.
 
 ---
 
-## Phase 2.4 Checklist
+## Phase 2.5 Objective
 
-- [x] `runtime/facts/` — runtime-backed fact store
-- [x] `src/engine/facts/` — append-only fact registry
-- [x] `src/engine/fact-builder/` — rules-only `buildFactsFromSignal()`
-- [x] `src/engine/fact-builder/pipeline.js` — `processSignalIntoFacts()`
-- [x] `src/engine/knowledge-graph/` — graph projection bridge
-- [x] `scripts/opportunity-engine/validate-phase-2-4.js`
+Turn facts into **structure**: entity resolution, typed relationships, and a **persistent runtime graph** — without problem inference or opportunities.
+
+Run: `node scripts/opportunity-engine/validate-phase-2-5.js`
+
+---
+
+## Phase 2.5 Checklist
+
+- [x] `runtime/graph/` — persistent graph store
+- [x] `src/engine/graph-store/` — runtime-backed nodes, edges, aliases, events
+- [x] `src/engine/entity-resolution/` — rules-only label normalization + aliases
+- [x] `src/engine/relationship-builder/` — fact → relationship projection
+- [x] `src/engine/knowledge-graph/` — persistent reads + neighborhood queries
+- [x] `scripts/opportunity-engine/validate-phase-2-5.js`
 - [x] Validation passed
-- [x] No LLM, external APIs, problems, opportunities, or Mission Control changes
+- [x] Phase 2.4 regression passes
+- [x] No problems, opportunities, LLM, or Mission Control changes
 
 ---
 
-## Active Rules (Phase 2.4)
+## Active Rules (Phase 2.5)
 
 | Rule | Status |
 |---|---|
-| Facts are evidence; problems are interpretation | **Enforced** |
-| Facts derived from signals only (`signalIds` required) | **Enforced** |
-| Append-only facts in `runtime/facts/facts.json` | **Enforced** |
-| Graph bridge projects nodes/edges only | **Enforced** |
-| Stop at fact creation — no `problem_inferred` transition | **Enforced** |
-| Phase 2.5 blocked until owner approval | **Enforced** |
+| Facts are evidence; relationships are structure | **Enforced** |
+| Problems are interpretation — still blocked | **Enforced** |
+| Graph writes in `runtime/graph/graph.json` only | **Enforced** |
+| Relationship events append-only audit trail | **Enforced** |
+| Every edge references ≥1 `factId` | **Enforced** |
+| Phase 2.6 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 2.5 (Blocked)
+## Phase 2.6 (Blocked)
 
-**Relationship Builder / Graph enrichment** — not Problem Inference.
+**Problem Inference** — not started.
 
 Requires owner approval and explicit implementation prompt.
 
@@ -57,17 +58,13 @@ Requires owner approval and explicit implementation prompt.
 
 ## Prior Phases — COMPLETE
 
+### Phase 2.4 — Fact Builder + Knowledge Graph Bridge
+
+Run: `node scripts/opportunity-engine/validate-phase-2-4.js`
+
 ### Phase 2.3 — Sensor Framework
 
 Run: `node scripts/opportunity-engine/validate-phase-2-3.js`
-
-### Phase 2.2.5 — Connector SDK & Runtime
-
-Run: `node scripts/opportunity-engine/validate-phase-2-2-5.js`
-
-### Phase 2.2 — Manual Observation Ingestion
-
-Run: `node scripts/opportunity-engine/validate-phase-2-2.js`
 
 ---
 
@@ -75,8 +72,8 @@ Run: `node scripts/opportunity-engine/validate-phase-2-2.js`
 
 | Date | Decision |
 |---|---|
-| 2026-06-27 | Phase 2.3: Sensor Framework replaces Connectors as canonical observation model |
 | 2026-06-27 | Phase 2.4: Fact Builder + Knowledge Graph Bridge; problems remain blocked |
-| 2026-06-27 | Phase 2.5 reserved for Relationship Builder / graph enrichment — not Problem Inference |
+| 2026-06-27 | Phase 2.5: Relationship Builder + persistent runtime graph; no problem inference |
+| 2026-06-27 | Phase 2.6 reserved for Problem Inference |
 
 Add entries to [Build Log](./09-build-log.md) for architectural milestones.

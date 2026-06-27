@@ -20,3 +20,6 @@ export * from "./facts/index.js";
 export * from "./fact-builder/index.js";
 export { processSignalIntoFacts } from "./fact-builder/pipeline.js";
 export * from "./knowledge-graph/index.js";
+export * from "./graph-store/index.js";
+export * from "./entity-resolution/index.js";
+export * from "./relationship-builder/index.js";

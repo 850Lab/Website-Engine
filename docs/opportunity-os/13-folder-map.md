@@ -16,8 +16,11 @@
 | **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
-| **`runtime/`** | Live operational data: signals, facts, raw observations, logs, cache (gitignored) | Platform | None | Default local runtime; override via `OPPORTUNITY_OS_RUNTIME_DIR` |
-| **`src/engine/runtime/`** | Runtime path helpers | Platform | `runtime/` | Storage boundary for sensors, signals, facts |
+| **`runtime/`** | Live operational data: signals, facts, graph, raw observations, logs, cache (gitignored) | Platform | None | Default local runtime; override via `OPPORTUNITY_OS_RUNTIME_DIR` |
+| **`src/engine/runtime/`** | Runtime path helpers | Platform | `runtime/` | Storage boundary for sensors, signals, facts, graph |
+| **`src/engine/graph-store/`** | Persistent runtime graph store (Phase 2.5) | Platform | `runtime/graph/` | Graph DB later |
+| **`src/engine/entity-resolution/`** | Rules-only entity normalization + aliases | Platform | `graph-store/` | No fuzzy merge in v0 |
+| **`src/engine/relationship-builder/`** | Fact → relationship projection | Platform | `facts/`, `graph-store/`, `entity-resolution/` | No problem inference |
 | **`src/engine/sensors/`** | Sensor Framework registry + lifecycle + health (Phase 2.3) | Signal / Platform | `src/engine/signals/`, `runtime/` | Production sensors in Phase 2.4+ |
 | **`src/engine/facts/`** | Runtime-backed append-only fact store (Phase 2.4) | Signal / Platform | `runtime/facts/`, signals | Problem inference blocked |
 | **`src/engine/fact-builder/`** | Rules-only fact extraction from signals | Signal / Platform | `facts/`, `signals/` | No LLM; conservative predicates |

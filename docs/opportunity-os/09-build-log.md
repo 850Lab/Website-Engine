@@ -165,9 +165,17 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-27 — Phase 2.5 Relationship Builder + Graph Enrichment
+**Phase:** 2.5  
+**Type:** Milestone  
+**Summary:** Added persistent runtime graph store (`runtime/graph/graph.json`), rules-only entity resolution with aliases, Relationship Builder from facts to typed edges, and knowledge-graph enrichment queries. Relationship events append-only. Problems remain blocked until Phase 2.6.  
+**Links:** `src/engine/graph-store/`, `src/engine/entity-resolution/`, `src/engine/relationship-builder/`, `scripts/opportunity-engine/validate-phase-2-5.js`
+
+---
+
 ## Future Entries (Reserved)
 
-<!-- Phase 2.5 Relationship Builder / graph enrichment -->
+<!-- Phase 2.6 Problem Inference -->
 <!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->

@@ -1,4 +1,14 @@
 import { entityIdFromLabel } from "../facts/entity-id.js";
+import { processFactsIntoRelationships } from "../relationship-builder/index.js";
+import {
+  getGraphEdgesByNodeId,
+  getGraphNodeById,
+  getPersistentGraphSummary,
+  listGraphEdges,
+  listGraphNodes,
+  readGraphStore,
+} from "../graph-store/index.js";
+import { graphNodeIdForEntity } from "../entity-resolution/index.js";
 
 export const GRAPH_NODE_TYPES = [
   "Entity",
@@ -20,6 +30,9 @@ export const GRAPH_EDGE_TYPES = [
   "OBSERVED_AT",
   "HAS_SOURCE",
   "HAS_URL",
+  "ANNOUNCED",
+  "HAS_VALUE",
+  "HAS_UNIT",
 ];
 
 let lastProjection = null;
@@ -42,7 +55,7 @@ function upsertEdge(edges, edge) {
 
 function predicateToEdgeType(predicate) {
   const map = {
-    announced: "MENTIONS",
+    announced: "ANNOUNCED",
     located_in: "LOCATED_IN",
     mentions_entity: "MENTIONS",
     has_signal_type: "HAS_SIGNAL_TYPE",
@@ -116,7 +129,7 @@ export function buildGraphProjectionFromFacts(facts = []) {
         entityId,
       });
       upsertEdge(edges, {
-        id: edgeId("SUBJECT_OF", entityNodeId, factNodeId),
+        id: edgeId("MENTIONS", entityNodeId, factNodeId),
         type: "MENTIONS",
         from: entityNodeId,
         to: factNodeId,
@@ -205,4 +218,106 @@ export function getGraphSummary(projection = lastProjection) {
 
 export function getLastGraphProjection() {
   return lastProjection;
+}
+
+export async function buildGraphFromFactsAndPersist(facts = []) {
+  const result = await processFactsIntoRelationships(facts);
+  const store = await readGraphStore();
+  lastProjection = {
+    generatedAt: new Date().toISOString(),
+    nodes: store.nodes,
+    edges: store.edges.map((edge) => ({
+      id: edge.id,
+      type: edge.type,
+      from: edge.fromNodeId,
+      to: edge.toNodeId,
+      factIds: edge.factIds,
+      confidence: edge.confidence,
+    })),
+    persistent: true,
+  };
+  return {
+    ...result,
+    summary: await getKnowledgeGraphSummary(),
+  };
+}
+
+export async function getKnowledgeGraphSummary() {
+  return getPersistentGraphSummary();
+}
+
+export async function findRelatedNodes(nodeIdValue) {
+  const edges = await getGraphEdgesByNodeId(nodeIdValue);
+  const relatedNodeIds = new Set();
+
+  for (const edge of edges) {
+    if (edge.fromNodeId !== nodeIdValue) relatedNodeIds.add(edge.fromNodeId);
+    if (edge.toNodeId !== nodeIdValue) relatedNodeIds.add(edge.toNodeId);
+  }
+
+  const nodes = [];
+  for (const id of relatedNodeIds) {
+    const node = await getGraphNodeById(id);
+    if (node) nodes.push(node);
+  }
+
+  return {
+    nodeId: nodeIdValue,
+    edges,
+    nodes,
+  };
+}
+
+export async function findRelationshipsByType(type) {
+  const edges = await listGraphEdges();
+  return edges.filter((edge) => edge.type === type);
+}
+
+export async function findEntityNeighborhood(entityId, depth = 1) {
+  const rootNodeId = graphNodeIdForEntity(entityId);
+  const rootNode = await getGraphNodeById(rootNodeId);
+  if (!rootNode) {
+    return { entityId, depth, nodes: [], edges: [] };
+  }
+
+  const visitedNodes = new Map([[rootNodeId, rootNode]]);
+  const visitedEdges = new Map();
+  let frontier = [rootNodeId];
+
+  for (let level = 0; level < depth; level += 1) {
+    const nextFrontier = [];
+    for (const currentId of frontier) {
+      const connected = await getGraphEdgesByNodeId(currentId);
+      for (const edge of connected) {
+        visitedEdges.set(edge.id, edge);
+        for (const neighborId of [edge.fromNodeId, edge.toNodeId]) {
+          if (visitedNodes.has(neighborId)) continue;
+          const neighbor = await getGraphNodeById(neighborId);
+          if (!neighbor) continue;
+          visitedNodes.set(neighborId, neighbor);
+          nextFrontier.push(neighborId);
+        }
+      }
+    }
+    frontier = nextFrontier;
+  }
+
+  return {
+    entityId,
+    depth,
+    nodes: [...visitedNodes.values()],
+    edges: [...visitedEdges.values()],
+  };
+}
+
+export async function readPersistentGraphStore() {
+  return readGraphStore();
+}
+
+export async function listPersistentGraphNodes() {
+  return listGraphNodes();
+}
+
+export async function listPersistentGraphEdges() {
+  return listGraphEdges();
 }

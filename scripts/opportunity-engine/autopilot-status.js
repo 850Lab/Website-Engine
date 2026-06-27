@@ -20,6 +20,7 @@ const VALIDATION_SCRIPTS = [
   "scripts/opportunity-engine/validate-phase-2-2-5.js",
   "scripts/opportunity-engine/validate-phase-2-3.js",
   "scripts/opportunity-engine/validate-phase-2-4.js",
+  "scripts/opportunity-engine/validate-phase-2-5.js",
 ];
 
 function nowIso() {
