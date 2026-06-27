@@ -1,0 +1,25 @@
+{
+  "observationId": "obs_a83ad77d-3d10-4c9a-99bb-99e3e7fffbb0",
+  "capturedAt": "2026-06-27T15:06:41.069Z",
+  "source": "manual",
+  "url": null,
+  "geo": {
+    "lat": null,
+    "lng": null
+  },
+  "location": {
+    "city": "Houston",
+    "county": null,
+    "state": "TX",
+    "country": "US",
+    "address": "Houston, TX",
+    "facilityName": null
+  },
+  "metadata": {
+    "headline": "CLI validation 07dd98fa-069f-4eed-b350-f83f97faf942",
+    "summary": "Warehouse expansion announced.",
+    "signalType": "expansion",
+    "filePath": null
+  },
+  "originalText": "Warehouse expansion announced."
+}

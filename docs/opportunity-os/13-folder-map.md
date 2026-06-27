@@ -1,7 +1,7 @@
 # 13 — Folder Map
 
 **Status:** Constitution · Repository layout  
-**Related:** [Architecture Rules](./07-architecture-rules.md) · [API Boundaries](./15-api-boundaries.md) · [Project History](./20-project-history.md)
+**Related:** [Architecture Rules](./07-architecture-rules.md) · [API Boundaries](./15-api-boundaries.md) · [Project History](./20-project-history.md) · [World Model](./23-world-model.md)
 
 **Package name:** `website-outreach-engine` (historical — rename is [Future Ideas](./19-future-ideas.md))
 
@@ -17,7 +17,8 @@
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
 | **`engine-data/signals/`** | Canonical signal registry (Phase 2.1) | Signal / Platform | None | Connectors write here; append-only JSON until graph decision |
-| **`src/engine/signals/`** | Signal registry API: create, normalize, lifecycle | Platform | `engine-data/signals/` | Dedup classifier, entity link, problem inference in later phases |
+| **`engine-data/signals/raw/`** | Immutable observation archive (Phase 2.2) | Signal / Platform | None | Sacred raw captures; never overwrite or delete |
+| **`src/engine/signals/`** | Registry API + observations + rules classify + manual ingest | Platform | `engine-data/signals/` | Dedup, entity link, problem inference in later phases |
 | **`src/schema/`** | Locked 8-entity persistence schema | Platform | `data/*.json` | Converge with Constitution ontology gradually |
 | **`src/services/`** | Schema service layer, flags, id-bridge, dual-read, schema queue/outcomes | Platform | `schema/`, legacy stores | Shrink as graph writer replaces bridges |
 
@@ -81,7 +82,7 @@
 
 | Path | Purpose | Owner | Future direction |
 |---|---|---|---|
-| **`scripts/opportunity-engine/`** | CLI reports + phase validation | OS team | `src/engine/` | `validate-phase-2-1.js`, future manual ingest |
+| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-2-2.js`, `ingest-signal.js` |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
 | **`reports/`** | Generated markdown outputs | OS team | Executive report templates |
@@ -92,7 +93,8 @@
 
 | Path | Purpose |
 |---|---|
-| **`docs/opportunity-os/`** | **AI Constitution (this folder)** — supreme architecture |
+| **`docs/opportunity-os/`** | AI Constitution — supreme architecture |
+| **`docs/opportunity-os/23-world-model.md`** | World Model chain: Observation → Signal → Fact → Problem → Opportunity; connector rules |
 | **`docs/*.md`** | Legacy product docs — do not override Constitution |
 
 ---

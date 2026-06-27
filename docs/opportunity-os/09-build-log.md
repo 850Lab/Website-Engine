@@ -117,9 +117,25 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 2.1.5 World Model (design)
+**Phase:** 2.1.5  
+**Type:** Constitution  
+**Summary:** Defined the World Model reasoning spine: Reality → Observation → Signal → Fact → Relationship → Problem → Capability Match → Offer → Opportunity → Execution → Outcome → Learning → Forecast. Established connector rules (Signals only), canonical Fact schema, relationship types, problem inference modes, opportunity creation gates, five walkthrough examples, and tiered AI rules. Phase 2.2 blocked until owner approves.  
+**Links:** [23-world-model.md](./23-world-model.md), [08-current-phase.md](./08-current-phase.md)
+
+---
+
+### 2026-06-23 — Phase 2.2 Manual observation ingestion
+**Phase:** 2.2  
+**Type:** Milestone  
+**Summary:** Implemented sacred raw observation archive (`engine-data/signals/raw/`), manual CLI ingest script, rules-only normalization and classification, and full workflow through `classified` state without facts, problems, or opportunities. Extended registry summary metrics. Validation: `scripts/opportunity-engine/validate-phase-2-2.js`.  
+**Links:** `scripts/opportunity-engine/ingest-signal.js`, `src/engine/signals/observations.js`, `src/engine/signals/classify.js`, `src/engine/signals/ingest-manual.js`
+
+---
+
 ## Future Entries (Reserved)
 
-<!-- Phase 2.2 manual signal ingestion -->
+<!-- Phase 2.3 first production connector -->
 <!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->

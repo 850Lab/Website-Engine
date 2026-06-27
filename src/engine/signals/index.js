@@ -22,6 +22,7 @@ export const SIGNAL_TYPES = [
   "company_news",
   "social_signal",
   "crm_event",
+  "unknown",
 ];
 
 export const PROCESSING_STATES = [
@@ -438,21 +439,66 @@ export async function getSignalRegistrySummary() {
   const bySource = {};
   const byType = Object.fromEntries(SIGNAL_TYPES.map((type) => [type, 0]));
 
+  let newestSignal = null;
+  let oldestSignal = null;
+  let signalsToday = 0;
+  let reachedNormalized = 0;
+  let reachedClassified = 0;
+  let unknownSignals = 0;
+
+  const todayPrefix = nowIso().slice(0, 10);
+
   for (const signal of store.signals) {
     byState[signal.processingState] = (byState[signal.processingState] || 0) + 1;
     bySource[signal.source] = (bySource[signal.source] || 0) + 1;
     byType[signal.signalType] = (byType[signal.signalType] || 0) + 1;
+
+    if (signal.signalType === "unknown") unknownSignals += 1;
+    if ((signal.capturedAt || "").startsWith(todayPrefix)) signalsToday += 1;
+
+    const lifecycle = asArray(signal.lifecycle);
+    if (lifecycle.some((event) => event.to === "normalized")) reachedNormalized += 1;
+    if (lifecycle.some((event) => event.to === "classified")) reachedClassified += 1;
+
+    if (!newestSignal || signal.capturedAt > newestSignal.capturedAt) {
+      newestSignal = { id: signal.id, capturedAt: signal.capturedAt, headline: signal.headline };
+    }
+    if (!oldestSignal || signal.capturedAt < oldestSignal.capturedAt) {
+      oldestSignal = { id: signal.id, capturedAt: signal.capturedAt, headline: signal.headline };
+    }
   }
+
+  const total = store.signals.length;
+  const normalizationRate = total ? Number((reachedNormalized / total).toFixed(3)) : 0;
+  const classificationRate = total ? Number((reachedClassified / total).toFixed(3)) : 0;
 
   return {
     generatedAt: nowIso(),
-    total: store.signals.length,
+    total,
+    totalSignals: total,
+    signalsToday,
     byState,
+    signalsByState: byState,
     bySource,
+    signalsBySource: bySource,
     byType,
+    signalsByType: byType,
+    newestSignal,
+    oldestSignal,
+    unknownSignals,
+    normalizationRate,
+    classificationRate,
     metadata: clone(store.metadata),
   };
 }
+
+export { ingestManualObservation } from "./ingest-manual.js";
+export {
+  archiveObservation,
+  normalizeObservationInput,
+  parseLocationString,
+} from "./observations.js";
+export { classifySignalRules, UNKNOWN_TYPE } from "./classify.js";
 
 export {
   ALLOWED_TRANSITIONS,

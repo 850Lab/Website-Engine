@@ -1,0 +1,25 @@
+{
+  "observationId": "obs_0c01bb24-75fb-4bc7-a95e-44490b0f68ad",
+  "capturedAt": "2026-06-27T15:06:41.002Z",
+  "source": "manual",
+  "url": "https://example.com/news/abc-manufacturing",
+  "geo": {
+    "lat": null,
+    "lng": null
+  },
+  "location": {
+    "city": "Beaumont",
+    "county": null,
+    "state": "TX",
+    "country": "US",
+    "address": "Beaumont, TX",
+    "facilityName": null
+  },
+  "metadata": {
+    "headline": "Phase 2.2 validation 785ce686-42e8-4a8e-9413-12da7bb0a3c1",
+    "summary": "ABC Manufacturing announces new facility in Beaumont with $40M investment.",
+    "signalType": "company_news",
+    "filePath": null
+  },
+  "originalText": "ABC Manufacturing announces new facility in Beaumont with $40M investment."
+}
