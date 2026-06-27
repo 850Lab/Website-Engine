@@ -109,10 +109,18 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 2.1 Signal registry and lifecycle
+**Phase:** 2.1  
+**Type:** Milestone  
+**Summary:** Implemented append-only signal registry at `engine-data/signals/signals.json` and `src/engine/signals/` with create, normalize, state transitions, lifecycle audit trail, and query helpers. Observation fields are immutable on state advance. Validated transitions per pipeline doc. No connectors or problem inference. Validation: `scripts/opportunity-engine/validate-phase-2-1.js`.  
+**Links:** `src/engine/signals/`, `engine-data/signals/signals.json`, [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md)
+
+---
+
 ## Future Entries (Reserved)
 
-<!-- Phase 2.1 signal registry implementation -->
-<!-- Phase 2 first production connector -->
+<!-- Phase 2.2 manual signal ingestion -->
+<!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->
 <!-- Phase 5 first calibrated forecast -->

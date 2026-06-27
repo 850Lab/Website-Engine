@@ -16,6 +16,8 @@
 | **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
+| **`engine-data/signals/`** | Canonical signal registry (Phase 2.1) | Signal / Platform | None | Connectors write here; append-only JSON until graph decision |
+| **`src/engine/signals/`** | Signal registry API: create, normalize, lifecycle | Platform | `engine-data/signals/` | Dedup classifier, entity link, problem inference in later phases |
 | **`src/schema/`** | Locked 8-entity persistence schema | Platform | `data/*.json` | Converge with Constitution ontology gradually |
 | **`src/services/`** | Schema service layer, flags, id-bridge, dual-read, schema queue/outcomes | Platform | `schema/`, legacy stores | Shrink as graph writer replaces bridges |
 
@@ -37,7 +39,7 @@
 
 | Path | Purpose | Owner | Dependencies | Future direction |
 |---|---|---|---|---|
-| **`src/discovery-adapters/`** | Adapter registry and source schemas | Signal team | — | Become connector registry core |
+| **`src/discovery-adapters/`** | Adapter registry and source schemas | Signal team | — | Become connector registry core (Phase 2.3+) |
 | **`src/discovery/`** | Dedup, funnel, run-query | Signal team | `data/` | Merge into signal pipeline |
 | **`src/pipeline/ingest-discovery.js`** | Discovery → identity → qualification → legacy/schema | Signal team | stage1, identity | Emit Signals/Facts instead of QB-only |
 | **`src/opportunity-engine/`** | Distributed discovery jobs, worker, reports | Signal team | pg optional | Job orchestration for connectors |
@@ -79,7 +81,7 @@
 
 | Path | Purpose | Owner | Future direction |
 |---|---|---|---|
-| **`scripts/opportunity-engine/`** | CLI reports (`generate-ktm-report.js`) | OS team | Expand validation/report suite |
+| **`scripts/opportunity-engine/`** | CLI reports + phase validation | OS team | `src/engine/` | `validate-phase-2-1.js`, future manual ingest |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
 | **`reports/`** | Generated markdown outputs | OS team | Executive report templates |

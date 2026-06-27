@@ -7,68 +7,64 @@
 
 ## Current Phase
 
-**Phase 2.0 — Signal Object & Problem Inference Pipeline (Design)** — **ACTIVE**
+**Phase 2.1 — Signal Registry & Lifecycle** — **COMPLETE**
 
-Phase 1 (Mission Control) is **COMPLETE**. Phase 2 implementation is **NOT started**. Only the Phase 2.0 design blueprint is active.
-
----
-
-## Phase 2.0 Objective
-
-Design the canonical Signal object, Problem object, inference pipeline, fan-out rules, and AI cost tiers — without building connectors, crawlers, or autonomous agents.
-
-**Primary artifact:** [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md)
+Phase 2.2 (manual ingest) is **blocked** until owner approves and issues an explicit implementation prompt.
 
 ---
 
-## Phase 2.0 Checklist
+## Phase 2.1 Objective
 
-- [x] Signal object schema defined (§1)
-- [x] Canonical signal types enumerated (§2)
-- [x] Signal lifecycle with entry/exit/failure modes (§3)
-- [x] Problem object schema defined (§4)
-- [x] Problem types enumerated (§5)
-- [x] Inference pipeline designed (§6)
-- [x] Multi-opportunity fan-out examples (§7)
-- [x] Cost and AI tier rules (§8)
-- [x] Phase 2 build plan — first 3 steps (§9)
-- [ ] Owner review and approval of Phase 2.0 design
-- [ ] Phase 2.1 implementation authorized
+Build the canonical append-only signal registry that future connectors will write into. No connectors, no problem inference, no Mission Control UI changes.
+
+**Primary modules:** `src/engine/signals/`, `engine-data/signals/signals.json`
+
+Run: `node scripts/opportunity-engine/validate-phase-2-1.js`
 
 ---
 
-## Active Rules (Phase 2.0)
+## Phase 2.1 Checklist
+
+- [x] `engine-data/signals/signals.json` — empty store with metadata
+- [x] `src/engine/signals/index.js` — registry API
+- [x] Lifecycle states and validated transitions per [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md)
+- [x] Observation fields immutable on state advance; `lifecycle[]` audit trail
+- [x] `scripts/opportunity-engine/validate-phase-2-1.js`
+- [x] Validation passed
+- [x] No connector code created
+
+---
+
+## Active Rules (Phase 2.1)
 
 | Rule | Status |
 |---|---|
-| Documentation only — no implementation code | **Enforced** |
-| Do NOT build connectors yet | **Enforced** |
-| Do NOT build crawlers or autonomous agents | **Enforced** |
-| Do NOT LLM-process every signal (design law) | **Documented in §8** |
-| Engine remains truth; Mission Control remains projection | **Enforced** |
-| Do NOT refactor legacy for convenience | **Enforced** |
+| Do NOT build connectors | **Enforced** |
+| Do NOT call news APIs or RFP ingestion | **Enforced** |
+| Do NOT build problem inference yet | **Enforced** |
+| Do NOT modify Mission Control UI (except validation-safe reads) | **Enforced** |
+| Engine remains truth; signals append-only | **Enforced** |
+| Do NOT begin Phase 2.2 without approval | **Enforced** |
 
 ---
 
-## Phase 2.1 Implementation (Blocked)
+## Phase 2.2 (Blocked)
 
-Implementation begins only after:
+**Manual signal ingestion script** — not started.
 
-1. Owner approves [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md)
-2. [08-current-phase.md](./08-current-phase.md) updated to Phase 2.1 ACTIVE
-3. Explicit implementation prompt issued
+First implementation prompt after owner approves Phase 2.2:
 
-**First 3 steps (when authorized):**
+> *"Implement Phase 2.2 — manual signal ingestion CLI only. Write to signal registry via createSignal(). No connectors."*
 
-1. Signal registry and data store
-2. Manual signal ingestion script
-3. First connector (owner-selected — not built in 2.0)
-
-See [22-signal-and-problem-pipeline.md §9](./22-signal-and-problem-pipeline.md#9-phase-2-build-plan).
+See [22-signal-and-problem-pipeline.md §9 Step 2](./22-signal-and-problem-pipeline.md#9-phase-2-build-plan).
 
 ---
 
 ## Prior Phases — COMPLETE
+
+### Phase 2.0 — Signal & Problem Pipeline (Design)
+
+Blueprint: [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md)
 
 ### Phase 1 — Mission Control (Executive OS)
 
@@ -78,10 +74,6 @@ Run: `node scripts/opportunity-engine/validate-phase-1.js`
 
 Run: `node scripts/opportunity-engine/validate-phase-0-5.js`
 
-### Phase 0 — AI Constitution
-
-Constitution documents 00–22 in `docs/opportunity-os/`.
-
 ---
 
 ## Decision Log
@@ -89,10 +81,9 @@ Constitution documents 00–22 in `docs/opportunity-os/`.
 | Date | Decision |
 |---|---|
 | 2026-06-23 | Constitution folder created; Phase 0 active |
-| 2026-06-23 | Phase 0.5: `src/engine` remains truth spine; JSON OK; no graph DB; no legacy demolition |
-| 2026-06-23 | Score Council introduced; `opportunityScore` = composite projection |
-| 2026-06-23 | Phase 1: Mission Control is single executive API; evidence assembler; Pivotal OS projection-only |
-| 2026-06-23 | Phase 1 validation passed; Phase 2 unlocked |
-| 2026-06-23 | Phase 2.0: Signal and Problem pipeline blueprint — design active, implementation blocked |
+| 2026-06-23 | Phase 0.5: `src/engine` remains truth spine; JSON OK; no graph DB |
+| 2026-06-23 | Phase 1: Mission Control single executive API |
+| 2026-06-23 | Phase 2.0: Signal/Problem pipeline blueprint |
+| 2026-06-23 | Phase 2.1: JSON signal registry + lifecycle engine in `src/engine/signals/` |
 
 Add entries to [Build Log](./09-build-log.md) for architectural milestones.

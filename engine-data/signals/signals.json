@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "phase": "2.1",
+    "description": "Canonical append-only signal registry for Opportunity OS. Connectors write here; signals are never deleted.",
+    "createdAt": "2026-06-23T00:00:00.000Z",
+    "updatedAt": "2026-06-27T14:15:51.063Z",
+    "schemaRef": "docs/opportunity-os/22-signal-and-problem-pipeline.md"
+  },
+  "signals": [
+    {
+      "id": "sig_879deee1-ae03-4b52-a0b2-f7882b4095cf",
+      "source": "manual_validation",
+      "sourceType": "manual",
+      "observedAt": "2026-06-27T14:15:43.935Z",
+      "capturedAt": "2026-06-27T14:15:43.936Z",
+      "location": {
+        "city": null,
+        "county": null,
+        "state": null,
+        "country": "US",
+        "address": null,
+        "facilityName": null
+      },
+      "geo": {
+        "lat": null,
+        "lng": null,
+        "region": null,
+        "metro": null,
+        "h3": null
+      },
+      "entitiesMentioned": [],
+      "headline": "Phase 2.1 validation signal 2389b78a-09af-432a-b2b2-15040df7af05",
+      "summary": "Validation-only signal for lifecycle testing.",
+      "rawTextRef": "engine-data/signals/raw/validation/2389b78a-09af-432a-b2b2-15040df7af05.json",
+      "url": null,
+      "evidence": [],
+      "confidence": 0.5,
+      "freshness": {
+        "ageHours": 0,
+        "decayScore": 1,
+        "staleAfter": null
+      },
+      "signalType": "crm_event",
+      "urgency": "low",
+      "affectedMarkets": [],
+      "affectedCapabilities": [],
+      "possibleProblems": [],
+      "possibleOpportunities": [],
+      "processingState": "captured",
+      "provenance": {
+        "ingestJobId": "validate_2389b78a-09af-432a-b2b2-15040df7af05"
+      },
+      "hash": "sha256:eae61ee2e3d84a2a6fef548a032a6a29dd693cd7b117343c7f226490e0744847",
+      "dedupKey": "manual_validation|crm_event|2389b78a-09af-432a-b2b2-15040df7af05",
+      "riskFlags": [],
+      "factIds": [],
+      "entityIds": [],
+      "problemIds": [],
+      "opportunityIds": [],
+      "lifecycle": [
+        {
+          "from": null,
+          "to": "captured",
+          "at": "2026-06-27T14:15:43.938Z",
+          "metadata": {
+            "action": "create"
+          }
+        }
+      ],
+      "createdAt": "2026-06-27T14:15:43.938Z",
+      "updatedAt": "2026-06-27T14:15:43.938Z"
+    },
+    {
+      "id": "sig_13b0cecc-beb2-498b-a885-28dadf58f9de",
+      "source": "manual_validation",
+      "sourceType": "manual",
+      "observedAt": "2026-06-27T14:15:51.057Z",
+      "capturedAt": "2026-06-27T14:15:51.058Z",
+      "location": {
+        "city": null,
+        "county": null,
+        "state": null,
+        "country": "US",
+        "address": null,
+        "facilityName": null
+      },
+      "geo": {
+        "lat": null,
+        "lng": null,
+        "region": null,
+        "metro": null,
+        "h3": null
+      },
+      "entitiesMentioned": [],
+      "headline": "Phase 2.1 validation signal 7a9fe8e2-4d4d-4a95-ad53-f8e30b004c45",
+      "summary": "Validation-only signal for lifecycle testing.",
+      "rawTextRef": "engine-data/signals/raw/validation/7a9fe8e2-4d4d-4a95-ad53-f8e30b004c45.json",
+      "url": null,
+      "evidence": [],
+      "confidence": 0.5,
+      "freshness": {
+        "ageHours": 0,
+        "decayScore": 1,
+        "staleAfter": null
+      },
+      "signalType": "crm_event",
+      "urgency": "low",
+      "affectedMarkets": [],
+      "affectedCapabilities": [],
+      "possibleProblems": [],
+      "possibleOpportunities": [],
+      "processingState": "normalized",
+      "provenance": {
+        "ingestJobId": "validate_7a9fe8e2-4d4d-4a95-ad53-f8e30b004c45"
+      },
+      "hash": "sha256:797321ed0d726d8ba3a2fa4a071cf6ffefd4e766c29edcf43a8abb50084a856f",
+      "dedupKey": "manual_validation|crm_event|7a9fe8e2-4d4d-4a95-ad53-f8e30b004c45",
+      "riskFlags": [],
+      "factIds": [],
+      "entityIds": [],
+      "problemIds": [],
+      "opportunityIds": [],
+      "lifecycle": [
+        {
+          "from": null,
+          "to": "captured",
+          "at": "2026-06-27T14:15:51.059Z",
+          "metadata": {
+            "action": "create"
+          }
+        },
+        {
+          "from": "captured",
+          "to": "normalized",
+          "at": "2026-06-27T14:15:51.063Z",
+          "metadata": {
+            "action": "validation_normalize"
+          }
+        }
+      ],
+      "createdAt": "2026-06-27T14:15:51.059Z",
+      "updatedAt": "2026-06-27T14:15:51.063Z"
+    }
+  ]
+}

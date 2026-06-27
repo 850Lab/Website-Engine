@@ -11,7 +11,7 @@ Defines **who owns what** and **allowed import directions**.
 
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
-| **Signals** | `discovery-adapters` → future Signal Engine | `ingestSignal()`, connector registry | Fact extractor, graph writer |
+| **Signals** | `engine/signals` (Phase 2.1) | `listSignals()`, `createSignal()`, `updateSignalState()`, `getSignalRegistrySummary()` | Future connectors, Mission Control metrics, problem inference |
 | **Knowledge Graph** | Future Graph Writer / Reader | `writeNode`, `writeEdge`, `querySubgraph` | All intelligence modules |
 | **Capabilities** | `engine/capabilities` + `engine-data/capabilities` | `listCapabilities()`, `getCapabilityById()` | Offers join, factory, scoring, agents |
 | **Offers** | `engine/offers` | `listOffers()`, `getOfferById()`, `getOfferWithCapabilities()`, `listOffersWithCapabilities()` | Factory, radar, reports |
@@ -76,7 +76,7 @@ Defines **who owns what** and **allowed import directions**.
 
 | Event | Publisher | Subscribers |
 |---|---|---|
-| `signal.observed` | Ingestion | Extractor, dedup |
+| `signal.observed` | `engine/signals` (`createSignal`) | Dedup (future), normalizer (future), registry summary |
 | `fact.extracted` | Extractor | Problemist, graph writer |
 | `problem.hypothesized` | Problemist | Opportunity factory |
 | `opportunity.scored` | Score Council | UI projection, planner |
