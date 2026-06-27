@@ -13,8 +13,10 @@ See [World Model §5 — Connector Rule](./23-world-model.md#5-connector-rule): 
 
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
-| **Observations (raw)** | Ingest boundary (connectors, Phase 2.2 CLI) | Write to `engine-data/signals/raw/` only | Signal normalizer |
-| **Signals** | `engine/signals` (Phase 2.1) | `listSignals()`, `createSignal()`, `updateSignalState()`, `getSignalRegistrySummary()` | Connectors (via registry only), fact extractor (future), Mission Control metrics (read) |
+| **Observations (raw)** | Ingest boundary + `engine/runtime` | Write to `runtime/signals/raw/` only | Signal normalizer |
+| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, `getRuntimeSignalStorePath()` | Signals, connectors, ingest |
+| **Connectors** | `engine/connectors` (Phase 2.2.5 SDK) | `registerConnector()`, `runConnector()`, `ingestConnectorResult()` | Observations only → manual ingest path |
+| **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `updateSignalState()`, `initializeRuntimeSignalStore()` | Connectors, CLI, Mission Control metrics (read) |
 | **Facts** | Future `engine/facts` | `createFact()`, `getFactsBySignal()` | Problem inference, graph writer, Score Council Confidence |
 | **Relationships** | Future Graph Writer | `writeEdge()`, `querySubgraph()` | Problem inference, factory, evidence assembler |
 | **Problems** | Future `engine/problems` | `inferProblems()`, `getProblemById()` | Capability matcher, opportunity factory |
@@ -53,14 +55,14 @@ See [World Model §5 — Connector Rule](./23-world-model.md#5-connector-rule): 
 
 ---
 
-## Connector Boundary (Phase 2.1.5)
+## Connector Boundary (Phase 2.2.5)
 
 | Allowed | Forbidden |
 |---|---|
-| Write Observation (`engine-data/signals/raw/`) | Write Opportunity |
-| Call `createSignal()` on Signal Registry | Call `buildMissionControl()` or UI routes |
-| Advance signal lifecycle through engine API | Parallel signal stores |
-| | Direct fact/problem/opportunity creation |
+| Write Observation to `runtime/signals/raw/` | Write Opportunity |
+| `runConnector()` → `ingestConnectorResult()` → Signal Registry | Call `buildMissionControl()` or UI routes |
+| Register connector in `engine/connectors` | Parallel signal stores outside runtime adapter |
+| Advance signal lifecycle through engine API | Direct fact/problem/opportunity creation |
 
 Facts, Problems, and Opportunities are **separate engine owners** — see [23-world-model.md §3](./23-world-model.md#3-object-definitions).
 

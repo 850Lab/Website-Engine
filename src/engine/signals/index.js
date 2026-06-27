@@ -1,8 +1,14 @@
 import { createHash, randomUUID } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, access } from "node:fs/promises";
+import { dirname } from "node:path";
+import {
+  ensureRuntimeDirectories,
+  getLegacySignalStorePath,
+  getRuntimeSignalStorePath,
+  toRepoRelativePath,
+} from "../runtime/index.js";
 
-const ROOT = new URL("../../../", import.meta.url);
-const STORE_PATH = new URL("engine-data/signals/signals.json", ROOT);
+const LEGACY_STORE_PATH = getLegacySignalStorePath();
 
 export const SIGNAL_TYPES = [
   "permit",
@@ -160,17 +166,79 @@ function buildHashInput(signal) {
   };
 }
 
-async function loadStore() {
-  const raw = await readFile(STORE_PATH, "utf8");
+async function storeFileExists(path) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function readStoreFile(path) {
+  if (!(await storeFileExists(path))) return null;
+  const raw = await readFile(path, "utf8");
   const store = JSON.parse(raw);
   if (!Array.isArray(store.signals)) store.signals = [];
   if (!isObject(store.metadata)) store.metadata = {};
   return store;
 }
 
+async function loadStore() {
+  await ensureRuntimeDirectories();
+
+  const legacyStore = await readStoreFile(LEGACY_STORE_PATH);
+  const runtimeStore = await readStoreFile(getRuntimeSignalStorePath());
+  const mergedById = new Map();
+
+  for (const signal of legacyStore?.signals || []) {
+    mergedById.set(signal.id, signal);
+  }
+  for (const signal of runtimeStore?.signals || []) {
+    mergedById.set(signal.id, signal);
+  }
+
+  return {
+    metadata: {
+      ...(legacyStore?.metadata || {}),
+      ...(runtimeStore?.metadata || {}),
+      storageMode: "runtime_preferred",
+      legacyStorePath: toRepoRelativePath(LEGACY_STORE_PATH),
+      runtimeStorePath: toRepoRelativePath(getRuntimeSignalStorePath()),
+    },
+    signals: [...mergedById.values()],
+  };
+}
+
 async function saveStore(store) {
-  store.metadata.updatedAt = nowIso();
-  await writeFile(STORE_PATH, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+  await ensureRuntimeDirectories();
+  const runtimePath = getRuntimeSignalStorePath();
+  await mkdir(dirname(runtimePath), { recursive: true });
+  store.metadata = {
+    ...store.metadata,
+    updatedAt: nowIso(),
+    storageMode: "runtime_preferred",
+    runtimeStorePath: toRepoRelativePath(runtimePath),
+  };
+  await writeFile(runtimePath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+}
+
+export async function initializeRuntimeSignalStore() {
+  await ensureRuntimeDirectories();
+  const runtimePath = getRuntimeSignalStorePath();
+  if (!(await storeFileExists(runtimePath))) {
+    const store = await loadStore();
+    await saveStore(store);
+  }
+  return runtimePath;
+}
+
+export function getSignalStorePaths() {
+  return {
+    legacy: LEGACY_STORE_PATH,
+    runtime: getRuntimeSignalStorePath(),
+    writeTarget: getRuntimeSignalStorePath(),
+  };
 }
 
 export function validateSignalType(signalType) {

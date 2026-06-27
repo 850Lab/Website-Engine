@@ -27,6 +27,15 @@ data/**/*.tmp
 scripts/__pycache__/
 scripts/_check-blob-env.mjs
 
+# Opportunity OS runtime data (Phase 2.2.5) — live signals, raw observations, logs, cache
+runtime/**
+!runtime/.gitkeep
+!runtime/**/.gitkeep
+
+# Generated reports (local status artifacts)
+reports/autopilot-status.md
+reports/autopilot-log.json
+
 # Seed configs required for schema migration
 !data/seeds/
 !data/seeds/**

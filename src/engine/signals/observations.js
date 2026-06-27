@@ -1,10 +1,10 @@
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const ROOT = fileURLToPath(new URL("../../../", import.meta.url));
-const RAW_ROOT = join(ROOT, "engine-data", "signals", "raw");
+import {
+  ensureRuntimeDirectories,
+  getRuntimeRawSignalPath,
+  toRepoRelativePath,
+} from "../runtime/index.js";
 
 function nowIso() {
   return new Date().toISOString();
@@ -88,7 +88,7 @@ export function normalizeObservationInput(input = {}) {
 
   return {
     source,
-    sourceType: source === "manual" ? "manual" : input.sourceType || "file_import",
+    sourceType: input.sourceType || (source === "manual" ? "manual" : "file_import"),
     observedAt,
     capturedAt,
     headline,
@@ -105,31 +105,25 @@ export function normalizeObservationInput(input = {}) {
     originalText: input.originalText ?? summary ?? headline,
     signalType: collapseWhitespace(input.signalType || input.type || "unknown").toLowerCase(),
     provenance: {
-      ingestVersion: "2.2.0",
-      ingestChannel: "manual_cli",
+      ingestVersion: "2.2.5",
+      ingestChannel: input.provenance?.ingestChannel || "manual_cli",
       ...(input.provenance || {}),
     },
   };
 }
 
-function rawRelativePath(absolutePath) {
-  const normalized = absolutePath.replace(/\\/g, "/");
-  const marker = "engine-data/signals/raw/";
-  const index = normalized.indexOf(marker);
-  if (index >= 0) return normalized.slice(index);
-  return normalized;
-}
-
 export async function archiveObservation(input = {}) {
+  await ensureRuntimeDirectories();
+
   const observationId = `obs_${randomUUID()}`;
   const capturedAt = parseIsoDate(input.capturedAt, nowIso());
   const date = capturedAt.slice(0, 10);
   const [year, month, day] = date.split("-");
-  const directory = join(RAW_ROOT, year, month, day);
+  const directory = getRuntimeRawSignalPath(year, month, day);
   await mkdir(directory, { recursive: true });
 
   const filename = `${observationId}.json`;
-  const absolutePath = join(directory, filename);
+  const absolutePath = getRuntimeRawSignalPath(year, month, day, filename);
 
   try {
     await access(absolutePath);
@@ -166,9 +160,7 @@ export async function archiveObservation(input = {}) {
     observationId,
     filename,
     absolutePath,
-    rawTextRef: rawRelativePath(absolutePath),
+    rawTextRef: toRepoRelativePath(absolutePath),
     record,
   };
 }
-
-export { RAW_ROOT };

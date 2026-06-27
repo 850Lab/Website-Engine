@@ -13,3 +13,5 @@ export * from "./market-analysis/index.js";
 export * from "./evidence/index.js";
 export * from "./mission-control/index.js";
 export * from "./signals/index.js";
+export * from "./runtime/index.js";
+export * from "./connectors/index.js";

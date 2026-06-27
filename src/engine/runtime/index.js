@@ -1,0 +1,58 @@
+import { mkdir } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../..");
+
+export function getRepoRoot() {
+  return REPO_ROOT;
+}
+
+export function getRuntimeRoot() {
+  const override = process.env.OPPORTUNITY_OS_RUNTIME_DIR;
+  if (override) return override;
+  return join(REPO_ROOT, "runtime");
+}
+
+export function getRuntimePath(...parts) {
+  return join(getRuntimeRoot(), ...parts);
+}
+
+export async function ensureRuntimeDirectories() {
+  const directories = [
+    getRuntimeRoot(),
+    getRuntimePath("signals"),
+    getRuntimePath("signals", "raw"),
+    getRuntimePath("logs"),
+    getRuntimePath("cache"),
+  ];
+
+  for (const directory of directories) {
+    await mkdir(directory, { recursive: true });
+  }
+}
+
+export function getRuntimeSignalStorePath() {
+  return getRuntimePath("signals", "signals.json");
+}
+
+export function getRuntimeRawSignalPath(...parts) {
+  return getRuntimePath("signals", "raw", ...parts);
+}
+
+export function getLegacySignalStorePath() {
+  return join(REPO_ROOT, "engine-data", "signals", "signals.json");
+}
+
+export function toRepoRelativePath(absolutePath) {
+  const repo = REPO_ROOT.replace(/\\/g, "/");
+  const normalized = absolutePath.replace(/\\/g, "/");
+  if (normalized.startsWith(`${repo}/`)) {
+    return normalized.slice(repo.length + 1);
+  }
+  return normalized;
+}
+
+export function usesRuntimeOverride() {
+  return Boolean(process.env.OPPORTUNITY_OS_RUNTIME_DIR);
+}

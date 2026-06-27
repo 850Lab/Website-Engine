@@ -16,9 +16,10 @@
 | **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
-| **`engine-data/signals/`** | Canonical signal registry (Phase 2.1) | Signal / Platform | None | Connectors write here; append-only JSON until graph decision |
-| **`engine-data/signals/raw/`** | Immutable observation archive (Phase 2.2) | Signal / Platform | None | Sacred raw captures; never overwrite or delete |
-| **`src/engine/signals/`** | Registry API + observations + rules classify + manual ingest | Platform | `engine-data/signals/` | Dedup, entity link, problem inference in later phases |
+| **`runtime/`** | Live operational data: signals, raw observations, logs, cache (gitignored) | Platform | None | Default local runtime; override via `OPPORTUNITY_OS_RUNTIME_DIR` |
+| **`src/engine/runtime/`** | Runtime path helpers | Platform | `runtime/` | Storage boundary for connectors and signal registry |
+| **`src/engine/connectors/`** | Connector SDK registry (observations only) | Signal / Platform | `src/engine/signals/` | Phase 2.3+ production connectors |
+| **`engine-data/signals/`** | Legacy/historical signal seed (read-compatible) | Signal / Platform | None | New writes go to `runtime/signals/` |
 | **`src/schema/`** | Locked 8-entity persistence schema | Platform | `data/*.json` | Converge with Constitution ontology gradually |
 | **`src/services/`** | Schema service layer, flags, id-bridge, dual-read, schema queue/outcomes | Platform | `schema/`, legacy stores | Shrink as graph writer replaces bridges |
 
@@ -94,7 +95,8 @@
 | Path | Purpose |
 |---|---|
 | **`docs/opportunity-os/`** | AI Constitution — supreme architecture |
-| **`docs/opportunity-os/23-world-model.md`** | World Model chain: Observation → Signal → Fact → Problem → Opportunity; connector rules |
+| **`docs/opportunity-os/23-world-model.md`** | World Model chain and connector rules |
+| **`docs/opportunity-os/24-runtime-data-boundaries.md`** | engine-data vs runtime vs reports vs src |
 | **`docs/*.md`** | Legacy product docs — do not override Constitution |
 
 ---

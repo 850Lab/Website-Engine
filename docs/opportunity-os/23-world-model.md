@@ -288,6 +288,19 @@ External source → Opportunity / CRM queue / Mission Control  ❌
 
 Legacy discovery scripts (`src/discovery/`, `website-find-leads.js`) must converge to this rule in Phase 2.3+ — not expand parallel paths.
 
+### Connector SDK (Phase 2.2.5)
+
+Production connectors implement the interface in `src/engine/connectors/`:
+
+- `collectObservations(context)` — return canonical observation objects (no network required in tests)
+- `validateObservation(observation)` — schema/trust checks
+- `mapObservationToSignalInput(observation)` — map to manual ingest input
+- `ingestConnectorResult()` — runs observations through `ingestManualObservation()` (raw archive + registry)
+
+Live data writes go to **`runtime/`** (gitignored), not `engine-data/`. See [24-runtime-data-boundaries.md](./24-runtime-data-boundaries.md).
+
+Demo connector only in Phase 2.2.5: `src/engine/connectors/demo/manual-demo-connector.js`.
+
 ---
 
 ## 6. Fact Layer
