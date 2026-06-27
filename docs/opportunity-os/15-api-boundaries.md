@@ -5,7 +5,7 @@
 
 Defines **who owns what** and **allowed import directions**.
 
-See [World Model §5 — Connector Rule](./23-world-model.md#5-connector-rule): connectors write **Signals only**.
+See [World Model §5 — Sensor Rule](./23-world-model.md#5-sensor-rule): sensors write **Observations/Signals only**.
 
 ---
 
@@ -13,10 +13,11 @@ See [World Model §5 — Connector Rule](./23-world-model.md#5-connector-rule): 
 
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
-| **Observations (raw)** | Ingest boundary + `engine/runtime` | Write to `runtime/signals/raw/` only | Signal normalizer |
-| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, `getRuntimeSignalStorePath()` | Signals, connectors, ingest |
-| **Connectors** | `engine/connectors` (Phase 2.2.5 SDK) | `registerConnector()`, `runConnector()`, `ingestConnectorResult()` | Observations only → manual ingest path |
-| **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `updateSignalState()`, `initializeRuntimeSignalStore()` | Connectors, CLI, Mission Control metrics (read) |
+| **Observations (raw)** | Ingest boundary + sensors + manual CLI | Write to `runtime/signals/raw/` only | Signal normalizer |
+| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, `getRuntimeSignalStorePath()` | Signals, sensors, ingest |
+| **Sensors** | `engine/sensors` (Phase 2.3) | `registerSensor()`, `runSensor()`, `runAllSensors()`, `healthReport()`, `ingestSensorResult()` | Observation pipeline only |
+| **Connectors (deprecated)** | `engine/connectors` shim | `registerConnector()`, `runConnector()` | Regression only — use sensors |
+| **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `initializeRuntimeSignalStore()` | Sensors, CLI, Mission Control metrics (read) |
 | **Facts** | Future `engine/facts` | `createFact()`, `getFactsBySignal()` | Problem inference, graph writer, Score Council Confidence |
 | **Relationships** | Future Graph Writer | `writeEdge()`, `querySubgraph()` | Problem inference, factory, evidence assembler |
 | **Problems** | Future `engine/problems` | `inferProblems()`, `getProblemById()` | Capability matcher, opportunity factory |
@@ -55,14 +56,14 @@ See [World Model §5 — Connector Rule](./23-world-model.md#5-connector-rule): 
 
 ---
 
-## Connector Boundary (Phase 2.2.5)
+## Sensor Boundary (Phase 2.3)
 
 | Allowed | Forbidden |
 |---|---|
-| Write Observation to `runtime/signals/raw/` | Write Opportunity |
-| `runConnector()` → `ingestConnectorResult()` → Signal Registry | Call `buildMissionControl()` or UI routes |
-| Register connector in `engine/connectors` | Parallel signal stores outside runtime adapter |
+| `runSensor()` → `ingestSensorResult()` → runtime raw + registry | Write Opportunity |
+| Register sensor in `engine/sensors` | Call `buildMissionControl()` or UI routes |
 | Advance signal lifecycle through engine API | Direct fact/problem/opportunity creation |
+| Static demo sensors without network | Parallel storage outside runtime adapter |
 
 Facts, Problems, and Opportunities are **separate engine owners** — see [23-world-model.md §3](./23-world-model.md#3-object-definitions).
 

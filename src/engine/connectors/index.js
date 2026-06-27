@@ -1,105 +1,74 @@
-import { ingestManualObservation } from "../signals/ingest-manual.js";
+/** @deprecated Phase 2.2.5 transitional module. Use `engine/sensors` instead. */
+import {
+  ingestSensorResult,
+  registerSensor,
+  runSensor as runSensorInternal,
+  clearSensorsForTests,
+  sensorRegistry as connectorRegistry,
+} from "../sensors/index.js";
 
-const registry = new Map();
-
-const REQUIRED_CONNECTOR_FIELDS = [
-  "id",
-  "name",
-  "sourceType",
-  "description",
-  "configSchema",
-  "collectObservations",
-  "validateObservation",
-  "mapObservationToSignalInput",
-];
-
-function assertConnectorShape(connector) {
-  const errors = [];
-  for (const field of REQUIRED_CONNECTOR_FIELDS) {
-    if (connector[field] == null) errors.push(`Missing connector field: ${field}`);
-  }
-  for (const field of ["collectObservations", "validateObservation", "mapObservationToSignalInput"]) {
-    if (typeof connector[field] !== "function") {
-      errors.push(`Connector field must be a function: ${field}`);
-    }
-  }
-  if (errors.length) {
-    throw new Error(errors.join("; "));
-  }
+function adaptConnector(connector) {
+  return {
+    id: connector.id,
+    name: connector.name,
+    description: connector.description,
+    domain: "legacy_connector",
+    sourceTypes: [connector.sourceType],
+    capabilities: ["observe_legacy_connector"],
+    collect: connector.collectObservations.bind(connector),
+    healthCheck: async () => ({ ok: true, message: "Legacy connector shim" }),
+    validate: connector.validateObservation.bind(connector),
+    mapToObservation: connector.mapObservationToSignalInput.bind(connector),
+  };
 }
 
 export function registerConnector(connector) {
-  assertConnectorShape(connector);
-  if (registry.has(connector.id)) {
-    throw new Error(`Connector already registered: ${connector.id}`);
-  }
-  registry.set(connector.id, connector);
-  return connector;
+  return registerSensor(adaptConnector(connector));
 }
 
 export function listConnectors() {
-  return [...registry.values()].map((connector) => ({
-    id: connector.id,
-    name: connector.name,
-    sourceType: connector.sourceType,
-    description: connector.description,
-    configSchema: connector.configSchema,
-  }));
+  return [...connectorRegistry.values()]
+    .filter((sensor) => sensor.domain === "legacy_connector")
+    .map((sensor) => ({
+      id: sensor.id,
+      name: sensor.name,
+      sourceType: sensor.sourceTypes[0],
+      description: sensor.description,
+      configSchema: {},
+    }));
 }
 
 export function getConnectorById(id) {
-  return registry.get(id) || null;
+  const sensor = connectorRegistry.get(id);
+  if (!sensor || sensor.domain !== "legacy_connector") return null;
+  return sensor;
 }
 
 export async function runConnector(id, context = {}) {
-  const connector = getConnectorById(id);
-  if (!connector) {
-    throw new Error(`Unknown connector: ${id}`);
-  }
-
-  const observations = await connector.collectObservations(context);
-  if (!Array.isArray(observations)) {
-    throw new Error(`Connector ${id} must return an array from collectObservations()`);
-  }
-
-  const validatedObservations = [];
-  const signalInputs = [];
-
-  for (const observation of observations) {
-    connector.validateObservation(observation);
-    validatedObservations.push(observation);
-    signalInputs.push(connector.mapObservationToSignalInput(observation));
-  }
-
+  const result = await runSensorInternal(id, context, { publish: false });
   return {
     connectorId: id,
-    observations: validatedObservations,
-    signalInputs,
+    observations: result.observations,
+    signalInputs: result.signalInputs,
   };
 }
 
 export async function ingestConnectorResult(result, options = {}) {
-  const ingested = [];
-  for (let index = 0; index < result.observations.length; index += 1) {
-    const observation = result.observations[index];
-    const signalInput = result.signalInputs[index];
-    const ingestResult = await ingestManualObservation({
-      ...signalInput,
-      originalText: observation.originalText,
+  return ingestSensorResult(
+    {
+      sensorId: result.connectorId,
+      observations: result.observations,
+      signalInputs: result.signalInputs,
+    },
+    {
+      ...options,
       provenance: {
         connectorId: result.connectorId,
         ingestChannel: "connector_sdk",
-        ...(signalInput.provenance || {}),
         ...(options.provenance || {}),
       },
-    });
-    ingested.push(ingestResult);
-  }
-  return ingested;
+    },
+  );
 }
 
-export function clearConnectorsForTests() {
-  registry.clear();
-}
-
-export { registry as connectorRegistry };
+export { clearSensorsForTests as clearConnectorsForTests, connectorRegistry };

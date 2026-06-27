@@ -1,45 +1,54 @@
 # Autopilot Status
 
-Generated: 2026-06-27T15:41:01.133Z
+Generated: 2026-06-27T16:16:39.131Z
 
 ## Current Phase
 
-- **Phase:** Phase 2.2
+- **Phase:** Phase 2.3
 - **Status:** COMPLETE
 
 ## Git
 
 - **Branch:** purge-stage1-opportunity-engine
-- **Last commit:** 754ee7f Add manual signal ingestion (JBROWN, 2026-06-27 10:09:53 -0500)
-- **Summary:** 7 change(s): 3 modified, 4 untracked/new, 0 deleted
+- **Last commit:** cd6d86e Add connector SDK and runtime architecture (JBROWN, 2026-06-27 10:57:13 -0500)
+- **Summary:** 14 change(s): 11 modified, 3 untracked/new, 0 deleted
 
 ### Changed files
 
+- docs/opportunity-os/08-current-phase.md
 - docs/opportunity-os/09-build-log.md
+- docs/opportunity-os/13-folder-map.md
+- docs/opportunity-os/15-api-boundaries.md
+- docs/opportunity-os/23-world-model.md
 - engine-data/signals/signals.json
-- package.json
 - reports/autopilot-log.json
 - reports/autopilot-status.md
-- scripts/opportunity-engine/autopilot-check.js
 - scripts/opportunity-engine/autopilot-status.js
+- src/engine/connectors/index.js
+- src/engine/index.js
+- docs/opportunity-os/25-sensor-framework.md
+- scripts/opportunity-engine/validate-phase-2-3.js
+- src/engine/sensors/
 
 ## Validation Commands
 
+- `node scripts/opportunity-engine/validate-phase-2-3.js`
+- `node scripts/opportunity-engine/validate-phase-2-2-5.js`
 - `node scripts/opportunity-engine/validate-phase-2-2.js`
-- `node scripts/opportunity-engine/validate-phase-2-1.js`
-- `node scripts/opportunity-engine/validate-phase-1.js`
 - `node scripts/opportunity-engine/validate-phase-0-5.js`
+- `node scripts/opportunity-engine/validate-phase-1.js`
+- `node scripts/opportunity-engine/validate-phase-2-1.js`
 
 ## Last Completed Milestone
 
-- **Title:** 2026-06-27 — Autopilot controller (status + preflight check)
-- **Phase:** Tooling
+- **Title:** 2026-06-27 — Phase 2.3 Sensor Framework
+- **Phase:** 2.3
 - **Type:** Milestone
-- **Summary:** Added autopilot status/check scripts that read current phase docs, git state, and validation script presence; emit `reports/autopilot-status.md` and `reports/autopilot-log.json`. Preflight fails on dirty git, blocked next subphase, or missing validators. npm scripts: `autopilot:status`, `autopilot:check`.
+- **Summary:** Replaced Connectors with permanent Sensor Framework (`src/engine/sensors/`). Added sensor manager, lifecycle states, health metrics, and three static demo sensors (Web, Document, CRM). Sensors publish only through Observation/Signal pipeline to runtime storage. Connectors module deprecated as shim.
 
 ## Next Recommended Subphase
 
-Phase 2.3 — **First production connector** — not started.
+Phase 2.4 — **First production sensor or Fact Builder prep** — not started.
 
 ## Blockers
 

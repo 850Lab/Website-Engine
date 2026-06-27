@@ -1,75 +1,70 @@
 # 08 — Current Phase
 
 **Status:** Living document · update when phase changes  
-**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [World Model](./23-world-model.md) · [Runtime Data Boundaries](./24-runtime-data-boundaries.md)
+**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [World Model](./23-world-model.md) · [Sensor Framework](./25-sensor-framework.md)
 
 ---
 
 ## Current Phase
 
-**Phase 2.2.5 — Connector SDK & Runtime Architecture** — **COMPLETE**
+**Phase 2.3 — Sensor Framework** — **COMPLETE**
 
-Phase 2.3 (first production connector) is **blocked** until owner approves and issues an explicit implementation prompt.
-
----
-
-## Phase 2.2.5 Objective
-
-1. Connector SDK foundation (observations only — no production connectors)
-2. Separate runtime operational data from git-tracked code/config
-
-Run: `node scripts/opportunity-engine/validate-phase-2-2-5.js`
+Phase 2.4 is **blocked** until owner approves and issues an explicit implementation prompt.
 
 ---
 
-## Phase 2.2.5 Checklist
+## Phase 2.3 Objective
 
-- [x] `runtime/` directory architecture + `.gitignore`
-- [x] [24-runtime-data-boundaries.md](./24-runtime-data-boundaries.md)
-- [x] `src/engine/runtime/index.js`
-- [x] Signal store runtime adapter (legacy read + runtime write)
-- [x] Raw observations write to `runtime/signals/raw/`
-- [x] `src/engine/connectors/index.js` — Connector SDK
-- [x] `src/engine/connectors/demo/manual-demo-connector.js` — demo only
-- [x] `scripts/opportunity-engine/validate-phase-2-2-5.js`
+Replace transitional Connectors with a permanent **Sensor Framework** — reusable modules that observe reality and emit canonical Observations only.
+
+Run: `node scripts/opportunity-engine/validate-phase-2-3.js`
+
+---
+
+## Phase 2.3 Checklist
+
+- [x] `src/engine/sensors/` — Sensor interface + manager
+- [x] Demo sensors: Web, Document, CRM (static data only)
+- [x] Sensor lifecycle + health tracking
+- [x] Runtime integration via Observation/Signal pipeline
+- [x] [25-sensor-framework.md](./25-sensor-framework.md)
+- [x] `scripts/opportunity-engine/validate-phase-2-3.js`
 - [x] Validation passed
-- [x] No real connectors, facts, problems, opportunities
+- [x] No production sensors, facts, problems, opportunities
 - [x] Mission Control unchanged
 
 ---
 
-## Active Rules (Phase 2.2.5)
+## Active Rules (Phase 2.3)
 
 | Rule | Status |
 |---|---|
+| Sensors observe; they do not reason | **Enforced** |
+| Publish only through Observation/Signal pipeline | **Enforced** |
 | Live data in `runtime/` (gitignored) | **Enforced** |
-| `engine-data/` = seed/config only for new signal writes | **Enforced** |
-| Connectors collect observations only | **Enforced** |
-| No external API calls in SDK validation | **Enforced** |
-| No Fact/Problem/Opportunity inference | **Enforced** |
-| Phase 2.3 blocked until owner approval | **Enforced** |
+| No external API calls in demo sensors | **Enforced** |
+| Connectors deprecated — use Sensors | **Enforced** |
+| Phase 2.4 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 2.3 (Blocked)
+## Phase 2.4 (Blocked)
 
-**First production connector** — not started.
+**First production sensor or Fact Builder prep** — not started.
 
-Requires owner approval. Must use Connector SDK and end at Signal Registry per [World Model §5](./23-world-model.md#5-connector-rule).
-
-Recommended first connector: **CRM outcome webhook** (`crm_event`, structured T0).
+Requires owner approval and explicit implementation prompt.
 
 ---
 
 ## Prior Phases — COMPLETE
 
+### Phase 2.2.5 — Connector SDK & Runtime
+
+Run: `node scripts/opportunity-engine/validate-phase-2-2-5.js` (connectors shim over sensors)
+
 ### Phase 2.2 — Manual Observation Ingestion
 
 Run: `node scripts/opportunity-engine/validate-phase-2-2.js`
-
-### Phase 2.1.5 — World Model
-
-[23-world-model.md](./23-world-model.md)
 
 ---
 
@@ -77,7 +72,7 @@ Run: `node scripts/opportunity-engine/validate-phase-2-2.js`
 
 | Date | Decision |
 |---|---|
-| 2026-06-27 | Phase 2.2.5: runtime/ for live data; Connector SDK; legacy signal store read-only for writes |
-| 2026-06-27 | Phase 2.2.5 validation passed; Phase 2.3 unlocked (blocked until approval) |
+| 2026-06-27 | Phase 2.3: Sensor Framework replaces Connectors as canonical observation model |
+| 2026-06-27 | Phase 2.3 validation passed; Phase 2.4 unlocked (blocked until approval) |
 
 Add entries to [Build Log](./09-build-log.md) for architectural milestones.

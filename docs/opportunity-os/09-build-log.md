@@ -144,14 +144,22 @@ Record architectural milestones here. Implementation details belong in commit me
 ### 2026-06-27 — Phase 2.2.5 Connector SDK and runtime architecture
 **Phase:** 2.2.5  
 **Type:** Milestone  
-**Summary:** Introduced `runtime/` gitignored operational data layer, runtime path module, signal store adapter (legacy read + runtime write), Connector SDK with demo connector only, and validation ensuring live ingest does not dirty git. Documented engine-data vs runtime boundaries.  
-**Links:** [24-runtime-data-boundaries.md](./24-runtime-data-boundaries.md), `src/engine/runtime/`, `src/engine/connectors/`, `scripts/opportunity-engine/validate-phase-2-2-5.js`
+**Summary:** Introduced `runtime/` gitignored operational data layer, runtime path module, signal store adapter (legacy read + runtime write), transitional Connector SDK with demo connector only, and validation ensuring live ingest does not dirty git. Superseded by Sensor Framework in Phase 2.3.  
+**Links:** [24-runtime-data-boundaries.md](./24-runtime-data-boundaries.md), `src/engine/runtime/`, `src/engine/connectors/`
+
+---
+
+### 2026-06-27 — Phase 2.3 Sensor Framework
+**Phase:** 2.3  
+**Type:** Milestone  
+**Summary:** Replaced Connectors with permanent Sensor Framework (`src/engine/sensors/`). Added sensor manager, lifecycle states, health metrics, and three static demo sensors (Web, Document, CRM). Sensors publish only through Observation/Signal pipeline to runtime storage. Connectors module deprecated as shim.  
+**Links:** [25-sensor-framework.md](./25-sensor-framework.md), `scripts/opportunity-engine/validate-phase-2-3.js`
 
 ---
 
 ## Future Entries (Reserved)
 
-<!-- Phase 2.3 first production connector -->
+<!-- Phase 2.4 first production sensor or fact builder prep -->
 <!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->

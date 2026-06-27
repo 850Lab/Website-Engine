@@ -260,19 +260,25 @@ Reality
 
 ---
 
-## 5. Connector Rule
+## 5. Sensor Rule
 
-Every connector is an **Observation capture adapter**. It must obey:
+Every **Sensor** (formerly "connector") is an **Observation capture module**. It must obey:
 
 | Rule | Detail |
 |---|---|
-| **C1** | Every connector **ends** by producing canonical **Signals** via `createSignal()` / Signal Registry API |
-| **C2** | **No connector may bypass** the Signal Registry |
-| **C3** | **No connector may directly create Opportunities** |
-| **C4** | **No connector may write to Mission Control** |
-| **C5** | **No connector may invent its own storage pipeline** (no parallel JSON stores, no UI writes) |
-| **C6** | Connectors may write **Observations** (`rawTextRef`) and **Signals** only |
-| **C7** | Fact extraction, problem inference, and opportunity creation are **downstream engine stages** — not connector responsibilities |
+| **S1** | Every sensor **ends** by publishing canonical **Observations** through the Signal Registry pipeline |
+| **S2** | **No sensor may bypass** the Signal Registry |
+| **S3** | **No sensor may directly create Opportunities** |
+| **S4** | **No sensor may write to Mission Control** |
+| **S5** | **No sensor may invent its own storage pipeline** |
+| **S6** | Sensors may write **Observations** (`runtime/signals/raw/`) and **Signals** only |
+| **S7** | Fact extraction, problem inference, and opportunity creation are **downstream** — not sensor responsibilities |
+
+Implementation: [25-sensor-framework.md](./25-sensor-framework.md) · `src/engine/sensors/`
+
+### Connector Rule (Deprecated)
+
+Phase 2.2.5 **Connectors** are deprecated. The rules above supersede the former Connector Rule. `src/engine/connectors/` remains a regression shim only.
 
 **Allowed connector output:**
 
@@ -286,20 +292,11 @@ External source → Observation (raw) → Signal (registry) → [engine pipeline
 External source → Opportunity / CRM queue / Mission Control  ❌
 ```
 
-Legacy discovery scripts (`src/discovery/`, `website-find-leads.js`) must converge to this rule in Phase 2.3+ — not expand parallel paths.
+Legacy discovery scripts must converge to this rule — not expand parallel paths.
 
-### Connector SDK (Phase 2.2.5)
+### Sensor Framework (Phase 2.3)
 
-Production connectors implement the interface in `src/engine/connectors/`:
-
-- `collectObservations(context)` — return canonical observation objects (no network required in tests)
-- `validateObservation(observation)` — schema/trust checks
-- `mapObservationToSignalInput(observation)` — map to manual ingest input
-- `ingestConnectorResult()` — runs observations through `ingestManualObservation()` (raw archive + registry)
-
-Live data writes go to **`runtime/`** (gitignored), not `engine-data/`. See [24-runtime-data-boundaries.md](./24-runtime-data-boundaries.md).
-
-Demo connector only in Phase 2.2.5: `src/engine/connectors/demo/manual-demo-connector.js`.
+See [25-sensor-framework.md](./25-sensor-framework.md). Demo sensors only in Phase 2.3.
 
 ---
 
