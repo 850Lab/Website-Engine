@@ -1,75 +1,86 @@
 # 08 — Current Phase
 
 **Status:** Living document · update when phase changes  
-**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [Architecture Rules](./07-architecture-rules.md) · [Ontology Convergence Plan](./21-ontology-convergence-plan.md)
+**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [Architecture Rules](./07-architecture-rules.md) · [Ontology Convergence Plan](./21-ontology-convergence-plan.md) · [Signal & Problem Pipeline](./22-signal-and-problem-pipeline.md)
 
 ---
 
 ## Current Phase
 
-**Phase 0.5 — Alignment (Constitution → Engine)**
+**Phase 2.0 — Signal Object & Problem Inference Pipeline (Design)** — **ACTIVE**
 
-Phase 0 (AI Constitution documentation) is complete. Phase 0.5 aligns the repository with the Constitution before Phase 1 Executive OS work begins.
-
----
-
-## Current Objective
-
-Validate and maintain Phase 0.5 deliverables:
-
-1. [Ontology Convergence Plan](./21-ontology-convergence-plan.md)
-2. Capability registry (`engine-data/capabilities/`, `src/engine/capabilities/`)
-3. Score Council (`src/engine/score-council/`)
-
-Run: `node scripts/opportunity-engine/validate-phase-0-5.js`
+Phase 1 (Mission Control) is **COMPLETE**. Phase 2 implementation is **NOT started**. Only the Phase 2.0 design blueprint is active.
 
 ---
 
-## Active Rules (Phase 0.5)
+## Phase 2.0 Objective
+
+Design the canonical Signal object, Problem object, inference pipeline, fan-out rules, and AI cost tiers — without building connectors, crawlers, or autonomous agents.
+
+**Primary artifact:** [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md)
+
+---
+
+## Phase 2.0 Checklist
+
+- [x] Signal object schema defined (§1)
+- [x] Canonical signal types enumerated (§2)
+- [x] Signal lifecycle with entry/exit/failure modes (§3)
+- [x] Problem object schema defined (§4)
+- [x] Problem types enumerated (§5)
+- [x] Inference pipeline designed (§6)
+- [x] Multi-opportunity fan-out examples (§7)
+- [x] Cost and AI tier rules (§8)
+- [x] Phase 2 build plan — first 3 steps (§9)
+- [ ] Owner review and approval of Phase 2.0 design
+- [ ] Phase 2.1 implementation authorized
+
+---
+
+## Active Rules (Phase 2.0)
 
 | Rule | Status |
 |---|---|
-| Do NOT build Phase 1 executive UI pages | **Enforced** |
-| Do NOT refactor legacy systems for convenience | **Enforced** |
-| Do NOT delete legacy modules or JSON stores | **Enforced** |
-| Do NOT change app behavior except validation-safe engine projections | **Enforced** |
-| Phase 1 implementation | **Blocked until Phase 0.5 validated + owner approves Phase 1** |
+| Documentation only — no implementation code | **Enforced** |
+| Do NOT build connectors yet | **Enforced** |
+| Do NOT build crawlers or autonomous agents | **Enforced** |
+| Do NOT LLM-process every signal (design law) | **Documented in §8** |
+| Engine remains truth; Mission Control remains projection | **Enforced** |
+| Do NOT refactor legacy for convenience | **Enforced** |
 
 ---
 
-## Phase 0 Checklist
+## Phase 2.1 Implementation (Blocked)
 
-- [x] Study existing repository
-- [x] Create Constitution documents 00–20
-- [ ] Owner review and approval of Constitution
-- [x] Phase 0.5 ontology convergence plan
-- [x] Phase 0.5 capability registry
-- [x] Phase 0.5 score council
-- [x] Phase 0.5 validation script
+Implementation begins only after:
 
----
+1. Owner approves [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md)
+2. [08-current-phase.md](./08-current-phase.md) updated to Phase 2.1 ACTIVE
+3. Explicit implementation prompt issued
 
-## Phase 0.5 Checklist
+**First 3 steps (when authorized):**
 
-- [x] `docs/opportunity-os/21-ontology-convergence-plan.md`
-- [x] `engine-data/capabilities/capabilities.json`
-- [x] `src/engine/capabilities/index.js`
-- [x] Offers linked via `capabilityIds`
-- [x] `src/engine/score-council/index.js`
-- [x] Radar exposes `scoreVector`, `scoreCouncil`, compatible `opportunityScore`
-- [x] `scripts/opportunity-engine/validate-phase-0-5.js`
+1. Signal registry and data store
+2. Manual signal ingestion script
+3. First connector (owner-selected — not built in 2.0)
+
+See [22-signal-and-problem-pipeline.md §9](./22-signal-and-problem-pipeline.md#9-phase-2-build-plan).
 
 ---
 
-## Next Phase (Not Started)
+## Prior Phases — COMPLETE
 
-**Phase 1 — Executive OS**
+### Phase 1 — Mission Control (Executive OS)
 
-First implementation prompt after Phase 0.5 validation + owner approval:
+Run: `node scripts/opportunity-engine/validate-phase-1.js`
 
-> *"Read the AI Constitution and build Phase 1 exit criteria only. Start with evidence assembler and engine-backed Pivotal OS pages."*
+### Phase 0.5 — Alignment
 
-See [Roadmap — Phase 1](./01-roadmap.md#phase-1--executive-os).
+Run: `node scripts/opportunity-engine/validate-phase-0-5.js`
+
+### Phase 0 — AI Constitution
+
+Constitution documents 00–22 in `docs/opportunity-os/`.
 
 ---
 
@@ -80,5 +91,8 @@ See [Roadmap — Phase 1](./01-roadmap.md#phase-1--executive-os).
 | 2026-06-23 | Constitution folder created; Phase 0 active |
 | 2026-06-23 | Phase 0.5: `src/engine` remains truth spine; JSON OK; no graph DB; no legacy demolition |
 | 2026-06-23 | Score Council introduced; `opportunityScore` = composite projection |
+| 2026-06-23 | Phase 1: Mission Control is single executive API; evidence assembler; Pivotal OS projection-only |
+| 2026-06-23 | Phase 1 validation passed; Phase 2 unlocked |
+| 2026-06-23 | Phase 2.0: Signal and Problem pipeline blueprint — design active, implementation blocked |
 
 Add entries to [Build Log](./09-build-log.md) for architectural milestones.

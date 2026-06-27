@@ -93,11 +93,25 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 1 Mission Control (Executive OS)
+**Phase:** 1  
+**Type:** Milestone  
+**Summary:** Introduced `buildMissionControl()` as the single executive API projection. Added evidence assembler (`src/engine/evidence/`) for explainability from Score Council, database analysis, capabilities, offers, markets, and execution. Pivotal OS home now consumes Mission Control only (no UI scoring). Report generator produces `reports/mission-control.md`. Validation: `scripts/opportunity-engine/validate-phase-1.js`.  
+**Links:** `src/engine/mission-control/`, `src/engine/evidence/`, `src/pivotal-os/pages/home.js`, `scripts/opportunity-engine/generate-mission-control-report.js`
+
+---
+
+### 2026-06-23 — Phase 2.0 Signal and Problem Inference Pipeline (design)
+**Phase:** 2.0  
+**Type:** Constitution  
+**Summary:** Defined canonical Signal object (27 fields + lifecycle states), Problem object schema, 17 signal types, 15 problem types, full inference pipeline from capture through Score Council to Mission Control, multi-opportunity fan-out examples, and tiered AI cost rules (rules-first; LLM on <5% of signals). Recommended Phase 2.1 build sequence: signal store → manual ingest → first connector. No implementation authorized.  
+**Links:** [22-signal-and-problem-pipeline.md](./22-signal-and-problem-pipeline.md), [08-current-phase.md](./08-current-phase.md)
+
+---
+
 ## Future Entries (Reserved)
 
-<!-- Phase 0 approval -->
-<!-- Phase 1 Score Council -->
-<!-- Phase 1 Executive Terminal complete -->
+<!-- Phase 2.1 signal registry implementation -->
 <!-- Phase 2 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->
