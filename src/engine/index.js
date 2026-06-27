@@ -10,3 +10,5 @@ export * from "./opportunities/index.js";
 export * from "./score-council/index.js";
 export * from "./intelligence/index.js";
 export * from "./market-analysis/index.js";
+export * from "./evidence/index.js";
+export * from "./mission-control/index.js";
