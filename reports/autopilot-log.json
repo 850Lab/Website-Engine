@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-06-27T15:41:01.133Z",
+  "currentPhase": "Phase 2.2",
+  "currentPhaseStatus": "COMPLETE",
+  "lastCommit": "754ee7f Add manual signal ingestion (JBROWN, 2026-06-27 10:09:53 -0500)",
+  "branch": "purge-stage1-opportunity-engine",
+  "dirtyFiles": [
+    "docs/opportunity-os/09-build-log.md",
+    "engine-data/signals/signals.json",
+    "package.json",
+    "reports/autopilot-log.json",
+    "reports/autopilot-status.md",
+    "scripts/opportunity-engine/autopilot-check.js",
+    "scripts/opportunity-engine/autopilot-status.js"
+  ],
+  "gitStatusSummary": "7 change(s): 3 modified, 4 untracked/new, 0 deleted",
+  "recommendedNextStep": "Stop for owner approval. Review reports/autopilot-status.md, then authorize the next blocked subphase in docs/opportunity-os/08-current-phase.md.",
+  "nextRecommendedSubphase": "Phase 2.3 — **First production connector** — not started.",
+  "blockers": [
+    "Next subphase is blocked until owner approval and explicit implementation prompt."
+  ],
+  "ownerApprovalRequired": true,
+  "validationCommands": [
+    "node scripts/opportunity-engine/validate-phase-2-2.js",
+    "node scripts/opportunity-engine/validate-phase-2-1.js",
+    "node scripts/opportunity-engine/validate-phase-1.js",
+    "node scripts/opportunity-engine/validate-phase-0-5.js"
+  ],
+  "missingValidationScripts": []
+}

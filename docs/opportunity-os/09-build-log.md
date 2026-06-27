@@ -133,6 +133,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-27 — Autopilot controller (status + preflight check)
+**Phase:** Tooling  
+**Type:** Milestone  
+**Summary:** Added autopilot status/check scripts that read current phase docs, git state, and validation script presence; emit `reports/autopilot-status.md` and `reports/autopilot-log.json`. Preflight fails on dirty git, blocked next subphase, or missing validators. npm scripts: `autopilot:status`, `autopilot:check`.  
+**Links:** `scripts/opportunity-engine/autopilot-status.js`, `scripts/opportunity-engine/autopilot-check.js`
+
+---
+
 ## Future Entries (Reserved)
 
 <!-- Phase 2.3 first production connector -->

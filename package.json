@@ -25,7 +25,9 @@
     "validate:id-bridge-without-map": "node scripts/validate-id-bridge-without-map.js",
     "validate:schema-production-mode": "node scripts/validate-schema-production-mode.js",
     "verify:production-schema": "node scripts/verify-production-schema-effect.js",
-    "server:schema-production": "node scripts/run-schema-production-server.js"
+    "server:schema-production": "node scripts/run-schema-production-server.js",
+    "autopilot:status": "node scripts/opportunity-engine/autopilot-status.js",
+    "autopilot:check": "node scripts/opportunity-engine/autopilot-check.js"
   },
   "engines": {
     "node": ">=20"
