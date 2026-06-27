@@ -85,6 +85,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 0.5 alignment (ontology, capabilities, score council)
+**Phase:** 0.5  
+**Type:** Milestone  
+**Summary:** Phase 0.5 alignment introduced ontology convergence plan, first-class capability registry (`engine-data/capabilities/`), offer→capability linking, and Score Council with CEO modes. Radar now exposes `scoreVector` and `scoreCouncil` while preserving `opportunityScore` as composite projection.  
+**Links:** [21-ontology-convergence-plan.md](./21-ontology-convergence-plan.md), `src/engine/score-council/`, `scripts/opportunity-engine/validate-phase-0-5.js`
+
+---
+
 ## Future Entries (Reserved)
 
 <!-- Phase 0 approval -->

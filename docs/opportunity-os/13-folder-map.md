@@ -11,8 +11,11 @@
 
 | Path | Purpose | Owner | Dependencies | Future direction |
 |---|---|---|---|---|
-| **`src/engine/`** | Opportunity logic: radar, factory, scoring, mission, execution projections | Platform / OS team | `engine-data/`, `data/` reads | Expand Score Council, problem factory; sole business logic home |
-| **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `capabilities/`, `ceo-modes/` |
+| **`src/engine/`** | Opportunity logic: radar, factory, scoring, mission, execution projections | Platform / OS team | `engine-data/`, `data/` reads | Problem factory Phase 3; sole business logic home |
+| **`src/engine/capabilities/`** | Load capability registry | Platform | `engine-data/capabilities/` | Used by offers join + future factory |
+| **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
+| **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
+| **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
 | **`src/schema/`** | Locked 8-entity persistence schema | Platform | `data/*.json` | Converge with Constitution ontology gradually |
 | **`src/services/`** | Schema service layer, flags, id-bridge, dual-read, schema queue/outcomes | Platform | `schema/`, legacy stores | Shrink as graph writer replaces bridges |
 

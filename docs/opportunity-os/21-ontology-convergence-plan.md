@@ -1,0 +1,156 @@
+# 21 — Ontology Convergence Plan
+
+**Status:** Phase 0.5 · Alignment document  
+**Related:** [Ontology](./02-ontology.md) · [Data Model](./14-data-model.md) · [Architecture Rules](./07-architecture-rules.md) · [Capability Registry](./05-capability-registry.md) · [Roadmap — Phase 1](./01-roadmap.md#phase-1--executive-os)
+
+---
+
+## Purpose
+
+Map **current repository objects** to the **Constitution ontology** so engineers and AI agents know what exists today, what it becomes, and what must not be done prematurely.
+
+---
+
+## Phase 0.5 Decisions (Locked)
+
+| Decision | Stance |
+|---|---|
+| **Truth spine** | `src/engine/` remains the runtime source of truth for opportunity logic |
+| **Graph DB** | **Not implemented** in Phase 0.5 — conceptual model only ([Knowledge Graph](./03-knowledge-graph.md)) |
+| **JSON persistence** | **Acceptable** for Stage 0/1 (`data/`, `engine-data/`) |
+| **Legacy demolition** | **No** legacy file or module removal during Phase 0.5 |
+| **Score model** | Score Council introduced; `opportunityScore` retained as composite projection |
+| **Capabilities** | First-class in `engine-data/capabilities/` + `src/engine/capabilities/` |
+
+Phase 1 remains **blocked** until owner approves Constitution + Phase 0.5 validation passes.
+
+---
+
+## Object Mapping Table
+
+### Entity data
+
+| Current location | Constitutional object | Current role | Long-term role | Migration path | What NOT to do yet |
+|---|---|---|---|---|---|
+| `data/businesses.json` | **Entity: Company** | Schema-backed business records; discovery output | Canonical company node in graph | Continue dual-write/migration via `src/services/businesses.js`; later Graph Writer upserts | Do not delete legacy QB mirror; do not require graph DB |
+| `data/contacts.json` | **Entity: Person / Contact Method** | Phone/email contacts linked to businesses | Person nodes + contact method edges | Keep schema Contact entity; enrich with graph IDs later | Do not merge into CRM JSON stores |
+
+### Configuration & commercial
+
+| Current location | Constitutional object | Current role | Long-term role | Migration path | What NOT to do yet |
+|---|---|---|---|---|---|
+| `engine-data/offers/offers.json` | **Offer** (+ links to **Capability**) | Commercial offer definitions | Packaged capabilities for sale | Phase 0.5: add `capabilityIds[]`; Phase 3: match via problems not `bestBuyers` alone | Do not remove `bestBuyers` until problem factory exists |
+| `engine-data/capabilities/capabilities.json` | **Capability** | First-class capability registry (Phase 0.5) | Internal delivery truth | Loaded by `src/engine/capabilities/`; offers join here | Do not duplicate capability fields inside offer silos |
+| `engine-data/markets/markets.json` | **Market** (transitional) | Directional TAM/contract estimates + keywords | Region/demand context node, not primary matcher | Used for economics enrichment in factory; demote as matching axis in Phase 3 | Do not treat markets as permanent substitute for Problem objects |
+
+### Engine modules
+
+| Current location | Constitutional object | Current role | Long-term role | Migration path | What NOT to do yet |
+|---|---|---|---|---|---|
+| `src/engine/opportunities/` | **Opportunity Factory** (transitional) | Industry × offer candidate generation | Problem → capability → offer → opportunity | Phase 3 adds Problem inference; factory output converges to ontology Opportunity | Do not rewrite legacy queues to match factory only |
+| `src/engine/intelligence/` | **Opportunity Radar** (projection) | Ranks opportunities via Score Council + enrichment | Executive terminal data source | Phase 0.5: Score Council; Phase 1: evidence bundles | Do not move ranking logic into UI or legacy modules |
+| `src/engine/score-council/` | **Decision Engine / Score Council** | Independent score vectors + CEO modes | Authoritative scoring (composite = projection) | Phase 0.5 implemented; learning calibrates weights in Phase 5 | Do not collapse back to single opaque score in new code |
+| `src/engine/execution/` | **Execution Plan** (seed) | Mission-scoped buyer plan | Full plan graph per opportunity | Phase 4 expands; wrap legacy sales-mode as adapter | Do not replace Twilio/sales-mode yet |
+| `src/engine/industry-discovery/` | **Entity analytics** (transitional) | Groups businesses by industry tag | Input to contact coverage / confidence engines | Absorbed into signal/fact pipeline over time | Do not treat industry as constitutional primary axis |
+| `src/engine/market-analysis/` | **Evidence / Confidence** input | Database evidence for markets/industries | Fact store queries | Feeds Score Council confidence engine | Do not LLM-wrap this layer |
+
+### Projections & reports
+
+| Current location | Constitutional object | Current role | Long-term role | Migration path | What NOT to do yet |
+|---|---|---|---|---|---|
+| `reports/ktm-opportunity-report.md` | **Report projection** | Generated KTM meeting markdown | Template output from radar + evidence | Generated by `scripts/opportunity-engine/` | Do not treat report as source of truth |
+| `src/pivotal-os/pages/home.js` | **Executive UI projection** | Renders radar top opportunity | Bloomberg-style terminal slice | Phase 1 expands; reads engine only | Do not add business logic to UI in Phase 0.5 |
+| `src/mission-control/` | **Execution adapter (website)** | Legacy sales queue + outcomes | Dispatch adapter for Execution Plan tasks | Dual-write continues; read cutover via schema flags | Do not demolish; do not expand write paths |
+| `src/pressure-washing/` | **Execution adapter (PW)** | Legacy PW queue + outcomes | Same as website adapter | Same migration pattern as mission-control | Same |
+| `src/outreach-focus/` | **Focus config projection** | Queue sort + metrics overlay | CEO mission/focus config (engine-data) | Move config to engine-data in Phase 1 | Do not make focus file graph truth |
+| `data/qualified-businesses.json` | **Legacy CRM projection** | Website operator write source (transitional) | Read-only adapter → archive | B1 cutover per migration runbooks | **Do not delete** |
+| `data/pressure-washing-leads.json` | **Legacy CRM projection** | PW operator write source (transitional) | Read-only adapter → archive | Same | **Do not delete** |
+| `src/schema/*` | **Persistence entities** | Locked 8-entity store | Subset of ontology persisted in OLTP | Converge fields toward [Data Model](./14-data-model.md) | Do not add entities without amendment |
+
+---
+
+## Layer Diagram (Today → Target)
+
+```
+TODAY (Phase 0.5)
+─────────────────
+Reality
+  └── data/businesses + contacts (Entity projection)
+  └── engine-data/offers + capabilities (Offer + Capability)
+  └── engine-data/markets (Market transitional)
+        │
+        ▼
+src/engine/opportunities (Factory transitional)
+        │
+        ▼
+src/engine/score-council (Decision Engine)  ← NEW Phase 0.5
+        │
+        ▼
+src/engine/intelligence (Radar projection)
+        │
+        ├──► pivotal-os / reports (UI/report projections)
+        └──► legacy CRM adapters (mission-control, PW)
+
+TARGET (Post Phase 3–5)
+───────────────────────
+Signals → Facts → Graph → Problems → Capabilities → Offers
+  → Opportunities → Score Council → Execution Plans → Outcomes → Learning
+```
+
+Graph storage arrives **after** engine semantics are stable — not before.
+
+---
+
+## Convergence Sequence
+
+| Step | Phase | Action |
+|---|---|---|
+| 1 | **0.5** | Capability registry + Score Council + this document |
+| 2 | **1** | Engine-backed executive pages; CEO modes in UI; evidence assembler v0 |
+| 3 | **2** | Signal + Fact objects; event log; stop expanding legacy writes |
+| 4 | **3** | Problem-centric factory; demote industry×offer matching |
+| 5 | **4** | Execution Plan as truth; CRM as projection only |
+| 6 | **5** | Learning calibrates Score Council; Forecast objects |
+
+---
+
+## Schema ↔ Constitution Gap (Explicit)
+
+| Constitution object | Schema entity today | Gap |
+|---|---|---|
+| Opportunity | `schema/opportunity.js` | Missing `problemId`, full `scoreVector` |
+| Outcome | `schema/attempt.js` | Partial Outcome |
+| Learning | `schema/learning-report.js` | Not wired to Score Council yet |
+| Signal, Fact, Problem | None | Phase 2–3 |
+| Capability | None in schema | Lives in `engine-data` only (correct for now) |
+
+**Do not** add schema entities in Phase 0.5 to close this gap.
+
+---
+
+## What NOT to Do in Phase 0.5
+
+1. Implement graph database or Graph Writer service  
+2. Delete or stop seeding legacy JSON files  
+3. Refactor mission-control / pressure-washing logic into engine  
+4. Build Phase 1 executive pages beyond existing home radar  
+5. Remove `opportunityScore` field (backward compatibility)  
+6. Replace industry×offer factory with problem factory (Phase 3)  
+
+---
+
+## Validation
+
+Phase 0.5 complete when:
+
+```bash
+node scripts/opportunity-engine/validate-phase-0-5.js
+```
+
+passes. See [Testing Strategy](./16-testing-strategy.md).
+
+---
+
+## Amendment
+
+Changes to convergence decisions require [Build Log](./09-build-log.md) entry and owner approval.

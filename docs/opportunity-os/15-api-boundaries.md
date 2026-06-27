@@ -13,10 +13,11 @@ Defines **who owns what** and **allowed import directions**.
 |---|---|---|---|
 | **Signals** | `discovery-adapters` → future Signal Engine | `ingestSignal()`, connector registry | Fact extractor, graph writer |
 | **Knowledge Graph** | Future Graph Writer / Reader | `writeNode`, `writeEdge`, `querySubgraph` | All intelligence modules |
-| **Capabilities** | `engine-data/capabilities` + registry loader | `listCapabilities()`, `getCapability()` | Factory, scoring, agents |
-| **Offers** | `engine/offers` | `listOffers()`, `getOfferById()` | Factory, radar |
-| **Opportunities** | `engine/opportunities` + `engine/intelligence` | `generateOpportunities()`, `buildOpportunityRadar()` | UI, reports |
-| **Scoring** | Future `engine/score-council` | `scoreOpportunity()`, `applyCeoMode()` | Intelligence, UI |
+| **Capabilities** | `engine/capabilities` + `engine-data/capabilities` | `listCapabilities()`, `getCapabilityById()` | Offers join, factory, scoring, agents |
+| **Offers** | `engine/offers` | `listOffers()`, `getOfferById()`, `getOfferWithCapabilities()`, `listOffersWithCapabilities()` | Factory, radar, reports |
+| **Opportunities** | `engine/opportunities` | `generateOpportunities()` | Intelligence, reports |
+| **Score Council** | `engine/score-council` | `scoreOpportunity(opportunity, mode)` | **Owns score vectors and CEO mode weighting** |
+| **Opportunity Radar** | `engine/intelligence` | `buildOpportunityRadar({ mode })` | **Projection consumer** of factory + Score Council; UI, reports |
 | **Mission** | `engine/campaigns` + `engine/operating-picture` | `getActiveMission()`, `buildOperatingPicture()` | UI, execution |
 | **Execution** | `engine/execution` → future Execution Engine | `buildExecutionPlan()` | Dispatch adapters, UI |
 | **CRM projection** | `mission-control`, `pressure-washing`, `services/schema-outcomes` | Route handlers only | Operators |

@@ -1,0 +1,196 @@
+[
+  {
+    "id": "website_growth",
+    "name": "Website Growth",
+    "category": "Digital",
+    "problemsSolved": [
+      "low_conversion",
+      "weak_credibility",
+      "lost_inbound_leads",
+      "poor_mobile_presence",
+      "no_proof_of_work"
+    ],
+    "kpisImproved": [
+      "Estimate requests",
+      "Form submissions",
+      "Calls",
+      "Conversion rate",
+      "Time on site"
+    ],
+    "typicalBuyers": [
+      "Trade contractors",
+      "Local service businesses",
+      "B2C service providers with high search intent"
+    ],
+    "decisionMakers": ["Owner", "General manager", "Office manager", "Marketing coordinator"],
+    "deliveryRequirements": ["Discovery call", "Preview build", "Launch support"],
+    "marginProfile": { "typicalMarginPct": 0.55, "typicalContractLow": 3000, "typicalContractHigh": 25000 },
+    "executionDifficulty": 4,
+    "revenuePotential": { "annualLow": 3000, "annualHigh": 25000, "recurring": true },
+    "notes": "Speed-to-preview and industry-specific copy are primary differentiators."
+  },
+  {
+    "id": "exterior_cleaning",
+    "name": "Exterior Cleaning",
+    "category": "Property Services",
+    "problemsSolved": [
+      "poor_first_impression",
+      "neglected_entrance",
+      "grease_and_dirt_accumulation",
+      "compliance_appearance"
+    ],
+    "kpisImproved": [
+      "Jobs booked",
+      "Repeat service rate",
+      "Before-after quality",
+      "Contract retention"
+    ],
+    "typicalBuyers": ["Restaurants", "Retail pads", "Medical offices", "Property managers"],
+    "decisionMakers": ["Owner", "Facilities manager", "Operations manager"],
+    "deliveryRequirements": ["Site walk", "Quote", "Scheduled service crew"],
+    "marginProfile": { "typicalMarginPct": 0.45, "typicalContractLow": 500, "typicalContractHigh": 8000 },
+    "executionDifficulty": 3,
+    "revenuePotential": { "annualLow": 6000, "annualHigh": 96000, "recurring": true },
+    "notes": "Route density and visual proof drive conversion."
+  },
+  {
+    "id": "ktm_labor",
+    "name": "KTM Labor",
+    "category": "Labor and Safety",
+    "problemsSolved": [
+      "labor_shortage",
+      "schedule_delays",
+      "surge_staffing",
+      "skilled_trade_gaps"
+    ],
+    "kpisImproved": [
+      "Time to fill",
+      "Jobs filled",
+      "Hours worked",
+      "Schedule adherence",
+      "Overtime reduction"
+    ],
+    "typicalBuyers": [
+      "Industrial sites",
+      "Contractors",
+      "Turnaround projects",
+      "Facilities under expansion"
+    ],
+    "decisionMakers": ["Project manager", "Site superintendent", "HR manager", "Procurement"],
+    "deliveryRequirements": ["Compliance check", "Cert verification", "Crew deployment"],
+    "marginProfile": { "typicalMarginPct": 0.28, "typicalContractLow": 50000, "typicalContractHigh": 5000000 },
+    "executionDifficulty": 6,
+    "revenuePotential": { "annualLow": 50000, "annualHigh": 5000000, "recurring": true },
+    "notes": "Turnaround experience and regional crew network are core advantages."
+  },
+  {
+    "id": "fire_watch",
+    "name": "Fire Watch",
+    "category": "Labor and Safety",
+    "problemsSolved": [
+      "hot_work_compliance",
+      "insurance_requirements",
+      "shutdown_safety_coverage"
+    ],
+    "kpisImproved": ["Compliance incidents", "Coverage hours", "Response time"],
+    "typicalBuyers": ["Refineries", "Chemical plants", "Construction sites", "Turnaround contractors"],
+    "decisionMakers": ["Safety manager", "Construction manager", "HSE director"],
+    "deliveryRequirements": ["Fire watch certification", "24/7 dispatch capability"],
+    "marginProfile": { "typicalMarginPct": 0.35, "typicalContractLow": 5000, "typicalContractHigh": 500000 },
+    "executionDifficulty": 7,
+    "revenuePotential": { "annualLow": 25000, "annualHigh": 500000, "recurring": false },
+    "notes": "Often bundled with KTM labor on industrial and construction projects."
+  },
+  {
+    "id": "hole_watch",
+    "name": "Hole Watch",
+    "category": "Labor and Safety",
+    "problemsSolved": [
+      "confined_space_compliance",
+      "opening_safety_coverage",
+      "maintenance_safety_gaps"
+    ],
+    "kpisImproved": ["Compliance", "Incident prevention", "Coverage continuity"],
+    "typicalBuyers": ["Industrial maintenance", "Construction sites", "Turnaround contractors"],
+    "decisionMakers": ["Safety manager", "Turnaround planner"],
+    "deliveryRequirements": ["Hole watch certification", "Job hazard analysis"],
+    "marginProfile": { "typicalMarginPct": 0.35, "typicalContractLow": 5000, "typicalContractHigh": 300000 },
+    "executionDifficulty": 7,
+    "revenuePotential": { "annualLow": 20000, "annualHigh": 300000, "recurring": false },
+    "notes": "Integrated with fire watch and safety support packages."
+  },
+  {
+    "id": "safety_support",
+    "name": "Safety Support",
+    "category": "Labor and Safety",
+    "problemsSolved": [
+      "safety_staffing_gaps",
+      "compliance_audits",
+      "site_safety_coverage"
+    ],
+    "kpisImproved": ["Recordable incidents", "Audit pass rate", "Training completion"],
+    "typicalBuyers": ["Industrial", "Construction", "Large facilities"],
+    "decisionMakers": ["HSE director", "Site manager"],
+    "deliveryRequirements": ["Safety program alignment", "Certified personnel"],
+    "marginProfile": { "typicalMarginPct": 0.3, "typicalContractLow": 10000, "typicalContractHigh": 1000000 },
+    "executionDifficulty": 8,
+    "revenuePotential": { "annualLow": 50000, "annualHigh": 1000000, "recurring": true },
+    "notes": "Cross-sell with labor, fire watch, and hole watch."
+  },
+  {
+    "id": "maintenance_support",
+    "name": "Maintenance Support",
+    "category": "Property Services",
+    "problemsSolved": [
+      "deferred_maintenance",
+      "downtime",
+      "reliability_risk",
+      "facility_backlog"
+    ],
+    "kpisImproved": ["Uptime", "MTBF", "Cost per asset", "Backlog reduction"],
+    "typicalBuyers": ["Plants", "Hospitals", "Schools", "Commercial portfolios"],
+    "decisionMakers": ["Facilities director", "Plant manager"],
+    "deliveryRequirements": ["Inspection", "Maintenance plan", "Recurring service schedule"],
+    "marginProfile": { "typicalMarginPct": 0.32, "typicalContractLow": 25000, "typicalContractHigh": 2000000 },
+    "executionDifficulty": 6,
+    "revenuePotential": { "annualLow": 25000, "annualHigh": 2000000, "recurring": true },
+    "notes": "Natural cross-sell from exterior cleaning and industrial labor."
+  },
+  {
+    "id": "lead_generation",
+    "name": "Lead Generation",
+    "category": "Growth",
+    "problemsSolved": [
+      "empty_pipeline",
+      "unpredictable_inbound",
+      "poor_targeting"
+    ],
+    "kpisImproved": ["Qualified leads", "Cost per lead", "Conversion to opportunity"],
+    "typicalBuyers": ["Internal capabilities", "B2B service businesses"],
+    "decisionMakers": ["CEO", "Sales leader", "Marketing lead"],
+    "deliveryRequirements": ["ICP definition", "Discovery workflow", "Qualification rules"],
+    "marginProfile": { "typicalMarginPct": 0.6, "typicalContractLow": 2000, "typicalContractHigh": 20000 },
+    "executionDifficulty": 4,
+    "revenuePotential": { "annualLow": 24000, "annualHigh": 240000, "recurring": true },
+    "notes": "Meta-capability powered by the Opportunity OS itself."
+  },
+  {
+    "id": "ai_automation",
+    "name": "AI Automation",
+    "category": "Technology",
+    "problemsSolved": [
+      "manual_workflows",
+      "slow_response",
+      "data_silos",
+      "repetitive_analysis"
+    ],
+    "kpisImproved": ["Hours saved", "Error reduction", "Response time", "Throughput"],
+    "typicalBuyers": ["Operations-heavy businesses", "Agencies", "Industrial back-office"],
+    "decisionMakers": ["COO", "CTO", "Owner"],
+    "deliveryRequirements": ["Process mapping", "Integration plan", "Human approval gates"],
+    "marginProfile": { "typicalMarginPct": 0.5, "typicalContractLow": 10000, "typicalContractHigh": 500000 },
+    "executionDifficulty": 7,
+    "revenuePotential": { "annualLow": 12000, "annualHigh": 500000, "recurring": true },
+    "notes": "Opportunity OS is the reference architecture for this capability."
+  }
+]

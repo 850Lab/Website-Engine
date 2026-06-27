@@ -1,17 +1,7 @@
 import { generateOpportunities } from "../opportunities/index.js";
 import { analyzeMarketFromDatabase } from "../market-analysis/index.js";
 import { rankMarkets } from "../markets/index.js";
-
-const CONFIDENCE_SCORE = {
-  High: 100,
-  Medium: 75,
-  Low: 45,
-  None: 0,
-};
-
-function money(value) {
-  return Number(value || 0);
-}
+import { scoreOpportunity as scoreWithCouncil } from "../score-council/index.js";
 
 function normalizeConfidence(value) {
   const text = String(value || "None");
@@ -19,18 +9,6 @@ function normalizeConfidence(value) {
   if (text.startsWith("Medium")) return "Medium";
   if (text.startsWith("Low")) return "Low";
   return "None";
-}
-
-function revenueScore(value) {
-  const amount = money(value);
-  if (amount <= 0) return 0;
-  return Math.min(100, Math.round(Math.log10(amount + 1) * 18));
-}
-
-function difficultyScore(difficulty) {
-  const level = Number(difficulty);
-  if (Number.isNaN(level)) return 50;
-  return Math.max(0, Math.min(100, 100 - level * 10));
 }
 
 export function buildRecommendedNextAction(opportunity) {
@@ -71,26 +49,20 @@ function enrichFromAnalysis(opportunity, analysis) {
   };
 }
 
-function scoreOpportunity(opportunity) {
-  const confidence = normalizeConfidence(opportunity.databaseConfidence);
-  const opportunityScore = Math.round(
-    revenueScore(opportunity.estimatedRevenuePotential) * 0.28 +
-      Math.min(100, opportunity.contactCoverage || 0) * 0.18 +
-      Math.min(100, (opportunity.reachableBusinesses || 0) * 1.5) * 0.2 +
-      (CONFIDENCE_SCORE[confidence] ?? 0) * 0.14 +
-      (opportunity.offerFitScore || 0) * 0.12 +
-      difficultyScore(opportunity.executionDifficulty) * 0.08,
-  );
+function applyScoreCouncil(opportunity, mode) {
+  const scoreCouncil = scoreWithCouncil(opportunity, mode);
 
   return {
     ...opportunity,
-    databaseConfidence: confidence,
-    opportunityScore,
+    databaseConfidence: normalizeConfidence(opportunity.databaseConfidence),
+    scoreCouncil,
+    scoreVector: scoreCouncil.scoreVector,
+    opportunityScore: scoreCouncil.compositeScore,
     recommendedNextAction: buildRecommendedNextAction(opportunity),
   };
 }
 
-export async function buildOpportunityRadar() {
+export async function buildOpportunityRadar({ mode = "cash_flow" } = {}) {
   const [markets, opportunities] = await Promise.all([rankMarkets(), generateOpportunities()]);
 
   const analyses = await Promise.all(markets.map((market) => analyzeMarketFromDatabase(market)));
@@ -99,7 +71,7 @@ export async function buildOpportunityRadar() {
   const enriched = opportunities.map((opportunity) => {
     const analysis = opportunity.marketId ? analysisByMarketId[opportunity.marketId] : null;
     const merged = enrichFromAnalysis(opportunity, analysis);
-    return scoreOpportunity(merged);
+    return applyScoreCouncil(merged, mode);
   });
 
   enriched.sort(
@@ -111,3 +83,5 @@ export async function buildOpportunityRadar() {
 
   return enriched;
 }
+
+export { scoreWithCouncil as scoreOpportunity };
