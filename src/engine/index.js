@@ -16,3 +16,7 @@ export * from "./signals/index.js";
 export * from "./runtime/index.js";
 export * from "./connectors/index.js";
 export * from "./sensors/index.js";
+export * from "./facts/index.js";
+export * from "./fact-builder/index.js";
+export { processSignalIntoFacts } from "./fact-builder/pipeline.js";
+export * from "./knowledge-graph/index.js";

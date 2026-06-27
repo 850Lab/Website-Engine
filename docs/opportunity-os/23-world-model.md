@@ -113,8 +113,8 @@ Reality
 | **What creates it** | Fact extractor (rules → small model → LLM tier) from one or more signals |
 | **What consumes it** | Entity linker, problem inference, evidence assembler, Score Council Confidence engine |
 | **Immutable** | **Append-only** — superseded by newer fact with `supersedes`, not deleted |
-| **Lives today** | Not first-class (embedded in signal `evidence[]` only) |
-| **Lives long-term** | `engine-data/facts/` or fact store; graph `Fact` nodes |
+| **Lives today** | `runtime/facts/facts.json` via `src/engine/facts/` (Phase 2.4) |
+| **Lives long-term** | Runtime fact store + graph `Fact` nodes |
 | **Example** | `predicate: project.approved`, `object: { type: hospital_expansion, beds: 120 }` |
 
 ---
@@ -303,6 +303,30 @@ See [25-sensor-framework.md](./25-sensor-framework.md). Demo sensors only in Pha
 ## 6. Fact Layer
 
 Facts bridge **signals** (observations) and **problems** (meaning).
+
+> **Facts are evidence. Problems are interpretation.** Phase 2.4 creates evidence only.
+
+### Fact Builder Rule (Phase 2.4)
+
+| Rule | Detail |
+|---|---|
+| **F1** | Facts are **derived from Signals** — every fact must reference ≥1 `signalId` |
+| **F2** | Facts are **append-only** in `runtime/facts/facts.json` — no overwrites |
+| **F3** | Fact Builder is **rules-only** (`fact_builder_v0`) — no LLM, no external APIs |
+| **F4** | Pipeline stops after fact creation — **no** `problem_inferred` transition |
+| **F5** | Knowledge Graph Bridge **projects** nodes/edges — does not infer problems or opportunities |
+| **F6** | Do **not** write facts to `engine-data/` |
+
+Implementation: `src/engine/facts/`, `src/engine/fact-builder/`, `src/engine/knowledge-graph/`
+
+Flow:
+
+```
+classified Signal → buildFactsFromSignal() → createFact() → runtime/facts/
+  → buildGraphProjectionFromFacts() → STOP
+```
+
+Phase 2.5 is **Relationship Builder / graph enrichment** — not Problem Inference.
 
 ### Canonical Fact schema
 

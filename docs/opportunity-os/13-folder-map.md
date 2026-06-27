@@ -16,9 +16,12 @@
 | **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
-| **`runtime/`** | Live operational data: signals, raw observations, logs, cache (gitignored) | Platform | None | Default local runtime; override via `OPPORTUNITY_OS_RUNTIME_DIR` |
-| **`src/engine/runtime/`** | Runtime path helpers | Platform | `runtime/` | Storage boundary for connectors and signal registry |
+| **`runtime/`** | Live operational data: signals, facts, raw observations, logs, cache (gitignored) | Platform | None | Default local runtime; override via `OPPORTUNITY_OS_RUNTIME_DIR` |
+| **`src/engine/runtime/`** | Runtime path helpers | Platform | `runtime/` | Storage boundary for sensors, signals, facts |
 | **`src/engine/sensors/`** | Sensor Framework registry + lifecycle + health (Phase 2.3) | Signal / Platform | `src/engine/signals/`, `runtime/` | Production sensors in Phase 2.4+ |
+| **`src/engine/facts/`** | Runtime-backed append-only fact store (Phase 2.4) | Signal / Platform | `runtime/facts/`, signals | Problem inference blocked |
+| **`src/engine/fact-builder/`** | Rules-only fact extraction from signals | Signal / Platform | `facts/`, `signals/` | No LLM; conservative predicates |
+| **`src/engine/knowledge-graph/`** | Graph projection bridge (nodes/edges) | Platform | `facts/` | Graph DB later; Phase 2.5 enrichment |
 | **`src/engine/connectors/`** | **Deprecated** shim over sensors (Phase 2.2.5 regression) | Signal / Platform | `src/engine/sensors/` | Do not add new connectors |
 | **`engine-data/signals/`** | Legacy/historical signal seed (read-compatible) | Signal / Platform | None | New writes go to `runtime/signals/` |
 | **`src/schema/`** | Locked 8-entity persistence schema | Platform | `data/*.json` | Converge with Constitution ontology gradually |

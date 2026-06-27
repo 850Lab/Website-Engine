@@ -5,7 +5,8 @@
 
 Defines **who owns what** and **allowed import directions**.
 
-See [World Model §5 — Sensor Rule](./23-world-model.md#5-sensor-rule): sensors write **Observations/Signals only**.
+See [World Model §5 — Sensor Rule](./23-world-model.md#5-sensor-rule): sensors write **Observations/Signals only**.  
+See [World Model § Fact Builder Rule](./23-world-model.md#6-fact-builder-rule): fact builder writes **Facts only** — no problems or opportunities.
 
 ---
 
@@ -14,13 +15,15 @@ See [World Model §5 — Sensor Rule](./23-world-model.md#5-sensor-rule): sensor
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
 | **Observations (raw)** | Ingest boundary + sensors + manual CLI | Write to `runtime/signals/raw/` only | Signal normalizer |
-| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, `getRuntimeSignalStorePath()` | Signals, sensors, ingest |
+| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, `getRuntimeSignalStorePath()`, `getRuntimeFactStorePath()` | Signals, sensors, facts, ingest |
 | **Sensors** | `engine/sensors` (Phase 2.3) | `registerSensor()`, `runSensor()`, `runAllSensors()`, `healthReport()`, `ingestSensorResult()` | Observation pipeline only |
 | **Connectors (deprecated)** | `engine/connectors` shim | `registerConnector()`, `runConnector()` | Regression only — use sensors |
-| **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `initializeRuntimeSignalStore()` | Sensors, CLI, Mission Control metrics (read) |
-| **Facts** | Future `engine/facts` | `createFact()`, `getFactsBySignal()` | Problem inference, graph writer, Score Council Confidence |
-| **Relationships** | Future Graph Writer | `writeEdge()`, `querySubgraph()` | Problem inference, factory, evidence assembler |
-| **Problems** | Future `engine/problems` | `inferProblems()`, `getProblemById()` | Capability matcher, opportunity factory |
+| **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `linkFactsToSignal()`, `initializeRuntimeSignalStore()` | Sensors, fact builder, CLI, Mission Control metrics (read) |
+| **Facts** | `engine/facts` (Phase 2.4) | `createFact()`, `listFacts()`, `getFactsBySignalId()`, `getFactSummary()` | Graph bridge, future problem inference |
+| **Fact Builder** | `engine/fact-builder` | `buildFactsFromSignal()`, `processSignalIntoFacts()` | Signal → fact pipeline only |
+| **Knowledge Graph Bridge** | `engine/knowledge-graph` | `buildGraphProjectionFromFacts()`, `mapFactToGraphRefs()`, `getGraphSummary()` | Future graph writer, evidence |
+| **Relationships** | Future Graph Writer | `writeEdge()`, `querySubgraph()` | Phase 2.5+ enrichment |
+| **Problems** | Future `engine/problems` | `inferProblems()`, `getProblemById()` | **Blocked** until after Phase 2.5 |
 | **Capability Match** | `engine/capabilities` + future matcher | `matchCapabilities(problem)` | Offer selector, factory |
 | **Knowledge Graph** | Future Graph Writer / Reader | `writeNode`, `writeEdge`, `querySubgraph` | All intelligence modules |
 | **Capabilities** | `engine/capabilities` + `engine-data/capabilities` | `listCapabilities()`, `getCapabilityById()` | Offers join, factory, scoring, agents |
@@ -64,6 +67,16 @@ See [World Model §5 — Sensor Rule](./23-world-model.md#5-sensor-rule): sensor
 | Register sensor in `engine/sensors` | Call `buildMissionControl()` or UI routes |
 | Advance signal lifecycle through engine API | Direct fact/problem/opportunity creation |
 | Static demo sensors without network | Parallel storage outside runtime adapter |
+
+## Fact Builder Boundary (Phase 2.4)
+
+| Allowed | Forbidden |
+|---|---|
+| `processSignalIntoFacts()` → `createFact()` → `runtime/facts/` | Infer problems |
+| `buildGraphProjectionFromFacts()` (in-memory / runtime JSON) | Create opportunities |
+| `linkFactsToSignal()` metadata on classified+ signals | Transition signal to `problem_inferred` |
+| Rules-only extraction (`fact_builder_v0`) | LLM or external API calls |
+| Append-only facts with `signalIds` | Write facts to `engine-data/` |
 
 Facts, Problems, and Opportunities are **separate engine owners** — see [23-world-model.md §3](./23-world-model.md#3-object-definitions).
 

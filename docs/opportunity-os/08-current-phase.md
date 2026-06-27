@@ -7,50 +7,49 @@
 
 ## Current Phase
 
-**Phase 2.3 — Sensor Framework** — **COMPLETE**
+**Phase 2.4 — Fact Builder + Knowledge Graph Bridge** — **COMPLETE**
 
-Phase 2.4 is **blocked** until owner approves and issues an explicit implementation prompt.
-
----
-
-## Phase 2.3 Objective
-
-Replace transitional Connectors with a permanent **Sensor Framework** — reusable modules that observe reality and emit canonical Observations only.
-
-Run: `node scripts/opportunity-engine/validate-phase-2-3.js`
+Phase 2.5 is **blocked** until owner approves and issues an explicit implementation prompt.
 
 ---
 
-## Phase 2.3 Checklist
+## Phase 2.4 Objective
 
-- [x] `src/engine/sensors/` — Sensor interface + manager
-- [x] Demo sensors: Web, Document, CRM (static data only)
-- [x] Sensor lifecycle + health tracking
-- [x] Runtime integration via Observation/Signal pipeline
-- [x] [25-sensor-framework.md](./25-sensor-framework.md)
-- [x] `scripts/opportunity-engine/validate-phase-2-3.js`
+Extract deterministic **Facts** from classified **Signals** and project them into a lightweight **Knowledge Graph Bridge** (nodes + edges in memory/runtime JSON). No problem inference. No opportunities.
+
+Run: `node scripts/opportunity-engine/validate-phase-2-4.js`
+
+---
+
+## Phase 2.4 Checklist
+
+- [x] `runtime/facts/` — runtime-backed fact store
+- [x] `src/engine/facts/` — append-only fact registry
+- [x] `src/engine/fact-builder/` — rules-only `buildFactsFromSignal()`
+- [x] `src/engine/fact-builder/pipeline.js` — `processSignalIntoFacts()`
+- [x] `src/engine/knowledge-graph/` — graph projection bridge
+- [x] `scripts/opportunity-engine/validate-phase-2-4.js`
 - [x] Validation passed
-- [x] No production sensors, facts, problems, opportunities
-- [x] Mission Control unchanged
+- [x] No LLM, external APIs, problems, opportunities, or Mission Control changes
 
 ---
 
-## Active Rules (Phase 2.3)
+## Active Rules (Phase 2.4)
 
 | Rule | Status |
 |---|---|
-| Sensors observe; they do not reason | **Enforced** |
-| Publish only through Observation/Signal pipeline | **Enforced** |
-| Live data in `runtime/` (gitignored) | **Enforced** |
-| No external API calls in demo sensors | **Enforced** |
-| Connectors deprecated — use Sensors | **Enforced** |
-| Phase 2.4 blocked until owner approval | **Enforced** |
+| Facts are evidence; problems are interpretation | **Enforced** |
+| Facts derived from signals only (`signalIds` required) | **Enforced** |
+| Append-only facts in `runtime/facts/facts.json` | **Enforced** |
+| Graph bridge projects nodes/edges only | **Enforced** |
+| Stop at fact creation — no `problem_inferred` transition | **Enforced** |
+| Phase 2.5 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 2.4 (Blocked)
+## Phase 2.5 (Blocked)
 
-**First production sensor or Fact Builder prep** — not started.
+**Relationship Builder / Graph enrichment** — not Problem Inference.
 
 Requires owner approval and explicit implementation prompt.
 
@@ -58,9 +57,13 @@ Requires owner approval and explicit implementation prompt.
 
 ## Prior Phases — COMPLETE
 
+### Phase 2.3 — Sensor Framework
+
+Run: `node scripts/opportunity-engine/validate-phase-2-3.js`
+
 ### Phase 2.2.5 — Connector SDK & Runtime
 
-Run: `node scripts/opportunity-engine/validate-phase-2-2-5.js` (connectors shim over sensors)
+Run: `node scripts/opportunity-engine/validate-phase-2-2-5.js`
 
 ### Phase 2.2 — Manual Observation Ingestion
 
@@ -73,6 +76,7 @@ Run: `node scripts/opportunity-engine/validate-phase-2-2.js`
 | Date | Decision |
 |---|---|
 | 2026-06-27 | Phase 2.3: Sensor Framework replaces Connectors as canonical observation model |
-| 2026-06-27 | Phase 2.3 validation passed; Phase 2.4 unlocked (blocked until approval) |
+| 2026-06-27 | Phase 2.4: Fact Builder + Knowledge Graph Bridge; problems remain blocked |
+| 2026-06-27 | Phase 2.5 reserved for Relationship Builder / graph enrichment — not Problem Inference |
 
 Add entries to [Build Log](./09-build-log.md) for architectural milestones.

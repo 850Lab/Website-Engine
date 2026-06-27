@@ -157,9 +157,17 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-27 — Phase 2.4 Fact Builder + Knowledge Graph Bridge
+**Phase:** 2.4  
+**Type:** Milestone  
+**Summary:** Added runtime-backed fact store (`runtime/facts/facts.json`), rules-only Fact Builder (`buildFactsFromSignal`, `processSignalIntoFacts`), and Knowledge Graph Bridge projection layer (nodes/edges, no graph DB). Facts are append-only evidence derived from classified signals. Problems and opportunities remain blocked.  
+**Links:** `src/engine/facts/`, `src/engine/fact-builder/`, `src/engine/knowledge-graph/`, `scripts/opportunity-engine/validate-phase-2-4.js`
+
+---
+
 ## Future Entries (Reserved)
 
-<!-- Phase 2.4 first production sensor or fact builder prep -->
+<!-- Phase 2.5 Relationship Builder / graph enrichment -->
 <!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->

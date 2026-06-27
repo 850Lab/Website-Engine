@@ -501,6 +501,45 @@ export async function updateSignalState(id, nextState, metadata = {}) {
   return clone(updated);
 }
 
+export async function linkFactsToSignal(signalId, factIds, metadata = {}) {
+  if (!Array.isArray(factIds) || !factIds.length) {
+    throw new Error("linkFactsToSignal requires at least one factId");
+  }
+
+  const store = await loadStore();
+  const index = store.signals.findIndex((row) => row.id === signalId);
+  if (index === -1) {
+    throw new Error(`Signal not found: ${signalId}`);
+  }
+
+  const current = store.signals[index];
+  const mergedFactIds = [...new Set([...asArray(current.factIds), ...factIds.map(String)])];
+  const at = nowIso();
+
+  const updated = {
+    ...current,
+    factIds: mergedFactIds,
+    updatedAt: at,
+    lifecycle: [
+      ...asArray(current.lifecycle),
+      {
+        from: current.processingState,
+        to: current.processingState,
+        at,
+        metadata: {
+          action: "facts_linked",
+          factIds: factIds.map(String),
+          ...(isObject(metadata) ? metadata : {}),
+        },
+      },
+    ],
+  };
+
+  store.signals[index] = updated;
+  await saveStore(store);
+  return clone(updated);
+}
+
 export async function getSignalRegistrySummary() {
   const store = await loadStore();
   const byState = Object.fromEntries(PROCESSING_STATES.map((state) => [state, 0]));

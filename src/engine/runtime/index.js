@@ -23,6 +23,7 @@ export async function ensureRuntimeDirectories() {
     getRuntimeRoot(),
     getRuntimePath("signals"),
     getRuntimePath("signals", "raw"),
+    getRuntimePath("facts"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
   ];
@@ -38,6 +39,10 @@ export function getRuntimeSignalStorePath() {
 
 export function getRuntimeRawSignalPath(...parts) {
   return getRuntimePath("signals", "raw", ...parts);
+}
+
+export function getRuntimeFactStorePath() {
+  return getRuntimePath("facts", "facts.json");
 }
 
 export function getLegacySignalStorePath() {
