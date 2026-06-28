@@ -229,6 +229,22 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.0.5 Autonomous Operating Loop Constitution
+**Phase:** 3.0.5  
+**Type:** Constitution  
+**Summary:** Defined the Autonomous Operating Loop: canonical cycle from Sensor Run through Learning; Job and Event schemas; scheduler rules (cadence, queue, retry, dedupe); system states; failure handling and idempotency; single-process concurrency policy; Autopilot/Mission Control/OpenClaw role boundaries; Phase 3.1–3.5 sub-roadmap. Design only — no production code, runtime folders, validators, connectors, or UI changes.  
+**Links:** [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
+### 2026-06-23 — Phase 2.9.5 Core Stability
+**Phase:** 2.9.5  
+**Type:** Milestone  
+**Summary:** Hardened runtime IO with atomic writes and Windows/OneDrive retry behavior (`src/engine/runtime/io.js`). Updated all runtime-backed stores to use shared helpers. Added `validate-core.js` orchestrator, `runtime-health.js`, `performance-baseline.js`, and Phase 2.9.5 validator. Generated monitoring reports (`core-validation`, `runtime-health`, `performance-baseline`, autopilot) are gitignored; autopilot blocks only on real source/docs changes and owner-approval gates. Phase 3 remains blocked.  
+**Links:** `src/engine/runtime/io.js`, `scripts/opportunity-engine/validate-core.js`, `scripts/opportunity-engine/runtime-health.js`, `scripts/opportunity-engine/performance-baseline.js`, `scripts/opportunity-engine/validate-phase-2-9-5.js`
+
+---
+
 ### 2026-06-28 — Phase 2.9 Opportunity Factory
 **Phase:** 2.9  
 **Type:** Milestone  
@@ -251,6 +267,8 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 3.0.5 Autonomous Operating Loop Constitution — Job/Event model, scheduler, AOL1–AOL15 |
+| 2026-06-23 | Phase 2.9.5 Core Stability — runtime IO hardening, validate-core, generated report policy |
 | 2026-06-28 | Phase 2.9 Opportunity Factory — Commercial Intelligence complete |
 | 2026-06-27 | Phase 2.8 Offer Intelligence milestone |
 | 2026-06-27 | Architecture freeze policy (R26–R30) — owner approved Phase 2.7 |

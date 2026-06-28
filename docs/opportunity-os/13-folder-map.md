@@ -33,7 +33,7 @@
 | **`src/engine/opportunity-factory/`** | Problem + match + offer → Opportunity assembly (Phase 2.9) | Platform | problems, capability-matches, offer-recommendations | Stops before Score Council |
 | **`src/engine/opportunity-validator/`** | Opportunity completeness validation (Phase 2.9) | Platform | opportunity-factory output | Rejects incomplete assemblies |
 | **`src/engine/opportunities/`** | Runtime opportunity store + legacy radar (`radar.js`) | Platform | `runtime/opportunities/` | Score Council next consumer |
-| **`src/engine/runtime/`** | Runtime path helpers | Platform | `runtime/` | Storage boundary for sensors, signals, facts, graph |
+| **`src/engine/runtime/`** | Runtime path helpers + atomic IO (`io.js`, Phase 2.9.5) | Platform | `runtime/` | Storage boundary for sensors, signals, facts, graph |
 | **`src/engine/graph-store/`** | Persistent runtime graph store (Phase 2.5) | Platform | `runtime/graph/` | Graph DB later |
 | **`src/engine/entity-resolution/`** | Rules-only entity normalization + aliases | Platform | `graph-store/` | No fuzzy merge in v0 |
 | **`src/engine/relationship-builder/`** | Fact → relationship projection | Platform | `facts/`, `graph-store/`, `entity-resolution/` | No problem inference |
@@ -106,10 +106,10 @@
 
 | Path | Purpose | Owner | Future direction |
 |---|---|---|---|
-| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-2-2.js`, `ingest-signal.js` |
+| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-core.js`, `validate-phase-2-9-5.js`, `runtime-health.js`, `performance-baseline.js`, `ingest-signal.js` |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
-| **`reports/`** | Generated markdown outputs | OS team | Executive report templates |
+| **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*`, `performance-baseline.*`, autopilot reports |
 
 ---
 
@@ -122,6 +122,7 @@
 | **`docs/opportunity-os/25-sensor-framework.md`** | Sensor interface, lifecycle, health, runtime integration |
 | **`docs/opportunity-os/26-reasoning-engine.md`** | Reasoning pipeline, hypothesis/problem schemas, confidence, Phase 2.6 implementation |
 | **`docs/opportunity-os/27-capability-intelligence.md`** | Capability Intelligence Constitution — matching pipeline, fit score, constraints, composition, CI1–CI15, Phase 2.7–2.9 roadmap |
+| **`docs/opportunity-os/28-autonomous-operating-loop.md`** | Autonomous Operating Loop Constitution — Job/Event model, scheduler, system state, idempotency, AOL1–AOL15, Phase 3.1–3.5 roadmap |
 | **`docs/*.md`** | Legacy product docs — do not override Constitution |
 
 ---

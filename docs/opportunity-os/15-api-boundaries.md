@@ -1,7 +1,7 @@
 # 15 — API Boundaries
 
 **Status:** Constitution · Module ownership  
-**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md) · [Capability Intelligence](./27-capability-intelligence.md)
+**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md) · [Capability Intelligence](./27-capability-intelligence.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md)
 
 Defines **who owns what** and **allowed import directions**.
 
@@ -16,7 +16,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
 | **Observations (raw)** | Ingest boundary + sensors + manual CLI | Write to `runtime/signals/raw/` only | Signal normalizer |
-| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, `getRuntimeSignalStorePath()`, `getRuntimeFactStorePath()` | Signals, sensors, facts, ingest |
+| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, path helpers, `readJsonWithRetry()`, `writeJsonAtomic()`, `writeJsonAtomicWithRetry()` (Phase 2.9.5) | Signals, sensors, facts, graph, all runtime stores |
 | **Sensors** | `engine/sensors` (Phase 2.3) | `registerSensor()`, `runSensor()`, `runAllSensors()`, `healthReport()`, `ingestSensorResult()` | Observation pipeline only |
 | **Connectors (deprecated)** | `engine/connectors` shim | `registerConnector()`, `runConnector()` | Regression only — use sensors |
 | **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `linkFactsToSignal()`, `initializeRuntimeSignalStore()` | Sensors, fact builder, CLI, Mission Control metrics (read) |
@@ -56,6 +56,12 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **UI** | `pivotal-os`, legacy pages | HTTP routes | Humans |
 | **Learning** | Future `engine/learning` | `proposeLearning()`, `applyLearning()` | Calibrator agent |
 | **Forecasting** | Future `engine/forecasting` | `generateForecasts()` | Radar, reports |
+| **Operating Loop** *(Phase 3.1)* | Future `engine/loop` | `enqueueJob()`, `claimJob()`, `completeJob()`, `appendEvent()` | Scheduler, stage handlers, Autopilot (read) |
+| **Scheduler** *(Phase 3.2)* | Future `engine/loop/scheduler` | `tick()`, `scheduleSensors()` | Sensor runs only — no reasoning |
+| **Pipeline Processor** *(Phase 3.3)* | Future `engine/loop/processor` | Event-driven stage handlers wrapping existing modules | Canonical loop §2 in [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) |
+| **Execution Queue** *(Phase 3.4)* | Future `engine/execution` + loop | `enqueueExecution()`, `recordOutcome()` | OpenClaw (future), Mission Control (read) |
+| **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
+| **OpenClaw** *(future)* | Not implemented | Approved action dispatch only | **No observe, reason, or score** |
 
 ---
 
@@ -235,20 +241,58 @@ See [27-capability-intelligence.md §12 — Permanent Rules CI1–CI15](./27-cap
 
 ---
 
-## Event Boundaries (Target, Phase 2+)
+## Event Boundaries (Phase 3.0.5+)
+
+Canonical Event schema and taxonomy: [28-autonomous-operating-loop.md §4](./28-autonomous-operating-loop.md#4-event-model).
+
+| Rule | Detail |
+|---|---|
+| **Publisher** | Stage handler or job completion — via `appendEvent()` (Phase 3.1) |
+| **Payload** | References by ID only — no full store snapshots |
+| **Chaining** | Scheduler enqueues downstream jobs from events — not inline calls |
+| **Audit** | Event log is append-only (AOL13) |
+
+### Target event flow (canonical loop)
+
+| Event | Typical publisher | Downstream job enqueued |
+|---|---|---|
+| `observation.archived` | ingest boundary | `signal.ingest` |
+| `signal.ingested` | `engine/signals` | `fact.build` |
+| `fact.created` | `engine/fact-builder` | `graph.project` |
+| `situation.created` | `engine/situation-builder` | `hypothesis.generate` |
+| `problem.promoted` | `engine/problem-inference` | `capability.match` |
+| `capability.matched` | `engine/capability-matcher` | `offer.recommend` |
+| `offer.recommended` | `engine/offer-intelligence` | `opportunity.build` |
+| `opportunity.validated` | `engine/opportunity-factory` | `opportunity.score` |
+| `opportunity.scored` | `engine/score-council` | `projection.refresh` |
+| `execution.enqueued` | `engine/execution` | OpenClaw dispatch (future) |
+| `outcome.recorded` | outcomes bridge | `learning.apply` |
+
+Legacy ad-hoc events (pre-3.1):
 
 | Event | Publisher | Subscribers |
 |---|---|---|
-| `signal.observed` | `engine/signals` (`createSignal`) | Dedup (future), normalizer (future), registry summary |
-| `fact.extracted` | Extractor | Problemist, graph writer |
-| `problem.hypothesized` | Problemist | Opportunity factory |
+| `signal.observed` | `engine/signals` (`createSignal`) | Future loop processor |
+| `fact.extracted` | Extractor | Graph / situation builder |
 | `opportunity.scored` | Score Council | UI projection, planner |
-| `plan.approved` | Human/policy | Dispatcher |
-| `outcome.recorded` | Execution | Learning |
 
 ---
 
-## Cross-Boundary Testing
+## Operating Loop Boundaries (Phase 3.0.5)
+
+See [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) for full rules AOL1–AOL15.
+
+| Component | Allowed | Forbidden |
+|---|---|---|
+| **Scheduler** | Enqueue jobs, claim jobs, apply retry/backoff | Call Score Council from sensor handler |
+| **Stage handlers** | Wrap existing module public APIs | Redesign intelligence pipelines |
+| **Autopilot** | Report loop health, block on owner gates | Bypass phase approval; run production loop |
+| **Mission Control** | Read projections refreshed by `projection.refresh` jobs | Enqueue jobs; write runtime spine |
+| **OpenClaw** *(future)* | Execute approved queue tasks | Observe, reason, score, or enqueue loop jobs |
+
+**Concurrency (Phase 3.1–3.4):** Single-process worker; no parallel runtime writes until lock strategy matures.
+
+---
 
 Each boundary must have contract tests — [Testing Strategy](./16-testing-strategy.md).
 
