@@ -1,0 +1,11 @@
+{
+  "phaseId": "3.1.7",
+  "promptText": "Phase 3.1.7 validation demo — safe command-only OpenClaw Builder job. Runs node --check and validate-phase-3-1.js only. Commit disabled.",
+  "promptHash": "sha256:662540547fcaaaa5982576576883319222e7587ef26cd6a8bdc3a010828ecc33",
+  "approvedBy": "owner",
+  "approvedAt": "2026-06-23T00:00:00.000Z",
+  "approvalSource": "validation_demo",
+  "metadata": {
+    "validationDemo": true
+  }
+}

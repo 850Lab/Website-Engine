@@ -1,28 +1,49 @@
 #!/usr/bin/env node
 import { randomUUID } from "node:crypto";
-import { createHash } from "node:crypto";
 import { createJob } from "../../src/engine/jobs/index.js";
+import {
+  deriveOpenClawIdempotencyKey,
+  hashCanonicalPromptText,
+  loadPromptArtifact,
+} from "../../src/engine/openclaw/index.js";
+
+const DEMO_PROMPT_PATH = "engine-data/openclaw/prompts/demo-phase-3-1-7.json";
+
+const { artifact } = await loadPromptArtifact(DEMO_PROMPT_PATH);
+const promptHash = hashCanonicalPromptText(artifact.promptText);
+const idempotencyKey = deriveOpenClawIdempotencyKey({
+  phaseId: artifact.phaseId,
+  jobType: "openclaw.build",
+  promptHash,
+});
+
+if (promptHash !== artifact.promptHash) {
+  console.error("Demo prompt artifact hash mismatch — update engine-data/openclaw/prompts/demo-phase-3-1-7.json");
+  process.exit(1);
+}
 
 const correlationId = randomUUID();
-const idempotencyKey = `openclaw.build.demo.${createHash("sha256").update(correlationId).digest("hex").slice(0, 16)}`;
 const openclawId = `openclaw_demo_${randomUUID().slice(0, 8)}`;
 
 const openclaw = {
   id: openclawId,
   jobType: "openclaw.build",
-  phaseId: "3.1.7",
+  phaseId: artifact.phaseId,
   title: "Demo OpenClaw Builder Job",
   objective: "Validate OpenClaw Builder Worker without modifying source files.",
+  promptArtifactPath: DEMO_PROMPT_PATH,
   ownerApproval: {
-    approvedBy: "owner",
-    approvedAt: new Date().toISOString(),
-    approvalSource: "validation",
+    approvedBy: artifact.approvedBy,
+    approvedAt: artifact.approvedAt,
+    approvalSource: artifact.approvalSource,
     phaseDocStatus: "VALIDATION_DEMO",
+    phaseId: artifact.phaseId,
+    promptHash,
     promptExcerpt: "Phase 3.1.7 validation demo — safe command-only job",
   },
   agentRole: "builder",
   scope: {
-    phaseId: "3.1.7",
+    phaseId: artifact.phaseId,
     summary: "Read-only validation commands only",
     scopeFiles: ["scripts/openclaw/**", "scripts/opportunity-engine/**"],
     allowedOperations: ["validate"],
@@ -60,9 +81,9 @@ const openclaw = {
     pathPattern: "reports/openclaw/openclaw-{phaseId}-{jobId}.md",
     gitignored: true,
   },
-  stopConditions: ["validation_failure", "scope_failure", "owner_approval_missing"],
+  stopConditions: ["validation_failure", "scope_failure", "owner_approval_missing", "prompt_hash_mismatch"],
   idempotencyKey,
-  promptHash: createHash("sha256").update("phase-3-1-7-demo-builder").digest("hex"),
+  promptHash,
 };
 
 const job = await createJob({
@@ -76,4 +97,10 @@ const job = await createJob({
   },
 });
 
-console.log(JSON.stringify({ jobId: job.id, openclawId, correlationId, idempotencyKey }, null, 2));
+console.log(
+  JSON.stringify(
+    { jobId: job.id, openclawId, correlationId, idempotencyKey, promptHash, promptArtifactPath: DEMO_PROMPT_PATH },
+    null,
+    2,
+  ),
+);

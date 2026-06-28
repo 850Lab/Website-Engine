@@ -1,60 +1,34 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { getRepoRoot } from "../runtime/index.js";
+import { validateCommandAllowlist, splitCommand } from "./command-allowlist.js";
 
 const execFileAsync = promisify(execFile);
 const DEFAULT_TIMEOUT_MS = 300_000;
-
-function splitCommand(command) {
-  const trimmed = String(command || "").trim();
-  if (!trimmed) {
-    throw new Error("Empty command");
-  }
-
-  const parts = [];
-  let current = "";
-  let quote = null;
-
-  for (let index = 0; index < trimmed.length; index += 1) {
-    const char = trimmed[index];
-    if (quote) {
-      if (char === quote) {
-        quote = null;
-      } else {
-        current += char;
-      }
-      continue;
-    }
-    if (char === '"' || char === "'") {
-      quote = char;
-      continue;
-    }
-    if (char === " ") {
-      if (current) {
-        parts.push(current);
-        current = "";
-      }
-      continue;
-    }
-    current += char;
-  }
-
-  if (current) {
-    parts.push(current);
-  }
-
-  if (!parts.length) {
-    throw new Error(`Invalid command: ${command}`);
-  }
-
-  return parts;
-}
 
 export async function runCommand(command, options = {}) {
   const cwd = options.cwd || getRepoRoot();
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const optional = Boolean(options.optional);
   const startedAt = new Date().toISOString();
+  const allowlist = validateCommandAllowlist(command);
+
+  if (!allowlist.allowed && options.skipAllowlist !== true) {
+    return {
+      command,
+      ok: false,
+      rejected: true,
+      optional,
+      exitCode: 1,
+      stdout: "",
+      stderr: allowlist.detail,
+      startedAt,
+      completedAt: new Date().toISOString(),
+      reason: allowlist.reason,
+      error: allowlist.detail,
+    };
+  }
+
   const parts = splitCommand(command);
   const executable = parts[0];
   const args = parts.slice(1);
@@ -71,6 +45,7 @@ export async function runCommand(command, options = {}) {
     return {
       command,
       ok: true,
+      rejected: false,
       optional,
       exitCode: 0,
       stdout: stdout || "",
@@ -82,6 +57,7 @@ export async function runCommand(command, options = {}) {
     return {
       command,
       ok: false,
+      rejected: false,
       optional,
       exitCode: error.code ?? 1,
       stdout: error.stdout?.toString?.() || "",
@@ -104,6 +80,11 @@ export async function runCommands(commands = [], options = {}) {
       optional,
     });
     results.push(result);
+
+    if (result.rejected && !optional) {
+      break;
+    }
+
     if (!result.ok && !optional && options.stopOnFailure !== false) {
       break;
     }
@@ -112,5 +93,8 @@ export async function runCommands(commands = [], options = {}) {
   return {
     results,
     ok: results.every((row) => row.ok || row.optional),
+    rejected: results.some((row) => row.rejected),
   };
 }
+
+export { validateCommandAllowlist, splitCommand };

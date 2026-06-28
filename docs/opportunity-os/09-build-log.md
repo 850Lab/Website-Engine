@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.1.7.5 OpenClaw Security Hardening
+**Phase:** 3.1.7.5  
+**Type:** Milestone  
+**Summary:** Hardened OpenClaw Builder before second autonomous agent: canonical prompt artifacts in `engine-data/openclaw/prompts/`, verified `promptHash`, bound idempotency key formula, gated `VALIDATION_DEMO`, command allowlist, forensic reports, and full event coverage on all exit paths. Added `validate-phase-3-1-7-5.js`. Phase 3.1.8 remains blocked.  
+**Links:** `src/engine/openclaw/prompt.js`, `src/engine/openclaw/idempotency.js`, `src/engine/openclaw/command-allowlist.js`, `engine-data/openclaw/prompts/`, `scripts/opportunity-engine/validate-phase-3-1-7-5.js`
+
+---
+
 ### 2026-06-23 — Phase 3.1.7 OpenClaw Builder Worker v1
 **Phase:** 3.1.7  
 **Type:** Milestone  
@@ -299,6 +307,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 3.1.7.5 OpenClaw security hardening — prompt verification, command allowlist, forensic reports |
 | 2026-06-23 | Phase 3.1.7 OpenClaw Builder Worker v1 — bounded CLI, one Job, STOP |
 | 2026-06-23 | Phase 3.1.6 OpenClaw Job Schema — OCJ1–OCJ15, metadata.openclaw mapping |
 | 2026-06-23 | Phase 3.1.5 OpenClaw Constitution — OC1–OC15, multi-agent model, chain of command |

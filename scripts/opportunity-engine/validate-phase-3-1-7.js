@@ -23,11 +23,20 @@ import {
   runCommands,
   runOpenClawBuilderJob,
   createOpenClawReport,
+  hashCanonicalPromptText,
+  deriveOpenClawIdempotencyKey,
+  loadPromptArtifact,
 } from "../../src/engine/openclaw/index.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
+const DEMO_PROMPT_PATH = "engine-data/openclaw/prompts/demo-phase-3-1-7.json";
 const errors = [];
+
+process.env.OPENCLAW_ALLOW_VALIDATION_DEMO = "1";
+
+const { artifact: demoArtifact } = await loadPromptArtifact(DEMO_PROMPT_PATH);
+const demoPromptHash = hashCanonicalPromptText(demoArtifact.promptText);
 
 function fail(message) {
   errors.push(message);
@@ -48,21 +57,32 @@ async function fileExists(path) {
 }
 
 function buildMinimalOpenClaw(overrides = {}) {
+  const promptHash = overrides.promptHash ?? demoPromptHash;
+  const phaseId = overrides.phaseId ?? demoArtifact.phaseId;
+  const jobType = overrides.jobType ?? "openclaw.build";
+  const idempotencyKey =
+    overrides.idempotencyKey ??
+    deriveOpenClawIdempotencyKey({ phaseId, jobType, promptHash });
+
   return {
     id: `openclaw_test_${randomUUID().slice(0, 8)}`,
-    jobType: "openclaw.build",
-    phaseId: "3.1.7",
+    jobType,
+    phaseId,
     title: "Test Job",
     objective: "Test objective",
+    promptArtifactPath: DEMO_PROMPT_PATH,
     ownerApproval: {
       approvedBy: "owner",
       approvedAt: new Date().toISOString(),
-      approvalSource: "validation",
+      approvalSource: "validation_demo",
       phaseDocStatus: "VALIDATION_DEMO",
+      phaseId,
+      promptHash,
       promptExcerpt: "validation",
+      ...(overrides.ownerApproval || {}),
     },
     agentRole: "builder",
-    scope: { phaseId: "3.1.7", summary: "test" },
+    scope: { phaseId, summary: "test" },
     constraints: { noMissionControlChanges: true, noScoreCouncilChanges: true },
     requiredReading: ["docs/opportunity-os/30-openclaw-job-schema.md"],
     allowedFiles: ["scripts/openclaw/**"],
@@ -73,8 +93,8 @@ function buildMinimalOpenClaw(overrides = {}) {
     commitPolicy: { enabled: false, maxCommits: 0 },
     reportPolicy: { required: true, pathPattern: "reports/openclaw/openclaw-{phaseId}-{jobId}.md" },
     stopConditions: ["validation_failure"],
-    idempotencyKey: `test-${randomUUID()}`,
-    promptHash: "test-hash",
+    idempotencyKey,
+    promptHash,
     ...overrides,
   };
 }
@@ -130,7 +150,7 @@ if (blockedType.valid || !blockedType.errors.some((row) => row.includes("Blocked
   pass("Schema validation rejects blocked job types");
 }
 
-const demoApproval = await verifyOwnerApproval(buildMinimalOpenClaw());
+const demoApproval = await verifyOwnerApproval(buildMinimalOpenClaw(), { allowValidationDemo: true });
 if (!demoApproval.ok) {
   fail(`Owner approval check failed for validation demo: ${demoApproval.detail}`);
 } else {
@@ -145,8 +165,15 @@ const blockedApproval = await verifyOwnerApproval(
       approvedAt: new Date().toISOString(),
       approvalSource: "explicit_prompt",
       phaseDocStatus: "ACTIVE",
+      phaseId: "3.1.8",
+      promptHash: demoPromptHash,
       promptExcerpt: "blocked test",
     },
+    idempotencyKey: deriveOpenClawIdempotencyKey({
+      phaseId: "3.1.8",
+      jobType: "openclaw.build",
+      promptHash: demoPromptHash,
+    }),
   }),
 );
 if (blockedApproval.ok) {
@@ -155,7 +182,10 @@ if (blockedApproval.ok) {
   pass("Owner approval rejects blocked phase without demo flag");
 }
 
-const scopeOk = enforceFileScope(buildMinimalOpenClaw(), ["scripts/openclaw/run-builder-job.js"]);
+const scopeOk = enforceFileScope(buildMinimalOpenClaw(), ["scripts/openclaw/run-builder-job.js"], {
+  allowValidationDemo: true,
+  validationDemo: true,
+});
 if (!scopeOk.ok) {
   fail(`File scope should allow allowedFiles match: ${scopeOk.violations.join("; ")}`);
 } else {
@@ -177,14 +207,14 @@ if (!cmdOk.ok || cmdOk.exitCode !== 0) {
 }
 
 const cmdFail = await runCommand("node -e process.exit(2)");
-if (cmdFail.ok) {
-  fail("Command runner should capture failure exit code");
+if (cmdFail.ok || !cmdFail.rejected) {
+  fail("Command runner should reject unsafe node -e before execution");
 } else {
-  pass("Command runner captures failure");
+  pass("Command runner captures rejection for unsafe commands");
 }
 
 const optionalBatch = await runCommands([
-  { command: "node -e process.exit(1)", optional: true },
+  { command: "powershell -Command exit 1", optional: true },
   "node --version",
 ]);
 if (!optionalBatch.ok || !optionalBatch.results[1]?.ok) {
@@ -205,7 +235,7 @@ const report = createOpenClawReport({
   scopeResult: { ok: true, violations: [] },
   completedAt: new Date().toISOString(),
 });
-if (!report.includes("jobId") || !report.includes("final status")) {
+if (!report.includes("generic job id") || !report.includes("final status")) {
   fail("createOpenClawReport missing required sections");
 } else {
   pass("createOpenClawReport includes required report fields");
@@ -215,7 +245,7 @@ let demoJobId = null;
 try {
   const { stdout } = await execFileAsync(process.execPath, [
     join(ROOT, "scripts/openclaw/create-demo-builder-job.js"),
-  ], { cwd: ROOT });
+  ], { cwd: ROOT, env: { ...process.env, OPENCLAW_ALLOW_VALIDATION_DEMO: "1" } });
   const parsed = JSON.parse(stdout.trim());
   demoJobId = parsed.jobId;
   if (!demoJobId) {
@@ -228,7 +258,7 @@ try {
 }
 
 if (demoJobId) {
-  const workerResult = await runOpenClawBuilderJob(demoJobId);
+  const workerResult = await runOpenClawBuilderJob(demoJobId, { allowValidationDemo: true });
   const finished = await getJob(demoJobId);
 
   if (workerResult.status !== "completed") {

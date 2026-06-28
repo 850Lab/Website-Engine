@@ -1,3 +1,5 @@
+import { isValidationDemoAllowed, isValidationDemoJob } from "./approval.js";
+
 const DEFAULT_FORBIDDEN_PREFIXES = [
   "runtime/",
   "src/engine/mission-control/",
@@ -71,10 +73,11 @@ export function enforceFileScope(job, changedFiles = [], options = {}) {
   const normalizedChanged = changedFiles.map(normalizePath).filter(Boolean);
   const commitScope = options.commitScope === true;
 
-  const validationDemo =
+  const demoRequested =
     options.validationDemo === true ||
     job?.metadata?.validationDemo === true ||
-    job?.ownerApproval?.phaseDocStatus === "VALIDATION_DEMO";
+    isValidationDemoJob(job);
+  const validationDemo = demoRequested && isValidationDemoAllowed(options);
 
   for (const file of normalizedChanged) {
     if (file.startsWith("runtime/")) {

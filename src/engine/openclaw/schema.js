@@ -1,3 +1,6 @@
+import { verifyOpenClawIdempotency } from "./idempotency.js";
+import { normalizePromptHash } from "./prompt.js";
+
 const REQUIRED_FIELDS = [
   "jobType",
   "phaseId",
@@ -48,8 +51,9 @@ export function extractOpenClawJob(genericJob) {
   return genericJob.metadata.openclaw;
 }
 
-export function validateOpenClawJob(jobOrGeneric) {
-  const openclaw = jobOrGeneric?.metadata?.openclaw ? jobOrGeneric.metadata.openclaw : jobOrGeneric;
+export function validateOpenClawJob(jobOrGeneric, options = {}) {
+  const genericJob = jobOrGeneric?.metadata?.openclaw ? jobOrGeneric : null;
+  const openclaw = genericJob ? genericJob.metadata.openclaw : jobOrGeneric;
   const errors = [];
 
   if (!openclaw || !isObject(openclaw)) {
@@ -80,7 +84,7 @@ export function validateOpenClawJob(jobOrGeneric) {
     errors.push("phaseId must be a non-empty string");
   }
 
-  if (!isNonEmptyString(openclaw.promptHash)) {
+  if (!normalizePromptHash(openclaw.promptHash)) {
     errors.push("promptHash must be a non-empty string");
   }
 
@@ -92,9 +96,11 @@ export function validateOpenClawJob(jobOrGeneric) {
   if (!isObject(approval)) {
     errors.push("ownerApproval must be an object");
   } else {
-    for (const field of ["approvedBy", "approvedAt", "approvalSource", "phaseDocStatus"]) {
-      if (!isNonEmptyString(approval[field])) {
+    for (const field of ["approvedBy", "approvedAt", "approvalSource", "phaseDocStatus", "phaseId", "promptHash"]) {
+      if (!isNonEmptyString(approval[field]) && field !== "promptHash") {
         errors.push(`ownerApproval.${field} is required`);
+      } else if (field === "promptHash" && !normalizePromptHash(approval[field])) {
+        errors.push("ownerApproval.promptHash is required");
       }
     }
     if (approval.approvalSource === "explicit_prompt" && !isNonEmptyString(approval.promptExcerpt)) {
@@ -112,6 +118,13 @@ export function validateOpenClawJob(jobOrGeneric) {
 
   if (!isObject(openclaw.reportPolicy)) {
     errors.push("reportPolicy must be an object");
+  }
+
+  if (errors.length === 0 && options.verifyIdempotency !== false) {
+    const idempotency = verifyOpenClawIdempotency(openclaw, genericJob);
+    if (!idempotency.ok) {
+      errors.push(idempotency.detail);
+    }
   }
 
   return {

@@ -1,6 +1,6 @@
 # 29 — OpenClaw Constitution
 
-**Status:** Phase 3.1.7 · Constitution amendment (Builder Worker v1 complete)  
+**Status:** Phase 3.1.7.5 · Constitution amendment (Security Hardening complete)  
 **Related:** [Master Vision](./00-master-vision.md) · [Architecture Rules](./07-architecture-rules.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [API Boundaries](./15-api-boundaries.md) · [Current Phase](./08-current-phase.md) · [OpenClaw Job Schema](./30-openclaw-job-schema.md)
 
 ---
@@ -280,6 +280,18 @@ Autopilot **supervises** this chain — it does not replace Owner approval ([28 
 **Delivered:** [30-openclaw-job-schema.md](./30-openclaw-job-schema.md) — canonical OpenClaw Job object, job types, agent roles, owner approval artifact, promptHash, scope/validation/commit/report policies, stop conditions, Events, generic Job mapping, OCJ1–OCJ15.
 
 **Do not build:** CLI worker, runtime schema files, validators (until 3.1.7).
+
+---
+
+### Phase 3.1.7.5 — OpenClaw Security Hardening
+
+**Status:** COMPLETE
+
+**Delivered:** Verified prompt artifacts, idempotency binding, VALIDATION_DEMO gate, command allowlist, forensic reports, full event coverage on all exit paths. `validate-phase-3-1-7-5.js`.
+
+**Do not build:** QA Worker, scheduler, live connectors, multi-agent autopilot.
+
+**STOP:** Hardening only — no second agent until owner approves Phase 3.1.8.
 
 ---
 
