@@ -1,10 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import { dirname } from "node:path";
 import {
   ensureRuntimeDirectories,
   getRuntimeOpportunityStorePath,
   toRepoRelativePath,
+  readJsonWithRetry,
+  writeJsonAtomicWithRetry,
+  safeFileExists,
+  ensureDirectory,
 } from "../runtime/index.js";
 
 export { generateOpportunities } from "./radar.js";
@@ -38,12 +41,7 @@ function asArray(value) {
 }
 
 async function storeFileExists(path) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
+  return safeFileExists(path);
 }
 
 function createEmptyStore() {
@@ -66,8 +64,7 @@ async function loadStore() {
   if (!(await storeFileExists(path))) {
     return createEmptyStore();
   }
-  const raw = await readFile(path, "utf8");
-  const store = JSON.parse(raw);
+  const store = await readJsonWithRetry(path, createEmptyStore());
   if (!isObject(store.metadata)) store.metadata = {};
   store.opportunities = asArray(store.opportunities);
   store.history = asArray(store.history);
@@ -77,7 +74,7 @@ async function loadStore() {
 async function saveStore(store) {
   await ensureRuntimeDirectories();
   const path = getRuntimeOpportunityStorePath();
-  await mkdir(dirname(path), { recursive: true });
+  await ensureDirectory(dirname(path));
   store.metadata = {
     ...store.metadata,
     version: STORE_VERSION,
@@ -85,7 +82,7 @@ async function saveStore(store) {
     storageMode: "runtime_only",
     runtimeStorePath: toRepoRelativePath(path),
   };
-  await writeFile(path, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+  await writeJsonAtomicWithRetry(path, store);
   return store;
 }
 

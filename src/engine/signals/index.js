@@ -1,11 +1,14 @@
 import { createHash, randomUUID } from "node:crypto";
-import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import { dirname } from "node:path";
 import {
   ensureRuntimeDirectories,
   getLegacySignalStorePath,
   getRuntimeSignalStorePath,
   toRepoRelativePath,
+  readJsonWithRetry,
+  writeJsonAtomicWithRetry,
+  safeFileExists,
+  ensureDirectory,
 } from "../runtime/index.js";
 
 const LEGACY_STORE_PATH = getLegacySignalStorePath();
@@ -167,18 +170,13 @@ function buildHashInput(signal) {
 }
 
 async function storeFileExists(path) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
+  return safeFileExists(path);
 }
 
 async function readStoreFile(path) {
   if (!(await storeFileExists(path))) return null;
-  const raw = await readFile(path, "utf8");
-  const store = JSON.parse(raw);
+  const store = await readJsonWithRetry(path, null);
+  if (!store) return null;
   if (!Array.isArray(store.signals)) store.signals = [];
   if (!isObject(store.metadata)) store.metadata = {};
   return store;
@@ -213,14 +211,14 @@ async function loadStore() {
 async function saveStore(store) {
   await ensureRuntimeDirectories();
   const runtimePath = getRuntimeSignalStorePath();
-  await mkdir(dirname(runtimePath), { recursive: true });
+  await ensureDirectory(dirname(runtimePath));
   store.metadata = {
     ...store.metadata,
     updatedAt: nowIso(),
     storageMode: "runtime_preferred",
     runtimeStorePath: toRepoRelativePath(runtimePath),
   };
-  await writeFile(runtimePath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+  await writeJsonAtomicWithRetry(runtimePath, store);
 }
 
 export async function initializeRuntimeSignalStore() {

@@ -35,6 +35,12 @@ runtime/**
 # Generated reports (local status artifacts)
 reports/autopilot-status.md
 reports/autopilot-log.json
+reports/core-validation.md
+reports/core-validation.json
+reports/runtime-health.md
+reports/runtime-health.json
+reports/performance-baseline.md
+reports/performance-baseline.json
 
 # Seed configs required for schema migration
 !data/seeds/

@@ -1,9 +1,11 @@
-import { mkdir, writeFile, access } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import {
   ensureRuntimeDirectories,
   getRuntimeRawSignalPath,
   toRepoRelativePath,
+  ensureDirectory,
+  safeFileExists,
+  writeJsonAtomicWithRetry,
 } from "../runtime/index.js";
 
 function nowIso() {
@@ -120,16 +122,13 @@ export async function archiveObservation(input = {}) {
   const date = capturedAt.slice(0, 10);
   const [year, month, day] = date.split("-");
   const directory = getRuntimeRawSignalPath(year, month, day);
-  await mkdir(directory, { recursive: true });
+  await ensureDirectory(directory);
 
   const filename = `${observationId}.json`;
   const absolutePath = getRuntimeRawSignalPath(year, month, day, filename);
 
-  try {
-    await access(absolutePath);
+  if (await safeFileExists(absolutePath)) {
     throw new Error(`Raw observation file already exists: ${filename}`);
-  } catch (error) {
-    if (error.code !== "ENOENT") throw error;
   }
 
   const record = {
@@ -154,7 +153,7 @@ export async function archiveObservation(input = {}) {
     originalText: String(input.originalText ?? input.summary ?? input.headline ?? ""),
   };
 
-  await writeFile(absolutePath, `${JSON.stringify(record, null, 2)}\n`, "utf8");
+  await writeJsonAtomicWithRetry(absolutePath, record);
 
   return {
     observationId,

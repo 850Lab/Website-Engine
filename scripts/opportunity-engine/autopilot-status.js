@@ -12,7 +12,19 @@ const BUILD_LOG = join(ROOT, "docs/opportunity-os/09-build-log.md");
 const STATUS_REPORT = join(ROOT, "reports/autopilot-status.md");
 const LOG_REPORT = join(ROOT, "reports/autopilot-log.json");
 
+export const GENERATED_REPORT_PATHS = [
+  "reports/autopilot-status.md",
+  "reports/autopilot-log.json",
+  "reports/core-validation.md",
+  "reports/core-validation.json",
+  "reports/runtime-health.md",
+  "reports/runtime-health.json",
+  "reports/performance-baseline.md",
+  "reports/performance-baseline.json",
+];
+
 const VALIDATION_SCRIPTS = [
+  "scripts/opportunity-engine/validate-core.js",
   "scripts/opportunity-engine/validate-phase-0-5.js",
   "scripts/opportunity-engine/validate-phase-1.js",
   "scripts/opportunity-engine/validate-phase-2-1.js",
@@ -23,7 +35,22 @@ const VALIDATION_SCRIPTS = [
   "scripts/opportunity-engine/validate-phase-2-5.js",
   "scripts/opportunity-engine/validate-phase-2-5-5.js",
   "scripts/opportunity-engine/validate-phase-2-6.js",
+  "scripts/opportunity-engine/validate-phase-2-7.js",
+  "scripts/opportunity-engine/validate-phase-2-8.js",
+  "scripts/opportunity-engine/validate-phase-2-9.js",
+  "scripts/opportunity-engine/validate-phase-2-9-5.js",
 ];
+
+export function isIgnoredGeneratedReport(path) {
+  const normalized = path.replace(/\\/g, "/");
+  return GENERATED_REPORT_PATHS.some(
+    (ignored) => normalized === ignored || normalized.endsWith(`/${ignored}`),
+  );
+}
+
+export function filterBlockingDirtyFiles(dirtyFiles) {
+  return dirtyFiles.filter((file) => !isIgnoredGeneratedReport(file));
+}
 
 function nowIso() {
   return new Date().toISOString();
@@ -163,6 +190,8 @@ export async function collectAutopilotState() {
     }
   }
 
+  const blockingDirtyFiles = filterBlockingDirtyFiles(git.dirtyFiles);
+
   const recommendedNextStep = phase.ownerApprovalRequired
     ? "Stop for owner approval. Review reports/autopilot-status.md, then authorize the next blocked subphase in docs/opportunity-os/08-current-phase.md."
     : `Run validation, commit work, then implement the active subphase in ${PHASE_DOC}.`;
@@ -174,9 +203,11 @@ export async function collectAutopilotState() {
     lastCommit: git.lastCommit,
     branch: git.branch,
     dirtyFiles: git.dirtyFiles,
+    blockingDirtyFiles,
     gitStatusSummary: git.statusSummary,
-    isDirty: git.isDirty,
+    isDirty: blockingDirtyFiles.length > 0,
     validationCommands: [
+      "node scripts/opportunity-engine/validate-core.js",
       ...new Set([
         ...phase.validationCommands,
         ...VALIDATION_SCRIPTS.map((script) => `node ${script}`),

@@ -1,10 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import { dirname } from "node:path";
 import {
   ensureRuntimeDirectories,
   getRuntimeFactStorePath,
   toRepoRelativePath,
+  readJsonWithRetry,
+  writeJsonAtomicWithRetry,
+  safeFileExists,
+  ensureDirectory,
 } from "../runtime/index.js";
 import { mapFactToGraphRefs } from "../knowledge-graph/index.js";
 import { entityIdFromLabel } from "./entity-id.js";
@@ -49,18 +52,13 @@ function defaultLocation() {
 }
 
 async function storeFileExists(path) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
+  return safeFileExists(path);
 }
 
 async function readStoreFile(path) {
   if (!(await storeFileExists(path))) return null;
-  const raw = await readFile(path, "utf8");
-  const store = JSON.parse(raw);
+  const store = await readJsonWithRetry(path, null);
+  if (!store) return null;
   if (!Array.isArray(store.facts)) store.facts = [];
   if (!isObject(store.metadata)) store.metadata = {};
   return store;
@@ -83,14 +81,14 @@ async function loadStore() {
 async function saveStore(store) {
   await ensureRuntimeDirectories();
   const runtimePath = getRuntimeFactStorePath();
-  await mkdir(dirname(runtimePath), { recursive: true });
+  await ensureDirectory(dirname(runtimePath));
   store.metadata = {
     ...store.metadata,
     updatedAt: nowIso(),
     storageMode: "runtime_only",
     runtimeStorePath: toRepoRelativePath(runtimePath),
   };
-  await writeFile(runtimePath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+  await writeJsonAtomicWithRetry(runtimePath, store);
 }
 
 export async function initializeRuntimeFactStore() {

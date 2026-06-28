@@ -18,7 +18,7 @@ Separate **git-tracked code and seed config** from **live operational data** so 
 | **Application logic** | `src/` | Engine modules, connectors, UI projections | Tracked |
 | **Seed / reference config** | `engine-data/` | Offers, capabilities, markets, campaigns, legacy signal seed | Tracked |
 | **Live operational data** | `runtime/` | Signal store, raw observations, logs, cache | **Ignored** (`.gitkeep` only) |
-| **Generated reports** | `reports/` | Mission Control reports, autopilot status | Mixed (generated locally) |
+| **Generated reports** | `reports/` | Autopilot, core validation, runtime health, performance baseline | **Ignored** when listed in `.gitignore` |
 | **Schema / entity data** | `data/` | Businesses, contacts, migration entities | Partially tracked |
 
 ---
@@ -74,6 +74,42 @@ See [World Model §5 — Connector Rule](./23-world-model.md#5-connector-rule).
 Run `npm run autopilot:status` and `npm run autopilot:check` after operational work.
 
 Live writes under `runtime/` must **not** appear in `git status` when `.gitignore` is configured correctly.
+
+---
+
+## Runtime IO (Phase 2.9.5)
+
+All runtime-backed stores use shared helpers in `src/engine/runtime/io.js`:
+
+| Helper | Purpose |
+|---|---|
+| `readJsonWithRetry()` | Read JSON with retry on Windows file-lock errors |
+| `writeJsonAtomic()` | Temp file + rename for atomic persistence |
+| `writeJsonAtomicWithRetry()` | Atomic write with backoff retry |
+| `safeFileExists()` | Non-throwing existence check |
+| `ensureDirectory()` | Recursive directory creation |
+
+Retry codes: `EBUSY`, `EPERM`, `EACCES`, `ENOENT` (rename/read races).
+
+Stores using these helpers: signals, facts, graph-store, situations, hypotheses, problems, capability-matches, offer-recommendations, opportunities.
+
+---
+
+## Generated Report Policy (Phase 2.9.5)
+
+These files are **local generated artifacts** — gitignored, non-blocking for autopilot:
+
+| Report | Script |
+|---|---|
+| `reports/autopilot-status.md` | `npm run autopilot:status` |
+| `reports/autopilot-log.json` | `npm run autopilot:status` |
+| `reports/core-validation.md` / `.json` | `node scripts/opportunity-engine/validate-core.js` |
+| `reports/runtime-health.md` / `.json` | `node scripts/opportunity-engine/runtime-health.js` |
+| `reports/performance-baseline.md` / `.json` | `node scripts/opportunity-engine/performance-baseline.js` |
+
+Autopilot still blocks on real source/docs changes and owner-approval gates.
+
+Full phase regression: `node scripts/opportunity-engine/validate-core.js` (sequential, delayed, retry on lock errors).
 
 ---
 

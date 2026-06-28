@@ -1,10 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import { dirname } from "node:path";
 import {
   ensureRuntimeDirectories,
   getRuntimeGraphStorePath,
   toRepoRelativePath,
+  readJsonWithRetry,
+  writeJsonAtomicWithRetry,
+  safeFileExists,
+  ensureDirectory,
 } from "../runtime/index.js";
 
 const GRAPH_VERSION = "2.5.0";
@@ -47,12 +50,7 @@ function createEmptyGraph(description = "Opportunity OS persistent runtime graph
 }
 
 async function storeFileExists(path) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
+  return safeFileExists(path);
 }
 
 function normalizeGraph(graph) {
@@ -70,14 +68,14 @@ export async function readGraphStore() {
   if (!(await storeFileExists(path))) {
     return createEmptyGraph();
   }
-  const raw = await readFile(path, "utf8");
-  return normalizeGraph(JSON.parse(raw));
+  const graph = await readJsonWithRetry(path, createEmptyGraph());
+  return normalizeGraph(graph);
 }
 
 export async function writeGraphStore(graph) {
   await ensureRuntimeDirectories();
   const path = getRuntimeGraphStorePath();
-  await mkdir(dirname(path), { recursive: true });
+  await ensureDirectory(dirname(path));
 
   const normalized = normalizeGraph(clone(graph));
   normalized.metadata = {
@@ -88,7 +86,7 @@ export async function writeGraphStore(graph) {
     runtimeStorePath: toRepoRelativePath(path),
   };
 
-  await writeFile(path, `${JSON.stringify(normalized, null, 2)}\n`, "utf8");
+  await writeJsonAtomicWithRetry(path, normalized);
   return normalized;
 }
 

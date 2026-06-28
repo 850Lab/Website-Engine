@@ -100,3 +100,14 @@ export function toRepoRelativePath(absolutePath) {
 export function usesRuntimeOverride() {
   return Boolean(process.env.OPPORTUNITY_OS_RUNTIME_DIR);
 }
+
+export {
+  wait,
+  safeFileExists,
+  ensureDirectory,
+  withRetry,
+  readJsonWithRetry,
+  writeJsonAtomic,
+  writeJsonAtomicWithRetry,
+  isRetryableIoError,
+} from "./io.js";

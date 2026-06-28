@@ -1,4 +1,4 @@
-import { collectAutopilotState } from "./autopilot-status.js";
+import { collectAutopilotState, isIgnoredGeneratedReport } from "./autopilot-status.js";
 
 const errors = [];
 
@@ -14,15 +14,20 @@ function pass(message) {
 const state = await collectAutopilotState();
 
 if (state.isDirty) {
-  fail(`Git working tree is not clean (${state.dirtyFiles.length} file(s) changed)`);
-  for (const file of state.dirtyFiles.slice(0, 20)) {
+  fail(`Git working tree has blocking changes (${state.blockingDirtyFiles.length} file(s))`);
+  for (const file of state.blockingDirtyFiles.slice(0, 20)) {
     console.error(`  - ${file}`);
   }
-  if (state.dirtyFiles.length > 20) {
-    console.error(`  ... and ${state.dirtyFiles.length - 20} more`);
+  if (state.blockingDirtyFiles.length > 20) {
+    console.error(`  ... and ${state.blockingDirtyFiles.length - 20} more`);
   }
 } else {
-  pass("Git working tree is clean");
+  pass("Git working tree is clean (ignored generated reports excluded)");
+}
+
+const ignoredDirty = state.dirtyFiles.filter((file) => isIgnoredGeneratedReport(file));
+if (ignoredDirty.length) {
+  console.log(`NOTE: ${ignoredDirty.length} generated report file(s) ignored for autopilot blocking`);
 }
 
 if (state.ownerApprovalRequired || state.currentPhaseStatus === "BLOCKED") {
