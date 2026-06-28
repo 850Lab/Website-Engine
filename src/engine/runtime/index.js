@@ -33,6 +33,8 @@ export async function ensureRuntimeDirectories() {
     getRuntimePath("opportunities"),
     getRuntimePath("events"),
     getRuntimePath("jobs"),
+    getRuntimePath("scheduler"),
+    getRuntimePath("dispatch"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
   ];
@@ -92,6 +94,22 @@ export function getRuntimeEventStorePath() {
 
 export function getRuntimeJobStorePath() {
   return getRuntimePath("jobs", "jobs.json");
+}
+
+export function getRuntimeSchedulerDirectory() {
+  return getRuntimePath("scheduler");
+}
+
+export function getRuntimeSchedulerStorePath() {
+  return getRuntimePath("scheduler", "scheduler.json");
+}
+
+export function getRuntimeDispatchDirectory() {
+  return getRuntimePath("dispatch");
+}
+
+export function getRuntimeDispatchStorePath() {
+  return getRuntimePath("dispatch", "dispatch.json");
 }
 
 export function getLegacySignalStorePath() {

@@ -39,3 +39,6 @@ export * from "./offer-recommendations/index.js";
 export * from "./opportunity-factory/index.js";
 export * from "./opportunity-validator/index.js";
 export * as openclaw from "./openclaw/index.js";
+export * as scheduler from "./scheduler/index.js";
+export * as processor from "./processor/index.js";
+export * as executionQueue from "./execution-queue/index.js";

@@ -39,6 +39,10 @@ const VALIDATION_SCRIPTS = [
   "scripts/opportunity-engine/validate-phase-2-8.js",
   "scripts/opportunity-engine/validate-phase-2-9.js",
   "scripts/opportunity-engine/validate-phase-2-9-5.js",
+  "scripts/opportunity-engine/validate-phase-3-1.js",
+  "scripts/opportunity-engine/validate-phase-3-2.js",
+  "scripts/opportunity-engine/validate-phase-3-3.js",
+  "scripts/opportunity-engine/validate-phase-3-4.js",
 ];
 
 export function isIgnoredGeneratedReport(path) {

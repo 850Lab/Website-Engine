@@ -561,66 +561,93 @@ See [29-openclaw-constitution.md § Phase 3.1.6](./29-openclaw-constitution.md#p
 
 ---
 
-### Phase 3.2 — Sensor Scheduler
+### Phase 3.2 — Operating Loop Scheduler
 
-**Status:** BLOCKED until owner approves explicit implementation prompt.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:**
 
-| Deliverable | Scope |
+| Deliverable | Location |
 |---|---|
-| Scheduler tick loop | Enqueue `sensor.run` per sensor cadence |
-| Sensor stagger + health gates | Per §5 |
-| `sensor.run` job handler | Wraps existing `runSensor()` |
-| Autopilot loop health section | Pending sensor jobs, failure counts |
+| Scheduler store | `runtime/scheduler/scheduler.json` (gitignored) |
+| Scheduler module | `src/engine/scheduler/` — config, store, policies, tick, events |
+| Runtime helpers | `getRuntimeSchedulerDirectory()`, `getRuntimeSchedulerStorePath()` |
+| Validator | `scripts/opportunity-engine/validate-phase-3-2.js` |
 
-**Do not build:** Continuous pipeline processor, live production connectors.
+**Scheduler API:** `loadScheduler`, `saveScheduler`, `registerSchedule`, `removeSchedule`, `listSchedules`, `evaluateDueSchedules`, `executeSchedulerTick`
 
-**STOP:** Scheduled sensor runs → observations → signals — halt.
+**Scheduler events:** `scheduler.started`, `scheduler.tick`, `scheduler.job_enqueued`, `scheduler.job_skipped`, `scheduler.completed`, `scheduler.failed`
+
+**Pipeline:** Clock tick → load scheduler configuration → evaluate due schedules → `createJob()` (pending generic jobs, e.g. `sensor.poll`) → emit scheduler events → **STOP**.
+
+**Boundaries:** Scheduler may read schedule config, detect due work, enqueue jobs, and emit events. It must **not** claim or execute jobs, call sensors/connectors, invoke OpenClaw, Mission Control, Score Council, or reasoning modules. No timers or background workers.
+
+**Do not build:** Continuous processor (3.3), execution queue (3.4), sensor handlers, live connectors.
+
+**STOP:** Pending jobs enqueued — no processing, workers, or autonomous loop.
 
 ---
 
-### Phase 3.3 — Continuous Pipeline Processor
+### Phase 3.3 — Continuous Processor
 
-**Status:** BLOCKED until Phase 3.2 complete.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:**
 
-| Deliverable | Scope |
+| Deliverable | Location |
 |---|---|
-| Event-driven job chaining | Full canonical loop §2 |
-| Stage handlers | Thin wrappers over existing engine modules |
-| System state supervisor | §6 state transitions |
-| Partial failure + recovery | §7 |
+| Processor module | `src/engine/processor/` — registry, handlers, execute, events |
+| Handler registry | `registerJobHandler()`, `getJobHandler()`, `listJobHandlers()` |
+| Built-in demo handler | `demo.echo` — appends timestamp to metadata, completes job |
+| Validator | `scripts/opportunity-engine/validate-phase-3-3.js` |
 
-**Do not build:** Execution queue dispatch, live connectors, OpenClaw.
+**Processor API:** `registerJobHandler`, `unregisterJobHandler`, `getJobHandler`, `listJobHandlers`, `processNextJob`, `executeJob`
 
-**STOP:** Opportunity validated + scored + projection refreshed — halt.
+**Processor events:** `processor.started`, `processor.job_claimed`, `processor.handler_resolved`, `processor.job_completed`, `processor.job_retry`, `processor.job_dead_letter`, `processor.failed`, `processor.completed`
+
+**Pipeline:** Pending job → claim → resolve registered handler → execute → complete / retry / dead-letter → emit processor events → **STOP**. Exactly **one job per invocation** — no timers, daemons, polling, or infinite loops.
+
+**Boundaries:** Processor may claim jobs, run registered handlers, and transition job state. It must **not** create or schedule jobs, call sensors/connectors, invoke OpenClaw/Mission Control/Score Council, or perform reasoning outside registered handlers.
+
+**Do not build:** Execution queue (3.4), live connectors (3.5), sensor handlers, pipeline stage chaining.
+
+**STOP:** One job processed (completed, retry, or dead-letter) — halt.
 
 ---
 
-### Phase 3.4 — Execution Queue
+### Phase 3.4 — Execution Queue / Dispatcher
 
-**Status:** BLOCKED until Phase 3.3 complete.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:**
 
-| Deliverable | Scope |
+| Deliverable | Location |
 |---|---|
-| `execution.enqueue` job handler | Policy gate + approval check |
-| Execution queue store | Approved plans / tasks |
-| Outcome recording bridge | `outcome.record` events |
-| Mission Control execution projection | Read-only queue display |
+| Dispatch store | `runtime/dispatch/dispatch.json` (gitignored) |
+| Execution queue module | `src/engine/execution-queue/` — queue, routing, priority, dispatch, events |
+| Validator | `scripts/opportunity-engine/validate-phase-3-4.js` |
 
-**Do not build:** OpenClaw autonomous dispatch, learning calibration.
+**Queue API:** `listEligibleJobs`, `rankEligibleJobs`, `resolveWorkerTarget`, `createDispatchDecision`, `dispatchNextJob`, `listWorkerRoutes`
 
-**STOP:** Enqueue approved execution — halt before autonomous dispatch.
+**Worker routes:** `demo.echo` → `processor` · `openclaw.build` → `openclaw.builder` · `openclaw.qa` → `openclaw.qa`
+
+**Blocked (future phases):** `sensor.poll`, `connector.run`, `execution.outreach`, `research.run`
+
+**Queue events:** `execution_queue.started`, `execution_queue.job_considered`, `execution_queue.job_skipped`, `execution_queue.job_selected`, `execution_queue.dispatch_created`, `execution_queue.completed`, `execution_queue.failed`
+
+**Pipeline:** Pending jobs → eligibility / priority / routing → dispatch decision → **STOP**. No job claiming, execution, or worker invocation.
+
+**Boundaries:** Queue owns routing and dispatch decisions only. Must **not** claim or execute jobs, schedule work, call sensors/connectors, invoke OpenClaw Execution, Mission Control, or Score Council.
+
+**Do not build:** Live connectors (3.5), OpenClaw Execution dispatch, Mission Control UI, outreach automation.
+
+**STOP:** Dispatch decision created — halt before worker/processor invocation.
 
 ---
 
 ### Phase 3.5 — Live Connectors
 
-**Status:** BLOCKED until Phase 3.4 complete + owner approval for each connector.
+**Status:** BLOCKED until owner approves explicit implementation prompt.
 
 **Build:**
 

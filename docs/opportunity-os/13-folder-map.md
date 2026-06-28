@@ -35,9 +35,14 @@
 | **`src/engine/opportunities/`** | Runtime opportunity store + legacy radar (`radar.js`) | Platform | `runtime/opportunities/` | Score Council next consumer |
 | **`runtime/events/`** | Append-only operating-loop event log (Phase 3.1) | Platform | None | `events.jsonl` gitignored |
 | **`runtime/jobs/`** | Operating-loop job queue store (Phase 3.1) | Platform | None | `jobs.json` gitignored |
-| **`src/engine/events/`** | Event store API — append-only audit log (Phase 3.1) | Platform | `runtime/events/` | Job transition events |
-| **`src/engine/jobs/`** | Job store API — lifecycle + idempotency (Phase 3.1) | Platform | `runtime/jobs/`, `engine/events/` | No scheduler in 3.1 |
-| **`src/engine/openclaw/`** | OpenClaw Builder + QA Workers (Phase 3.1.7–3.1.8) | Platform | `engine/jobs/`, `engine/events/`, `engine-data/openclaw/prompts/` | Scheduler 3.2; no loop |
+| **`runtime/scheduler/`** | Scheduler configuration + cadence cursors (Phase 3.2) | Platform | None | `scheduler.json` gitignored |
+| **`src/engine/events/`** | Event store API — append-only audit log (Phase 3.1) | Platform | `runtime/events/` | Job + scheduler transition events |
+| **`src/engine/jobs/`** | Job store API — lifecycle + idempotency (Phase 3.1) | Platform | `runtime/jobs/`, `engine/events/` | Workers claim jobs; scheduler enqueues only |
+| **`src/engine/scheduler/`** | Operating loop scheduler — due schedules → pending jobs (Phase 3.2) | Platform | `runtime/scheduler/`, `engine/jobs/`, `engine/events/` | No execution; processor 3.3 |
+| **`src/engine/processor/`** | Continuous processor — one job per invocation (Phase 3.3) | Platform | `engine/jobs/`, `engine/events/` | Handler registry only; no scheduling |
+| **`runtime/dispatch/`** | Execution queue dispatch decisions (Phase 3.4) | Platform | None | `dispatch.json` gitignored |
+| **`src/engine/execution-queue/`** | Execution queue — eligibility, routing, dispatch decisions (Phase 3.4) | Platform | `runtime/dispatch/`, `engine/jobs/`, `engine/events/` | No claim/execute; workers run separately |
+| **`src/engine/openclaw/`** | OpenClaw Builder + QA Workers (Phase 3.1.7–3.1.8) | Platform | `engine/jobs/`, `engine/events/`, `engine-data/openclaw/prompts/` | Manual CLI only; scheduler enqueues generic jobs |
 | **`engine-data/openclaw/prompts/`** | Canonical approved prompt artifacts + promptHash (Phase 3.1.7.5+) | Platform / Owner | None | Builder + QA demo/production artifacts |
 | **`scripts/openclaw/`** | Manual OpenClaw CLI — Builder + QA, one Job per invocation | Platform | `engine/openclaw/` | No scheduler |
 | **`src/engine/runtime/`** | Runtime path helpers + atomic IO (`io.js`, Phase 2.9.5) | Platform | `runtime/` | Storage boundary for all runtime stores |

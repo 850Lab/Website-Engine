@@ -56,10 +56,10 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **UI** | `pivotal-os`, legacy pages | HTTP routes | Humans |
 | **Learning** | Future `engine/learning` | `proposeLearning()`, `applyLearning()` | Calibrator agent |
 | **Forecasting** | Future `engine/forecasting` | `generateForecasts()` | Radar, reports |
-| **Operating Loop** *(Phase 3.1)* | `engine/jobs` + `engine/events` | Jobs: `createJob()`, `claimJob()`, `completeJob()`, `failJob()`, `retryJob()`, `cancelJob()`, `archiveJob()`, `listJobs()`, `getJob()` · Events: `appendEvent()`, `listEvents()`, `getEvent()`, `getEventsByType()`, `getEventsByCorrelationId()`, `getEventsBySubject()` | Future scheduler (3.2), processor (3.3) |
-| **Scheduler** *(Phase 3.2)* | Future `engine/loop/scheduler` | `tick()`, `scheduleSensors()` | Sensor runs only — no reasoning |
-| **Pipeline Processor** *(Phase 3.3)* | Future `engine/loop/processor` | Event-driven stage handlers wrapping existing modules | Canonical loop §2 in [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) |
-| **Execution Queue** *(Phase 3.4)* | Future `engine/execution` + loop | `enqueueExecution()`, `recordOutcome()` | OpenClaw Execution agent (future), Mission Control (read) |
+| **Operating Loop** *(Phase 3.1)* | `engine/jobs` + `engine/events` | Jobs: `createJob()`, `claimJob()`, `completeJob()`, `failJob()`, `retryJob()`, `cancelJob()`, `archiveJob()`, `listJobs()`, `getJob()` · Events: `appendEvent()`, `listEvents()`, `getEvent()`, `getEventsByType()`, `getEventsByCorrelationId()`, `getEventsBySubject()` | Scheduler (3.2), processor (3.3) |
+| **Scheduler** *(Phase 3.2)* | `engine/scheduler` | `loadScheduler()`, `saveScheduler()`, `registerSchedule()`, `removeSchedule()`, `listSchedules()`, `evaluateDueSchedules()`, `executeSchedulerTick()` | Creates pending jobs + `scheduler.*` events only — no execution |
+| **Processor** *(Phase 3.3)* | `engine/processor` | `registerJobHandler()`, `unregisterJobHandler()`, `getJobHandler()`, `listJobHandlers()`, `processNextJob()`, `executeJob()` | Claims one job, runs registered handler, emits `processor.*` events — no scheduling |
+| **Execution Queue** *(Phase 3.4)* | `engine/execution-queue` | `listEligibleJobs()`, `rankEligibleJobs()`, `resolveWorkerTarget()`, `createDispatchDecision()`, `dispatchNextJob()`, `listWorkerRoutes()` | Routing + dispatch decisions only — no claim or execute |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
 | **OpenClaw** *(Phase 3.1.8)* | `engine/openclaw` + `engine-data/openclaw/prompts/` + `scripts/openclaw/` | Builder: `runOpenClawBuilderJob()` · QA: `runOpenClawQaJob()`, `validateQaJob()`, `evaluateExpectedOutputs()` · CLI: `run-builder-job.js`, `run-qa-job.js` | QA read-only; prompt verified; allowlists; one Job per invocation |
 

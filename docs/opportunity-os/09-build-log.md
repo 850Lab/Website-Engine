@@ -229,6 +229,30 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.4 Execution Queue / Dispatcher
+**Phase:** 3.4  
+**Type:** Milestone  
+**Summary:** Implemented execution queue dispatcher: `runtime/dispatch/dispatch.json`, `src/engine/execution-queue/` (queue, routing, priority, dispatch, events), `dispatchNextJob()` ranks eligible jobs, resolves worker targets, persists dispatch decisions, emits `execution_queue.*` Events, and STOPs. No job claiming, execution, or worker invocation. Phase 3.5 blocked.  
+**Links:** `src/engine/execution-queue/`, `scripts/opportunity-engine/validate-phase-3-4.js`, [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
+### 2026-06-23 — Phase 3.3 Continuous Processor
+**Phase:** 3.3  
+**Type:** Milestone  
+**Summary:** Implemented single-invocation job processor: `src/engine/processor/` (registry, handlers, execute, events), `processNextJob()` / `executeJob()` claim one pending job, resolve registered handler, complete/retry/dead-letter via Phase 3.1 job APIs, emit `processor.*` Events, and STOP. Built-in `demo.echo` handler. No scheduling, sensors, connectors, or autonomous loop. Phase 3.4 blocked.  
+**Links:** `src/engine/processor/`, `scripts/opportunity-engine/validate-phase-3-3.js`, [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
+### 2026-06-23 — Phase 3.2 Operating Loop Scheduler
+**Phase:** 3.2  
+**Type:** Milestone  
+**Summary:** Implemented time-based scheduler: `runtime/scheduler/scheduler.json`, `src/engine/scheduler/` (config, store, policies, tick, events), `executeSchedulerTick()` creates pending generic Jobs via `createJob()`, emits `scheduler.*` Events, updates schedule cursors, and STOPs. No job execution, sensors, workers, or continuous loop. Phase 3.3 blocked.  
+**Links:** `src/engine/scheduler/`, `scripts/opportunity-engine/validate-phase-3-2.js`, [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
 ### 2026-06-23 — Phase 3.1.8 OpenClaw QA Worker
 **Phase:** 3.1.8  
 **Type:** Milestone  

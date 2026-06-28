@@ -159,25 +159,32 @@ if (!demoApproval.ok) {
   pass("Owner approval check works for validation demo");
 }
 
+const savedDemoFlag = process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;
+delete process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;
 const blockedApproval = await verifyOwnerApproval(
   buildMinimalOpenClaw({
-    phaseId: "3.2",
+    phaseId: "3.5",
     ownerApproval: {
       approvedBy: "owner",
       approvedAt: new Date().toISOString(),
       approvalSource: "explicit_prompt",
       phaseDocStatus: "ACTIVE",
-      phaseId: "3.2",
+      phaseId: "3.5",
       promptHash: demoPromptHash,
       promptExcerpt: "blocked test",
     },
     idempotencyKey: deriveOpenClawIdempotencyKey({
-      phaseId: "3.2",
+      phaseId: "3.5",
       jobType: "openclaw.build",
       promptHash: demoPromptHash,
     }),
   }),
 );
+if (savedDemoFlag === undefined) {
+  delete process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;
+} else {
+  process.env.OPENCLAW_ALLOW_VALIDATION_DEMO = savedDemoFlag;
+}
 if (blockedApproval.ok) {
   fail("Owner approval should fail for blocked phase without validation demo");
 } else {
