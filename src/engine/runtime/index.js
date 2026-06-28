@@ -31,6 +31,8 @@ export async function ensureRuntimeDirectories() {
     getRuntimePath("capability-matches"),
     getRuntimePath("offer-recommendations"),
     getRuntimePath("opportunities"),
+    getRuntimePath("events"),
+    getRuntimePath("jobs"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
   ];
@@ -84,6 +86,14 @@ export function getRuntimeOpportunityStorePath() {
   return getRuntimePath("opportunities", "opportunities.json");
 }
 
+export function getRuntimeEventStorePath() {
+  return getRuntimePath("events", "events.jsonl");
+}
+
+export function getRuntimeJobStorePath() {
+  return getRuntimePath("jobs", "jobs.json");
+}
+
 export function getLegacySignalStorePath() {
   return join(REPO_ROOT, "engine-data", "signals", "signals.json");
 }
@@ -109,5 +119,7 @@ export {
   readJsonWithRetry,
   writeJsonAtomic,
   writeJsonAtomicWithRetry,
+  appendJsonLineWithRetry,
+  readJsonLinesWithRetry,
   isRetryableIoError,
 } from "./io.js";

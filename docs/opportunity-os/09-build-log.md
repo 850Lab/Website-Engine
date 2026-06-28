@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.1 Job & Event Runtime
+**Phase:** 3.1  
+**Type:** Milestone  
+**Summary:** Implemented operating-loop kernel: append-only `runtime/events/events.jsonl`, mutable `runtime/jobs/jobs.json`, `src/engine/events/` and `src/engine/jobs/` with full job lifecycle API, idempotency dedupe, dead-letter on maxAttempts, job transition events, and atomic runtime IO. No scheduler, timers, or background processing.  
+**Links:** `src/engine/events/`, `src/engine/jobs/`, `scripts/opportunity-engine/validate-phase-3-1.js`, [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
 ### 2026-06-23 — Phase 3.0.5 Autonomous Operating Loop Constitution
 **Phase:** 3.0.5  
 **Type:** Constitution  
@@ -267,6 +275,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 3.1 Job & Event Runtime — loop kernel, idempotency, dead-letter |
 | 2026-06-23 | Phase 3.0.5 Autonomous Operating Loop Constitution — Job/Event model, scheduler, AOL1–AOL15 |
 | 2026-06-23 | Phase 2.9.5 Core Stability — runtime IO hardening, validate-core, generated report policy |
 | 2026-06-28 | Phase 2.9 Opportunity Factory — Commercial Intelligence complete |

@@ -16,7 +16,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
 | **Observations (raw)** | Ingest boundary + sensors + manual CLI | Write to `runtime/signals/raw/` only | Signal normalizer |
-| **Runtime storage** | `engine/runtime` | `getRuntimeRoot()`, `ensureRuntimeDirectories()`, path helpers, `readJsonWithRetry()`, `writeJsonAtomic()`, `writeJsonAtomicWithRetry()` (Phase 2.9.5) | Signals, sensors, facts, graph, all runtime stores |
+| **Runtime storage** | `engine/runtime` | Path helpers, `readJsonWithRetry()`, `writeJsonAtomic()`, `writeJsonAtomicWithRetry()`, `appendJsonLineWithRetry()`, `readJsonLinesWithRetry()` | All runtime stores including `events/`, `jobs/` |
 | **Sensors** | `engine/sensors` (Phase 2.3) | `registerSensor()`, `runSensor()`, `runAllSensors()`, `healthReport()`, `ingestSensorResult()` | Observation pipeline only |
 | **Connectors (deprecated)** | `engine/connectors` shim | `registerConnector()`, `runConnector()` | Regression only — use sensors |
 | **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `linkFactsToSignal()`, `initializeRuntimeSignalStore()` | Sensors, fact builder, CLI, Mission Control metrics (read) |
@@ -56,7 +56,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **UI** | `pivotal-os`, legacy pages | HTTP routes | Humans |
 | **Learning** | Future `engine/learning` | `proposeLearning()`, `applyLearning()` | Calibrator agent |
 | **Forecasting** | Future `engine/forecasting` | `generateForecasts()` | Radar, reports |
-| **Operating Loop** *(Phase 3.1)* | Future `engine/loop` | `enqueueJob()`, `claimJob()`, `completeJob()`, `appendEvent()` | Scheduler, stage handlers, Autopilot (read) |
+| **Operating Loop** *(Phase 3.1)* | `engine/jobs` + `engine/events` | Jobs: `createJob()`, `claimJob()`, `completeJob()`, `failJob()`, `retryJob()`, `cancelJob()`, `archiveJob()`, `listJobs()`, `getJob()` · Events: `appendEvent()`, `listEvents()`, `getEvent()`, `getEventsByType()`, `getEventsByCorrelationId()`, `getEventsBySubject()` | Future scheduler (3.2), processor (3.3) |
 | **Scheduler** *(Phase 3.2)* | Future `engine/loop/scheduler` | `tick()`, `scheduleSensors()` | Sensor runs only — no reasoning |
 | **Pipeline Processor** *(Phase 3.3)* | Future `engine/loop/processor` | Event-driven stage handlers wrapping existing modules | Canonical loop §2 in [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) |
 | **Execution Queue** *(Phase 3.4)* | Future `engine/execution` + loop | `enqueueExecution()`, `recordOutcome()` | OpenClaw (future), Mission Control (read) |
@@ -266,6 +266,8 @@ Canonical Event schema and taxonomy: [28-autonomous-operating-loop.md §4](./28-
 | `opportunity.validated` | `engine/opportunity-factory` | `opportunity.score` |
 | `opportunity.scored` | `engine/score-council` | `projection.refresh` |
 | `execution.enqueued` | `engine/execution` | OpenClaw dispatch (future) |
+| `job.dead_letter` | `engine/jobs` | Manual `retryJob()` (Phase 3.1+) |
+| `job.completed` | `engine/jobs` | Future loop processor (3.3) |
 | `outcome.recorded` | outcomes bridge | `learning.apply` |
 
 Legacy ad-hoc events (pre-3.1):

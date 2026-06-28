@@ -16,7 +16,7 @@
 | **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
-| **`runtime/`** | Live operational data: signals, facts, graph, situations, hypotheses, problems, capability-matches, offer-recommendations, opportunities, logs, cache (gitignored) | Platform | None | Default local runtime |
+| **`runtime/`** | Live operational data: signals, facts, graph, situations, hypotheses, problems, capability-matches, offer-recommendations, opportunities, events, jobs, logs, cache (gitignored) | Platform | None | Default local runtime |
 | **`src/engine/situations/`** | Runtime-backed situation store + lifecycle (Phase 2.5.5) | Platform | `runtime/situations/` | Required input for Problem Inference |
 | **`src/engine/situation-builder/`** | Rules-only graph clustering into situations | Platform | `graph-store/`, `situations/` | No LLM; template summaries only |
 | **`src/engine/hypotheses/`** | Runtime hypothesis store (Phase 2.6) | Platform | `runtime/hypotheses/` | Problem inference input |
@@ -33,7 +33,11 @@
 | **`src/engine/opportunity-factory/`** | Problem + match + offer → Opportunity assembly (Phase 2.9) | Platform | problems, capability-matches, offer-recommendations | Stops before Score Council |
 | **`src/engine/opportunity-validator/`** | Opportunity completeness validation (Phase 2.9) | Platform | opportunity-factory output | Rejects incomplete assemblies |
 | **`src/engine/opportunities/`** | Runtime opportunity store + legacy radar (`radar.js`) | Platform | `runtime/opportunities/` | Score Council next consumer |
-| **`src/engine/runtime/`** | Runtime path helpers + atomic IO (`io.js`, Phase 2.9.5) | Platform | `runtime/` | Storage boundary for sensors, signals, facts, graph |
+| **`runtime/events/`** | Append-only operating-loop event log (Phase 3.1) | Platform | None | `events.jsonl` gitignored |
+| **`runtime/jobs/`** | Operating-loop job queue store (Phase 3.1) | Platform | None | `jobs.json` gitignored |
+| **`src/engine/events/`** | Event store API — append-only audit log (Phase 3.1) | Platform | `runtime/events/` | Job transition events |
+| **`src/engine/jobs/`** | Job store API — lifecycle + idempotency (Phase 3.1) | Platform | `runtime/jobs/`, `engine/events/` | No scheduler in 3.1 |
+| **`src/engine/runtime/`** | Runtime path helpers + atomic IO (`io.js`, Phase 2.9.5) | Platform | `runtime/` | Storage boundary for all runtime stores |
 | **`src/engine/graph-store/`** | Persistent runtime graph store (Phase 2.5) | Platform | `runtime/graph/` | Graph DB later |
 | **`src/engine/entity-resolution/`** | Rules-only entity normalization + aliases | Platform | `graph-store/` | No fuzzy merge in v0 |
 | **`src/engine/relationship-builder/`** | Fact → relationship projection | Platform | `facts/`, `graph-store/`, `entity-resolution/` | No problem inference |
@@ -106,7 +110,7 @@
 
 | Path | Purpose | Owner | Future direction |
 |---|---|---|---|
-| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-core.js`, `validate-phase-2-9-5.js`, `runtime-health.js`, `performance-baseline.js`, `ingest-signal.js` |
+| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `ingest-signal.js` |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
 | **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*`, `performance-baseline.*`, autopilot reports |

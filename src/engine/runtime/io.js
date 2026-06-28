@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, access, rename, unlink } from "node:fs/promises";
+import { readFile, writeFile, appendFile, mkdir, access, rename, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { randomUUID } from "node:crypto";
 
@@ -93,4 +93,28 @@ export async function writeJsonAtomicWithRetry(filePath, data) {
 
 export function isRetryableIoError(error) {
   return isRetryableError(error);
+}
+
+export async function appendJsonLineWithRetry(filePath, record) {
+  const directory = dirname(filePath);
+  await ensureDirectory(directory);
+  const line = `${JSON.stringify(record)}\n`;
+  await withRetry(() => appendFile(filePath, line, "utf8"));
+}
+
+export async function readJsonLinesWithRetry(filePath) {
+  if (!(await safeFileExists(filePath))) {
+    return [];
+  }
+
+  const raw = await withRetry(() => readFile(filePath, "utf8"));
+  if (!raw.trim()) {
+    return [];
+  }
+
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
 }

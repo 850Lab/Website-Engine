@@ -153,12 +153,15 @@ The **Job** is the unit of work in the operating loop. All scheduled and reactiv
 
 | Status | Meaning |
 |---|---|
-| `pending` | Queued; `runAfter` not yet reached or waiting for scheduler tick |
-| `running` | Worker claimed job; stage handler executing |
+| `pending` | Queued; waiting for claim or `runAfter` |
+| `claimed` | Worker claimed; awaiting handler start |
+| `running` | Handler executing (Phase 3.3+) |
 | `completed` | Success; `outputRefs` populated |
-| `failed` | Retries exhausted or non-retryable error — moved to dead-letter |
+| `failed` | Recorded failure (may transition to retry or dead-letter) |
+| `retry_wait` | Retry scheduled; waiting for `runAfter` |
 | `cancelled` | Operator or policy cancelled before completion |
-| `dead_letter` | Permanent failure archive — requires manual replay or fix |
+| `dead_letter` | Retries exhausted — manual `retryJob()` only |
+| `archived` | Terminal job archived |
 
 ### Job type registry (v1)
 
@@ -496,28 +499,37 @@ Mission Control **reads projections**. It does **not** run the loop.
 
 ### Phase 3.1 — Job / Event Runtime
 
-**Status:** BLOCKED until owner approves explicit implementation prompt.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:**
 
-| Deliverable | Scope |
+| Deliverable | Location |
 |---|---|
-| `src/engine/loop/` (or `engine/jobs/`) | Job store, event log, enqueue, claim, complete, fail |
-| `runtime/jobs/` | Pending queue + dead-letter (gitignored) |
-| `runtime/events/` | Append-only event log (gitignored) |
-| Idempotency layer | `idempotencyKey` dedupe per §5 |
-| IO integration | Atomic writes via `engine/runtime/io.js` |
-| `scripts/opportunity-engine/validate-phase-3-1.js` | Job/event contract tests |
+| Event store | `src/engine/events/` → `runtime/events/events.jsonl` |
+| Job store | `src/engine/jobs/` → `runtime/jobs/jobs.json` |
+| Idempotency | `src/engine/jobs/idempotency.js` — active-job dedupe by `idempotencyKey` |
+| IO integration | `appendJsonLineWithRetry`, `writeJsonAtomicWithRetry` via `engine/runtime/io.js` |
+| Validator | `scripts/opportunity-engine/validate-phase-3-1.js` |
 
-**Do not build:** Sensor scheduler, pipeline processor, live connectors, Mission Control UI, OpenClaw.
+**Job API:** `createJob`, `claimJob`, `completeJob`, `failJob`, `retryJob`, `cancelJob`, `archiveJob`, `listJobs`, `getJob`
 
-**STOP:** Job enqueue + claim + event append — halt.
+**Event API:** `appendEvent`, `listEvents`, `getEvent`, `getEventsByType`, `getEventsByCorrelationId`, `getEventsBySubject`
+
+**Job statuses:** `pending`, `claimed`, `running`, `completed`, `failed`, `retry_wait`, `dead_letter`, `cancelled`, `archived`
+
+**Job transition events:** `job.created`, `job.claimed`, `job.completed`, `job.failed`, `job.retry`, `job.dead_letter`, `job.cancelled`, `job.archived`
+
+**Idempotency policy:** `createJob()` with the same `idempotencyKey` while a job is `pending`, `claimed`, `running`, or `retry_wait` returns the existing job. Keys default to `sha256(type + sorted inputRefs)` when not explicit.
+
+**Dead letter:** Jobs exceeding `maxAttempts` on retryable failure move to `dead_letter`. No automatic replay — `retryJob()` is manual operator action only.
+
+**STOP:** Kernel only — no scheduler, timers, polling, or background workers.
 
 ---
 
 ### Phase 3.2 — Sensor Scheduler
 
-**Status:** BLOCKED until Phase 3.1 complete.
+**Status:** BLOCKED until owner approves explicit implementation prompt.
 
 **Build:**
 
