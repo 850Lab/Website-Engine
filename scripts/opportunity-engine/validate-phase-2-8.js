@@ -202,21 +202,17 @@ if (matcherSource.includes("recommendOffers") || matcherSource.includes("offer-i
   pass("Capability matcher stops before offer intelligence");
 }
 
-if (await fileExists(join(ROOT, "src/engine/opportunity-factory"))) {
-  fail("Opportunity factory module created");
-} else {
-  pass("No opportunity factory");
-}
-
 const offerIntelSource = await readFile(join(ROOT, "src/engine/offer-intelligence/index.js"), "utf8");
 if (
+  offerIntelSource.includes("buildOpportunity") ||
+  offerIntelSource.includes("opportunity-factory") ||
   offerIntelSource.includes("createOpportunity") ||
   offerIntelSource.includes("scoreOpportunity") ||
   offerIntelSource.includes("buildMissionControl")
 ) {
-  fail("Offer intelligence invokes opportunities, scoring, or Mission Control");
+  fail("Offer intelligence invokes opportunity factory, scoring, or Mission Control");
 } else {
-  pass("Offer intelligence stops before opportunities");
+  pass("Offer intelligence stops before opportunity factory");
 }
 
 const homeSource = await readFile(join(ROOT, "src/pivotal-os/pages/home.js"), "utf8");

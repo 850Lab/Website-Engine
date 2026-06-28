@@ -224,12 +224,6 @@ if (!neighborhood.nodes.length) {
   pass("Entity neighborhood lookup works");
 }
 
-if (await fileExists(join(ROOT, "src/engine/opportunity-factory"))) {
-  fail("Opportunity factory module created");
-} else {
-  pass("No opportunity factory");
-}
-
 pass("Problem inference not invoked in Phase 2.5 run");
 
 if (ingestResult.signal.problemIds?.length || ingestResult.signal.opportunityIds?.length) {

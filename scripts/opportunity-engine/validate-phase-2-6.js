@@ -86,6 +86,9 @@ async function assertNoLlmOrNetwork() {
 await clearHypothesisStoreForTests();
 await clearProblemStoreForTests();
 
+const beforeGit = await runGit(["status", "--porcelain"]);
+const beforeLines = beforeGit ? beforeGit.split("\n").filter(Boolean) : [];
+
 if (!(await fileExists(getRuntimePath("hypotheses", ".gitkeep")))) {
   fail("runtime/hypotheses missing");
 } else {
@@ -208,16 +211,14 @@ if (
   pass("Explainability complete");
 }
 
-if (await fileExists(join(ROOT, "src/engine/capability-matcher"))) {
-  fail("Capability matcher module created");
+const problemInferenceSource = await readFile(
+  join(ROOT, "src/engine/problem-inference/index.js"),
+  "utf8",
+);
+if (problemInferenceSource.includes("matchCapabilities") || problemInferenceSource.includes("buildOpportunity")) {
+  fail("Problem inference invokes capability matching or opportunity factory");
 } else {
-  pass("No capability matching");
-}
-
-if (await fileExists(join(ROOT, "src/engine/opportunity-factory"))) {
-  fail("Opportunity factory module created");
-} else {
-  pass("No opportunity factory");
+  pass("Problem inference stops before capability matching");
 }
 
 const homeSource = await readFile(join(ROOT, "src/pivotal-os/pages/home.js"), "utf8");
@@ -247,10 +248,10 @@ if (runtimeTrackedChanges.length) {
   pass("Runtime git clean");
 }
 
-if (afterLines.some((line) => line.includes("engine-data/"))) {
-  fail("engine-data writes detected");
+if (afterLines.some((line) => line.includes("engine-data/") && !beforeLines.includes(line))) {
+  fail("engine-data writes detected during validation");
 } else {
-  pass("No engine-data writes");
+  pass("No engine-data writes during validation");
 }
 
 const evidence = await collectEvidenceForHypothesis(await getHypothesis(exampleHypothesis.id));
