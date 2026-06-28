@@ -7,54 +7,59 @@
 
 ## Current Phase
 
-**Phase 3.6 — Event Pipeline Orchestrator** — **COMPLETE**
+**Phase 3.7 — Pipeline Stage Handlers** — **COMPLETE**
 
-Event pipeline orchestrator listens to domain Events, resolves downstream Job routes, enqueues Jobs with correlation/causation/idempotency, emits `orchestrator.*` Events, and STOPs. No job execution, no direct intelligence calls.
+Production pipeline handlers registered with the Continuous Processor. Each handler executes one intelligence stage, persists outputs, emits domain completion Events and `pipeline.*` Events, and STOPs. Orchestrator (3.6) remains responsible for enqueueing downstream Jobs.
 
-Run: `node scripts/opportunity-engine/validate-phase-3-6.js`
+Run: `node scripts/opportunity-engine/validate-phase-3-7.js`
 
 **Architecture freeze:** R26–R30 — [07-architecture-rules.md](./07-architecture-rules.md)
 
 ---
 
-## Phase 3.6 Objective
+## Phase 3.7 Objective
 
-Transform the pipeline into event-driven Job chaining: Signal → Fact → Graph → Situation → Hypothesis → Problem → Capability → Offer → Opportunity via orchestrated Job enqueue only.
-
----
-
-## Phase 3.6 Checklist
-
-- [x] `runtime/orchestrator/orchestrator.json` append-only history (gitignored)
-- [x] `src/engine/orchestrator/` — registry, routing, enqueue, handlers, events
-- [x] Deterministic event routing for full knowledge spine
-- [x] Idempotent Job enqueue via existing Phase 3.1 infrastructure
-- [x] Orchestrator Events: `orchestrator.started`, `route_found`, `job_enqueued`, `no_route`, `completed`, `failed`
-- [x] `validate-phase-3-6.js` + Phase 3.5–3.1 regressions
+Replace the demonstration handler with production pipeline handlers that bind existing engine modules to the Processor registry. One Job type → one stage handler → domain completion Event.
 
 ---
 
-## Active Rules (Phase 3.6)
+## Phase 3.7 Checklist
+
+- [x] `src/engine/pipeline-handlers/` — eight stage handlers + events/utils/index
+- [x] Processor registers production handlers (`fact.build` … `opportunity.build`)
+- [x] `demo.echo` removed from default registration — available via `registerBuiltInHandlers()` for tests
+- [x] Pipeline Events: `pipeline.started`, `stage_completed`, `failed`, `completed`
+- [x] Domain completion Events for orchestrator chaining (`facts.completed` … `opportunity.completed`)
+- [x] Idempotent handler replay — no duplicate downstream artifacts
+- [x] `validate-phase-3-7.js` + Phase 3.6–3.1 regressions
+
+---
+
+## Active Rules (Phase 3.7)
 
 | Rule | Status |
 |---|---|
-| Orchestrator enqueues Jobs only — never claims or executes | **Enforced** |
-| No direct calls into intelligence modules | **Enforced** |
-| correlationId and causationId preserved on enqueued Jobs | **Enforced** |
-| Unknown events ignored — no crash | **Enforced** |
-| Phase 3.7 blocked until owner approval | **Enforced** |
+| Handlers execute one stage only — no downstream inline calls | **Enforced** |
+| Handlers emit Events — orchestrator enqueues next Job | **Enforced** |
+| No scheduler, orchestrator, or OpenClaw changes | **Enforced** |
+| No new intelligence or reasoning modules | **Enforced** |
+| Phase 3.8 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 3.7 (Blocked)
+## Phase 3.8 (Blocked)
 
-**Pipeline Stage Handlers / Worker Bindings** — blocked until owner approves explicit implementation prompt.
+**Continuous Loop / Worker Automation** — blocked until owner approves explicit implementation prompt.
 
-Do not implement stage execution handlers, worker automation, or continuous loop daemons without owner authorization.
+Do not build background workers, daemon mode, continuous polling, or additional sensors without owner authorization.
 
 ---
 
 ## Prior Phases — COMPLETE
+
+### Phase 3.6 — Event Pipeline Orchestrator
+
+Run: `node scripts/opportunity-engine/validate-phase-3-6.js`
 
 ### Phase 3.5 — First Live Sensor Connector
 
@@ -74,6 +79,7 @@ Run: `node scripts/opportunity-engine/validate-phase-3-3.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-23 | Phase 3.7: Pipeline Stage Handlers — processor executes intelligence stages, STOP |
 | 2026-06-23 | Phase 3.6: Event Pipeline Orchestrator — event-driven Job chaining, STOP |
 | 2026-06-23 | Phase 3.5: First live sensor — file drop → Signal Registry, STOP |
 | 2026-06-23 | Phase 3.4: Execution Queue — routing decisions only, STOP |

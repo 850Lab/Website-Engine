@@ -711,6 +711,33 @@ See [29-openclaw-constitution.md § Phase 3.1.6](./29-openclaw-constitution.md#p
 
 ### Phase 3.7 — Pipeline Stage Handlers
 
+**Status:** COMPLETE
+
+Production pipeline handlers registered with the Continuous Processor. Each handler:
+
+1. Receives Job `inputRefs`
+2. Loads referenced runtime objects
+3. Invokes the existing intelligence module for that stage
+4. Persists outputs via existing stores
+5. Emits domain completion Event (for orchestrator chaining) + `pipeline.*` Events
+6. **STOP** — no downstream calls, no orchestration
+
+**Handler job types:** `fact.build`, `graph.project`, `situation.build`, `hypothesis.generate`, `problem.infer`, `capability.match`, `offer.recommend`, `opportunity.build`
+
+**Pipeline events:** `pipeline.started`, `pipeline.stage_completed`, `pipeline.failed`, `pipeline.completed`
+
+**Registration:** `registerPipelineHandlers()` on Processor import. `demo.echo` available via `registerBuiltInHandlers()` for tests only.
+
+**Boundaries:** Handlers execute intelligence and emit Events. Must **not** enqueue downstream Jobs, schedule, dispatch, or call orchestrator.
+
+**Do not build:** Continuous loop daemons (3.8), background workers, Score Council, Mission Control, OpenClaw changes.
+
+**STOP:** Stage complete — orchestrator enqueues next Job when domain completion Event is observed.
+
+---
+
+### Phase 3.8 — Continuous Loop / Worker Automation
+
 **Status:** BLOCKED until owner approves explicit implementation prompt.
 
 ---

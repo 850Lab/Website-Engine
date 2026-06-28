@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.7 Pipeline Stage Handlers
+**Phase:** 3.7  
+**Type:** Milestone  
+**Summary:** Implemented production pipeline handlers: `src/engine/pipeline-handlers/` (eight stage handlers + pipeline events), registered with Processor via `registerPipelineHandlers()`. Each handler executes one existing intelligence module, persists outputs, emits domain completion Events + `pipeline.*` Events, and STOPs. `demo.echo` removed from default registration (tests only). Phase 3.8 blocked.  
+**Links:** `src/engine/pipeline-handlers/`, `scripts/opportunity-engine/validate-phase-3-7.js`, [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
 ### 2026-06-23 — Phase 3.6 Event Pipeline Orchestrator
 **Phase:** 3.6  
 **Type:** Milestone  

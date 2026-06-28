@@ -62,6 +62,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Execution Queue** *(Phase 3.4)* | `engine/execution-queue` | `listEligibleJobs()`, `rankEligibleJobs()`, `resolveWorkerTarget()`, `createDispatchDecision()`, `dispatchNextJob()`, `listWorkerRoutes()` | Routing + dispatch decisions only — no claim or execute |
 | **Live Sensors** *(Phase 3.5)* | `engine/sensors/live` | `collectFileDropObservations()`, `runFileDropSensor()` | File drop → Observation → Signal Registry only |
 | **Orchestrator** *(Phase 3.6)* | `engine/orchestrator` | `orchestrateEvent()`, `listEventRoutes()`, `resolveEventRoute()`, `enqueueDownstreamJob()` | Event → downstream Job enqueue only — no execution |
+| **Pipeline Handlers** *(Phase 3.7)* | `engine/pipeline-handlers` | `registerPipelineHandlers()`, stage handlers (`factBuildHandler`, …), `emitPipelineEvent()` | Processor executes one intelligence stage per Job — emits domain + `pipeline.*` Events |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
 | **OpenClaw** *(Phase 3.1.8)* | `engine/openclaw` + `engine-data/openclaw/prompts/` + `scripts/openclaw/` | Builder: `runOpenClawBuilderJob()` · QA: `runOpenClawQaJob()`, `validateQaJob()`, `evaluateExpectedOutputs()` · CLI: `run-builder-job.js`, `run-qa-job.js` | QA read-only; prompt verified; allowlists; one Job per invocation |
 
@@ -259,13 +260,13 @@ Canonical Event schema and taxonomy: [28-autonomous-operating-loop.md §4](./28-
 | Event | Typical publisher | Downstream job enqueued |
 |---|---|---|
 | `signal.created` | Signal registry / ingest | `fact.build` |
-| `facts.completed` | Fact builder worker (future) | `graph.project` |
-| `graph.completed` | Graph worker (future) | `situation.build` |
-| `situations.completed` | Situation worker (future) | `hypothesis.generate` |
-| `hypotheses.completed` | Hypothesis worker (future) | `problem.infer` |
-| `problems.completed` | Problem worker (future) | `capability.match` |
-| `capability.completed` | Capability worker (future) | `offer.recommend` |
-| `offer.completed` | Offer worker (future) | `opportunity.build` |
+| `facts.completed` | Fact builder handler (3.7) | `graph.project` |
+| `graph.completed` | Graph handler (3.7) | `situation.build` |
+| `situations.completed` | Situation handler (3.7) | `hypothesis.generate` |
+| `hypotheses.completed` | Hypothesis handler (3.7) | `problem.infer` |
+| `problems.completed` | Problem handler (3.7) | `capability.match` |
+| `capability.completed` | Capability handler (3.7) | `offer.recommend` |
+| `offer.completed` | Offer handler (3.7) | `opportunity.build` |
 | `observation.archived` | ingest boundary | `signal.ingest` |
 | `signal.ingested` | `engine/signals` | `fact.build` |
 | `fact.created` | `engine/fact-builder` | `graph.project` |

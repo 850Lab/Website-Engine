@@ -10,6 +10,6 @@ export { registerBuiltInHandlers, demoEchoHandler } from "./handlers.js";
 export { emitProcessorEvent } from "./events.js";
 export { processNextJob, executeJob } from "./execute.js";
 
-import { registerBuiltInHandlers } from "./handlers.js";
+import { registerPipelineHandlers } from "../pipeline-handlers/index.js";
 
-registerBuiltInHandlers();
+registerPipelineHandlers();
