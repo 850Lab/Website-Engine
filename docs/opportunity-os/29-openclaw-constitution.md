@@ -1,7 +1,7 @@
 # 29 — OpenClaw Constitution
 
 **Status:** Phase 3.1.5 · Constitution amendment (design only)  
-**Related:** [Master Vision](./00-master-vision.md) · [Architecture Rules](./07-architecture-rules.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [API Boundaries](./15-api-boundaries.md) · [Current Phase](./08-current-phase.md)
+**Related:** [Master Vision](./00-master-vision.md) · [Architecture Rules](./07-architecture-rules.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [API Boundaries](./15-api-boundaries.md) · [Current Phase](./08-current-phase.md) · [OpenClaw Job Schema](./30-openclaw-job-schema.md)
 
 ---
 
@@ -275,26 +275,17 @@ Autopilot **supervises** this chain — it does not replace Owner approval ([28 
 
 ### Phase 3.1.6 — OpenClaw Job Schema
 
-**Status:** BLOCKED until owner approves explicit implementation prompt.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:** [30-openclaw-job-schema.md](./30-openclaw-job-schema.md) — canonical OpenClaw Job object, job types, agent roles, owner approval artifact, promptHash, scope/validation/commit/report policies, stop conditions, Events, generic Job mapping, OCJ1–OCJ15.
 
-| Deliverable | Scope |
-|---|---|
-| `openclaw.*` Job types | Allowlisted types per agent role |
-| Job metadata schema | Phase id, prompt ref, agent role, scope hash |
-| Event payload schemas | Validation for `openclaw.*` events |
-| Constitution cross-ref | Job types map to OC rules |
-
-**Do not build:** CLI worker, automatic scheduling, outreach execution.
-
-**STOP:** Schema + validation definitions — halt.
+**Do not build:** CLI worker, runtime schema files, validators (until 3.1.7).
 
 ---
 
 ### Phase 3.1.7 — OpenClaw CLI Worker
 
-**Status:** BLOCKED until Phase 3.1.6 complete.
+**Status:** BLOCKED until owner approves explicit implementation prompt.
 
 **Build:**
 
@@ -341,6 +332,7 @@ See [28-autonomous-operating-loop.md § Phase 3.2](./28-autonomous-operating-loo
 
 | Document | Relationship |
 |---|---|
+| [30-openclaw-job-schema.md](./30-openclaw-job-schema.md) | Canonical Job schema; OCJ1–OCJ15 |
 | [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) | Job/Event kernel; OpenClaw platform role (§12 updated) |
 | [15-api-boundaries.md](./15-api-boundaries.md) | Module ownership; OpenClaw boundary matrix |
 | [07-architecture-rules.md](./07-architecture-rules.md) | R16 reason-before-execution; R26–R30 freeze |

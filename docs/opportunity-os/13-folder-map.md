@@ -128,6 +128,7 @@
 | **`docs/opportunity-os/27-capability-intelligence.md`** | Capability Intelligence Constitution — matching pipeline, fit score, constraints, composition, CI1–CI15, Phase 2.7–2.9 roadmap |
 | **`docs/opportunity-os/28-autonomous-operating-loop.md`** | Autonomous Operating Loop Constitution — Job/Event model, scheduler, system state, idempotency, AOL1–AOL15, Phase 3.1–3.5 roadmap |
 | **`docs/opportunity-os/29-openclaw-constitution.md`** | OpenClaw Constitution — bounded worker rules, Job/Event interaction, OC1–OC15, Phase 3.1.6–3.1.8 roadmap |
+| **`docs/opportunity-os/30-openclaw-job-schema.md`** | OpenClaw Job Schema — canonical object, job types, agent roles, OCJ1–OCJ15, generic Job mapping |
 | **`docs/*.md`** | Legacy product docs — do not override Constitution |
 
 ---

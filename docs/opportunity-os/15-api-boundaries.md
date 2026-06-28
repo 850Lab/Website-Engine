@@ -1,7 +1,7 @@
 # 15 — API Boundaries
 
 **Status:** Constitution · Module ownership  
-**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md) · [Capability Intelligence](./27-capability-intelligence.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [OpenClaw Constitution](./29-openclaw-constitution.md)
+**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md) · [Capability Intelligence](./27-capability-intelligence.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [OpenClaw Constitution](./29-openclaw-constitution.md) · [OpenClaw Job Schema](./30-openclaw-job-schema.md)
 
 Defines **who owns what** and **allowed import directions**.
 
@@ -61,7 +61,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Pipeline Processor** *(Phase 3.3)* | Future `engine/loop/processor` | Event-driven stage handlers wrapping existing modules | Canonical loop §2 in [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) |
 | **Execution Queue** *(Phase 3.4)* | Future `engine/execution` + loop | `enqueueExecution()`, `recordOutcome()` | OpenClaw Execution agent (future), Mission Control (read) |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
-| **OpenClaw** *(Phase 3.1.5+)* | Constitution [29](./29-openclaw-constitution.md); future CLI (3.1.7) | Claim Jobs, emit `openclaw.*` Events, run validators, phase-scoped commits | Job/Event runtime, Autopilot (supervision) |
+| **OpenClaw** *(Phase 3.1.5+)* | [29](./29-openclaw-constitution.md) + [30](./30-openclaw-job-schema.md); future CLI (3.1.7) | Validate `metadata.openclaw`, claim Jobs, emit Events | Schema: `openclaw.build`, `openclaw.qa`, `openclaw.docs` (3.1.7+); blocked types per doc 30 |
 
 ---
 

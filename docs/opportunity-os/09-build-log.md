@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.1.6 OpenClaw Job Schema
+**Phase:** 3.1.6  
+**Type:** Constitution  
+**Summary:** Defined permanent OpenClaw Job schema: canonical object in `metadata.openclaw`, job types and agent role allowlists, owner approval artifact, promptHash/idempotency, scope/validation/commit/report policies, stop conditions, Event types, generic Job mapping, four examples, and OCJ1–OCJ15. Design only — no Worker or validators.  
+**Links:** [30-openclaw-job-schema.md](./30-openclaw-job-schema.md)
+
+---
+
 ### 2026-06-23 — Phase 3.1.5 OpenClaw Constitution
 **Phase:** 3.1.5  
 **Type:** Constitution  
@@ -283,6 +291,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 3.1.6 OpenClaw Job Schema — OCJ1–OCJ15, metadata.openclaw mapping |
 | 2026-06-23 | Phase 3.1.5 OpenClaw Constitution — OC1–OC15, multi-agent model, chain of command |
 | 2026-06-23 | Phase 3.1 Job & Event Runtime — loop kernel, idempotency, dead-letter |
 | 2026-06-23 | Phase 3.0.5 Autonomous Operating Loop Constitution — Job/Event model, scheduler, AOL1–AOL15 |
