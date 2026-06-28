@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.1.5 OpenClaw Constitution
+**Phase:** 3.1.5  
+**Type:** Constitution  
+**Summary:** Defined OpenClaw as the first bounded autonomous worker in Opportunity OS: approved Job execution, Event emission, validation/commit/failure protocols, owner approval gates, multi-agent roadmap (Builder, QA, Execution, etc.), chain of command, and permanent rules OC1–OC15. Platform OpenClaw separate from future OpenClaw Execution (outreach). Design only — no code, CLI, or agents.  
+**Links:** [29-openclaw-constitution.md](./29-openclaw-constitution.md)
+
+---
+
 ### 2026-06-23 — Phase 3.1 Job & Event Runtime
 **Phase:** 3.1  
 **Type:** Milestone  
@@ -275,6 +283,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 3.1.5 OpenClaw Constitution — OC1–OC15, multi-agent model, chain of command |
 | 2026-06-23 | Phase 3.1 Job & Event Runtime — loop kernel, idempotency, dead-letter |
 | 2026-06-23 | Phase 3.0.5 Autonomous Operating Loop Constitution — Job/Event model, scheduler, AOL1–AOL15 |
 | 2026-06-23 | Phase 2.9.5 Core Stability — runtime IO hardening, validate-core, generated report policy |

@@ -1,7 +1,7 @@
 # 15 — API Boundaries
 
 **Status:** Constitution · Module ownership  
-**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md) · [Capability Intelligence](./27-capability-intelligence.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md)
+**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md) · [Capability Intelligence](./27-capability-intelligence.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [OpenClaw Constitution](./29-openclaw-constitution.md)
 
 Defines **who owns what** and **allowed import directions**.
 
@@ -59,9 +59,9 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Operating Loop** *(Phase 3.1)* | `engine/jobs` + `engine/events` | Jobs: `createJob()`, `claimJob()`, `completeJob()`, `failJob()`, `retryJob()`, `cancelJob()`, `archiveJob()`, `listJobs()`, `getJob()` · Events: `appendEvent()`, `listEvents()`, `getEvent()`, `getEventsByType()`, `getEventsByCorrelationId()`, `getEventsBySubject()` | Future scheduler (3.2), processor (3.3) |
 | **Scheduler** *(Phase 3.2)* | Future `engine/loop/scheduler` | `tick()`, `scheduleSensors()` | Sensor runs only — no reasoning |
 | **Pipeline Processor** *(Phase 3.3)* | Future `engine/loop/processor` | Event-driven stage handlers wrapping existing modules | Canonical loop §2 in [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) |
-| **Execution Queue** *(Phase 3.4)* | Future `engine/execution` + loop | `enqueueExecution()`, `recordOutcome()` | OpenClaw (future), Mission Control (read) |
+| **Execution Queue** *(Phase 3.4)* | Future `engine/execution` + loop | `enqueueExecution()`, `recordOutcome()` | OpenClaw Execution agent (future), Mission Control (read) |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
-| **OpenClaw** *(future)* | Not implemented | Approved action dispatch only | **No observe, reason, or score** |
+| **OpenClaw** *(Phase 3.1.5+)* | Constitution [29](./29-openclaw-constitution.md); future CLI (3.1.7) | Claim Jobs, emit `openclaw.*` Events, run validators, phase-scoped commits | Job/Event runtime, Autopilot (supervision) |
 
 ---
 
@@ -290,11 +290,13 @@ See [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) for ful
 | **Stage handlers** | Wrap existing module public APIs | Redesign intelligence pipelines |
 | **Autopilot** | Report loop health, block on owner gates | Bypass phase approval; run production loop |
 | **Mission Control** | Read projections refreshed by `projection.refresh` jobs | Enqueue jobs; write runtime spine |
-| **OpenClaw** *(future)* | Execute approved queue tasks | Observe, reason, score, or enqueue loop jobs |
+| **OpenClaw** *(Phase 3.1.5+)* | [29-openclaw-constitution.md](./29-openclaw-constitution.md); future CLI (3.1.7) | Claim Jobs, emit Events, run validators, phase-scoped commits/reports | Redesign architecture; outreach; bypass owner gates; MC/Score Council changes |
 
 **Concurrency (Phase 3.1–3.4):** Single-process worker; no parallel runtime writes until lock strategy matures.
 
 ---
+
+## Cross-Boundary Testing
 
 Each boundary must have contract tests — [Testing Strategy](./16-testing-strategy.md).
 

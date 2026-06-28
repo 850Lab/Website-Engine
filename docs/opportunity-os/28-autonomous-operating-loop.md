@@ -1,7 +1,7 @@
 # 28 — Autonomous Operating Loop
 
 **Status:** Phase 3.0.5 · Constitution amendment (design only)  
-**Related:** [Master Vision](./00-master-vision.md) · [Architecture Rules](./07-architecture-rules.md) · [World Model](./23-world-model.md) · [Runtime Data Boundaries](./24-runtime-data-boundaries.md) · [Sensor Framework](./25-sensor-framework.md) · [Reasoning Engine](./26-reasoning-engine.md) · [Capability Intelligence](./27-capability-intelligence.md)
+**Related:** [Master Vision](./00-master-vision.md) · [Architecture Rules](./07-architecture-rules.md) · [World Model](./23-world-model.md) · [Runtime Data Boundaries](./24-runtime-data-boundaries.md) · [Sensor Framework](./25-sensor-framework.md) · [Reasoning Engine](./26-reasoning-engine.md) · [Capability Intelligence](./27-capability-intelligence.md) · [OpenClaw Constitution](./29-openclaw-constitution.md)
 
 ---
 
@@ -468,20 +468,24 @@ Mission Control **reads projections**. It does **not** run the loop.
 
 ## 12. OpenClaw Role
 
-**OpenClaw** (future execution agent) **executes approved actions only**. It does **not** reason.
+OpenClaw is defined in full by [29-openclaw-constitution.md](./29-openclaw-constitution.md).
 
-| OpenClaw DOES | OpenClaw DOES NOT |
+**Summary:** OpenClaw is the first **bounded autonomous worker** — not the architect, owner, Mission Control, or Score Council.
+
+| OpenClaw DOES (platform) | OpenClaw DOES NOT |
 |---|---|
-| Dispatch approved execution plan tasks | Run sensors or ingest observations |
-| Send emails, create CRM tasks, trigger calls | Infer problems or match capabilities |
-| Report task completion → outcome events | Modify opportunity scores |
-| Operate within autonomy policy gates | Enqueue loop jobs without approval |
+| Execute owner-approved phase Jobs | Redesign architecture |
+| Emit Events and write validation reports | Bypass owner approval gates |
+| Run validators and phase-scoped commits | Execute outreach (email/text/call) until OpenClaw Execution agent |
+| Stop after one approved phase | Modify Mission Control or Score Council |
 
-**Rule (R16):** Reason before execution — OpenClaw is downstream of Execution Queue and policy approval.
+**Execution split:** Platform OpenClaw (Builder/QA, Phase 3.1.7–3.1.8) implements Constitution-approved work. **OpenClaw Execution** (Phase 3.4+) dispatches approved outreach queue tasks only — separate agent, separate owner approval (OC9).
 
-**Phase 3.0.5:** OpenClaw is **not implemented**. This section defines permanent boundaries only.
+**Rule (R16):** Reason before execution — outreach dispatch remains downstream of Execution Queue and policy approval.
 
-**Loop relationship:** `execution.dispatched` → OpenClaw (future) → `outcome.recorded` → `learning.apply`.
+**Phase 3.1.5:** Constitution complete. No OpenClaw code until Phase 3.1.7.
+
+**Loop relationship:** OpenClaw consumes `runtime/jobs`, emits `runtime/events`. Commercial pipeline loop chaining (sensor → opportunity) remains Phase 3.2–3.3. Outreach: `execution.enqueued` → OpenClaw Execution (future) → `outcome.recorded`.
 
 ---
 
@@ -524,6 +528,36 @@ Mission Control **reads projections**. It does **not** run the loop.
 **Dead letter:** Jobs exceeding `maxAttempts` on retryable failure move to `dead_letter`. No automatic replay — `retryJob()` is manual operator action only.
 
 **STOP:** Kernel only — no scheduler, timers, polling, or background workers.
+
+---
+
+### Phase 3.1.5 — OpenClaw Constitution
+
+**Status:** COMPLETE
+
+**Delivered:** [29-openclaw-constitution.md](./29-openclaw-constitution.md) — identity, allowed/forbidden responsibilities, Job/Event interaction, owner approval, validation/commit/failure protocols, multi-agent model, OC1–OC15.
+
+**Do not build:** OpenClaw CLI, Job schema, agents, execution logic.
+
+---
+
+### Phase 3.1.6 — OpenClaw Job Schema
+
+**Status:** BLOCKED until owner approves explicit implementation prompt.
+
+See [29-openclaw-constitution.md § Phase 3.1.6](./29-openclaw-constitution.md#phase-316--openclaw-job-schema).
+
+---
+
+### Phase 3.1.7 — OpenClaw CLI Worker
+
+**Status:** BLOCKED until Phase 3.1.6 complete.
+
+---
+
+### Phase 3.1.8 — OpenClaw QA Worker
+
+**Status:** BLOCKED until Phase 3.1.7 complete.
 
 ---
 
@@ -635,6 +669,7 @@ Mission Control **reads projections**. It does **not** run the loop.
 | [26-reasoning-engine.md](./26-reasoning-engine.md) | Reasoning stages — hypothesis through factory |
 | [27-capability-intelligence.md](./27-capability-intelligence.md) | Commercial intelligence stages — capability through opportunity |
 | [15-api-boundaries.md](./15-api-boundaries.md) | Module ownership — extended in Phase 3.1 |
+| [29-openclaw-constitution.md](./29-openclaw-constitution.md) | OpenClaw bounded worker; OC1–OC15; platform vs Execution split |
 | [08-current-phase.md](./08-current-phase.md) | Active phase gate |
 
 ---
