@@ -1,6 +1,6 @@
 # 30 — OpenClaw Job Schema
 
-**Status:** Phase 3.1.7.5 · Schema + Builder Worker + Security Hardening complete  
+**Status:** Phase 3.1.8 · Schema + Builder + QA Workers complete  
 **Related:** [OpenClaw Constitution](./29-openclaw-constitution.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [API Boundaries](./15-api-boundaries.md) · [Current Phase](./08-current-phase.md)
 
 ---
@@ -20,9 +20,9 @@ OpenClaw requires a **specialized Job schema** because autonomous implementation
 
 Without this schema, OpenClaw could act on vague, unscoped, or unapproved work — violating OC1–OC7 ([29-openclaw-constitution.md](./29-openclaw-constitution.md)).
 
-**Phase 3.1.7.5 delivered:** Prompt hash verification against `engine-data/openclaw/prompts/` artifacts; idempotency key formula enforced; command allowlist; forensic reports; terminal event coverage (`failed` + `stopped` + `reported` on every exit).
+**Phase 3.1.8 delivered:** Read-only QA Worker (`openclaw.qa`, agentRole `qa`), QA command allowlist, expected output evaluation, `openclaw.qa.*` Events, CLI `run-qa-job.js`. No commits or source edits.
 
-**Phase 3.1.7 delivered:** `src/engine/openclaw/` validates `metadata.openclaw`, enforces owner approval and file scope, runs approved commands only, writes gitignored reports, emits `openclaw.job.*` Events. CLI: `scripts/openclaw/run-builder-job.js`.
+**Phase 3.1.7.5 delivered:** Prompt hash verification, idempotency binding, Builder command allowlist, forensic reports, full Builder event coverage.
 
 **Contract chain:**
 

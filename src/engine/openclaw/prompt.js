@@ -18,6 +18,9 @@ export function normalizePromptHash(value) {
 }
 
 export function buildDefaultPromptArtifactPath(phaseId, options = {}) {
+  if (options.validationDemo && options.jobType === "openclaw.qa") {
+    return "engine-data/openclaw/prompts/demo-phase-3-1-8.json";
+  }
   if (options.validationDemo) {
     return "engine-data/openclaw/prompts/demo-phase-3-1-7.json";
   }
@@ -119,6 +122,7 @@ export async function resolveAndVerifyPromptHash(openclawJob, options = {}) {
     options.promptArtifactPath ||
     buildDefaultPromptArtifactPath(openclawJob.phaseId, {
       validationDemo: options.allowValidationDemo && isValidationDemoJob(openclawJob),
+      jobType: openclawJob.jobType,
     });
 
   try {

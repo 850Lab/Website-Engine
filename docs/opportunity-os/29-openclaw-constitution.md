@@ -1,6 +1,6 @@
 # 29 — OpenClaw Constitution
 
-**Status:** Phase 3.1.7.5 · Constitution amendment (Security Hardening complete)  
+**Status:** Phase 3.1.8 · Constitution amendment (QA Worker complete)  
 **Related:** [Master Vision](./00-master-vision.md) · [Architecture Rules](./07-architecture-rules.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [API Boundaries](./15-api-boundaries.md) · [Current Phase](./08-current-phase.md) · [OpenClaw Job Schema](./30-openclaw-job-schema.md)
 
 ---
@@ -309,19 +309,21 @@ Autopilot **supervises** this chain — it does not replace Owner approval ([28 
 
 ### Phase 3.1.8 — OpenClaw QA Worker
 
-**Status:** BLOCKED until owner approves explicit implementation prompt.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:** Read-only QA Worker (`qa-worker.js`), QA schema/allowlist, expected output evaluation, `run-qa-job.js`, demo QA job, `validate-phase-3-1-8.js`. No commits, no source edits.
 
-| Deliverable | Scope |
-|---|---|
-| OpenClaw QA agent | Validators + regressions + git check + report only |
-| No implementation commits | QA Job types read-only on source |
-| Completion report template | Standard format for owner review |
+**Do not build:** Scheduler, autopilot loop, implementation authority for QA.
 
-**Do not build:** Builder automation chain, multi-phase autopilot.
+**STOP:** Manual QA CLI — one Job per owner session.
 
-**STOP:** QA Job execution — halt.
+---
+
+### Phase 3.1.7.5 — OpenClaw Security Hardening
+
+**Status:** COMPLETE
+
+**Delivered:** Prompt hash verification, idempotency binding, VALIDATION_DEMO gate, Builder command allowlist, forensic reports.
 
 ---
 

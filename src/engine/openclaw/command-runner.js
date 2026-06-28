@@ -1,7 +1,7 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { getRepoRoot } from "../runtime/index.js";
-import { validateCommandAllowlist, splitCommand } from "./command-allowlist.js";
+import { validateCommandAllowlist, validateQaCommandAllowlist, splitCommand } from "./command-allowlist.js";
 
 const execFileAsync = promisify(execFile);
 const DEFAULT_TIMEOUT_MS = 300_000;
@@ -11,7 +11,9 @@ export async function runCommand(command, options = {}) {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const optional = Boolean(options.optional);
   const startedAt = new Date().toISOString();
-  const allowlist = validateCommandAllowlist(command);
+  const allowlist = options.qaMode
+    ? validateQaCommandAllowlist(command)
+    : validateCommandAllowlist(command);
 
   if (!allowlist.allowed && options.skipAllowlist !== true) {
     return {
@@ -97,4 +99,4 @@ export async function runCommands(commands = [], options = {}) {
   };
 }
 
-export { validateCommandAllowlist, splitCommand };
+export { validateCommandAllowlist, validateQaCommandAllowlist, splitCommand };

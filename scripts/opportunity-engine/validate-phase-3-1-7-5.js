@@ -129,8 +129,10 @@ async function assertNoForbiddenPatterns() {
 
 await initializeEventStore();
 await initializeJobStore();
-await clearEventStoreForTests();
-await clearJobStoreForTests();
+if (process.env.OPENCLAW_WORKER_RUN !== "1") {
+  await clearEventStoreForTests();
+  await clearJobStoreForTests();
+}
 
 if (hashCanonicalPromptText(demoArtifact.promptText) !== demoPromptHash) {
   fail("Prompt hash helper failed");
@@ -279,6 +281,15 @@ if (!report.includes("stderr:")) {
   pass("Reports contain forensic fields");
 }
 
+if (process.env.OPENCLAW_WORKER_RUN === "1") {
+  if (errors.length) {
+    console.error(`\nPhase 3.1.7.5 validation failed with ${errors.length} error(s).`);
+    process.exit(1);
+  }
+  console.log("\nPhase 3.1.7.5 quick validation passed (worker context).");
+  process.exit(0);
+}
+
 const notFound = await runOpenClawBuilderJob("job_missing_" + randomUUID());
 if (!(await getEventsByType("openclaw.job.not_found")).length) {
   fail("job-not-found should emit event");
@@ -322,7 +333,7 @@ await assertNoForbiddenPatterns();
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-1-7.js")], {
     cwd: ROOT,
-    env: { ...process.env, OPENCLAW_ALLOW_VALIDATION_DEMO: "1" },
+    env: { ...process.env, OPENCLAW_ALLOW_VALIDATION_DEMO: "1", OPENCLAW_WORKER_RUN: process.env.OPENCLAW_WORKER_RUN || "" },
   });
   pass("Phase 3.1.7 regression passes");
 } catch (error) {
@@ -332,6 +343,7 @@ try {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-1.js")], {
     cwd: ROOT,
+    env: { ...process.env, OPENCLAW_WORKER_RUN: process.env.OPENCLAW_WORKER_RUN || "" },
   });
   pass("Phase 3.1 regression passes");
 } catch (error) {

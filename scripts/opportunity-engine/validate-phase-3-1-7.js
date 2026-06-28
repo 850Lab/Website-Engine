@@ -126,8 +126,10 @@ async function assertNoForbiddenPatterns() {
 
 await initializeEventStore();
 await initializeJobStore();
-await clearEventStoreForTests();
-await clearJobStoreForTests();
+if (process.env.OPENCLAW_WORKER_RUN !== "1") {
+  await clearEventStoreForTests();
+  await clearJobStoreForTests();
+}
 
 try {
   await import("../../src/engine/openclaw/index.js");
@@ -159,18 +161,18 @@ if (!demoApproval.ok) {
 
 const blockedApproval = await verifyOwnerApproval(
   buildMinimalOpenClaw({
-    phaseId: "3.1.8",
+    phaseId: "3.2",
     ownerApproval: {
       approvedBy: "owner",
       approvedAt: new Date().toISOString(),
       approvalSource: "explicit_prompt",
       phaseDocStatus: "ACTIVE",
-      phaseId: "3.1.8",
+      phaseId: "3.2",
       promptHash: demoPromptHash,
       promptExcerpt: "blocked test",
     },
     idempotencyKey: deriveOpenClawIdempotencyKey({
-      phaseId: "3.1.8",
+      phaseId: "3.2",
       jobType: "openclaw.build",
       promptHash: demoPromptHash,
     }),
@@ -239,6 +241,15 @@ if (!report.includes("generic job id") || !report.includes("final status")) {
   fail("createOpenClawReport missing required sections");
 } else {
   pass("createOpenClawReport includes required report fields");
+}
+
+if (process.env.OPENCLAW_WORKER_RUN === "1") {
+  if (errors.length) {
+    console.error(`\nPhase 3.1.7 validation failed with ${errors.length} error(s).`);
+    process.exit(1);
+  }
+  console.log("\nPhase 3.1.7 quick validation passed (worker context).");
+  process.exit(0);
 }
 
 let demoJobId = null;
@@ -339,6 +350,7 @@ if (!gitignore.includes("reports/openclaw/")) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-1.js")], {
     cwd: ROOT,
+    env: { ...process.env, OPENCLAW_WORKER_RUN: process.env.OPENCLAW_WORKER_RUN || "" },
   });
   pass("Phase 3.1 regression passes");
 } catch (error) {

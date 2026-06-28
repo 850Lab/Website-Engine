@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.1.8 OpenClaw QA Worker
+**Phase:** 3.1.8  
+**Type:** Milestone  
+**Summary:** Implemented bounded read-only OpenClaw QA Worker: `qa-worker.js`, `qa-schema.js`, `qa-assertions.js`, `qa-report.js`, CLI `run-qa-job.js`, demo QA job creator, QA command allowlist, expected output evaluation, `openclaw.qa.*` Events, and `validate-phase-3-1-8.js`. No commits, no source edits, one Job per invocation. Phase 3.2 blocked.  
+**Links:** `src/engine/openclaw/qa-*.js`, `scripts/openclaw/run-qa-job.js`, `engine-data/openclaw/prompts/demo-phase-3-1-8.json`
+
+---
+
 ### 2026-06-23 — Phase 3.1.7.5 OpenClaw Security Hardening
 **Phase:** 3.1.7.5  
 **Type:** Milestone  
@@ -307,6 +315,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 3.1.8 OpenClaw QA Worker — read-only, one Job, STOP |
 | 2026-06-23 | Phase 3.1.7.5 OpenClaw security hardening — prompt verification, command allowlist, forensic reports |
 | 2026-06-23 | Phase 3.1.7 OpenClaw Builder Worker v1 — bounded CLI, one Job, STOP |
 | 2026-06-23 | Phase 3.1.6 OpenClaw Job Schema — OCJ1–OCJ15, metadata.openclaw mapping |

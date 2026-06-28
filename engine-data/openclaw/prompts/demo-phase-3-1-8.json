@@ -1,0 +1,12 @@
+{
+  "phaseId": "3.1.8",
+  "promptText": "Phase 3.1.8 validation demo — safe read-only OpenClaw QA job. Runs node --check and validate-phase-3-1-7-5.js only. No commits.",
+  "promptHash": "sha256:57bb73bf959a8785c7f8f0ad04905e9b4d019da84aa09c33c16f5f5997e09cdc",
+  "approvedBy": "owner",
+  "approvedAt": "2026-06-23T00:00:00.000Z",
+  "approvalSource": "validation_demo",
+  "metadata": {
+    "validationDemo": true,
+    "jobType": "openclaw.qa"
+  }
+}
