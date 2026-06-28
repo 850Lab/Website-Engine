@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.8 End-to-End Live Pipeline Run
+**Phase:** 3.8  
+**Type:** Milestone  
+**Summary:** Implemented reusable integration runner `run-live-pipeline.js`: deterministic file drop → file drop sensor → `signal.created` orchestration → processor drain until idle → opportunity output. Gitignored reports at `reports/live-pipeline.md` and `reports/live-pipeline.json`. No daemon, timers, or new intelligence. Phase 4 blocked.  
+**Links:** `scripts/opportunity-engine/run-live-pipeline.js`, `scripts/opportunity-engine/validate-phase-3-8.js`, [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
 ### 2026-06-23 — Phase 3.7 Pipeline Stage Handlers
 **Phase:** 3.7  
 **Type:** Milestone  

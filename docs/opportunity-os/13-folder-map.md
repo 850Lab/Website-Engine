@@ -45,6 +45,7 @@
 | **`runtime/orchestrator/`** | Orchestrator append-only history (Phase 3.6) | Platform | None | `orchestrator.json` gitignored |
 | **`src/engine/orchestrator/`** | Event pipeline orchestrator — event → downstream Job (Phase 3.6) | Platform | `runtime/orchestrator/`, `engine/jobs/`, `engine/events/` | Enqueue only; no execution |
 | **`src/engine/pipeline-handlers/`** | Production pipeline stage handlers — Job → intelligence module (Phase 3.7) | Platform | `engine/processor/`, intelligence modules, `engine/events/` | One stage per handler; no orchestration |
+| **`scripts/opportunity-engine/run-live-pipeline.js`** | End-to-end integration runner — file drop through opportunity (Phase 3.8) | Platform | sensors, orchestrator, processor, pipeline handlers | No daemon; STOP at opportunity |
 | **`src/engine/openclaw/`** | OpenClaw Builder + QA Workers (Phase 3.1.7–3.1.8) | Platform | `engine/jobs/`, `engine/events/`, `engine-data/openclaw/prompts/` | Manual CLI only; scheduler enqueues generic jobs |
 | **`engine-data/openclaw/prompts/`** | Canonical approved prompt artifacts + promptHash (Phase 3.1.7.5+) | Platform / Owner | None | Builder + QA demo/production artifacts |
 | **`scripts/openclaw/`** | Manual OpenClaw CLI — Builder + QA, one Job per invocation | Platform | `engine/openclaw/` | No scheduler |
@@ -126,7 +127,7 @@
 | **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `ingest-signal.js` |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
-| **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*`, `performance-baseline.*`, autopilot reports |
+| **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*`, `performance-baseline.*`, `live-pipeline.*`, autopilot reports |
 
 ---
 

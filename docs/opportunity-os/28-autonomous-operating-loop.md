@@ -736,7 +736,33 @@ Production pipeline handlers registered with the Continuous Processor. Each hand
 
 ---
 
-### Phase 3.8 — Continuous Loop / Worker Automation
+### Phase 3.8 — End-to-End Live Pipeline Run
+
+**Status:** COMPLETE
+
+Integration runner at `scripts/opportunity-engine/run-live-pipeline.js` proves the full spine:
+
+```
+File Drop → Observation → Signal → Fact → Graph → Situation → Hypothesis → Problem → Capability Match → Offer Recommendation → Opportunity → STOP
+```
+
+**Flow:**
+
+1. Drop deterministic demo observation into `runtime/inbox/observations/`
+2. `runFileDropSensor()` ingests observation → Signal Registry
+3. Runner emits `signal.created` and calls `orchestrateEvent()`
+4. Runner alternates orchestration + `processNextJob()` until no runnable Jobs remain
+5. Gitignored reports written to `reports/live-pipeline.md` and `reports/live-pipeline.json`
+
+**Boundaries:** Runner coordinates existing modules only. Must **not** start daemons, timers, dispatch execution, scheduler ticks, or direct intelligence calls.
+
+**Do not build:** Phase 4 autonomous execution, outreach, additional connectors, Score Council, Mission Control, OpenClaw changes.
+
+**STOP:** Opportunity created — halt before autonomous execution.
+
+---
+
+### Phase 4 — Autonomous Execution / Outreach
 
 **Status:** BLOCKED until owner approves explicit implementation prompt.
 

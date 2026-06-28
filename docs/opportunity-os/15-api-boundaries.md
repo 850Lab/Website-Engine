@@ -63,6 +63,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Live Sensors** *(Phase 3.5)* | `engine/sensors/live` | `collectFileDropObservations()`, `runFileDropSensor()` | File drop → Observation → Signal Registry only |
 | **Orchestrator** *(Phase 3.6)* | `engine/orchestrator` | `orchestrateEvent()`, `listEventRoutes()`, `resolveEventRoute()`, `enqueueDownstreamJob()` | Event → downstream Job enqueue only — no execution |
 | **Pipeline Handlers** *(Phase 3.7)* | `engine/pipeline-handlers` | `registerPipelineHandlers()`, stage handlers (`factBuildHandler`, …), `emitPipelineEvent()` | Processor executes one intelligence stage per Job — emits domain + `pipeline.*` Events |
+| **Live Pipeline Runner** *(Phase 3.8)* | `scripts/opportunity-engine/run-live-pipeline.js` | `runLivePipeline()`, `dropDemoObservation()`, `drainJobQueue()` | Integration only — coordinates sensor, orchestrator, processor; no daemon |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
 | **OpenClaw** *(Phase 3.1.8)* | `engine/openclaw` + `engine-data/openclaw/prompts/` + `scripts/openclaw/` | Builder: `runOpenClawBuilderJob()` · QA: `runOpenClawQaJob()`, `validateQaJob()`, `evaluateExpectedOutputs()` · CLI: `run-builder-job.js`, `run-qa-job.js` | QA read-only; prompt verified; allowlists; one Job per invocation |
 

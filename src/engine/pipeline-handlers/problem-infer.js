@@ -17,7 +17,7 @@ import {
   listProblems,
 } from "../problems/index.js";
 import { getSituation } from "../situations/index.js";
-import { requireInputRef, runPipelineStage } from "./utils.js";
+import { requireInputRefs, runPipelineStage } from "./utils.js";
 
 const SEVERITY_BY_CATEGORY = {
   expansion_contractor_demand: "high",
@@ -186,14 +186,32 @@ async function promoteHypothesisToProblem(hypothesis) {
   return problem;
 }
 
+async function resolveTargetHypothesis(hypothesisIds) {
+  for (const hypothesisId of hypothesisIds) {
+    const hypothesis = await getHypothesis(hypothesisId);
+    if (hypothesis && (hypothesis.metadata?.polarity || "positive") === "positive") {
+      return hypothesis;
+    }
+  }
+
+  const fallback = await getHypothesis(hypothesisIds[0]);
+  if (!fallback) {
+    throw new Error(`Hypothesis not found: ${hypothesisIds[0]}`);
+  }
+  return fallback;
+}
+
 export async function problemInferHandler(job, context) {
   return runPipelineStage(job, context, {
     stage: "problem",
     jobType: "problem.infer",
     async execute(jobRef, stageContext) {
-      const hypothesisId = requireInputRef(jobRef, "problem.infer");
+      const hypothesisIds = requireInputRefs(jobRef, "problem.infer");
       await initializeHypothesisStore();
       await initializeProblemStore();
+
+      const primaryHypothesis = await resolveTargetHypothesis(hypothesisIds);
+      const hypothesisId = primaryHypothesis.id;
 
       const existingProblem = await findProblemForHypothesis(hypothesisId);
       if (existingProblem) {
