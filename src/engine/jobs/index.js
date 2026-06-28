@@ -262,6 +262,9 @@ export async function completeJob(jobId, options = {}) {
   const now = nowIso();
   job.status = "completed";
   job.outputRefs = asArray(options.outputRefs);
+  if (isObject(options.metadata)) {
+    job.metadata = { ...job.metadata, ...options.metadata };
+  }
   job.completedAt = now;
   job.updatedAt = now;
   job.error = null;
