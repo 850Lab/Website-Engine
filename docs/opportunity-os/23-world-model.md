@@ -328,7 +328,38 @@ classified Signal → buildFactsFromSignal() → createFact() → runtime/facts/
 
 Phase 2.5 is **Relationship Builder / persistent graph enrichment** — not Problem Inference.
 
-Phase 2.6 is **Problem Inference**.
+Phase 2.6 is **Problem Inference** — must consume **Situations only**.
+
+### Situation Builder Rule (Phase 2.5.5)
+
+| Rule | Detail |
+|---|---|
+| **Sit1** | Situations are evidence-backed snapshots of **what is happening** |
+| **Sit2** | Situations cluster connected graph evidence (entity, location, market, timeline) |
+| **Sit3** | Situations stored append-only in `runtime/situations/situations.json` |
+| **Sit4** | Summaries use **templates only** — no LLM narrative |
+| **Sit5** | Graph nodes reference situations; situations reference graph nodes |
+| **Sit6** | Do **not** infer problems, match capabilities, or create opportunities |
+
+**Permanent rule (unless Constitution amended):** Problem Inference is forbidden from reasoning over individual facts or raw graph nodes. It must consume **Situations only**. Situations are the semantic boundary between knowledge and reasoning.
+
+Implementation: `src/engine/situations/`, `src/engine/situation-builder/`
+
+Flow:
+
+```
+Graph (nodes/edges) → buildSituationsFromGraph() → runtime/situations/ → STOP
+```
+
+Reasoning begins at Situations. See [26-reasoning-engine.md](./26-reasoning-engine.md).
+
+**Phase 2.6 implemented:**
+
+```
+Situation → inferProblems() → runtime/hypotheses/ + runtime/problems/ → STOP
+```
+
+Modules: `hypothesis-generator/`, `evidence-engine/`, `confidence-engine/`, `contradictions/`, `problem-inference/`, `problems/`, `hypotheses/`.
 
 ### Relationship Builder Rule (Phase 2.5)
 

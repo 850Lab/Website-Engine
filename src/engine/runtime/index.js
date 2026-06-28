@@ -25,6 +25,9 @@ export async function ensureRuntimeDirectories() {
     getRuntimePath("signals", "raw"),
     getRuntimePath("facts"),
     getRuntimePath("graph"),
+    getRuntimePath("situations"),
+    getRuntimePath("hypotheses"),
+    getRuntimePath("problems"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
   ];
@@ -52,6 +55,18 @@ export function getRuntimeGraphDirectory() {
 
 export function getRuntimeGraphStorePath() {
   return getRuntimePath("graph", "graph.json");
+}
+
+export function getRuntimeSituationStorePath() {
+  return getRuntimePath("situations", "situations.json");
+}
+
+export function getRuntimeHypothesisStorePath() {
+  return getRuntimePath("hypotheses", "hypotheses.json");
+}
+
+export function getRuntimeProblemStorePath() {
+  return getRuntimePath("problems", "problems.json");
 }
 
 export function getLegacySignalStorePath() {

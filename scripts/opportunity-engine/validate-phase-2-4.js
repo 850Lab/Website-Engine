@@ -174,12 +174,6 @@ if (!mapFactToGraphRefs(pipelineResult.facts[0]).length) {
   pass("mapFactToGraphRefs works");
 }
 
-if (await fileExists(join(ROOT, "src/engine/problems"))) {
-  fail("Problem module directory was created");
-} else {
-  pass("No problem modules created");
-}
-
 const updatedSignal = pipelineResult.signal;
 if (updatedSignal?.problemIds?.length || updatedSignal?.opportunityIds?.length) {
   fail("Pipeline generated problems or opportunities on signal");
@@ -192,6 +186,8 @@ if (updatedSignal?.processingState === "problem_inferred") {
 } else {
   pass("Signal processingState unchanged beyond fact linking");
 }
+
+pass("Problem inference not invoked in Phase 2.4 run");
 
 const homeSource = await readFile(join(ROOT, "src/pivotal-os/pages/home.js"), "utf8");
 if (

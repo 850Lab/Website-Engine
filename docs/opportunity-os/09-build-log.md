@@ -173,9 +173,33 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-27 — Phase 2.5.5 Situation Builder
+**Phase:** 2.5.5  
+**Type:** Milestone  
+**Summary:** Added runtime situation store (`runtime/situations/situations.json`), rules-only Situation Builder clustering connected graph evidence, situation lifecycle states, template summaries, and knowledge-graph situation integration. Situations are the required semantic boundary before Problem Inference.  
+**Links:** `src/engine/situations/`, `src/engine/situation-builder/`, `scripts/opportunity-engine/validate-phase-2-5-5.js`
+
+---
+
+### 2026-06-27 — Phase 2.5.8 Reasoning Engine Constitution
+**Phase:** 2.5.8  
+**Type:** Design · Constitution amendment  
+**Summary:** Authored permanent reasoning architecture in `26-reasoning-engine.md`. Design only — no code.  
+**Links:** [26-reasoning-engine.md](./26-reasoning-engine.md)
+
+---
+
+### 2026-06-27 — Phase 2.6 Problem Inference Engine
+**Phase:** 2.6  
+**Type:** Milestone  
+**Summary:** Implemented reasoning pipeline: hypothesis store, generator, evidence engine, confidence engine, contradiction detector, problem store, and `inferProblems()` promotion with explainability bundles. Rules-only — no LLM. Capability matching remains blocked.  
+**Links:** `src/engine/problem-inference/`, `scripts/opportunity-engine/validate-phase-2-6.js`
+
+---
+
 ## Future Entries (Reserved)
 
-<!-- Phase 2.6 Problem Inference -->
+<!-- Phase 2.7 Capability Matching -->
 <!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->
