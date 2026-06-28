@@ -197,9 +197,41 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-27 — Phase 2.6.5 Capability Intelligence Constitution
+**Phase:** 2.6.5  
+**Type:** Design · Constitution amendment  
+**Summary:** Authored permanent Capability Intelligence architecture in `27-capability-intelligence.md`. Defines capability taxonomy, extended schema, matching pipeline (Problem → Recommended Capabilities → STOP), fit score vs opportunity score, constraints, multi-capability composition, explainability, partner ecosystem, learning calibration, and rules CI1–CI15. Extends [05-capability-registry.md](./05-capability-registry.md). Design only — no code.  
+**Links:** [27-capability-intelligence.md](./27-capability-intelligence.md)
+
+---
+
+### 2026-06-27 — Phase 2.7 Capability Matching Engine
+**Phase:** 2.7  
+**Type:** Milestone  
+**Summary:** Implemented deterministic capability matching: `matchCapabilities(problem)` with candidate discovery, dimensional fit scoring, constraint filtering, composition planning, and explainability bundles. Enriched `engine-data/capabilities/capabilities.json` with constraint and performance fields. Runtime store at `runtime/capability-matches/`. Problem inference now copies `entityContext` (location) onto promoted Problems. Offer Intelligence remains blocked.  
+**Links:** `src/engine/capability-matcher/`, `src/engine/capability-matches/`, `scripts/opportunity-engine/validate-phase-2-7.js`
+
+---
+
+### 2026-06-27 — Owner approval: Phase 2.7 + Architecture Freeze
+**Phase:** 2.7  
+**Type:** Decision · Owner policy  
+**Summary:** Owner approved Phase 2.7 (Capability Matching Engine). Architecture frozen from this point: Phases 2.8+ implement existing Constitution ([26-reasoning-engine.md](./26-reasoning-engine.md), [27-capability-intelligence.md](./27-capability-intelligence.md)) without redesign. Constitution amendments permitted only when implementation reveals a **genuine deficiency** — documented in Build Log with owner sign-off. See [07-architecture-rules.md R26–R30](./07-architecture-rules.md#architecture-freeze-owner-policy--phase-27).  
+**Links:** [08-current-phase.md](./08-current-phase.md)
+
+---
+
+### 2026-06-27 — Phase 2.8 Offer Intelligence
+**Phase:** 2.8  
+**Type:** Milestone  
+**Summary:** Implemented offer selection pipeline: `recommendOffers(capabilityMatch)` with candidate offers, eligibility checks, commercial offer fit scoring, ranking, and explainability. Consumes capability matches only — not Problems directly. Runtime store at `runtime/offer-recommendations/`. Opportunity Factory remains blocked.  
+**Links:** `src/engine/offer-intelligence/`, `src/engine/offer-recommendations/`, `scripts/opportunity-engine/validate-phase-2-8.js`
+
+---
+
 ## Future Entries (Reserved)
 
-<!-- Phase 2.7 Capability Matching -->
+<!-- Phase 2.9 Opportunity Factory -->
 <!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->
@@ -211,4 +243,6 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-27 | Phase 2.8 Offer Intelligence milestone |
+| 2026-06-27 | Architecture freeze policy (R26–R30) — owner approved Phase 2.7 |
 | 2026-06-23 | Initial Constitution build log created |

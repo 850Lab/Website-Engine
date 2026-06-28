@@ -12,11 +12,11 @@
 | Path | Purpose | Owner | Dependencies | Future direction |
 |---|---|---|---|---|
 | **`src/engine/`** | Opportunity logic: radar, factory, scoring, mission, execution projections | Platform / OS team | `engine-data/`, `data/` reads | Problem factory Phase 3; sole business logic home |
-| **`src/engine/capabilities/`** | Load capability registry | Platform | `engine-data/capabilities/` | Used by offers join + future factory |
+| **`src/engine/capabilities/`** | Load + normalize capability registry (Phase 2.7) | Platform | `engine-data/capabilities/` | Matcher, offers join, factory |
 | **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
-| **`runtime/`** | Live operational data: signals, facts, graph, situations, hypotheses, problems, logs, cache (gitignored) | Platform | None | Default local runtime |
+| **`runtime/`** | Live operational data: signals, facts, graph, situations, hypotheses, problems, capability-matches, offer-recommendations, logs, cache (gitignored) | Platform | None | Default local runtime |
 | **`src/engine/situations/`** | Runtime-backed situation store + lifecycle (Phase 2.5.5) | Platform | `runtime/situations/` | Required input for Problem Inference |
 | **`src/engine/situation-builder/`** | Rules-only graph clustering into situations | Platform | `graph-store/`, `situations/` | No LLM; template summaries only |
 | **`src/engine/hypotheses/`** | Runtime hypothesis store (Phase 2.6) | Platform | `runtime/hypotheses/` | Problem inference input |
@@ -25,8 +25,11 @@
 | **`src/engine/confidence-engine/`** | Traceable confidence propagation | Platform | evidence-engine | No invented confidence |
 | **`src/engine/contradictions/`** | Competing hypothesis detection | Platform | hypotheses | Visible conflicts |
 | **`src/engine/problems/`** | Runtime problem store (Phase 2.6) | Platform | `runtime/problems/` | Immutable conclusions |
-| **`src/engine/problem-inference/`** | `inferProblems()` promotion pipeline | Platform | reasoning modules | No capability/opportunity |
-| **`src/engine/capability-matcher/`** | *(Phase 2.7+)* Deterministic capability fit | Platform | `capabilities/`, `problems/` | Blocked until Phase 2.7 |
+| **`src/engine/problem-inference/`** | `inferProblems()` promotion pipeline | Platform | reasoning modules | Stops before capability matching |
+| **`src/engine/capability-matcher/`** | Deterministic Problem → Capability fit (Phase 2.7) | Platform | `capabilities/`, `problems/` | Stops before Offer Intelligence |
+| **`src/engine/capability-matches/`** | Runtime capability recommendation store (Phase 2.7) | Platform | `runtime/capability-matches/` | Append-only audit trail |
+| **`src/engine/offer-intelligence/`** | Capability match → offer fit pipeline (Phase 2.8) | Platform | `capability-matches/`, `offers/` | Stops before Opportunity Factory |
+| **`src/engine/offer-recommendations/`** | Runtime offer recommendation store (Phase 2.8) | Platform | `runtime/offer-recommendations/` | Append-only audit trail |
 | **`src/engine/runtime/`** | Runtime path helpers | Platform | `runtime/` | Storage boundary for sensors, signals, facts, graph |
 | **`src/engine/graph-store/`** | Persistent runtime graph store (Phase 2.5) | Platform | `runtime/graph/` | Graph DB later |
 | **`src/engine/entity-resolution/`** | Rules-only entity normalization + aliases | Platform | `graph-store/` | No fuzzy merge in v0 |
@@ -114,7 +117,8 @@
 | **`docs/opportunity-os/`** | AI Constitution — supreme architecture |
 | **`docs/opportunity-os/23-world-model.md`** | World Model chain and sensor rules |
 | **`docs/opportunity-os/25-sensor-framework.md`** | Sensor interface, lifecycle, health, runtime integration |
-| **`docs/opportunity-os/26-reasoning-engine.md`** | Reasoning pipeline, hypothesis/problem schemas, confidence, Phase 2.6–2.8 roadmap |
+| **`docs/opportunity-os/26-reasoning-engine.md`** | Reasoning pipeline, hypothesis/problem schemas, confidence, Phase 2.6 implementation |
+| **`docs/opportunity-os/27-capability-intelligence.md`** | Capability Intelligence Constitution — matching pipeline, fit score, constraints, composition, CI1–CI15, Phase 2.7–2.9 roadmap |
 | **`docs/*.md`** | Legacy product docs — do not override Constitution |
 
 ---

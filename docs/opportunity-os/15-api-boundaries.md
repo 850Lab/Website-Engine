@@ -1,7 +1,7 @@
 # 15 — API Boundaries
 
 **Status:** Constitution · Module ownership  
-**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md)
+**Related:** [Architecture Rules](./07-architecture-rules.md) · [Folder Map](./13-folder-map.md) · [Ontology](./02-ontology.md) · [World Model](./23-world-model.md) · [Capability Intelligence](./27-capability-intelligence.md)
 
 Defines **who owns what** and **allowed import directions**.
 
@@ -34,11 +34,14 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Confidence Engine** | `engine/confidence-engine` | `calculateHypothesisConfidence()` | Traceable propagation |
 | **Contradictions** | `engine/contradictions` | `findContradictions()`, `detectCompetingHypotheses()` | Visible conflicts |
 | **Reasoning Engine** | `engine/problem-inference` + modules above | `inferProblems()` | Full Situation → Problem pipeline |
-| **Problem Engine** | `engine/problems` | `createProblem()`, `listProblems()`, `buildExplainability()` | Capability matcher — **blocked 2.7** |
-| **Capability Matcher** | `engine/capability-matcher` *(Phase 2.7)* | `matchCapabilities(problem)` | **Blocked** |
-| **Opportunity Factory** | `engine/opportunity-factory` *(Phase 2.8)* | `createOpportunityFromProblem()` | **Blocked** |
+| **Problem Engine** | `engine/problems` | `createProblem()`, `listProblems()`, `buildExplainability()` | Capability Intelligence |
+| **Capability Intelligence** | `engine/capability-matcher` *(Phase 2.7)* | `matchCapabilities(problem)`, `matchCapabilitiesForProblems()` | Offer Intelligence |
+| **Capability Match Store** | `engine/capability-matches` *(Phase 2.7)* | `saveCapabilityMatch()`, `listCapabilityMatches()`, `getCapabilityMatchesByProblemId()` | Offer Intelligence, Mission Control projection |
+| **Offer Intelligence** | `engine/offer-intelligence` *(Phase 2.8)* | `recommendOffers(capabilityMatch)`, `recommendOffersForProblem()`, `selectOffersFromCapabilityMatch()` | Opportunity Factory — **blocked 2.9** |
+| **Offer Recommendation Store** | `engine/offer-recommendations` *(Phase 2.8)* | `saveOfferRecommendation()`, `listOfferRecommendations()`, `getOfferRecommendationsByProblemId()` | Opportunity Factory, Mission Control projection |
+| **Opportunity Factory** | `engine/opportunity-factory` *(Phase 2.9)* | `createOpportunityFromProblem()` | Score Council — **blocked 2.9** |
 | **Knowledge Graph** | Future Graph Writer / Reader | `writeNode`, `writeEdge`, `querySubgraph` | All intelligence modules |
-| **Capabilities** | `engine/capabilities` + `engine-data/capabilities` | `listCapabilities()`, `getCapabilityById()` | Offers join, factory, scoring, agents |
+| **Capabilities** | `engine/capabilities` + `engine-data/capabilities` | `listCapabilities()`, `getCapabilityById()`, `getCapabilitiesByIds()`, `normalizeCapability()` | Matcher, offers join, factory, agents |
 | **Offers** | `engine/offers` | `listOffers()`, `getOfferById()`, `getOfferWithCapabilities()`, `listOffersWithCapabilities()` | Factory, radar, reports |
 | **Opportunities** | `engine/opportunities` → future problem-centric factory | `generateOpportunities()` | Intelligence, reports — **not created by connectors** |
 | **Score Council** | `engine/score-council` | `scoreOpportunity(opportunity, mode)` | **Owns score vectors and CEO mode weighting** |
@@ -133,13 +136,58 @@ Facts, Problems, and Opportunities are **separate engine owners** — see [23-wo
 
 ---
 
+## Capability Intelligence Boundary (Phase 2.6.5 design · Phase 2.7 implementation — **COMPLETE**)
+
+See [27-capability-intelligence.md §12 — Permanent Rules CI1–CI15](./27-capability-intelligence.md#12-permanent-rules).
+
+| Allowed | Forbidden |
+|---|---|
+| `matchCapabilities(problem)` from Problems only | Direct Situation/Hypothesis/Fact input |
+| Deterministic fit scoring with dimension breakdown | LLM-only or black-box ranking |
+| Constraint evaluation — visible pass/fail/penalty | Silent constraint filtering |
+| Multi-capability composition from registry IDs | Synthetic merged capabilities |
+| Explainability bundle on every recommendation | Recommendations without audit trail |
+| Runtime store: `runtime/capability-matches/` | Offer selection, Opportunity creation |
+| Registry read from `engine-data/capabilities/` | Writes to `engine-data/` without amendment |
+
+**STOP:** Recommended Capabilities — no Offer Intelligence in Phase 2.7.
+
+---
+
+## Offer Intelligence Boundary (Phase 2.8 — **COMPLETE**)
+
+| Allowed | Forbidden |
+|---|---|
+| `recommendOffers(capabilityMatch)` — capability match input only | Direct Problem → Offer without capability match |
+| Candidate offers, eligibility, commercial offer fit, ranking | Opportunity creation |
+| Explainability on every offer recommendation | Capability fit recomputation (owned by matcher) |
+| Runtime store: `runtime/offer-recommendations/` | Score Council invocation |
+| Offer registry read from `engine-data/offers/` | Mission Control changes, LLM selection |
+
+**STOP:** Recommended Offers — no Opportunity Factory in Phase 2.8.
+
+---
+
+## Opportunity Factory Boundary (Phase 2.9 — blocked)
+
+| Allowed | Forbidden |
+|---|---|
+| Problem + capability match + offer → Opportunity | Situation-only or Signal-only bets |
+| Buyer targeting from graph | Invented evidence |
+| Score Council full score vector | Fit score computed here (owned by Capability Intelligence) |
+| Mission Control projection read | Learning calibration |
+
+---
+
 ## Reasoning Engine Boundary (Phase 2.5.8 design · Phase 2.6 implementation)
 
 | Module | Owns | Must not |
 |---|---|---|
 | **Reasoning Engine** | Hypotheses, evidence bundles, confidence propagation, contradictions | Facts, Situations, Opportunities |
 | **Problem Engine** | Problems, explainability bundles | Raw fact inference, capability matching, opportunities |
-| **Opportunity Factory** | Opportunities from Problems + offers | Situation-only bets, invented evidence |
+| **Capability Intelligence** | Capability matches, fit scores, constraint results | Problems, offers, opportunities |
+| **Offer Intelligence** | Offer candidates from capability matches | Opportunities, fit scoring |
+| **Opportunity Factory** | Opportunities from Problems + capabilities + offers | Situation-only bets, invented evidence |
 
 | Allowed | Forbidden |
 |---|---|

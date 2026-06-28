@@ -32,3 +32,7 @@ export * from "./confidence-engine/index.js";
 export * from "./contradictions/index.js";
 export * from "./problems/index.js";
 export * from "./problem-inference/index.js";
+export * from "./capability-matcher/index.js";
+export * from "./capability-matches/index.js";
+export * from "./offer-intelligence/index.js";
+export * from "./offer-recommendations/index.js";

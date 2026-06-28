@@ -557,6 +557,8 @@ Each example walks: **Situation → Hypothesis → Problem → Capability → Op
 
 Changes to reasoning rules require [Build Log](./09-build-log.md) entry and owner approval. RE1–RE15 are Constitution-tier unless explicitly amended.
 
+**Architecture freeze (Phase 2.7+):** Do not amend this document for redesign. Amend only on **genuine deficiency** proven during implementation — see [R26–R30](./07-architecture-rules.md#architecture-freeze-owner-policy--phase-27).
+
 **Phase 2.5.8:** Design complete. No code until Phase 2.6 prompt.
 
 **Phase 2.6:** **COMPLETE** — Problem Inference implemented. Modules: `hypotheses/`, `hypothesis-generator/`, `evidence-engine/`, `confidence-engine/`, `contradictions/`, `problems/`, `problem-inference/`. Validation: `scripts/opportunity-engine/validate-phase-2-6.js`. Capability Matching remains **blocked** until Phase 2.7.

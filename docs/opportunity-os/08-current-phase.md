@@ -1,57 +1,59 @@
 # 08 — Current Phase
 
 **Status:** Living document · update when phase changes  
-**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [World Model](./23-world-model.md) · [Reasoning Engine](./26-reasoning-engine.md)
+**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [World Model](./23-world-model.md) · [Reasoning Engine](./26-reasoning-engine.md) · [Capability Intelligence](./27-capability-intelligence.md)
 
 ---
 
 ## Current Phase
 
-**Phase 2.6 — Problem Inference Engine** — **COMPLETE**
+**Phase 2.8 — Offer Intelligence** — **COMPLETE**
 
-Phase 2.7 is **blocked** until owner approves and issues an explicit implementation prompt.
+Phase 2.9 is **blocked** until owner approves and issues an explicit implementation prompt.
 
----
-
-## Phase 2.6 Objective
-
-Implement the first reasoning pipeline: Situation → Hypothesis → Evidence → Confidence → Contradiction → Problem. No capability matching, offers, or opportunities.
-
-Run: `node scripts/opportunity-engine/validate-phase-2-6.js`
+**Architecture freeze:** Implement per Constitution; amend only on genuine deficiency — [R26–R30](./07-architecture-rules.md#architecture-freeze-owner-policy--phase-27).
 
 ---
 
-## Phase 2.6 Checklist
+## Phase 2.8 Objective
 
-- [x] `runtime/hypotheses/` — hypothesis store
-- [x] `runtime/problems/` — problem store
-- [x] `src/engine/hypothesis-generator/` — rules-only hypothesis generation
-- [x] `src/engine/evidence-engine/` — evidence collection + tiers
-- [x] `src/engine/confidence-engine/` — traceable confidence propagation
-- [x] `src/engine/contradictions/` — competing hypothesis detection
-- [x] `src/engine/problem-inference/` — `inferProblems()` promotion pipeline
-- [x] Explainability bundle on every Problem
-- [x] `scripts/opportunity-engine/validate-phase-2-6.js`
-- [x] Validation passed; Phase 2.5.5 / 2.5 / 2.4 regressions pass
+Implement commercial offer selection: Capability Match → Candidate Offers → Offer Eligibility → Offer Fit Analysis → Offer Ranking → Recommended Offers → STOP.
+
+Run: `node scripts/opportunity-engine/validate-phase-2-8.js`
 
 ---
 
-## Active Rules (Phase 2.6)
+## Phase 2.8 Checklist
+
+- [x] `src/engine/offer-intelligence/` — `recommendOffers(capabilityMatch)` pipeline
+- [x] `src/engine/offer-recommendations/` — runtime recommendation store
+- [x] Candidate offers from capability match overlap
+- [x] Offer eligibility (capability link, fit floor, composition coverage)
+- [x] Offer fit score with dimensional breakdown (distinct from capability fit and opportunity score)
+- [x] Offer ranking and explainability bundle
+- [x] `runtime/offer-recommendations/` append-only store
+- [x] `scripts/opportunity-engine/validate-phase-2-8.js`
+- [x] Validation passed; Phase 2.7 regression passes
+
+---
+
+## Active Rules (Phase 2.8)
 
 | Rule | Status |
 |---|---|
-| Situations are the only legal input to Hypothesis Generator | **Enforced** |
-| Problems require promoted Hypotheses — no direct Situation → Problem | **Enforced** |
-| Confidence traceable via `confidenceBreakdown` | **Enforced** |
-| Contradictions visible — negative hypotheses rejected before promotion | **Enforced** |
-| No capability matching, offers, opportunities, LLM, or Mission Control changes | **Enforced** |
-| Phase 2.7 blocked until owner approval | **Enforced** |
+| Offers consume capability matches only — not Problems directly (CI2) | **Enforced** |
+| Offer fit ≠ capability fit ≠ opportunity score | **Enforced** |
+| Explainability on every offer recommendation | **Enforced** |
+| STOP before Opportunity Factory | **Enforced** |
+| No opportunities, Score Council, LLM, or Mission Control changes | **Enforced** |
+| Architecture frozen — amend only on genuine deficiency (R26–R30) | **Owner policy** |
+| Phase 2.9 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 2.7 (Blocked)
+## Phase 2.9 (Blocked)
 
-**Capability Matching** — not started.
+**Opportunity Factory** — not started.
 
 Requires owner approval and explicit implementation prompt.
 
@@ -59,13 +61,13 @@ Requires owner approval and explicit implementation prompt.
 
 ## Prior Phases — COMPLETE
 
-### Phase 2.5.8 — Reasoning Engine Constitution (design only)
+### Phase 2.7 — Capability Matching Engine · **OWNER APPROVED**
 
-Read: [26-reasoning-engine.md](./26-reasoning-engine.md)
+Run: `node scripts/opportunity-engine/validate-phase-2-7.js`
 
-### Phase 2.5.5 — Situation Builder
+### Phase 2.6.5 — Capability Intelligence Constitution (design only)
 
-Run: `node scripts/opportunity-engine/validate-phase-2-5-5.js`
+Read: [27-capability-intelligence.md](./27-capability-intelligence.md)
 
 ---
 
@@ -73,8 +75,8 @@ Run: `node scripts/opportunity-engine/validate-phase-2-5-5.js`
 
 | Date | Decision |
 |---|---|
-| 2026-06-27 | Phase 2.6: Problem Inference implemented per Reasoning Engine Constitution |
-| 2026-06-27 | Promotion threshold 0.6; negative competing hypotheses rejected |
-| 2026-06-27 | Phase 2.7 reserved for Capability Matching |
+| 2026-06-27 | Phase 2.8: Offer Intelligence implemented — capability match → recommended offers |
+| 2026-06-27 | **Owner approved Phase 2.7** + architecture freeze (R26–R30) |
+| 2026-06-27 | Phase 2.9 reserved for Opportunity Factory |
 
 Add entries to [Build Log](./09-build-log.md) for architectural milestones.

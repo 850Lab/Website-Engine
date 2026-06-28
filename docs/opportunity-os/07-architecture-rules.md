@@ -81,6 +81,34 @@ Violations require Constitution amendment or explicit owner waiver documented in
 
 ---
 
+## Architecture Freeze (Owner Policy — Phase 2.7+)
+
+Effective upon **owner approval of Phase 2.7**, the reasoning and capability architecture is **frozen**.
+
+| Rule | Detail |
+|---|---|
+| **R26** | **Implement, do not redesign** — Phases 2.8+ build what [26-reasoning-engine.md](./26-reasoning-engine.md) and [27-capability-intelligence.md](./27-capability-intelligence.md) already define |
+| **R27** | **No speculative amendments** — Constitution docs must not change to accommodate convenience, preference, or parallel designs |
+| **R28** | **Amend only on genuine deficiency** — A deficiency is proven when implementation cannot satisfy existing rules, validators fail for architectural reasons (not bugs), or a permanent rule produces incoherent output with no documented escape hatch |
+| **R29** | **Deficiency amendments are surgical** — Change the minimum surface; document evidence in [Build Log](./09-build-log.md); owner sign-off required |
+| **R30** | **Registry and runtime data may evolve** — `engine-data/` enrichment, capability entries, and runtime stores are implementation detail, not architecture change |
+
+**Not deficiencies (do not amend Constitution for these):**
+
+- Missing helper functions, refactors, or performance tuning
+- Validator gaps fixable within current module boundaries
+- UI projection work in later phases
+- New capability registry entries or constraint field population
+
+**Still allowed without architecture amendment:**
+
+- Phase implementation per approved prompt
+- Bug fixes within existing boundaries
+- Tests, validators, and runtime stores
+- `engine-data/` content updates per [Capability Registry](./05-capability-registry.md) amendment process
+
+---
+
 ## Prohibited Without Amendment
 
 - New locked schema entities (see `schema/index.js` comment)
@@ -88,6 +116,7 @@ Violations require Constitution amendment or explicit owner waiver documented in
 - Industry-primary opportunity matching in new code
 - LLM-on-every-signal default path
 - UI writing directly to `data/*.json` legacy stores for new features
+- Redesigning the reasoning or capability pipeline after Phase 2.7 approval (**R26–R30**)
 
 ---
 
