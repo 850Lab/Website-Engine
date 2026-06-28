@@ -21,6 +21,8 @@ export const GENERATED_REPORT_PATHS = [
   "reports/runtime-health.json",
   "reports/performance-baseline.md",
   "reports/performance-baseline.json",
+  "reports/live-pipeline.md",
+  "reports/live-pipeline.json",
 ];
 
 const VALIDATION_SCRIPTS = [
@@ -46,6 +48,7 @@ const VALIDATION_SCRIPTS = [
   "scripts/opportunity-engine/validate-phase-3-5.js",
   "scripts/opportunity-engine/validate-phase-3-6.js",
   "scripts/opportunity-engine/validate-phase-3-7.js",
+  "scripts/opportunity-engine/validate-phase-3-8.js",
 ];
 
 export function isIgnoredGeneratedReport(path) {

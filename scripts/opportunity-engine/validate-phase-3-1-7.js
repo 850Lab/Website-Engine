@@ -163,18 +163,18 @@ const savedDemoFlag = process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;
 delete process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;
 const blockedApproval = await verifyOwnerApproval(
   buildMinimalOpenClaw({
-    phaseId: "3.8",
+    phaseId: "4",
     ownerApproval: {
       approvedBy: "owner",
       approvedAt: new Date().toISOString(),
       approvalSource: "explicit_prompt",
       phaseDocStatus: "ACTIVE",
-      phaseId: "3.8",
+      phaseId: "4",
       promptHash: demoPromptHash,
       promptExcerpt: "blocked test",
     },
     idempotencyKey: deriveOpenClawIdempotencyKey({
-      phaseId: "3.8",
+      phaseId: "4",
       jobType: "openclaw.build",
       promptHash: demoPromptHash,
     }),
