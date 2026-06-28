@@ -124,6 +124,26 @@ Register via `registerDemoSensors()`.
 
 ---
 
+## Live Sensors (Phase 3.5)
+
+First production live connector — local file drop only:
+
+| Sensor | Domain | File | Inbox |
+|---|---|---|---|
+| File Drop Sensor | `documents` | `src/engine/sensors/live/file-drop-sensor.js` | `runtime/inbox/observations/` |
+
+**API:** `collectFileDropObservations()`, `runFileDropSensor()`, `registerFileDropSensor()`
+
+**Formats:** `.json`, `.txt`, `.md` — deterministic parsing, no LLM, no network.
+
+**Processed tracking:** `runtime/inbox/observations/processed/` markers + archive copies. Input files are never deleted.
+
+**Pipeline:** File drop → Observation → `ingestManualObservation()` → Signal Registry → **STOP**.
+
+**Validation:** `node scripts/opportunity-engine/validate-phase-3-5.js`
+
+---
+
 ## Connector Migration
 
 | Phase | Module | Status |

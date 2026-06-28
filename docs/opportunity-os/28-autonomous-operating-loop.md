@@ -645,22 +645,34 @@ See [29-openclaw-constitution.md § Phase 3.1.6](./29-openclaw-constitution.md#p
 
 ---
 
-### Phase 3.5 — Live Connectors
+### Phase 3.5 — First Live Sensor Connector
 
-**Status:** BLOCKED until owner approves explicit implementation prompt.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:**
 
-| Deliverable | Scope |
+| Deliverable | Location |
 |---|---|
-| Production sensors (non-demo) | Per [25-sensor-framework.md](./25-sensor-framework.md) |
-| Connector → sensor migration | Deprecate connector shim |
-| Live ingest validation | No `engine-data/` writes; runtime only |
-| Per-connector owner sign-off | Each connector is a separate approval |
+| File drop inbox | `runtime/inbox/observations/` (gitignored) |
+| Live sensor | `src/engine/sensors/live/file-drop-sensor.js` |
+| Processed tracking | `runtime/inbox/observations/processed/` |
+| Validator | `scripts/opportunity-engine/validate-phase-3-5.js` |
 
-**Do not build:** Parallel runtime writes without lock tests; Mission Control write paths.
+**API:** `collectFileDropObservations()`, `runFileDropSensor()`, `registerFileDropSensor()`
 
-**STOP:** Live observation ingest through existing loop — halt.
+**Pipeline:** External file drop → live sensor → canonical Observation → Signal Registry → **STOP**.
+
+**Boundaries:** One safe local connector only. No facts, graph, situations, problems, capabilities, offers, opportunities, Mission Control, Score Council, OpenClaw Execution, network calls, scheduler wiring, or daemons.
+
+**Do not build:** Additional connectors, automatic scheduled runs, downstream reasoning.
+
+**STOP:** Signals created — halt before fact building or reasoning.
+
+---
+
+### Phase 3.6+ — Additional Live Connectors
+
+**Status:** BLOCKED until owner approves each connector explicitly.
 
 ---
 

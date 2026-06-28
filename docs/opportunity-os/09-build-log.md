@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.5 First Live Sensor Connector
+**Phase:** 3.5  
+**Type:** Milestone  
+**Summary:** Implemented first live sensor: local file drop at `runtime/inbox/observations/`, `file-drop-sensor.js` parses `.json`/`.txt`/`.md`, ingests via existing Sensor Framework → `ingestManualObservation()` → Signal Registry, processed markers under `processed/`, content-hash dedupe, no network. No facts, graph, or downstream reasoning.  
+**Links:** `src/engine/sensors/live/file-drop-sensor.js`, `scripts/opportunity-engine/validate-phase-3-5.js`, [25-sensor-framework.md](./25-sensor-framework.md)
+
+---
+
 ### 2026-06-23 — Phase 3.4 Execution Queue / Dispatcher
 **Phase:** 3.4  
 **Type:** Milestone  

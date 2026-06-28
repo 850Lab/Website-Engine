@@ -250,4 +250,11 @@ export function clearSensorsForTests() {
 
 export { registry as sensorRegistry, health as sensorHealth, lifecycle as sensorLifecycle };
 
+export {
+  collectFileDropObservations,
+  runFileDropSensor,
+  registerFileDropSensor,
+  FILE_DROP_SENSOR_ID,
+} from "./live/file-drop-sensor.js";
+
 export { SENSOR_LIFECYCLE } from "./types.js";

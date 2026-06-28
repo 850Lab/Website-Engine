@@ -60,6 +60,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Scheduler** *(Phase 3.2)* | `engine/scheduler` | `loadScheduler()`, `saveScheduler()`, `registerSchedule()`, `removeSchedule()`, `listSchedules()`, `evaluateDueSchedules()`, `executeSchedulerTick()` | Creates pending jobs + `scheduler.*` events only — no execution |
 | **Processor** *(Phase 3.3)* | `engine/processor` | `registerJobHandler()`, `unregisterJobHandler()`, `getJobHandler()`, `listJobHandlers()`, `processNextJob()`, `executeJob()` | Claims one job, runs registered handler, emits `processor.*` events — no scheduling |
 | **Execution Queue** *(Phase 3.4)* | `engine/execution-queue` | `listEligibleJobs()`, `rankEligibleJobs()`, `resolveWorkerTarget()`, `createDispatchDecision()`, `dispatchNextJob()`, `listWorkerRoutes()` | Routing + dispatch decisions only — no claim or execute |
+| **Live Sensors** *(Phase 3.5)* | `engine/sensors/live` | `collectFileDropObservations()`, `runFileDropSensor()` | File drop → Observation → Signal Registry only |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
 | **OpenClaw** *(Phase 3.1.8)* | `engine/openclaw` + `engine-data/openclaw/prompts/` + `scripts/openclaw/` | Builder: `runOpenClawBuilderJob()` · QA: `runOpenClawQaJob()`, `validateQaJob()`, `evaluateExpectedOutputs()` · CLI: `run-builder-job.js`, `run-qa-job.js` | QA read-only; prompt verified; allowlists; one Job per invocation |
 

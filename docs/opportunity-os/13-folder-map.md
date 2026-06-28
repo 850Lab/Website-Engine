@@ -49,7 +49,9 @@
 | **`src/engine/graph-store/`** | Persistent runtime graph store (Phase 2.5) | Platform | `runtime/graph/` | Graph DB later |
 | **`src/engine/entity-resolution/`** | Rules-only entity normalization + aliases | Platform | `graph-store/` | No fuzzy merge in v0 |
 | **`src/engine/relationship-builder/`** | Fact → relationship projection | Platform | `facts/`, `graph-store/`, `entity-resolution/` | No problem inference |
-| **`src/engine/sensors/`** | Sensor Framework registry + lifecycle + health (Phase 2.3) | Signal / Platform | `src/engine/signals/`, `runtime/` | Production sensors in Phase 2.4+ |
+| **`runtime/inbox/`** | Local observation file drop inbox (Phase 3.5) | Platform | None | `observations/` gitignored |
+| **`src/engine/sensors/`** | Sensor Framework registry + lifecycle + health (Phase 2.3) | Signal / Platform | `src/engine/signals/`, `runtime/` | Demo + live sensors |
+| **`src/engine/sensors/live/`** | Live sensor connectors (Phase 3.5+) | Platform | `runtime/inbox/`, `engine/signals/` | File drop first; no reasoning |
 | **`src/engine/facts/`** | Runtime-backed append-only fact store (Phase 2.4) | Signal / Platform | `runtime/facts/`, signals | Problem inference blocked |
 | **`src/engine/fact-builder/`** | Rules-only fact extraction from signals | Signal / Platform | `facts/`, `signals/` | No LLM; conservative predicates |
 | **`src/engine/knowledge-graph/`** | Graph projection bridge (nodes/edges) | Platform | `facts/` | Graph DB later; Phase 2.5 enrichment |
