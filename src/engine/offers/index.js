@@ -1,13 +1,26 @@
 import { readFile } from "node:fs/promises";
 import { getCapabilityById, listCapabilities } from "../capabilities/index.js";
+import { normalizeOffer } from "./normalize.js";
 
 const ROOT = new URL("../../../", import.meta.url);
+const REGISTRY_VERSION = "2.8.0";
+
+let cachedOffers = null;
+
+export function getOfferRegistryVersion() {
+  return REGISTRY_VERSION;
+}
 
 export { listCapabilities, getCapabilityById };
 
 export async function listOffers() {
+  if (cachedOffers) {
+    return cachedOffers.map((row) => structuredClone(row));
+  }
   const file = new URL("engine-data/offers/offers.json", ROOT);
-  return JSON.parse(await readFile(file, "utf8"));
+  const raw = JSON.parse(await readFile(file, "utf8"));
+  cachedOffers = raw.map((row) => normalizeOffer(row));
+  return cachedOffers.map((row) => structuredClone(row));
 }
 
 export async function getOfferById(id) {
@@ -37,3 +50,14 @@ export async function listOffersWithCapabilities() {
   const offers = await listOffers();
   return Promise.all(offers.map((offer) => attachCapabilities(offer)));
 }
+
+export async function getOffersByCapabilityId(capabilityId) {
+  const offers = await listOffers();
+  return offers.filter((offer) => offer.capabilityIds.includes(capabilityId));
+}
+
+export function clearOfferCacheForTests() {
+  cachedOffers = null;
+}
+
+export { normalizeOffer } from "./normalize.js";

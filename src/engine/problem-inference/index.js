@@ -220,6 +220,13 @@ export async function inferProblems(options = {}) {
       metadata: {
         inferenceEngine: "problem_inference_v0",
         promotionThreshold: PROMOTION_THRESHOLD,
+        entityContext: {
+          location: situation.location || null,
+          industry: situation.metadata?.industry || null,
+          primaryEntityId: situation.entityIds?.[0] || null,
+          affectedMarkets:
+            situation.summary?.affectedMarkets || situation.marketIds || [],
+        },
       },
     });
 

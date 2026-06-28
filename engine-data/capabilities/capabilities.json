@@ -2,7 +2,10 @@
   {
     "id": "website_growth",
     "name": "Website Growth",
+    "description": "Design, build, and optimize websites that convert visitors into qualified leads.",
     "category": "Digital",
+    "parentCapability": null,
+    "childCapabilities": [],
     "problemsSolved": [
       "low_conversion",
       "weak_credibility",
@@ -24,6 +27,38 @@
     ],
     "decisionMakers": ["Owner", "General manager", "Office manager", "Marketing coordinator"],
     "deliveryRequirements": ["Discovery call", "Preview build", "Launch support"],
+    "requiredCertifications": [],
+    "requiredEquipment": [],
+    "requiredSkills": [
+      { "id": "web_design", "label": "Web design", "minExperienceYears": 2 },
+      { "id": "copywriting", "label": "Conversion copywriting", "minExperienceYears": 1 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US"],
+      "remoteEligible": true
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Trade contractors", "Local service businesses", "B2C service providers"],
+      "requiresPriorSiteExperience": false
+    },
+    "regulatoryConstraints": [],
+    "maturity": "scaled",
+    "scalability": { "model": "digital_unlimited", "leadTimeDays": 7 },
+    "estimatedCapacity": {
+      "unit": "projects",
+      "available": 8,
+      "committed": 2,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.85
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 42,
+      "winRate": 0.58,
+      "onTimeRate": 0.91,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_website_growth"],
     "marginProfile": { "typicalMarginPct": 0.55, "typicalContractLow": 3000, "typicalContractHigh": 25000 },
     "executionDifficulty": 4,
     "revenuePotential": { "annualLow": 3000, "annualHigh": 25000, "recurring": true },
@@ -32,7 +67,10 @@
   {
     "id": "exterior_cleaning",
     "name": "Exterior Cleaning",
+    "description": "Pressure washing, soft wash, and exterior appearance restoration for commercial properties.",
     "category": "Property Services",
+    "parentCapability": null,
+    "childCapabilities": [],
     "problemsSolved": [
       "poor_first_impression",
       "neglected_entrance",
@@ -48,6 +86,47 @@
     "typicalBuyers": ["Restaurants", "Retail pads", "Medical offices", "Property managers"],
     "decisionMakers": ["Owner", "Facilities manager", "Operations manager"],
     "deliveryRequirements": ["Site walk", "Quote", "Scheduled service crew"],
+    "requiredCertifications": [],
+    "requiredEquipment": [
+      { "id": "soft_wash_rig", "label": "Soft wash rig", "quantityMin": 1 },
+      { "id": "pressure_washer", "label": "Commercial pressure washer", "quantityMin": 1 }
+    ],
+    "requiredSkills": [
+      { "id": "soft_wash_operator", "label": "Soft wash operator", "minExperienceYears": 1 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US-TX", "US-LA"],
+      "travelRadiusMiles": 150
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Restaurants", "Retail", "Medical offices", "Property management"],
+      "requiresPriorSiteExperience": false
+    },
+    "regulatoryConstraints": [
+      {
+        "id": "epa_water_recovery",
+        "jurisdiction": "EPA",
+        "summary": "Wastewater containment for commercial pad cleaning",
+        "blocksExecutionIfUnmet": false
+      }
+    ],
+    "maturity": "scaled",
+    "scalability": { "model": "elastic_pool", "surgeMultiplier": 2, "leadTimeDays": 2 },
+    "estimatedCapacity": {
+      "unit": "crews",
+      "available": 6,
+      "committed": 1,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.8
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 128,
+      "winRate": 0.64,
+      "onTimeRate": 0.88,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_pressure_washing"],
     "marginProfile": { "typicalMarginPct": 0.45, "typicalContractLow": 500, "typicalContractHigh": 8000 },
     "executionDifficulty": 3,
     "revenuePotential": { "annualLow": 6000, "annualHigh": 96000, "recurring": true },
@@ -56,7 +135,10 @@
   {
     "id": "ktm_labor",
     "name": "KTM Labor",
+    "description": "Skilled and general industrial labor deployment for surge staffing, turnarounds, and expansion projects.",
     "category": "Labor and Safety",
+    "parentCapability": null,
+    "childCapabilities": ["fire_watch", "hole_watch", "safety_support"],
     "problemsSolved": [
       "labor_shortage",
       "schedule_delays",
@@ -78,6 +160,48 @@
     ],
     "decisionMakers": ["Project manager", "Site superintendent", "HR manager", "Procurement"],
     "deliveryRequirements": ["Compliance check", "Cert verification", "Crew deployment"],
+    "requiredCertifications": [
+      { "id": "osha_10", "label": "OSHA 10", "mandatory": true },
+      { "id": "background_check", "label": "Site background clearance", "mandatory": true }
+    ],
+    "requiredEquipment": [],
+    "requiredSkills": [
+      { "id": "industrial_craft", "label": "Industrial craft labor", "minExperienceYears": 2 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US-TX", "US-LA", "US-MS", "US-AL"],
+      "travelRadiusMiles": 300
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Industrial", "Construction", "Turnaround", "Facilities expansion"],
+      "requiresPriorSiteExperience": true
+    },
+    "regulatoryConstraints": [
+      {
+        "id": "site_orientation",
+        "jurisdiction": "US-TX",
+        "summary": "Client site orientation and badge requirements",
+        "blocksExecutionIfUnmet": true
+      }
+    ],
+    "maturity": "scaled",
+    "scalability": { "model": "elastic_pool", "surgeMultiplier": 5, "leadTimeDays": 3 },
+    "estimatedCapacity": {
+      "unit": "workers",
+      "available": 250,
+      "committed": 80,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.75
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 67,
+      "winRate": 0.52,
+      "onTimeRate": 0.86,
+      "incidentRate": 0.01,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_ktm_manpower"],
     "marginProfile": { "typicalMarginPct": 0.28, "typicalContractLow": 50000, "typicalContractHigh": 5000000 },
     "executionDifficulty": 6,
     "revenuePotential": { "annualLow": 50000, "annualHigh": 5000000, "recurring": true },
@@ -86,7 +210,10 @@
   {
     "id": "fire_watch",
     "name": "Fire Watch",
+    "description": "Certified fire watch personnel for hot work, shutdowns, and insurance-required safety coverage.",
     "category": "Labor and Safety",
+    "parentCapability": "ktm_labor",
+    "childCapabilities": [],
     "problemsSolved": [
       "hot_work_compliance",
       "insurance_requirements",
@@ -96,6 +223,49 @@
     "typicalBuyers": ["Refineries", "Chemical plants", "Construction sites", "Turnaround contractors"],
     "decisionMakers": ["Safety manager", "Construction manager", "HSE director"],
     "deliveryRequirements": ["Fire watch certification", "24/7 dispatch capability"],
+    "requiredCertifications": [
+      { "id": "fire_watch_cert", "label": "Fire watch certification", "mandatory": true, "renewalDays": 365 }
+    ],
+    "requiredEquipment": [
+      { "id": "fire_extinguisher", "label": "Fire extinguisher", "quantityMin": 1 }
+    ],
+    "requiredSkills": [
+      { "id": "fire_watch", "label": "Fire watch monitoring", "minExperienceYears": 1 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US-TX", "US-LA", "US-MS"],
+      "travelRadiusMiles": 250
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Refineries", "Chemical plants", "Construction", "Turnaround"],
+      "requiresPriorSiteExperience": true
+    },
+    "regulatoryConstraints": [
+      {
+        "id": "hot_work_policy",
+        "jurisdiction": "OSHA",
+        "summary": "Hot work safety monitoring requirements",
+        "blocksExecutionIfUnmet": true
+      }
+    ],
+    "maturity": "proven",
+    "scalability": { "model": "elastic_pool", "surgeMultiplier": 4, "leadTimeDays": 1 },
+    "estimatedCapacity": {
+      "unit": "watchers",
+      "available": 40,
+      "committed": 12,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.82
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 54,
+      "winRate": 0.61,
+      "onTimeRate": 0.94,
+      "incidentRate": 0,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_ktm_manpower"],
     "marginProfile": { "typicalMarginPct": 0.35, "typicalContractLow": 5000, "typicalContractHigh": 500000 },
     "executionDifficulty": 7,
     "revenuePotential": { "annualLow": 25000, "annualHigh": 500000, "recurring": false },
@@ -104,7 +274,10 @@
   {
     "id": "hole_watch",
     "name": "Hole Watch",
+    "description": "Certified hole watch and opening safety coverage for confined space and maintenance work.",
     "category": "Labor and Safety",
+    "parentCapability": "ktm_labor",
+    "childCapabilities": [],
     "problemsSolved": [
       "confined_space_compliance",
       "opening_safety_coverage",
@@ -114,6 +287,47 @@
     "typicalBuyers": ["Industrial maintenance", "Construction sites", "Turnaround contractors"],
     "decisionMakers": ["Safety manager", "Turnaround planner"],
     "deliveryRequirements": ["Hole watch certification", "Job hazard analysis"],
+    "requiredCertifications": [
+      { "id": "hole_watch_cert", "label": "Hole watch certification", "mandatory": true, "renewalDays": 365 }
+    ],
+    "requiredEquipment": [],
+    "requiredSkills": [
+      { "id": "hole_watch", "label": "Hole watch monitoring", "minExperienceYears": 1 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US-TX", "US-LA", "US-MS"],
+      "travelRadiusMiles": 250
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Industrial maintenance", "Construction", "Turnaround"],
+      "requiresPriorSiteExperience": true
+    },
+    "regulatoryConstraints": [
+      {
+        "id": "confined_space",
+        "jurisdiction": "OSHA",
+        "summary": "Opening and confined space attendant requirements",
+        "blocksExecutionIfUnmet": true
+      }
+    ],
+    "maturity": "proven",
+    "scalability": { "model": "elastic_pool", "surgeMultiplier": 3, "leadTimeDays": 1 },
+    "estimatedCapacity": {
+      "unit": "watchers",
+      "available": 30,
+      "committed": 8,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.8
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 38,
+      "winRate": 0.57,
+      "onTimeRate": 0.92,
+      "incidentRate": 0,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_ktm_manpower"],
     "marginProfile": { "typicalMarginPct": 0.35, "typicalContractLow": 5000, "typicalContractHigh": 300000 },
     "executionDifficulty": 7,
     "revenuePotential": { "annualLow": 20000, "annualHigh": 300000, "recurring": false },
@@ -122,7 +336,10 @@
   {
     "id": "safety_support",
     "name": "Safety Support",
+    "description": "General safety staffing, audits, and site HSE coverage for industrial and construction environments.",
     "category": "Labor and Safety",
+    "parentCapability": "ktm_labor",
+    "childCapabilities": [],
     "problemsSolved": [
       "safety_staffing_gaps",
       "compliance_audits",
@@ -132,6 +349,40 @@
     "typicalBuyers": ["Industrial", "Construction", "Large facilities"],
     "decisionMakers": ["HSE director", "Site manager"],
     "deliveryRequirements": ["Safety program alignment", "Certified personnel"],
+    "requiredCertifications": [
+      { "id": "osha_30", "label": "OSHA 30", "mandatory": false },
+      { "id": "safety_officer", "label": "Site safety officer qualification", "mandatory": true }
+    ],
+    "requiredEquipment": [],
+    "requiredSkills": [
+      { "id": "hse_coordination", "label": "HSE coordination", "minExperienceYears": 3 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US-TX", "US-LA", "US-MS", "US-AL"],
+      "travelRadiusMiles": 300
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Industrial", "Construction", "Large facilities"],
+      "requiresPriorSiteExperience": true
+    },
+    "regulatoryConstraints": [],
+    "maturity": "proven",
+    "scalability": { "model": "elastic_pool", "surgeMultiplier": 3, "leadTimeDays": 5 },
+    "estimatedCapacity": {
+      "unit": "personnel",
+      "available": 20,
+      "committed": 6,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.7
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 29,
+      "winRate": 0.48,
+      "onTimeRate": 0.84,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_ktm_manpower"],
     "marginProfile": { "typicalMarginPct": 0.3, "typicalContractLow": 10000, "typicalContractHigh": 1000000 },
     "executionDifficulty": 8,
     "revenuePotential": { "annualLow": 50000, "annualHigh": 1000000, "recurring": true },
@@ -140,7 +391,10 @@
   {
     "id": "maintenance_support",
     "name": "Maintenance Support",
+    "description": "Facilities maintenance, backlog reduction, and reliability support for plants and commercial portfolios.",
     "category": "Property Services",
+    "parentCapability": null,
+    "childCapabilities": [],
     "problemsSolved": [
       "deferred_maintenance",
       "downtime",
@@ -151,6 +405,39 @@
     "typicalBuyers": ["Plants", "Hospitals", "Schools", "Commercial portfolios"],
     "decisionMakers": ["Facilities director", "Plant manager"],
     "deliveryRequirements": ["Inspection", "Maintenance plan", "Recurring service schedule"],
+    "requiredCertifications": [],
+    "requiredEquipment": [
+      { "id": "maintenance_tooling", "label": "Facilities maintenance tooling", "quantityMin": 1 }
+    ],
+    "requiredSkills": [
+      { "id": "facilities_maintenance", "label": "Facilities maintenance", "minExperienceYears": 2 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US-TX", "US-LA"],
+      "travelRadiusMiles": 200
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Plants", "Hospitals", "Schools", "Commercial portfolios"],
+      "requiresPriorSiteExperience": false
+    },
+    "regulatoryConstraints": [],
+    "maturity": "proven",
+    "scalability": { "model": "elastic_pool", "surgeMultiplier": 2, "leadTimeDays": 7 },
+    "estimatedCapacity": {
+      "unit": "crews",
+      "available": 4,
+      "committed": 1,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.72
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 22,
+      "winRate": 0.45,
+      "onTimeRate": 0.82,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_ktm_manpower"],
     "marginProfile": { "typicalMarginPct": 0.32, "typicalContractLow": 25000, "typicalContractHigh": 2000000 },
     "executionDifficulty": 6,
     "revenuePotential": { "annualLow": 25000, "annualHigh": 2000000, "recurring": true },
@@ -159,7 +446,10 @@
   {
     "id": "lead_generation",
     "name": "Lead Generation",
+    "description": "Targeted discovery, qualification, and pipeline creation powered by Opportunity OS signals.",
     "category": "Growth",
+    "parentCapability": null,
+    "childCapabilities": [],
     "problemsSolved": [
       "empty_pipeline",
       "unpredictable_inbound",
@@ -169,6 +459,36 @@
     "typicalBuyers": ["Internal capabilities", "B2B service businesses"],
     "decisionMakers": ["CEO", "Sales leader", "Marketing lead"],
     "deliveryRequirements": ["ICP definition", "Discovery workflow", "Qualification rules"],
+    "requiredCertifications": [],
+    "requiredEquipment": [],
+    "requiredSkills": [
+      { "id": "sales_development", "label": "Sales development", "minExperienceYears": 1 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US"],
+      "remoteEligible": true
+    },
+    "industryConstraints": {
+      "servedIndustries": ["B2B service businesses"],
+      "requiresPriorSiteExperience": false
+    },
+    "regulatoryConstraints": [],
+    "maturity": "proven",
+    "scalability": { "model": "digital_unlimited", "leadTimeDays": 3 },
+    "estimatedCapacity": {
+      "unit": "campaigns",
+      "available": 5,
+      "committed": 2,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.75
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 18,
+      "winRate": 0.5,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": ["offer_website_growth"],
     "marginProfile": { "typicalMarginPct": 0.6, "typicalContractLow": 2000, "typicalContractHigh": 20000 },
     "executionDifficulty": 4,
     "revenuePotential": { "annualLow": 24000, "annualHigh": 240000, "recurring": true },
@@ -177,7 +497,10 @@
   {
     "id": "ai_automation",
     "name": "AI Automation",
+    "description": "Workflow automation, integration, and AI-assisted operations using Opportunity OS patterns.",
     "category": "Technology",
+    "parentCapability": null,
+    "childCapabilities": [],
     "problemsSolved": [
       "manual_workflows",
       "slow_response",
@@ -188,6 +511,36 @@
     "typicalBuyers": ["Operations-heavy businesses", "Agencies", "Industrial back-office"],
     "decisionMakers": ["COO", "CTO", "Owner"],
     "deliveryRequirements": ["Process mapping", "Integration plan", "Human approval gates"],
+    "requiredCertifications": [],
+    "requiredEquipment": [],
+    "requiredSkills": [
+      { "id": "integration_engineering", "label": "Integration engineering", "minExperienceYears": 2 }
+    ],
+    "geographicConstraints": {
+      "servedRegions": ["US"],
+      "remoteEligible": true
+    },
+    "industryConstraints": {
+      "servedIndustries": ["Operations-heavy businesses", "Agencies", "Industrial back-office"],
+      "requiresPriorSiteExperience": false
+    },
+    "regulatoryConstraints": [],
+    "maturity": "experimental",
+    "scalability": { "model": "digital_unlimited", "leadTimeDays": 14 },
+    "estimatedCapacity": {
+      "unit": "projects",
+      "available": 3,
+      "committed": 1,
+      "asOf": "2026-06-27T00:00:00.000Z",
+      "confidence": 0.65
+    },
+    "historicalPerformance": {
+      "engagementsTotal": 8,
+      "winRate": 0.38,
+      "lastUpdated": "2026-06-27T00:00:00.000Z",
+      "source": "manual"
+    },
+    "associatedOffers": [],
     "marginProfile": { "typicalMarginPct": 0.5, "typicalContractLow": 10000, "typicalContractHigh": 500000 },
     "executionDifficulty": 7,
     "revenuePotential": { "annualLow": 12000, "annualHigh": 500000, "recurring": true },

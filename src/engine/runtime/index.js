@@ -28,6 +28,9 @@ export async function ensureRuntimeDirectories() {
     getRuntimePath("situations"),
     getRuntimePath("hypotheses"),
     getRuntimePath("problems"),
+    getRuntimePath("capability-matches"),
+    getRuntimePath("offer-recommendations"),
+    getRuntimePath("opportunities"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
   ];
@@ -67,6 +70,18 @@ export function getRuntimeHypothesisStorePath() {
 
 export function getRuntimeProblemStorePath() {
   return getRuntimePath("problems", "problems.json");
+}
+
+export function getRuntimeCapabilityMatchStorePath() {
+  return getRuntimePath("capability-matches", "capability-matches.json");
+}
+
+export function getRuntimeOfferRecommendationStorePath() {
+  return getRuntimePath("offer-recommendations", "offer-recommendations.json");
+}
+
+export function getRuntimeOpportunityStorePath() {
+  return getRuntimePath("opportunities", "opportunities.json");
 }
 
 export function getLegacySignalStorePath() {

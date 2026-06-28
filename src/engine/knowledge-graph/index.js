@@ -1,5 +1,11 @@
 import { entityIdFromLabel } from "../facts/entity-id.js";
+import { getFactById } from "../facts/index.js";
 import { processFactsIntoRelationships } from "../relationship-builder/index.js";
+import {
+  buildSituationsFromGraph as buildSituationDraftsFromGraph,
+  processGraphIntoSituations,
+} from "../situation-builder/index.js";
+import { getSituation } from "../situations/index.js";
 import {
   getGraphEdgesByNodeId,
   getGraphNodeById,
@@ -320,4 +326,88 @@ export async function listPersistentGraphNodes() {
 
 export async function listPersistentGraphEdges() {
   return listGraphEdges();
+}
+
+export { buildSituationDraftsFromGraph, processGraphIntoSituations };
+
+export async function buildSituationsFromGraph(options = {}) {
+  return processGraphIntoSituations(options);
+}
+
+export async function findSituationNeighborhood(situationId, depth = 1) {
+  const situation = await getSituation(situationId);
+  if (!situation) {
+    throw new Error(`Situation not found: ${situationId}`);
+  }
+
+  const visitedNodes = new Map();
+  const visitedEdges = new Map();
+  let frontier = asArray(situation.graphNodeIds);
+
+  for (const nodeId of frontier) {
+    const node = await getGraphNodeById(nodeId);
+    if (node) visitedNodes.set(nodeId, node);
+  }
+
+  for (let level = 0; level < depth; level += 1) {
+    const nextFrontier = [];
+    for (const currentId of frontier) {
+      const connected = await getGraphEdgesByNodeId(currentId);
+      for (const edge of connected) {
+        visitedEdges.set(edge.id, edge);
+        for (const neighborId of [edge.fromNodeId, edge.toNodeId]) {
+          if (visitedNodes.has(neighborId)) continue;
+          const neighbor = await getGraphNodeById(neighborId);
+          if (!neighbor) continue;
+          visitedNodes.set(neighborId, neighbor);
+          nextFrontier.push(neighborId);
+        }
+      }
+    }
+    frontier = nextFrontier;
+  }
+
+  return {
+    situationId,
+    depth,
+    nodes: [...visitedNodes.values()],
+    edges: [...visitedEdges.values()],
+  };
+}
+
+export async function getSituationEvidence(situationId) {
+  const situation = await getSituation(situationId);
+  if (!situation) {
+    throw new Error(`Situation not found: ${situationId}`);
+  }
+
+  const facts = [];
+  for (const factId of situation.factIds) {
+    const fact = await getFactById(factId);
+    if (fact) facts.push(fact);
+  }
+
+  const edges = await listGraphEdges();
+  const relationships = situation.relationshipIds
+    .map((relationshipId) => edges.find((edge) => edge.id === relationshipId))
+    .filter(Boolean);
+
+  const nodes = [];
+  for (const nodeId of situation.graphNodeIds) {
+    const node = await getGraphNodeById(nodeId);
+    if (node) nodes.push(node);
+  }
+
+  return {
+    situation,
+    facts,
+    relationships,
+    nodes,
+    signalIds: situation.signalIds,
+    summary: situation.summary,
+  };
+}
+
+function asArray(value) {
+  return Array.isArray(value) ? value : [];
 }
