@@ -7,50 +7,50 @@
 
 ## Current Phase
 
-**Phase 3.5 — First Live Sensor Connector** — **COMPLETE**
+**Phase 3.6 — Event Pipeline Orchestrator** — **COMPLETE**
 
-File drop live sensor reads local observation files from `runtime/inbox/observations/`, produces canonical Observations, ingests through the existing Sensor → Signal path, creates Signals, marks processed files, and STOPs. No facts, graph, reasoning, or execution.
+Event pipeline orchestrator listens to domain Events, resolves downstream Job routes, enqueues Jobs with correlation/causation/idempotency, emits `orchestrator.*` Events, and STOPs. No job execution, no direct intelligence calls.
 
-Run: `node scripts/opportunity-engine/validate-phase-3-5.js`
+Run: `node scripts/opportunity-engine/validate-phase-3-6.js`
 
 **Architecture freeze:** R26–R30 — [07-architecture-rules.md](./07-architecture-rules.md)
 
 ---
 
-## Phase 3.5 Objective
+## Phase 3.6 Objective
 
-Implement one safe live connector: local file drop → Observation → Signal Registry. Manual invocation only. No scheduler wiring, no downstream reasoning.
-
----
-
-## Phase 3.5 Checklist
-
-- [x] `runtime/inbox/observations/` drop directory (gitignored runtime)
-- [x] `src/engine/sensors/live/file-drop-sensor.js` — `collectFileDropObservations()`, `runFileDropSensor()`
-- [x] Supports `.json`, `.txt`, `.md` with deterministic parsing (no LLM)
-- [x] Processed markers under `runtime/inbox/observations/processed/`
-- [x] Content-hash dedupe — re-run does not duplicate signals
-- [x] `validate-phase-3-5.js` + Phase 3.4 / 3.3 / 3.2 regressions
+Transform the pipeline into event-driven Job chaining: Signal → Fact → Graph → Situation → Hypothesis → Problem → Capability → Offer → Opportunity via orchestrated Job enqueue only.
 
 ---
 
-## Active Rules (Phase 3.5)
+## Phase 3.6 Checklist
+
+- [x] `runtime/orchestrator/orchestrator.json` append-only history (gitignored)
+- [x] `src/engine/orchestrator/` — registry, routing, enqueue, handlers, events
+- [x] Deterministic event routing for full knowledge spine
+- [x] Idempotent Job enqueue via existing Phase 3.1 infrastructure
+- [x] Orchestrator Events: `orchestrator.started`, `route_found`, `job_enqueued`, `no_route`, `completed`, `failed`
+- [x] `validate-phase-3-6.js` + Phase 3.5–3.1 regressions
+
+---
+
+## Active Rules (Phase 3.6)
 
 | Rule | Status |
 |---|---|
-| One live connector only — local file drop | **Enforced** |
-| Signal Registry is the only output — no facts/graph/reasoning | **Enforced** |
-| No network calls, Mission Control, Score Council, or OpenClaw Execution | **Enforced** |
-| No scheduler, daemon, or automatic polling | **Enforced** |
-| Phase 3.6+ blocked until owner approval | **Enforced** |
+| Orchestrator enqueues Jobs only — never claims or executes | **Enforced** |
+| No direct calls into intelligence modules | **Enforced** |
+| correlationId and causationId preserved on enqueued Jobs | **Enforced** |
+| Unknown events ignored — no crash | **Enforced** |
+| Phase 3.7 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 3.6+ (Blocked)
+## Phase 3.7 (Blocked)
 
-**Additional Live Connectors** — blocked until owner approves each connector explicitly.
+**Pipeline Stage Handlers / Worker Bindings** — blocked until owner approves explicit implementation prompt.
 
-Do not implement additional live sensors, automatic scheduling, or downstream reasoning without owner authorization.
+Do not implement stage execution handlers, worker automation, or continuous loop daemons without owner authorization.
 
 ---
 
@@ -68,16 +68,12 @@ Run: `node scripts/opportunity-engine/validate-phase-3-4.js`
 
 Run: `node scripts/opportunity-engine/validate-phase-3-3.js`
 
-### Phase 3.2 — Operating Loop Scheduler
-
-Run: `node scripts/opportunity-engine/validate-phase-3-2.js`
-
 ---
 
 ## Decision Log
 
 | Date | Decision |
 |---|---|
+| 2026-06-23 | Phase 3.6: Event Pipeline Orchestrator — event-driven Job chaining, STOP |
 | 2026-06-23 | Phase 3.5: First live sensor — file drop → Signal Registry, STOP |
-| 2026-06-23 | Phase 3.4: Execution Queue / Dispatcher — routing decisions only, STOP |
-| 2026-06-23 | Phase 3.3: Continuous Processor — one job per invocation, STOP |
+| 2026-06-23 | Phase 3.4: Execution Queue — routing decisions only, STOP |

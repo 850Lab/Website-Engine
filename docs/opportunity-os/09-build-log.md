@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.6 Event Pipeline Orchestrator
+**Phase:** 3.6  
+**Type:** Milestone  
+**Summary:** Implemented event-driven pipeline orchestrator: `runtime/orchestrator/orchestrator.json`, `src/engine/orchestrator/` (registry, routing, enqueue, handlers, events), `orchestrateEvent()` routes domain events to downstream Jobs with correlation/causation/idempotency, emits `orchestrator.*` Events, and STOPs. No job execution or direct intelligence calls. Phase 3.7 blocked.  
+**Links:** `src/engine/orchestrator/`, `scripts/opportunity-engine/validate-phase-3-6.js`, [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md)
+
+---
+
 ### 2026-06-23 — Phase 3.5 First Live Sensor Connector
 **Phase:** 3.5  
 **Type:** Milestone  

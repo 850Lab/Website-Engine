@@ -36,6 +36,7 @@ export async function ensureRuntimeDirectories() {
     getRuntimePath("scheduler"),
     getRuntimePath("dispatch"),
     getRuntimePath("inbox"),
+    getRuntimePath("orchestrator"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
   ];
@@ -123,6 +124,14 @@ export function getRuntimeInboxObservationsDirectory() {
 
 export function getRuntimeInboxProcessedDirectory() {
   return getRuntimePath("inbox", "observations", "processed");
+}
+
+export function getRuntimeOrchestratorDirectory() {
+  return getRuntimePath("orchestrator");
+}
+
+export function getRuntimeOrchestratorStorePath() {
+  return getRuntimePath("orchestrator", "orchestrator.json");
 }
 
 export function getLegacySignalStorePath() {

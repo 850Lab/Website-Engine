@@ -670,9 +670,48 @@ See [29-openclaw-constitution.md § Phase 3.1.6](./29-openclaw-constitution.md#p
 
 ---
 
-### Phase 3.6+ — Additional Live Connectors
+### Phase 3.6 — Event Pipeline Orchestrator
 
-**Status:** BLOCKED until owner approves each connector explicitly.
+**Status:** COMPLETE
+
+**Delivered:**
+
+| Deliverable | Location |
+|---|---|
+| Orchestrator store | `runtime/orchestrator/orchestrator.json` (gitignored append-only history) |
+| Orchestrator module | `src/engine/orchestrator/` — registry, routing, enqueue, handlers, events |
+| Validator | `scripts/opportunity-engine/validate-phase-3-6.js` |
+
+**Orchestrator API:** `orchestrateEvent`, `listEventRoutes`, `resolveEventRoute`, `enqueueDownstreamJob`, `emitOrchestratorEvent`
+
+**Event routing (Phase 3.6):**
+
+| Event | Job enqueued |
+|---|---|
+| `signal.created` | `fact.build` |
+| `facts.completed` | `graph.project` |
+| `graph.completed` | `situation.build` |
+| `situations.completed` | `hypothesis.generate` |
+| `hypotheses.completed` | `problem.infer` |
+| `problems.completed` | `capability.match` |
+| `capability.completed` | `offer.recommend` |
+| `offer.completed` | `opportunity.build` |
+
+**Orchestrator events:** `orchestrator.started`, `orchestrator.route_found`, `orchestrator.job_enqueued`, `orchestrator.no_route`, `orchestrator.completed`, `orchestrator.failed`
+
+**Pipeline:** Domain event → resolve route → `createJob()` with correlationId/causationId/idempotencyKey → emit orchestrator events → **STOP**. No job execution, no direct intelligence module calls.
+
+**Boundaries:** Orchestrator owns event listening and Job enqueue only. Must **not** claim/execute jobs, call processors/workers, or invoke intelligence modules directly.
+
+**Do not build:** Stage handlers (3.7), continuous daemons, Score Council, Mission Control, OpenClaw changes.
+
+**STOP:** Downstream Job enqueued — halt before execution.
+
+---
+
+### Phase 3.7 — Pipeline Stage Handlers
+
+**Status:** BLOCKED until owner approves explicit implementation prompt.
 
 ---
 

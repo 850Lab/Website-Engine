@@ -42,3 +42,4 @@ export * as openclaw from "./openclaw/index.js";
 export * as scheduler from "./scheduler/index.js";
 export * as processor from "./processor/index.js";
 export * as executionQueue from "./execution-queue/index.js";
+export * as orchestrator from "./orchestrator/index.js";
