@@ -7,67 +7,77 @@
 
 ## Current Phase
 
-**Phase 2.8 — Offer Intelligence** — **COMPLETE**
+**Phase 2.9 — Opportunity Factory** — **COMPLETE**
 
-Phase 2.9 is **blocked** until owner approves and issues an explicit implementation prompt.
+**Commercial Intelligence pipeline complete:** Problem → Capability Match → Offer Recommendation → Opportunity → STOP.
+
+Score Council remains the **next consumer** — blocked until owner approves Phase 3+ work.
 
 **Architecture freeze:** Implement per Constitution; amend only on genuine deficiency — [R26–R30](./07-architecture-rules.md#architecture-freeze-owner-policy--phase-27).
 
 ---
 
-## Phase 2.8 Objective
+## Phase 2.9 Objective
 
-Implement commercial offer selection: Capability Match → Candidate Offers → Offer Eligibility → Offer Fit Analysis → Offer Ranking → Recommended Offers → STOP.
+Assemble validated opportunities from Problem + Capability Match + Offer Recommendation only.
 
-Run: `node scripts/opportunity-engine/validate-phase-2-8.js`
-
----
-
-## Phase 2.8 Checklist
-
-- [x] `src/engine/offer-intelligence/` — `recommendOffers(capabilityMatch)` pipeline
-- [x] `src/engine/offer-recommendations/` — runtime recommendation store
-- [x] Candidate offers from capability match overlap
-- [x] Offer eligibility (capability link, fit floor, composition coverage)
-- [x] Offer fit score with dimensional breakdown (distinct from capability fit and opportunity score)
-- [x] Offer ranking and explainability bundle
-- [x] `runtime/offer-recommendations/` append-only store
-- [x] `scripts/opportunity-engine/validate-phase-2-8.js`
-- [x] Validation passed; Phase 2.7 regression passes
+Run: `node scripts/opportunity-engine/validate-phase-2-9.js`
 
 ---
 
-## Active Rules (Phase 2.8)
+## Phase 2.9 Checklist
+
+- [x] `runtime/opportunities/` — opportunity store
+- [x] `src/engine/opportunities/index.js` — runtime store API (`listOpportunities`, `getOpportunityById`)
+- [x] `src/engine/opportunity-factory/` — `buildOpportunity()`, `buildOpportunityForProblem()`
+- [x] `src/engine/opportunity-validator/` — `validateOpportunity()`
+- [x] Structured explainability bundle on every opportunity
+- [x] Lifecycle: assembled → validated → ready → executing → won → lost → archived
+- [x] Legacy radar preserved in `opportunities/radar.js` (`generateOpportunities`)
+- [x] `scripts/opportunity-engine/validate-phase-2-9.js`
+- [x] Validation passed; Phase 2.8 / 2.7 / 2.6 / 2.5.5 regressions pass
+
+---
+
+## Active Rules (Phase 2.9)
 
 | Rule | Status |
 |---|---|
-| Offers consume capability matches only — not Problems directly (CI2) | **Enforced** |
-| Offer fit ≠ capability fit ≠ opportunity score | **Enforced** |
-| Explainability on every offer recommendation | **Enforced** |
-| STOP before Opportunity Factory | **Enforced** |
-| No opportunities, Score Council, LLM, or Mission Control changes | **Enforced** |
-| Architecture frozen — amend only on genuine deficiency (R26–R30) | **Owner policy** |
-| Phase 2.9 blocked until owner approval | **Enforced** |
+| Factory consumes Problem + Capability Match + Offer Recommendation only | **Enforced** |
+| Never bypass upstream layers; never invent evidence | **Enforced** |
+| No rescoring, prioritizing, execution, learning, or forecasting in factory | **Enforced** |
+| Score Council unchanged — next consumer | **Enforced** |
+| Mission Control unchanged | **Enforced** |
+| Runtime-only writes (`runtime/opportunities/`) | **Enforced** |
+| Architecture frozen (R26–R30) | **Owner policy** |
 
 ---
 
-## Phase 2.9 (Blocked)
+## Commercial Intelligence — COMPLETE
 
-**Opportunity Factory** — not started.
-
-Requires owner approval and explicit implementation prompt.
+```
+Situation → Hypothesis → Problem
+  ↓
+Capability Match
+  ↓
+Offer Recommendation
+  ↓
+Opportunity Assembly + Validation
+  ↓
+STOP (Score Council next)
+```
 
 ---
 
 ## Prior Phases — COMPLETE
 
+### Phase 2.8 — Offer Intelligence
+
+Run: `node scripts/opportunity-engine/validate-phase-2-8.js`
+
 ### Phase 2.7 — Capability Matching Engine · **OWNER APPROVED**
 
 Run: `node scripts/opportunity-engine/validate-phase-2-7.js`
-
-### Phase 2.6.5 — Capability Intelligence Constitution (design only)
-
-Read: [27-capability-intelligence.md](./27-capability-intelligence.md)
 
 ---
 
@@ -75,8 +85,9 @@ Read: [27-capability-intelligence.md](./27-capability-intelligence.md)
 
 | Date | Decision |
 |---|---|
-| 2026-06-27 | Phase 2.8: Offer Intelligence implemented — capability match → recommended offers |
+| 2026-06-28 | Phase 2.9: Opportunity Factory implemented — Commercial Intelligence complete |
+| 2026-06-27 | Phase 2.8: Offer Intelligence implemented |
 | 2026-06-27 | **Owner approved Phase 2.7** + architecture freeze (R26–R30) |
-| 2026-06-27 | Phase 2.9 reserved for Opportunity Factory |
+| 2026-06-27 | Score Council reserved as next consumer after Opportunity Factory |
 
 Add entries to [Build Log](./09-build-log.md) for architectural milestones.

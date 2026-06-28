@@ -1,193 +1,218 @@
-import { listOffers } from "../offers/index.js";
-import { rankMarkets } from "../markets/index.js";
-import { discoverIndustries } from "../industry-discovery/index.js";
+import { randomUUID } from "node:crypto";
+import { readFile, writeFile, mkdir, access } from "node:fs/promises";
+import { dirname } from "node:path";
+import {
+  ensureRuntimeDirectories,
+  getRuntimeOpportunityStorePath,
+  toRepoRelativePath,
+} from "../runtime/index.js";
 
-const CONSTRUCTION_INDUSTRIES = new Set([
-  "roofing",
-  "hvac",
-  "electrical",
-  "concrete",
-  "plumbing",
-  "construction",
-  "fence companies",
-  "fencing",
-  "landscaping",
-  "pool service",
-  "tree service",
-]);
+export { generateOpportunities } from "./radar.js";
 
-function slug(value) {
-  return String(value || "unknown")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+export const OPPORTUNITY_STATUSES = [
+  "assembled",
+  "validated",
+  "ready",
+  "executing",
+  "won",
+  "lost",
+  "archived",
+];
+
+const STORE_VERSION = "2.9.0";
+
+function nowIso() {
+  return new Date().toISOString();
 }
 
-function normalizeText(value) {
-  return String(value || "")
-    .trim()
-    .toLowerCase();
+function clone(value) {
+  return structuredClone(value);
 }
 
-function industryMatchesBuyer(industryName, buyerName) {
-  const industry = normalizeText(industryName);
-  const buyer = normalizeText(buyerName);
-  if (!industry || !buyer) return false;
-  if (industry === buyer) return true;
-  if (industry.includes(buyer) || buyer.includes(industry)) return true;
-  if (buyer === "commercial construction" && CONSTRUCTION_INDUSTRIES.has(industry)) return true;
-  if (buyer === "fence companies" && (industry.includes("fence") || industry === "fencing")) {
+function isObject(value) {
+  return value != null && typeof value === "object" && !Array.isArray(value);
+}
+
+function asArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+async function storeFileExists(path) {
+  try {
+    await access(path);
     return true;
+  } catch {
+    return false;
   }
-  return false;
 }
 
-function findMatchingBuyer(offer, industryName) {
-  return offer.bestBuyers.find((buyer) => industryMatchesBuyer(industryName, buyer)) || null;
-}
-
-function findMarketForBuyer(markets, buyerName) {
-  const buyer = normalizeText(buyerName);
-  return (
-    markets.find((market) => normalizeText(market.name) === buyer) ||
-    markets.find((market) =>
-      (market.keywords || []).some((keyword) => buyer.includes(normalizeText(keyword))),
-    ) ||
-    null
-  );
-}
-
-function estimateEconomics(offer, profile, market) {
-  if (market) {
-    const scale = Math.min(1, profile.businessesFound / Math.max(market.keywords?.length ? 25 : 1, 25));
-    return {
-      estimatedRevenuePotential: Math.round(market.estimatedAnnualRevenue * Math.max(scale, 0.15)),
-      estimatedContractValue: market.estimatedContractValue,
-      executionDifficulty: market.difficulty ?? 6,
-      priority: market.priority ?? 50,
-      marketConfidence: market.confidence ?? "Directional",
-    };
-  }
-
-  const perBusinessAnnual =
-    offer.id.includes("ktm") ? 120000 : offer.id.includes("website") ? 15000 : 10000;
-
+function createEmptyStore() {
+  const createdAt = nowIso();
   return {
-    estimatedRevenuePotential: profile.businessesFound * perBusinessAnnual,
-    estimatedContractValue: perBusinessAnnual,
-    executionDifficulty: offer.id.includes("ktm") ? 7 : 5,
-    priority: Math.min(100, profile.businessesFound + profile.contactCoverage / 2),
-    marketConfidence: "Directional - needs validation",
+    metadata: {
+      version: STORE_VERSION,
+      createdAt,
+      updatedAt: createdAt,
+      storageMode: "runtime_only",
+    },
+    opportunities: [],
+    history: [],
   };
 }
 
-function offerFitScore(offer, profile, buyer) {
-  let score = 50;
-  if (buyer && industryMatchesBuyer(profile.industry, buyer)) score += 30;
-  score += Math.min(20, profile.contactCoverage / 5);
-  return Math.min(100, Math.round(score));
+async function loadStore() {
+  await ensureRuntimeDirectories();
+  const path = getRuntimeOpportunityStorePath();
+  if (!(await storeFileExists(path))) {
+    return createEmptyStore();
+  }
+  const raw = await readFile(path, "utf8");
+  const store = JSON.parse(raw);
+  if (!isObject(store.metadata)) store.metadata = {};
+  store.opportunities = asArray(store.opportunities);
+  store.history = asArray(store.history);
+  return store;
 }
 
-function buildIndustryOpportunity(offer, profile, markets) {
-  const buyer = findMatchingBuyer(offer, profile.industry);
-  if (!buyer) return null;
+async function saveStore(store) {
+  await ensureRuntimeDirectories();
+  const path = getRuntimeOpportunityStorePath();
+  await mkdir(dirname(path), { recursive: true });
+  store.metadata = {
+    ...store.metadata,
+    version: STORE_VERSION,
+    updatedAt: nowIso(),
+    storageMode: "runtime_only",
+    runtimeStorePath: toRepoRelativePath(path),
+  };
+  await writeFile(path, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+  return store;
+}
 
-  const market = findMarketForBuyer(markets, buyer);
-  const economics = estimateEconomics(offer, profile, market);
+function appendHistory(store, entry) {
+  store.history.push({
+    id: `opp_hist_${randomUUID()}`,
+    at: nowIso(),
+    ...entry,
+  });
+}
 
+export function normalizeOpportunityInput(input = {}) {
+  const createdAt = input.createdAt || nowIso();
   return {
-    id: `${offer.id}__industry_${slug(profile.industry)}`,
-    offerId: offer.id,
-    marketId: market?.id ?? null,
-    industry: profile.industry,
-    market: profile.industry,
-    offer: offer.name,
-    buyer,
-    pain: offer.pain,
-    promise: offer.promise,
-    urgency: offer.urgency,
-    kpis: offer.kpis,
-    channels: offer.channels,
-    businessesFound: profile.businessesFound,
-    contactsFound: profile.contactsFound,
-    reachableByPhone: profile.reachableByPhone,
-    reachableByEmail: profile.reachableByEmail,
-    reachableBusinesses: profile.reachableBusinesses,
-    contactCoverage: profile.contactCoverage,
-    estimatedRevenuePotential: economics.estimatedRevenuePotential,
-    estimatedContractValue: economics.estimatedContractValue,
-    estimatedAnnualRevenue: economics.estimatedRevenuePotential,
-    databaseConfidence: profile.databaseConfidence,
-    executionDifficulty: economics.executionDifficulty,
-    priority: economics.priority,
-    confidence: economics.marketConfidence,
-    offerFitScore: offerFitScore(offer, profile, buyer),
-    source: "industry-discovery",
+    id: input.id || `opp_${randomUUID()}`,
+    title: String(input.title || "").trim(),
+    description: String(input.description || "").trim(),
+    problemId: String(input.problemId || ""),
+    capabilityMatchId: String(input.capabilityMatchId || ""),
+    offerRecommendationId: String(input.offerRecommendationId || ""),
+    buyer: isObject(input.buyer) ? input.buyer : {},
+    location: isObject(input.location) ? input.location : {},
+    industry: input.industry ?? null,
+    estimatedValue: isObject(input.estimatedValue) ? input.estimatedValue : {},
+    confidence: typeof input.confidence === "number" ? input.confidence : 0,
+    executionReadiness: input.executionReadiness || "review_required",
+    explainability: isObject(input.explainability) ? input.explainability : {},
+    constraints: isObject(input.constraints) ? input.constraints : {},
+    recommendedNextAction: isObject(input.recommendedNextAction) ? input.recommendedNextAction : {},
+    status: OPPORTUNITY_STATUSES.includes(input.status) ? input.status : "assembled",
+    createdAt,
+    updatedAt: input.updatedAt || createdAt,
+    metadata: isObject(input.metadata) ? input.metadata : {},
   };
 }
 
-function buildMarketOpportunity(offer, market) {
-  const matchesBuyer =
-    offer.bestBuyers.some((buyer) => industryMatchesBuyer(market.name, buyer)) ||
-    offer.bestBuyers.includes(market.name);
-
-  if (!matchesBuyer) return null;
-
-  const buyer =
-    offer.bestBuyers.find((candidate) => industryMatchesBuyer(market.name, candidate)) ||
-    market.name;
-
-  return {
-    id: `${offer.id}__market_${market.id}`,
-    offerId: offer.id,
-    marketId: market.id,
-    industry: market.name,
-    market: market.name,
-    offer: offer.name,
-    buyer,
-    pain: offer.pain,
-    promise: offer.promise,
-    urgency: offer.urgency,
-    kpis: offer.kpis,
-    channels: offer.channels,
-    businessesFound: 0,
-    contactsFound: 0,
-    reachableByPhone: 0,
-    reachableByEmail: 0,
-    reachableBusinesses: 0,
-    contactCoverage: 0,
-    estimatedRevenuePotential: market.estimatedAnnualRevenue,
-    estimatedContractValue: market.estimatedContractValue,
-    estimatedAnnualRevenue: market.estimatedAnnualRevenue,
-    databaseConfidence: "None",
-    executionDifficulty: market.difficulty ?? 6,
-    priority: market.priority,
-    confidence: market.confidence,
-    offerFitScore: 80,
-    source: "market-library",
-  };
+export async function initializeOpportunityStore() {
+  await ensureRuntimeDirectories();
+  const path = getRuntimeOpportunityStorePath();
+  if (!(await storeFileExists(path))) {
+    await saveStore(createEmptyStore());
+  }
+  return path;
 }
 
-export async function generateOpportunities() {
-  const [offers, markets, industries] = await Promise.all([
-    listOffers(),
-    rankMarkets(),
-    discoverIndustries(),
-  ]);
+export async function listOpportunities() {
+  const store = await loadStore();
+  return clone(store.opportunities);
+}
 
-  const byId = new Map();
+export async function getOpportunityById(id) {
+  const store = await loadStore();
+  const row = store.opportunities.find((item) => item.id === id);
+  return row ? clone(row) : null;
+}
 
-  for (const offer of offers) {
-    for (const profile of industries) {
-      const opportunity = buildIndustryOpportunity(offer, profile, markets);
-      if (opportunity) byId.set(opportunity.id, opportunity);
-    }
+export async function getOpportunitiesByProblemId(problemId) {
+  const store = await loadStore();
+  return clone(store.opportunities.filter((item) => item.problemId === problemId));
+}
 
-    for (const market of markets) {
-      const opportunity = buildMarketOpportunity(offer, market);
-      if (opportunity) byId.set(opportunity.id, opportunity);
-    }
+export async function saveOpportunity(input = {}) {
+  const normalized = normalizeOpportunityInput(input);
+  if (!normalized.problemId) throw new Error("Opportunity requires problemId");
+  if (!normalized.capabilityMatchId) throw new Error("Opportunity requires capabilityMatchId");
+  if (!normalized.offerRecommendationId) {
+    throw new Error("Opportunity requires offerRecommendationId");
+  }
+  if (!normalized.explainability?.whatProblem) {
+    throw new Error("Opportunity requires explainability bundle");
   }
 
-  return [...byId.values()].sort((a, b) => b.priority - a.priority);
+  const store = await loadStore();
+  if (store.opportunities.some((row) => row.id === normalized.id)) {
+    throw new Error(`Opportunity already exists: ${normalized.id}`);
+  }
+
+  store.opportunities.push(normalized);
+  appendHistory(store, {
+    action: "opportunity_created",
+    opportunityId: normalized.id,
+    problemId: normalized.problemId,
+    status: normalized.status,
+  });
+  await saveStore(store);
+  return clone(normalized);
+}
+
+export async function updateOpportunityStatus(id, status, metadata = {}) {
+  if (!OPPORTUNITY_STATUSES.includes(status)) {
+    throw new Error(`Invalid opportunity status: ${status}`);
+  }
+
+  const store = await loadStore();
+  const index = store.opportunities.findIndex((row) => row.id === id);
+  if (index === -1) throw new Error(`Opportunity not found: ${id}`);
+
+  store.opportunities[index] = {
+    ...store.opportunities[index],
+    status,
+    updatedAt: nowIso(),
+    metadata: { ...store.opportunities[index].metadata, ...metadata },
+  };
+  appendHistory(store, { action: "opportunity_status_updated", opportunityId: id, status });
+  await saveStore(store);
+  return clone(store.opportunities[index]);
+}
+
+export async function getOpportunitySummary() {
+  const store = await loadStore();
+  const byStatus = Object.fromEntries(OPPORTUNITY_STATUSES.map((status) => [status, 0]));
+  for (const row of store.opportunities) {
+    byStatus[row.status] = (byStatus[row.status] || 0) + 1;
+  }
+  return {
+    generatedAt: nowIso(),
+    total: store.opportunities.length,
+    historyEvents: store.history.length,
+    byStatus,
+    metadata: clone(store.metadata),
+  };
+}
+
+export function getOpportunityStorePath() {
+  return getRuntimeOpportunityStorePath();
+}
+
+export async function clearOpportunityStoreForTests() {
+  await saveStore(createEmptyStore());
 }

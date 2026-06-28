@@ -937,4 +937,6 @@ Changes to Capability Intelligence rules require [Build Log](./09-build-log.md) 
 
 **Phase 2.7:** **COMPLETE** — Capability Matching implemented. Validation: `scripts/opportunity-engine/validate-phase-2-7.js`.
 
-**Phase 2.8:** **COMPLETE** — Offer Intelligence implemented. Modules: `offer-intelligence/`, `offer-recommendations/`. Validation: `scripts/opportunity-engine/validate-phase-2-8.js`. Opportunity Factory remains **blocked** until Phase 2.9.
+**Phase 2.8:** **COMPLETE** — Offer Intelligence implemented. Validation: `scripts/opportunity-engine/validate-phase-2-8.js`.
+
+**Phase 2.9:** **COMPLETE** — Opportunity Factory implemented. Commercial Intelligence pipeline complete. Validation: `scripts/opportunity-engine/validate-phase-2-9.js`. **Score Council remains next consumer.**

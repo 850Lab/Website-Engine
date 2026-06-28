@@ -36,3 +36,5 @@ export * from "./capability-matcher/index.js";
 export * from "./capability-matches/index.js";
 export * from "./offer-intelligence/index.js";
 export * from "./offer-recommendations/index.js";
+export * from "./opportunity-factory/index.js";
+export * from "./opportunity-validator/index.js";

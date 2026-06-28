@@ -224,14 +224,22 @@ Record architectural milestones here. Implementation details belong in commit me
 ### 2026-06-27 — Phase 2.8 Offer Intelligence
 **Phase:** 2.8  
 **Type:** Milestone  
-**Summary:** Implemented offer selection pipeline: `recommendOffers(capabilityMatch)` with candidate offers, eligibility checks, commercial offer fit scoring, ranking, and explainability. Consumes capability matches only — not Problems directly. Runtime store at `runtime/offer-recommendations/`. Opportunity Factory remains blocked.  
+**Summary:** Implemented offer selection pipeline: `recommendOffers(capabilityMatch)` with candidate offers, eligibility checks, commercial offer fit scoring, ranking, and explainability. Consumes capability matches only — not Problems directly. Runtime store at `runtime/offer-recommendations/`.  
 **Links:** `src/engine/offer-intelligence/`, `src/engine/offer-recommendations/`, `scripts/opportunity-engine/validate-phase-2-8.js`
+
+---
+
+### 2026-06-28 — Phase 2.9 Opportunity Factory
+**Phase:** 2.9  
+**Type:** Milestone  
+**Summary:** Implemented Opportunity Factory: `buildOpportunity()` assembles Problem + Capability Match + Offer Recommendation into validated runtime opportunities. Added `opportunity-validator`, structured explainability, lifecycle states, and `runtime/opportunities/` store. Commercial Intelligence pipeline complete. Score Council unchanged — next consumer. Legacy radar generation preserved in `opportunities/radar.js`.  
+**Links:** `src/engine/opportunity-factory/`, `src/engine/opportunity-validator/`, `scripts/opportunity-engine/validate-phase-2-9.js`
 
 ---
 
 ## Future Entries (Reserved)
 
-<!-- Phase 2.9 Opportunity Factory -->
+<!-- Phase 3 Score Council integration / Mission Control projection -->
 <!-- Phase 2.3 first production connector -->
 <!-- Phase 3 problem-centric factory -->
 <!-- Phase 4 execution plan E2E -->
@@ -243,6 +251,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-28 | Phase 2.9 Opportunity Factory — Commercial Intelligence complete |
 | 2026-06-27 | Phase 2.8 Offer Intelligence milestone |
 | 2026-06-27 | Architecture freeze policy (R26–R30) — owner approved Phase 2.7 |
 | 2026-06-23 | Initial Constitution build log created |

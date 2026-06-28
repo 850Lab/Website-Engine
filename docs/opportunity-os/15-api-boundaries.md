@@ -37,9 +37,12 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Problem Engine** | `engine/problems` | `createProblem()`, `listProblems()`, `buildExplainability()` | Capability Intelligence |
 | **Capability Intelligence** | `engine/capability-matcher` *(Phase 2.7)* | `matchCapabilities(problem)`, `matchCapabilitiesForProblems()` | Offer Intelligence |
 | **Capability Match Store** | `engine/capability-matches` *(Phase 2.7)* | `saveCapabilityMatch()`, `listCapabilityMatches()`, `getCapabilityMatchesByProblemId()` | Offer Intelligence, Mission Control projection |
-| **Offer Intelligence** | `engine/offer-intelligence` *(Phase 2.8)* | `recommendOffers(capabilityMatch)`, `recommendOffersForProblem()`, `selectOffersFromCapabilityMatch()` | Opportunity Factory — **blocked 2.9** |
-| **Offer Recommendation Store** | `engine/offer-recommendations` *(Phase 2.8)* | `saveOfferRecommendation()`, `listOfferRecommendations()`, `getOfferRecommendationsByProblemId()` | Opportunity Factory, Mission Control projection |
-| **Opportunity Factory** | `engine/opportunity-factory` *(Phase 2.9)* | `createOpportunityFromProblem()` | Score Council — **blocked 2.9** |
+| **Offer Intelligence** | `engine/offer-intelligence` *(Phase 2.8)* | `recommendOffers(capabilityMatch)`, `recommendOffersForProblem()` | Opportunity Factory |
+| **Offer Recommendation Store** | `engine/offer-recommendations` *(Phase 2.8)* | `saveOfferRecommendation()`, `listOfferRecommendations()` | Opportunity Factory, Mission Control projection |
+| **Opportunity Factory** | `engine/opportunity-factory` *(Phase 2.9)* | `buildOpportunity()`, `buildOpportunityForProblem()` | Score Council — **next consumer** |
+| **Opportunity Validator** | `engine/opportunity-validator` *(Phase 2.9)* | `validateOpportunity()` | Factory gate only |
+| **Opportunity Store** | `engine/opportunities` *(Phase 2.9)* | `listOpportunities()`, `getOpportunityById()`, `saveOpportunity()` | Score Council, Mission Control projection |
+| **Opportunities (legacy radar)** | `engine/opportunities/radar.js` | `generateOpportunities()` | Intelligence radar only — not factory path |
 | **Knowledge Graph** | Future Graph Writer / Reader | `writeNode`, `writeEdge`, `querySubgraph` | All intelligence modules |
 | **Capabilities** | `engine/capabilities` + `engine-data/capabilities` | `listCapabilities()`, `getCapabilityById()`, `getCapabilitiesByIds()`, `normalizeCapability()` | Matcher, offers join, factory, agents |
 | **Offers** | `engine/offers` | `listOffers()`, `getOfferById()`, `getOfferWithCapabilities()`, `listOffersWithCapabilities()` | Factory, radar, reports |
@@ -168,14 +171,18 @@ See [27-capability-intelligence.md §12 — Permanent Rules CI1–CI15](./27-cap
 
 ---
 
-## Opportunity Factory Boundary (Phase 2.9 — blocked)
+## Opportunity Factory Boundary (Phase 2.9 — **COMPLETE**)
 
 | Allowed | Forbidden |
 |---|---|
-| Problem + capability match + offer → Opportunity | Situation-only or Signal-only bets |
-| Buyer targeting from graph | Invented evidence |
-| Score Council full score vector | Fit score computed here (owned by Capability Intelligence) |
-| Mission Control projection read | Learning calibration |
+| `buildOpportunity({ problem, capabilityMatch, offerRecommendation })` | Direct Signal/Fact/Situation/Hypothesis input |
+| `buildOpportunityForProblem()` loading upstream runtime artifacts | Invented evidence |
+| `validateOpportunity()` before persist | Score Council, rescoring, prioritization |
+| Structured explainability on every opportunity | Execution, learning, forecasting |
+| Runtime store: `runtime/opportunities/` | Mission Control changes, `engine-data/` writes |
+| Status lifecycle: assembled → validated → … | Offer/capability matching inside factory |
+
+**STOP:** Validated opportunities — Score Council is next consumer.
 
 ---
 
@@ -187,7 +194,8 @@ See [27-capability-intelligence.md §12 — Permanent Rules CI1–CI15](./27-cap
 | **Problem Engine** | Problems, explainability bundles | Raw fact inference, capability matching, opportunities |
 | **Capability Intelligence** | Capability matches, fit scores, constraint results | Problems, offers, opportunities |
 | **Offer Intelligence** | Offer candidates from capability matches | Opportunities, fit scoring |
-| **Opportunity Factory** | Opportunities from Problems + capabilities + offers | Situation-only bets, invented evidence |
+| **Opportunity Factory** | Assembled + validated runtime opportunities | Score Council scoring, execution, learning |
+| **Opportunity Validator** | Validation results | Persistence without valid assembly |
 
 | Allowed | Forbidden |
 |---|---|
