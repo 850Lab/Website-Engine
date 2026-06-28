@@ -61,7 +61,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Pipeline Processor** *(Phase 3.3)* | Future `engine/loop/processor` | Event-driven stage handlers wrapping existing modules | Canonical loop §2 in [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) |
 | **Execution Queue** *(Phase 3.4)* | Future `engine/execution` + loop | `enqueueExecution()`, `recordOutcome()` | OpenClaw Execution agent (future), Mission Control (read) |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
-| **OpenClaw** *(Phase 3.1.5+)* | [29](./29-openclaw-constitution.md) + [30](./30-openclaw-job-schema.md); future CLI (3.1.7) | Validate `metadata.openclaw`, claim Jobs, emit Events | Schema: `openclaw.build`, `openclaw.qa`, `openclaw.docs` (3.1.7+); blocked types per doc 30 |
+| **OpenClaw** *(Phase 3.1.7)* | `engine/openclaw` + `scripts/openclaw/` | `validateOpenClawJob()`, `verifyOwnerApproval()`, `enforceFileScope()`, `runCommand()`, `runOpenClawBuilderJob()`, `createOpenClawReport()` · CLI: `run-builder-job.js` | One Job per invocation; `openclaw.build` only in 3.1.7; blocked types per doc 30 |
 
 ---
 
@@ -290,7 +290,7 @@ See [28-autonomous-operating-loop.md](./28-autonomous-operating-loop.md) for ful
 | **Stage handlers** | Wrap existing module public APIs | Redesign intelligence pipelines |
 | **Autopilot** | Report loop health, block on owner gates | Bypass phase approval; run production loop |
 | **Mission Control** | Read projections refreshed by `projection.refresh` jobs | Enqueue jobs; write runtime spine |
-| **OpenClaw** *(Phase 3.1.5+)* | [29-openclaw-constitution.md](./29-openclaw-constitution.md); future CLI (3.1.7) | Claim Jobs, emit Events, run validators, phase-scoped commits/reports | Redesign architecture; outreach; bypass owner gates; MC/Score Council changes |
+| **OpenClaw** *(Phase 3.1.7)* | [29-openclaw-constitution.md](./29-openclaw-constitution.md) · `engine/openclaw` · `scripts/openclaw/` | Claim one approved Job, run scoped commands, emit Events, write reports | Redesign architecture; outreach; bypass owner gates; MC/Score Council changes |
 
 **Concurrency (Phase 3.1–3.4):** Single-process worker; no parallel runtime writes until lock strategy matures.
 

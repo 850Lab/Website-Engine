@@ -104,8 +104,10 @@ async function assertModuleBoundaries() {
   }
 }
 
-await clearJobStoreForTests();
-await clearEventStoreForTests();
+if (process.env.OPENCLAW_WORKER_RUN !== "1") {
+  await clearJobStoreForTests();
+  await clearEventStoreForTests();
+}
 
 const beforeGit = await runGit(["status", "--porcelain"]);
 

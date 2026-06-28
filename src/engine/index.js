@@ -38,3 +38,4 @@ export * from "./offer-intelligence/index.js";
 export * from "./offer-recommendations/index.js";
 export * from "./opportunity-factory/index.js";
 export * from "./opportunity-validator/index.js";
+export * as openclaw from "./openclaw/index.js";

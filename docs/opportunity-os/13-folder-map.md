@@ -37,6 +37,8 @@
 | **`runtime/jobs/`** | Operating-loop job queue store (Phase 3.1) | Platform | None | `jobs.json` gitignored |
 | **`src/engine/events/`** | Event store API — append-only audit log (Phase 3.1) | Platform | `runtime/events/` | Job transition events |
 | **`src/engine/jobs/`** | Job store API — lifecycle + idempotency (Phase 3.1) | Platform | `runtime/jobs/`, `engine/events/` | No scheduler in 3.1 |
+| **`src/engine/openclaw/`** | OpenClaw Builder Worker — schema, approval, scope, commands, reports (Phase 3.1.7) | Platform | `engine/jobs/`, `engine/events/` | QA worker 3.1.8; no loop |
+| **`scripts/openclaw/`** | Manual OpenClaw CLI — one Job per invocation (Phase 3.1.7) | Platform | `engine/openclaw/` | No scheduler |
 | **`src/engine/runtime/`** | Runtime path helpers + atomic IO (`io.js`, Phase 2.9.5) | Platform | `runtime/` | Storage boundary for all runtime stores |
 | **`src/engine/graph-store/`** | Persistent runtime graph store (Phase 2.5) | Platform | `runtime/graph/` | Graph DB later |
 | **`src/engine/entity-resolution/`** | Rules-only entity normalization + aliases | Platform | `graph-store/` | No fuzzy merge in v0 |

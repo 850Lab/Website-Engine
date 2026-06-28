@@ -1,6 +1,6 @@
 # 29 — OpenClaw Constitution
 
-**Status:** Phase 3.1.5 · Constitution amendment (design only)  
+**Status:** Phase 3.1.7 · Constitution amendment (Builder Worker v1 complete)  
 **Related:** [Master Vision](./00-master-vision.md) · [Architecture Rules](./07-architecture-rules.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [API Boundaries](./15-api-boundaries.md) · [Current Phase](./08-current-phase.md) · [OpenClaw Job Schema](./30-openclaw-job-schema.md)
 
 ---
@@ -285,18 +285,11 @@ Autopilot **supervises** this chain — it does not replace Owner approval ([28 
 
 ### Phase 3.1.7 — OpenClaw CLI Worker
 
-**Status:** BLOCKED until owner approves explicit implementation prompt.
+**Status:** COMPLETE
 
-**Build:**
+**Delivered:** `src/engine/openclaw/`, `scripts/openclaw/run-builder-job.js`, `scripts/openclaw/create-demo-builder-job.js`, `validate-phase-3-1-7.js`. Bounded Builder Worker: one approved Job, schema validation, owner approval, commands, file scope, optional commit, report, Events, STOP.
 
-| Deliverable | Scope |
-|---|---|
-| `scripts/openclaw/` or `src/openclaw/` | CLI that claims Jobs, runs scoped work hooks |
-| Builder agent | Implements approved phase prompts only |
-| Event emission | Full `openclaw.*` audit trail |
-| Stop conditions | Blocked phase, validation failure, owner gate |
-
-**Do not build:** QA automation loop, sensor scheduler, outreach.
+**Do not build:** QA automation loop, sensor scheduler, outreach, multi-job autopilot.
 
 **STOP:** Manual CLI invocation — one Job per owner session.
 
@@ -304,7 +297,7 @@ Autopilot **supervises** this chain — it does not replace Owner approval ([28 
 
 ### Phase 3.1.8 — OpenClaw QA Worker
 
-**Status:** BLOCKED until Phase 3.1.7 complete.
+**Status:** BLOCKED until owner approves explicit implementation prompt.
 
 **Build:**
 

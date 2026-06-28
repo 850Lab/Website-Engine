@@ -1,6 +1,6 @@
 # 30 — OpenClaw Job Schema
 
-**Status:** Phase 3.1.6 · Constitution amendment (design only)  
+**Status:** Phase 3.1.7 · Schema + Builder Worker v1 complete  
 **Related:** [OpenClaw Constitution](./29-openclaw-constitution.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [API Boundaries](./15-api-boundaries.md) · [Current Phase](./08-current-phase.md)
 
 ---
@@ -20,7 +20,9 @@ OpenClaw requires a **specialized Job schema** because autonomous implementation
 
 Without this schema, OpenClaw could act on vague, unscoped, or unapproved work — violating OC1–OC7 ([29-openclaw-constitution.md](./29-openclaw-constitution.md)).
 
-**Design-only phase:** No production code, runtime schema files, validators, or OpenClaw Worker in Phase 3.1.6.
+**Phase 3.1.7 delivered:** `src/engine/openclaw/` validates `metadata.openclaw`, enforces owner approval and file scope, runs approved commands only, writes gitignored reports, emits `openclaw.job.*` Events. CLI: `scripts/openclaw/run-builder-job.js`.
+
+**Design-only history (3.1.6):** Schema and OCJ1–OCJ15 were defined before worker code landed.
 
 **Contract chain:**
 

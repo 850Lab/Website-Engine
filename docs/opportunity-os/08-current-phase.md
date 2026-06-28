@@ -7,59 +7,58 @@
 
 ## Current Phase
 
-**Phase 3.1.6 — OpenClaw Job Schema** — **COMPLETE**
+**Phase 3.1.7 — OpenClaw Builder Worker v1** — **COMPLETE**
 
-Design-only schema defining the contract between Owner, Job/Event Runtime, OpenClaw Worker, Validators, Reports, and Owner approval. OpenClaw Job lives in `genericJob.metadata.openclaw`.
+Bounded CLI worker executes one approved `openclaw.build` Job and stops. No scheduler, no loop, no autonomous planning.
 
-Read: [30-openclaw-job-schema.md](./30-openclaw-job-schema.md)
-
-**No production code** in Phase 3.1.6 — no OpenClaw Worker, schema validators, or runtime extensions.
+Run: `node scripts/opportunity-engine/validate-phase-3-1-7.js`
 
 **Architecture freeze:** R26–R30 — [07-architecture-rules.md](./07-architecture-rules.md)
 
 ---
 
-## Phase 3.1.6 Objective
+## Phase 3.1.7 Objective
 
-Define permanent OpenClaw Job schema so workers never act on vague, unscoped, or unapproved work.
-
----
-
-## Phase 3.1.6 Checklist
-
-- [x] Canonical OpenClaw Job object with field reference
-- [x] Job types (`openclaw.build`, `openclaw.qa`, …) with phase gates
-- [x] Agent roles with allowlists and forbidden actions
-- [x] Owner approval artifact specification
-- [x] `promptHash` and idempotency derivation
-- [x] Scope, validation, commit, and report policies
-- [x] Stop conditions and Event types
-- [x] Four example jobs (Builder, QA, Docs, blocked Connector)
-- [x] Mapping to Phase 3.1 generic Jobs
-- [x] Permanent rules OCJ1–OCJ15
+Implement manual OpenClaw Builder Worker: schema validation, owner approval, claim Job, run approved commands, enforce file scope, optional commit, write report, emit Events, complete/fail Job, STOP.
 
 ---
 
-## Active Rules (Phase 3.1.6)
+## Phase 3.1.7 Checklist
+
+- [x] `src/engine/openclaw/` module (schema, approval, file-scope, command-runner, report, worker)
+- [x] `scripts/openclaw/run-builder-job.js` — one Job per invocation
+- [x] `scripts/openclaw/create-demo-builder-job.js` — safe demo Job (commit disabled)
+- [x] OpenClaw Events (`openclaw.job.*`)
+- [x] Reports under `reports/openclaw/` (gitignored)
+- [x] `validate-phase-3-1-7.js` acceptance + Phase 3.1 regression
+
+---
+
+## Active Rules (Phase 3.1.7)
 
 | Rule | Status |
 |---|---|
-| Design only — no OpenClaw Worker code | **Enforced** |
-| No job without approval, phaseId, promptHash | **Defined (OCJ1–OCJ3)** |
-| OpenClaw schema in `metadata.openclaw` only | **Defined** |
-| Phase 3.1.7 blocked until owner approval | **Enforced** |
+| One approved Job per worker invocation | **Enforced** |
+| No scheduler, loop, or live connectors | **Enforced** |
+| No Mission Control / Score Council changes unless Job allows | **Enforced** |
+| Commit only when `commitPolicy.enabled === true` | **Enforced** |
+| Phase 3.1.8 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 3.1.7 (Blocked)
+## Phase 3.1.8 (Blocked)
 
-**OpenClaw CLI Worker** — blocked until owner approves explicit implementation prompt.
+**OpenClaw QA Worker** — blocked until owner approves explicit implementation prompt.
 
-Do not implement `scripts/openclaw/` or Job schema validation code without owner authorization.
+Do not implement QA automation, multi-job chains, or autopilot without owner authorization.
 
 ---
 
 ## Prior Phases — COMPLETE
+
+### Phase 3.1.6 — OpenClaw Job Schema
+
+Read: [30-openclaw-job-schema.md](./30-openclaw-job-schema.md)
 
 ### Phase 3.1.5 — OpenClaw Constitution
 
@@ -75,8 +74,7 @@ Run: `node scripts/opportunity-engine/validate-phase-3-1.js`
 
 | Date | Decision |
 |---|---|
-| 2026-06-23 | Phase 3.1.6: OpenClaw Job Schema — OCJ1–OCJ15; Phase 3.1.7 blocked |
+| 2026-06-23 | Phase 3.1.7: OpenClaw Builder Worker v1 — bounded CLI, one Job, STOP |
+| 2026-06-23 | Phase 3.1.6: OpenClaw Job Schema — OCJ1–OCJ15 |
 | 2026-06-23 | Phase 3.1.5: OpenClaw Constitution |
 | 2026-06-23 | Phase 3.1: Job & Event runtime kernel |
-
-Add entries to [Build Log](./09-build-log.md).

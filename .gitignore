@@ -41,6 +41,7 @@ reports/runtime-health.md
 reports/runtime-health.json
 reports/performance-baseline.md
 reports/performance-baseline.json
+reports/openclaw/
 
 # Seed configs required for schema migration
 !data/seeds/

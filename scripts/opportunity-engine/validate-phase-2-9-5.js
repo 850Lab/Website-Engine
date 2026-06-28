@@ -175,17 +175,14 @@ async function assertAutopilotGates() {
 }
 
 async function assertArchitectureFreeze() {
-  const bannedPaths = [
-    "src/engine/openclaw",
-    "scripts/opportunity-engine/openclaw",
-  ];
+  const bannedPaths = ["scripts/opportunity-engine/openclaw"];
   for (const rel of bannedPaths) {
     if (await fileExists(join(ROOT, rel))) {
       fail(`Forbidden path present: ${rel}`);
     }
   }
   if (!errors.some((message) => message.includes("Forbidden path"))) {
-    pass("No OpenClaw");
+    pass("No premature OpenClaw scripts under opportunity-engine");
   }
 
   const missionControl = await readFile(join(ROOT, "src/engine/mission-control/index.js"), "utf8");

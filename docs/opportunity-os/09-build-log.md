@@ -229,6 +229,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 3.1.7 OpenClaw Builder Worker v1
+**Phase:** 3.1.7  
+**Type:** Milestone  
+**Summary:** Implemented bounded OpenClaw Builder Worker: `src/engine/openclaw/` (schema validation, owner approval, file scope, command runner, report writer, worker), CLI `scripts/openclaw/run-builder-job.js`, demo Job creator, gitignored reports under `reports/openclaw/`, and `validate-phase-3-1-7.js`. Worker claims one approved `openclaw.build` Job, runs required/validation commands, enforces scope, optionally commits, writes report, emits `openclaw.job.*` Events, completes/fails, and STOPs. No scheduler, loop, QA worker, or live connectors. Phase 3.1.8 blocked.  
+**Links:** `src/engine/openclaw/`, `scripts/openclaw/`, `scripts/opportunity-engine/validate-phase-3-1-7.js`
+
+---
+
 ### 2026-06-23 — Phase 3.1.6 OpenClaw Job Schema
 **Phase:** 3.1.6  
 **Type:** Constitution  
@@ -291,6 +299,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 3.1.7 OpenClaw Builder Worker v1 — bounded CLI, one Job, STOP |
 | 2026-06-23 | Phase 3.1.6 OpenClaw Job Schema — OCJ1–OCJ15, metadata.openclaw mapping |
 | 2026-06-23 | Phase 3.1.5 OpenClaw Constitution — OC1–OC15, multi-agent model, chain of command |
 | 2026-06-23 | Phase 3.1 Job & Event Runtime — loop kernel, idempotency, dead-letter |
