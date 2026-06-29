@@ -17,6 +17,7 @@ import {
   SENSOR_LIFECYCLE,
 } from "../../src/engine/sensors/index.js";
 import { registerDemoSensors } from "../../src/engine/sensors/demo/index.js";
+import { getRuntimePath } from "../../src/engine/runtime/index.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -45,6 +46,41 @@ async function fileExists(path) {
 async function runGit(args) {
   const { stdout } = await execFileAsync("git", args, { cwd: ROOT });
   return stdout.trim();
+}
+
+async function resolveRawArchivePath(rawTextRef) {
+  const normalized = rawTextRef.replace(/\\/g, "/");
+  if (/^[A-Za-z]:\//.test(normalized) || normalized.startsWith("/")) {
+    return normalized;
+  }
+  return join(ROOT, normalized).replace(/\\/g, "/");
+}
+
+async function assertRawTextRefUsesActiveRuntime(rawTextRef) {
+  if (!rawTextRef) {
+    fail("Ingested signal missing rawTextRef");
+    return false;
+  }
+
+  const normalized = rawTextRef.replace(/\\/g, "/");
+  if (normalized.includes("engine-data/")) {
+    fail("Sensor ingest rawTextRef must not use engine-data archive");
+    return false;
+  }
+
+  const absolutePath = await resolveRawArchivePath(rawTextRef);
+  const runtimeRawRoot = getRuntimePath("signals", "raw").replace(/\\/g, "/");
+  if (!absolutePath.startsWith(runtimeRawRoot)) {
+    fail(`Sensor ingest did not use active runtime raw archive: ${rawTextRef}`);
+    return false;
+  }
+
+  if (!(await fileExists(absolutePath))) {
+    fail(`Raw archive file missing at rawTextRef: ${rawTextRef}`);
+    return false;
+  }
+
+  return true;
 }
 
 async function assertNoNetworkInSensorSources() {
@@ -95,8 +131,8 @@ if (!webResult.observations.length || !webResult.ingested.length) {
   fail("Web demo sensor did not emit and ingest observations");
 } else if (webResult.ingested[0].signal.processingState !== "classified") {
   fail("Web sensor ingest did not reach classified state");
-} else if (!webResult.ingested[0].signal.rawTextRef.startsWith("runtime/signals/raw/")) {
-  fail("Web sensor ingest did not use runtime raw archive");
+} else if (!(await assertRawTextRefUsesActiveRuntime(webResult.ingested[0].signal.rawTextRef))) {
+  // failure recorded in helper
 } else {
   pass("Demo sensors run and observations ingest correctly");
 }
@@ -158,9 +194,10 @@ await assertNoNetworkInSensorSources();
 const afterGit = await runGit(["status", "--porcelain"]);
 const afterLines = afterGit ? afterGit.split("\n").filter(Boolean) : [];
 const runtimeTrackedChanges = afterLines.filter((line) => {
-  const path = line.slice(2).trimStart();
+  const path = line.slice(2).trimStart().replace(/\\/g, "/");
   if (path === "runtime/" || path === "runtime") return false;
   if (path.endsWith(".gitkeep")) return false;
+  if (path.startsWith("runtime-validation/")) return false;
   return path.startsWith("runtime/");
 });
 
