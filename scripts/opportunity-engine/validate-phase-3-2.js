@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -21,6 +22,7 @@ import {
   getRuntimeSchedulerDirectory,
   getRuntimeSchedulerStorePath,
 } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 import {
   clearSchedulerStoreForTests,
   evaluateDueSchedules,
@@ -52,6 +54,8 @@ const REQUIRED_EVENT_TYPES = [
   "scheduler.failed",
 ];
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.2");
 
 function fail(message) {
   errors.push(message);
@@ -155,11 +159,7 @@ await initializeEventStore();
 await initializeJobStore();
 await initializeSchedulerStore();
 
-if (!(await fileExists(getRuntimePath("scheduler", ".gitkeep")))) {
-  fail("runtime/scheduler/.gitkeep missing");
-} else {
-  pass("runtime/scheduler/ directory exists");
-}
+await assertRuntimeDirectoryExists(fail, pass, "runtime/scheduler/ directory exists", "scheduler");
 
 if (getRuntimeSchedulerDirectory() !== getRuntimePath("scheduler")) {
   fail("getRuntimeSchedulerDirectory() mismatch");
@@ -360,6 +360,7 @@ if (runtimeChanges.length) {
 
 await new Promise((resolve) => setTimeout(resolve, 1500));
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-1.js")], {
     cwd: ROOT,
@@ -370,6 +371,8 @@ try {
   fail(`validate-phase-3-1.js regression failed: ${error.message}`);
 }
 
+
+}
 try {
   await execFileAsync(
     process.execPath,
@@ -381,10 +384,7 @@ try {
   fail(`validate-phase-2-9-5.js regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.2 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "3.2", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.2 validation passed.");
 console.log("Clock → Scheduler → Pending Jobs. No processing. STOP.");

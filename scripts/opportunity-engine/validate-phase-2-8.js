@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -30,11 +31,13 @@ import { clearOfferCacheForTests } from "../../src/engine/offers/index.js";
 import { buildGraphFromFactsAndPersist, buildSituationsFromGraph } from "../../src/engine/knowledge-graph/index.js";
 import { processSignalIntoFacts } from "../../src/engine/fact-builder/pipeline.js";
 import { ingestManualObservation } from "../../src/engine/signals/ingest-manual.js";
-import { getRuntimePath } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.8");
 let exampleCapabilityMatch = null;
 let exampleOfferRecommendation = null;
 
@@ -91,16 +94,11 @@ await clearOfferRecommendationStoreForTests();
 clearCapabilityCacheForTests();
 clearOfferCacheForTests();
 
-if (!(await fileExists(getRuntimePath("offer-recommendations", ".gitkeep")))) {
-  fail("runtime/offer-recommendations missing");
-} else {
-  pass("Offer recommendation store directory exists");
-}
-
 await initializeProblemStore();
 await initializeCapabilityMatchStore();
 await initializeOfferRecommendationStore();
 pass("Stores initialized");
+await assertRuntimeDirectoryExists(fail, pass, "Offer recommendation store directory exists", "offer-recommendations");
 
 const uniqueSuffix = randomUUID().slice(0, 8);
 const ingestResult = await ingestManualObservation({
@@ -249,6 +247,7 @@ if (runtimeTrackedChanges.length) {
   pass("Runtime git clean");
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-7.js")], {
     cwd: ROOT,
@@ -258,10 +257,9 @@ try {
   fail(`Phase 2.7 regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 2.8 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "2.8", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.8 validation passed.");
 console.log("\nExample Capability Match:");

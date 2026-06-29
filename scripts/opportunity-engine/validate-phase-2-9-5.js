@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -19,6 +20,8 @@ import { collectAutopilotState } from "./autopilot-status.js";
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.9.5");
 
 function fail(message) {
   errors.push(message);
@@ -218,10 +221,7 @@ await assertGitCleanlinessPolicy();
 await assertAutopilotGates();
 await assertArchitectureFreeze();
 
-if (errors.length) {
-  console.error(`\nPhase 2.9.5 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "2.9.5", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.9.5 validation passed.");
 console.log("Core stability hardening complete. Phase 3 remains blocked until owner approval.");

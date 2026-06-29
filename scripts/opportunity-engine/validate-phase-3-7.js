@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -90,6 +91,8 @@ const DOMAIN_COMPLETION_EVENTS = [
   "opportunity.completed",
 ];
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.7");
 
 function fail(message) {
   errors.push(message);
@@ -204,10 +207,6 @@ await initializeEventStore();
 await initializeJobStore();
 await initializeDispatchStore();
 await initializeOrchestratorStore();
-
-if (!(await fileExists(getRuntimePath("pipeline-handlers", ".gitkeep")))) {
-  // no runtime dir needed for pipeline handlers
-}
 
 const handlers = listJobHandlers();
 for (const jobType of PIPELINE_JOB_TYPES) {
@@ -489,6 +488,7 @@ const regressions = [
   "validate-phase-3-1.js",
 ];
 
+if (!shouldSkipNestedRegressions()) {
 for (const script of regressions) {
   try {
     await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine", script)], {
@@ -500,10 +500,8 @@ for (const script of regressions) {
   }
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.7 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
 }
+await finalizeValidator({ phase: "3.7", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.7 validation passed.");
 console.log("Processor → Pipeline Handlers → Domain Events. Orchestrator chains next Job. STOP.");

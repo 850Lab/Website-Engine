@@ -1,4 +1,5 @@
 import { readFile, access, unlink } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -36,6 +37,7 @@ import {
   getRuntimeDispatchStorePath,
   getRuntimePath,
 } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 import { clearSchedulerStoreForTests } from "../../src/engine/scheduler/index.js";
 
 const execFileAsync = promisify(execFile);
@@ -65,6 +67,8 @@ const REQUIRED_EVENT_TYPES = [
   "execution_queue.failed",
 ];
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.4");
 
 function fail(message) {
   errors.push(message);
@@ -192,11 +196,7 @@ await emitExecutionQueueEvent("execution_queue.failed", {
 
 pass("Execution queue module loads");
 
-if (!(await fileExists(getRuntimePath("dispatch", ".gitkeep")))) {
-  fail("runtime/dispatch/.gitkeep missing");
-} else {
-  pass("runtime/dispatch/ directory exists");
-}
+await assertRuntimeDirectoryExists(fail, pass, "runtime/dispatch/ directory exists", "dispatch");
 
 if (getRuntimeDispatchDirectory() !== getRuntimePath("dispatch")) {
   fail("getRuntimeDispatchDirectory() mismatch");
@@ -433,6 +433,7 @@ if (runtimeChanges.length) {
 
 await new Promise((resolve) => setTimeout(resolve, 1500));
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-3.js")], {
     cwd: ROOT,
@@ -442,6 +443,8 @@ try {
   fail(`validate-phase-3-3.js regression failed: ${error.message}`);
 }
 
+
+}
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-2.js")], {
     cwd: ROOT,
@@ -451,6 +454,7 @@ try {
   fail(`validate-phase-3-2.js regression failed: ${error.message}`);
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-1-8.js")], {
     cwd: ROOT,
@@ -461,10 +465,9 @@ try {
   fail(`validate-phase-3-1-8.js regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.4 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "3.4", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.4 validation passed.");
 console.log("Clock → Scheduler → Pending Jobs → Execution Queue → Dispatch Decision. STOP.");

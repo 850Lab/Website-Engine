@@ -9,7 +9,10 @@ export function getRepoRoot() {
 }
 
 export function getRuntimeRoot() {
-  const override = process.env.OPPORTUNITY_OS_RUNTIME_DIR;
+  const override =
+    process.env.OPPORTUNITY_RUNTIME_DIR ||
+    process.env.OPPORTUNITY_OS_RUNTIME_DIR ||
+    process.env.OPPORTUNITY_VALIDATION_RUNTIME_DIR;
   if (override) return override;
   return join(REPO_ROOT, "runtime");
 }
@@ -148,7 +151,11 @@ export function toRepoRelativePath(absolutePath) {
 }
 
 export function usesRuntimeOverride() {
-  return Boolean(process.env.OPPORTUNITY_OS_RUNTIME_DIR);
+  return Boolean(
+    process.env.OPPORTUNITY_RUNTIME_DIR ||
+      process.env.OPPORTUNITY_OS_RUNTIME_DIR ||
+      process.env.OPPORTUNITY_VALIDATION_RUNTIME_DIR,
+  );
 }
 
 export {

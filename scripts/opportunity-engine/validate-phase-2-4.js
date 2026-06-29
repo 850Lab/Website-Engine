@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -22,11 +23,13 @@ import {
   mapFactToGraphRefs,
 } from "../../src/engine/knowledge-graph/index.js";
 import { ingestManualObservation } from "../../src/engine/signals/ingest-manual.js";
-import { getRuntimePath } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.4");
 let exampleSignal = null;
 let exampleFacts = [];
 let exampleGraphSummary = null;
@@ -84,15 +87,10 @@ async function assertNoLlmOrNetwork() {
 const beforeGit = await runGit(["status", "--porcelain"]);
 const beforeLines = beforeGit ? beforeGit.split("\n").filter(Boolean) : [];
 
-if (!(await fileExists(getRuntimePath("facts", ".gitkeep")))) {
-  fail("runtime/facts/.gitkeep missing");
-} else {
-  pass("runtime/facts exists");
-}
-
 try {
   await initializeRuntimeFactStore();
   pass("Facts module loads");
+  await assertRuntimeDirectoryExists(fail, pass, "runtime/facts directory exists", "facts");
 } catch (error) {
   fail(`Facts module failed to load: ${error.message}`);
 }
@@ -245,10 +243,7 @@ try {
   fail(`Autopilot status failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 2.4 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "2.4", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.4 validation passed.");
 console.log("\nExample signal:");

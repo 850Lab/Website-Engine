@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -35,6 +36,7 @@ import {
   getRuntimeOrchestratorDirectory,
   getRuntimePath,
 } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 import { clearSchedulerStoreForTests } from "../../src/engine/scheduler/index.js";
 
 const execFileAsync = promisify(execFile);
@@ -60,6 +62,8 @@ const REQUIRED_EVENT_TYPES = [
   "orchestrator.failed",
 ];
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.6");
 
 function fail(message) {
   errors.push(message);
@@ -186,11 +190,7 @@ await initializeEventStore();
 await initializeJobStore();
 await initializeOrchestratorStore();
 
-if (!(await fileExists(getRuntimePath("orchestrator", ".gitkeep")))) {
-  fail("runtime/orchestrator/.gitkeep missing");
-} else {
-  pass("runtime/orchestrator/ directory exists");
-}
+await assertRuntimeDirectoryExists(fail, pass, "runtime/orchestrator/ directory exists", "orchestrator");
 
 if (getOrchestratorStorePath() !== getRuntimePath("orchestrator", "orchestrator.json")) {
   fail("getOrchestratorStorePath() mismatch");
@@ -421,6 +421,7 @@ const regressions = [
   "validate-phase-3-1.js",
 ];
 
+if (!shouldSkipNestedRegressions()) {
 for (const script of regressions) {
   try {
     await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine", script)], {
@@ -432,10 +433,8 @@ for (const script of regressions) {
   }
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.6 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
 }
+await finalizeValidator({ phase: "3.6", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.6 validation passed.");
 console.log("Event → Orchestrator → Pending Jobs. No execution. STOP.");

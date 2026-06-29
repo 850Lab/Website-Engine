@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildOpportunityRadar } from "../../src/engine/intelligence/index.js";
@@ -7,6 +8,8 @@ import { CEO_MODES } from "../../src/engine/score-council/index.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("0.5");
 
 function fail(message) {
   errors.push(message);
@@ -108,9 +111,6 @@ if (!errors.some((message) => message.includes("CEO mode"))) {
   pass("All CEO modes can score at least one opportunity");
 }
 
-if (errors.length) {
-  console.error(`\nPhase 0.5 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "0.5", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 0.5 validation passed.");

@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
@@ -17,6 +18,8 @@ import {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.1");
 
 const REQUIRED_SIGNAL_FIELDS = [
   "id",
@@ -243,9 +246,6 @@ if (!Array.isArray(allSignals)) {
   pass("listSignals() works");
 }
 
-if (errors.length) {
-  console.error(`\nPhase 2.1 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "2.1", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.1 validation passed.");

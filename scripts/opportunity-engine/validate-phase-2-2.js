@@ -1,4 +1,5 @@
 import { readFile, readdir, stat } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
@@ -11,6 +12,8 @@ import {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.2");
 
 function fail(message) {
   errors.push(message);
@@ -235,9 +238,6 @@ if (rawFiles.length < 2) {
   pass("Raw archive contains ingested observations");
 }
 
-if (errors.length) {
-  console.error(`\nPhase 2.2 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "2.2", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.2 validation passed.");

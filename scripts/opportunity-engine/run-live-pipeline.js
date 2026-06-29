@@ -289,11 +289,18 @@ export async function runLivePipeline(options = {}) {
   await initializeJobStore();
 
   const baseline = await snapshotBaseline();
-  const drop = await dropDemoObservation({
-    runId: options.runId,
-    inboxDir: options.inboxDir,
-    fileName: options.fileName,
-  });
+  const mode = options.mode || "demo";
+  let drop = null;
+
+  if (mode === "demo") {
+    drop = await dropDemoObservation({
+      runId: options.runId,
+      inboxDir: options.inboxDir,
+      fileName: options.fileName,
+    });
+  } else if (options.clearInbox !== false) {
+    await clearInboxForRun({ inboxDir: options.inboxDir });
+  }
 
   const sensorResult = await runFileDropSensor(options.sensorOptions || {});
 
@@ -302,6 +309,12 @@ export async function runLivePipeline(options = {}) {
       `File drop sensor created no signals (errors: ${sensorResult.errors?.join("; ") || "none"})`,
     );
   }
+
+  drop = drop || {
+    runId: options.runId || randomUUID().slice(0, 8),
+    fileName: sensorResult.filesProcessed?.[0]?.fileName || "inbox",
+    content: { headline: sensorResult.signalsCreated[0] },
+  };
 
   for (const signalId of sensorResult.signalsCreated) {
     const signalEvent = await emitSignalCreatedEvent(signalId, { correlationId });

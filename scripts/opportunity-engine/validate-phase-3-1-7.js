@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -32,6 +33,8 @@ const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const DEMO_PROMPT_PATH = "engine-data/openclaw/prompts/demo-phase-3-1-7.json";
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.1.7");
 
 process.env.OPENCLAW_ALLOW_VALIDATION_DEMO = "1";
 
@@ -354,6 +357,7 @@ if (!gitignore.includes("reports/openclaw/")) {
   pass("reports/openclaw/ is gitignored");
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-1.js")], {
     cwd: ROOT,
@@ -364,10 +368,9 @@ try {
   fail(`validate-phase-3-1.js regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.1.7 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "3.1.7", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.1.7 validation passed.");
 console.log("OpenClaw Builder Worker v1 complete. One job. No loop. STOP.");

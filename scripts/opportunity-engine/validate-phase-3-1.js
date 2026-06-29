@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -30,11 +31,13 @@ import {
   clearJobStoreForTests,
   deriveIdempotencyKey,
 } from "../../src/engine/jobs/index.js";
-import { getRuntimePath } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.1");
 
 function fail(message) {
   errors.push(message);
@@ -114,17 +117,8 @@ const beforeGit = await runGit(["status", "--porcelain"]);
 await initializeEventStore();
 await initializeJobStore();
 
-if (!(await fileExists(getRuntimePath("events", ".gitkeep")))) {
-  fail("runtime/events/.gitkeep missing");
-} else {
-  pass("runtime/events/ directory exists");
-}
-
-if (!(await fileExists(getRuntimePath("jobs", ".gitkeep")))) {
-  fail("runtime/jobs/.gitkeep missing");
-} else {
-  pass("runtime/jobs/ directory exists");
-}
+await assertRuntimeDirectoryExists(fail, pass, "runtime/events/ directory exists", "events");
+await assertRuntimeDirectoryExists(fail, pass, "runtime/jobs/ directory exists", "jobs");
 
 const correlationId = `corr_${randomUUID()}`;
 const causationRoot = `evt_${randomUUID()}`;
@@ -384,6 +378,7 @@ await assertModuleBoundaries();
 
 await new Promise((resolve) => setTimeout(resolve, 1500));
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-9-5.js"), "--quick"], {
     cwd: ROOT,
@@ -393,10 +388,9 @@ try {
   fail(`validate-phase-2-9-5.js regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.1 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "3.1", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.1 validation passed.");
 console.log("Job & Event runtime kernel complete. No scheduler. STOP.");

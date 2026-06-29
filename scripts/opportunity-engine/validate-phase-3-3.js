@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -55,6 +56,8 @@ const REQUIRED_EVENT_TYPES = [
   "processor.completed",
 ];
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.3");
 
 function fail(message) {
   errors.push(message);
@@ -376,6 +379,7 @@ if (runtimeChanges.length) {
 
 await new Promise((resolve) => setTimeout(resolve, 1500));
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-2.js")], {
     cwd: ROOT,
@@ -385,6 +389,8 @@ try {
   fail(`validate-phase-3-2.js regression failed: ${error.message}`);
 }
 
+
+}
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-1-8.js")], {
     cwd: ROOT,
@@ -395,6 +401,7 @@ try {
   fail(`validate-phase-3-1-8.js regression failed: ${error.message}`);
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(
     process.execPath,
@@ -406,10 +413,9 @@ try {
   fail(`validate-phase-2-9.5.js regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.3 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "3.3", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.3 validation passed.");
 console.log("Clock → Scheduler → Pending Jobs → Processor → Completed / Retry / Dead-letter. STOP.");

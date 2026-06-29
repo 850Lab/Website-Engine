@@ -1,4 +1,5 @@
 import { readFile, access, writeFile, readdir, rm } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -18,15 +19,20 @@ import { listSituations } from "../../src/engine/situations/index.js";
 import { listProblems } from "../../src/engine/problems/index.js";
 import { listOpportunities } from "../../src/engine/opportunities/index.js";
 import {
+  ensureDirectory,
+  ensureRuntimeDirectories,
   getRuntimeInboxObservationsDirectory,
   getRuntimeInboxProcessedDirectory,
   getRuntimePath,
 } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const SENSOR_FILE = "src/engine/sensors/live/file-drop-sensor.js";
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.5");
 
 function fail(message) {
   errors.push(message);
@@ -109,17 +115,10 @@ const beforeCounts = await snapshotDownstreamCounts();
 
 await clearInboxForTests();
 
-if (!(await fileExists(getRuntimePath("inbox", ".gitkeep")))) {
-  fail("runtime/inbox/.gitkeep missing");
-} else {
-  pass("Runtime inbox exists");
-}
-
-if (!(await fileExists(getRuntimePath("inbox", "observations", ".gitkeep")))) {
-  fail("runtime/inbox/observations/.gitkeep missing");
-} else {
-  pass("Runtime observation drop directory exists");
-}
+await ensureRuntimeDirectories();
+await assertRuntimeDirectoryExists(fail, pass, "Runtime inbox exists", "inbox");
+await ensureDirectory(getRuntimeInboxObservationsDirectory());
+await assertRuntimeDirectoryExists(fail, pass, "Runtime observation drop directory exists", "inbox", "observations");
 
 pass("File drop sensor module loads");
 
@@ -279,6 +278,7 @@ if (runtimeChanges.length) {
 
 await new Promise((resolve) => setTimeout(resolve, 1500));
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-4.js")], {
     cwd: ROOT,
@@ -288,6 +288,8 @@ try {
   fail(`validate-phase-3-4.js regression failed: ${error.message}`);
 }
 
+
+}
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-3.js")], {
     cwd: ROOT,
@@ -297,6 +299,7 @@ try {
   fail(`validate-phase-3-3.js regression failed: ${error.message}`);
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-3-2.js")], {
     cwd: ROOT,
@@ -306,10 +309,9 @@ try {
   fail(`validate-phase-3-2.js regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.5 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "3.5", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.5 validation passed.");
 console.log("File Drop → Live Sensor → Observation → Signal Registry. STOP.");

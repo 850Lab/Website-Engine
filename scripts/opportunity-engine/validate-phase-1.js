@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildMissionControl } from "../../src/engine/mission-control/index.js";
@@ -7,6 +8,8 @@ import { renderHomePage } from "../../src/pivotal-os/pages/home.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("1");
 
 const REQUIRED_METRICS = [
   "totalOpportunities",
@@ -193,9 +196,6 @@ try {
   fail(`Pivotal OS home render failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 1 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "1", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 1 validation passed.");

@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -32,11 +33,13 @@ import {
 } from "../../src/engine/knowledge-graph/index.js";
 import { processSignalIntoFacts } from "../../src/engine/fact-builder/pipeline.js";
 import { ingestManualObservation } from "../../src/engine/signals/ingest-manual.js";
-import { getRuntimePath } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.5");
 let exampleFacts = [];
 let exampleAliases = [];
 let exampleRelationships = [];
@@ -88,15 +91,10 @@ async function assertNoLlmOrNetwork() {
 
 await clearGraphStoreForTests();
 
-if (!(await fileExists(getRuntimePath("graph", ".gitkeep")))) {
-  fail("runtime/graph/.gitkeep missing");
-} else {
-  pass("runtime/graph exists");
-}
-
 try {
   await initializeGraphStore();
   pass("Graph store initializes");
+  await assertRuntimeDirectoryExists(fail, pass, "runtime/graph directory exists", "graph");
 } catch (error) {
   fail(`Graph store initialization failed: ${error.message}`);
 }
@@ -266,6 +264,7 @@ if (await fileExists(join(ROOT, "engine-data/graph/graph.json"))) {
   pass("No engine-data graph writes");
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-4.js")], {
     cwd: ROOT,
@@ -275,10 +274,9 @@ try {
   fail(`Phase 2.4 regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 2.5 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "2.5", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.5 validation passed.");
 console.log("\nExample facts processed:");

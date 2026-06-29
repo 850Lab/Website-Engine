@@ -32,11 +32,16 @@ runtime/**
 !runtime/.gitkeep
 !runtime/**/.gitkeep
 
+# Isolated validation workspaces (Phase 4.0.5)
+runtime-validation/**
+
 # Generated reports (local status artifacts)
 reports/autopilot-status.md
 reports/autopilot-log.json
 reports/core-validation.md
 reports/core-validation.json
+reports/release-validation.md
+reports/release-validation.json
 reports/runtime-health.md
 reports/runtime-health.json
 reports/performance-baseline.md
@@ -44,6 +49,8 @@ reports/performance-baseline.json
 reports/openclaw/
 reports/live-pipeline.md
 reports/live-pipeline.json
+reports/real-observations-analysis.json
+reports/real-observations-analysis.md
 
 # Seed configs required for schema migration
 !data/seeds/

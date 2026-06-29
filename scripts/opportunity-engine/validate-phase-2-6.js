@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -26,11 +27,13 @@ import { inferProblems } from "../../src/engine/problem-inference/index.js";
 import { buildGraphFromFactsAndPersist, buildSituationsFromGraph } from "../../src/engine/knowledge-graph/index.js";
 import { processSignalIntoFacts } from "../../src/engine/fact-builder/pipeline.js";
 import { ingestManualObservation } from "../../src/engine/signals/ingest-manual.js";
-import { getRuntimePath } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.6");
 let exampleSituation = null;
 let exampleHypothesis = null;
 let exampleContradiction = null;
@@ -89,21 +92,11 @@ await clearProblemStoreForTests();
 const beforeGit = await runGit(["status", "--porcelain"]);
 const beforeLines = beforeGit ? beforeGit.split("\n").filter(Boolean) : [];
 
-if (!(await fileExists(getRuntimePath("hypotheses", ".gitkeep")))) {
-  fail("runtime/hypotheses missing");
-} else {
-  pass("Hypothesis store directory exists");
-}
-
-if (!(await fileExists(getRuntimePath("problems", ".gitkeep")))) {
-  fail("runtime/problems missing");
-} else {
-  pass("Problem store directory exists");
-}
-
 await initializeHypothesisStore();
 await initializeProblemStore();
 pass("Hypothesis and problem stores load");
+await assertRuntimeDirectoryExists(fail, pass, "Hypothesis store directory exists", "hypotheses");
+await assertRuntimeDirectoryExists(fail, pass, "Problem store directory exists", "problems");
 
 const uniqueSuffix = randomUUID().slice(0, 8);
 const ingestResult = await ingestManualObservation({
@@ -266,6 +259,7 @@ if (typeof confidence.confidence !== "number" || !confidence.confidenceBreakdown
   pass("Confidence engine traceable");
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-5-5.js")], {
     cwd: ROOT,
@@ -275,6 +269,8 @@ try {
   fail(`Phase 2.5.5 regression failed: ${error.message}`);
 }
 
+
+}
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-5.js")], {
     cwd: ROOT,
@@ -284,6 +280,7 @@ try {
   fail(`Phase 2.5 regression failed: ${error.message}`);
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-4.js")], {
     cwd: ROOT,
@@ -293,10 +290,9 @@ try {
   fail(`Phase 2.4 regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 2.6 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
+
 }
+await finalizeValidator({ phase: "2.6", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.6 validation passed.");
 console.log("\nExample Situation:");

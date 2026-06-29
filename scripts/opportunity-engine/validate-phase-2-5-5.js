@@ -1,4 +1,5 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
@@ -27,11 +28,13 @@ import {
 import { listGraphNodes } from "../../src/engine/graph-store/index.js";
 import { processSignalIntoFacts } from "../../src/engine/fact-builder/pipeline.js";
 import { ingestManualObservation } from "../../src/engine/signals/ingest-manual.js";
-import { getRuntimePath } from "../../src/engine/runtime/index.js";
+import { assertRuntimeDirectoryExists } from "./runtime-directory-assertions.js";
 
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("2.5.5");
 let exampleCluster = null;
 let exampleSituation = null;
 let exampleSituationSummary = null;
@@ -81,15 +84,10 @@ async function assertNoLlmOrNetwork() {
 
 await clearSituationStoreForTests();
 
-if (!(await fileExists(getRuntimePath("situations", ".gitkeep")))) {
-  fail("runtime/situations missing");
-} else {
-  pass("runtime/situations created");
-}
-
 try {
   await initializeSituationStore();
   pass("Situation store loads");
+  await assertRuntimeDirectoryExists(fail, pass, "runtime/situations directory exists", "situations");
 } catch (error) {
   fail(`Situation store failed: ${error.message}`);
 }
@@ -236,6 +234,7 @@ if (runtimeTrackedChanges.length) {
   pass("Runtime stays git clean");
 }
 
+if (!shouldSkipNestedRegressions()) {
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-5.js")], {
     cwd: ROOT,
@@ -245,6 +244,8 @@ try {
   fail(`Phase 2.5 regression failed: ${error.message}`);
 }
 
+
+}
 try {
   await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-phase-2-4.js")], {
     cwd: ROOT,
@@ -254,10 +255,7 @@ try {
   fail(`Phase 2.4 regression failed: ${error.message}`);
 }
 
-if (errors.length) {
-  console.error(`\nPhase 2.5.5 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "2.5.5", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 2.5.5 validation passed.");
 console.log("\nExample graph cluster:");

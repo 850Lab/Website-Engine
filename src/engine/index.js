@@ -14,6 +14,7 @@ export * from "./evidence/index.js";
 export * from "./mission-control/index.js";
 export * from "./signals/index.js";
 export * from "./runtime/index.js";
+export * from "./validation/index.js";
 export * from "./connectors/index.js";
 export * from "./sensors/index.js";
 export * from "./facts/index.js";
