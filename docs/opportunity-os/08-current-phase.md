@@ -7,46 +7,68 @@
 
 ## Current Phase
 
-**Phase 3.8 — End-to-End Live Pipeline Run** — **COMPLETE**
+**Phase 4.0.5 — Validation Infrastructure Hardening** — **COMPLETE**
 
-Reusable integration runner proves the full Opportunity Engine pipeline from file drop through opportunity assembly. Sensor → orchestrator → processor loop with no daemon, no timers, and STOP at opportunity.
+Deterministic, isolated validation framework: each validator runs in `runtime-validation/run-{uuid}/`, nested subprocess regressions replaced by dependency graph execution, fail-fast root-cause reporting, structured results.
 
-Run: `node scripts/opportunity-engine/validate-phase-3-8.js`  
-Run live: `node scripts/opportunity-engine/run-live-pipeline.js`
+Run full suite: `node scripts/opportunity-engine/validate-core.js`  
+Run single phase: `node scripts/opportunity-engine/validate-core.js --phases=3.1`  
+Run legacy phase script (standalone isolated runtime): `node scripts/opportunity-engine/validate-phase-3-8.js`
 
 **Architecture freeze:** R26–R30 — [07-architecture-rules.md](./07-architecture-rules.md)
 
 ---
 
-## Phase 3.8 Objective
+## Phase 4.0.5 Objective
 
-Prove end-to-end execution: File Drop → Observation → Signal → Fact → Graph → Situation → Hypothesis → Problem → Capability Match → Offer Recommendation → Opportunity.
+Make the validation framework deterministic, isolated, and trustworthy:
 
----
-
-## Phase 3.8 Checklist
-
-- [x] `scripts/opportunity-engine/run-live-pipeline.js` — deterministic demo drop, sensor, orchestrator enqueue, processor drain
-- [x] Gitignored reports: `reports/live-pipeline.md`, `reports/live-pipeline.json`
-- [x] correlationId / causationId preserved across chain
-- [x] Idempotent job enqueue — no duplicate opportunities
-- [x] Zero pending jobs at completion
-- [x] `validate-phase-3-8.js` + Phase 3.7–3.1 regressions
+1. Isolated `runtime-validation/` workspace per validator run
+2. Runtime override via `OPPORTUNITY_RUNTIME_DIR` (backward compatible with `OPPORTUNITY_OS_RUNTIME_DIR`)
+3. `src/engine/validation/` — ValidationContext, ValidationRuntime, ValidationRunner
+4. Dependency graph replaces nested validator subprocess chains
+5. Fail-fast with root failure + blocked phase reporting
+6. Structured validator results (no console scraping)
+7. Release report: `reports/release-validation.md`
 
 ---
 
-## Active Rules (Phase 3.8)
+## Phase 4.0.5 Checklist
+
+- [x] Validation framework (`src/engine/validation/`)
+- [x] Isolated runtime under `runtime-validation/` (gitignored)
+- [x] All phase validators wired through bootstrap/finalize hooks
+- [x] Nested regressions skipped when `VALIDATION_FRAMEWORK_MANAGED=1`
+- [x] `validate-core.js` → `ValidationRunner.runReleaseSuite()`
+- [x] Runtime assertions — directories via `ensureRuntimeDirectories()`, not `.gitkeep`
+- [x] Docs updated (08, 09, 13, 15, 24)
+
+---
+
+## Prior Phase — COMPLETE
+
+**Phase 4.0 — Intelligence Calibration Layer**
+
+Rules-only calibration improves dedupe, semantic classification, situation routing, capability ranking, and commercial abstention before Opportunity creation.
+
+Run: `node scripts/opportunity-engine/validate-phase-4-0.js`  
+Analyze: `node scripts/opportunity-engine/analyze-real-observations.js`
+
+---
+
+## Active Rules (Phase 4.0)
 
 | Rule | Status |
 |---|---|
-| Integration runner only — no daemon, no polling timers | **Enforced** |
-| Orchestrator enqueues; processor executes; runner coordinates | **Enforced** |
-| No new intelligence, sensors, or connectors | **Enforced** |
-| Phase 4 blocked until owner approval | **Enforced** |
+| Rules-only calibration — no LLM, no external API | **Enforced** |
+| No new infrastructure, connectors, or outreach | **Enforced** |
+| OpenClaw and Mission Control unchanged | **Enforced** |
+| Upstream artifacts preserved on abstention | **Enforced** |
+| Phase 4.1 blocked until owner approval | **Enforced** |
 
 ---
 
-## Phase 4 (Blocked)
+## Phase 4.1 (Blocked)
 
 **Autonomous Execution / Outreach** — blocked until owner approves explicit implementation prompt.
 
@@ -56,6 +78,10 @@ Do not build daemon mode, continuous polling, outreach automation, or Score Coun
 
 ## Prior Phases — COMPLETE
 
+### Phase 3.8 — End-to-End Live Pipeline Run
+
+Run: `node scripts/opportunity-engine/validate-phase-3-8.js`
+
 ### Phase 3.7 — Pipeline Stage Handlers
 
 Run: `node scripts/opportunity-engine/validate-phase-3-7.js`
@@ -64,16 +90,13 @@ Run: `node scripts/opportunity-engine/validate-phase-3-7.js`
 
 Run: `node scripts/opportunity-engine/validate-phase-3-6.js`
 
-### Phase 3.5 — First Live Sensor Connector
-
-Run: `node scripts/opportunity-engine/validate-phase-3-5.js`
-
 ---
 
 ## Decision Log
 
 | Date | Decision |
 |---|---|
+| 2026-06-23 | Phase 4.0: Intelligence calibration — dedupe, classification, routing, capability fit, abstention gate |
 | 2026-06-23 | Phase 3.8: End-to-end live pipeline run — file drop to opportunity, STOP |
 | 2026-06-23 | Phase 3.7: Pipeline Stage Handlers — processor executes intelligence stages, STOP |
 | 2026-06-23 | Phase 3.6: Event Pipeline Orchestrator — event-driven Job chaining, STOP |

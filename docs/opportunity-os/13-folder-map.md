@@ -17,6 +17,9 @@
 | **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
 | **`runtime/`** | Live operational data: signals, facts, graph, situations, hypotheses, problems, capability-matches, offer-recommendations, opportunities, events, jobs, logs, cache (gitignored) | Platform | None | Default local runtime |
+| **`runtime-validation/`** | Isolated per-run validation workspaces (`run-{uuid}/`) — events, jobs, stores, reports (gitignored, Phase 4.0.5) | Platform | None | Never used in production |
+| **`src/engine/validation/`** | Validation framework: ValidationContext, ValidationRuntime, ValidationRunner, dependency graph (Phase 4.0.5) | Platform | `runtime/`, `runtime-validation/` | Release suite orchestration |
+| **`scripts/opportunity-engine/validate-core.js`** | Release validation suite (`ValidationRunner.runReleaseSuite()`) | Platform | all phase validators | Writes `reports/release-validation.md` |
 | **`src/engine/situations/`** | Runtime-backed situation store + lifecycle (Phase 2.5.5) | Platform | `runtime/situations/` | Required input for Problem Inference |
 | **`src/engine/situation-builder/`** | Rules-only graph clustering into situations | Platform | `graph-store/`, `situations/` | No LLM; template summaries only |
 | **`src/engine/hypotheses/`** | Runtime hypothesis store (Phase 2.6) | Platform | `runtime/hypotheses/` | Problem inference input |
@@ -30,7 +33,15 @@
 | **`src/engine/capability-matches/`** | Runtime capability recommendation store (Phase 2.7) | Platform | `runtime/capability-matches/` | Append-only audit trail |
 | **`src/engine/offer-intelligence/`** | Capability match → offer fit pipeline (Phase 2.8) | Platform | `capability-matches/`, `offers/` | Stops before Opportunity Factory |
 | **`src/engine/offer-recommendations/`** | Runtime offer recommendation store (Phase 2.8) | Platform | `runtime/offer-recommendations/` | Append-only audit trail |
-| **`src/engine/opportunity-factory/`** | Problem + match + offer → Opportunity assembly (Phase 2.9) | Platform | problems, capability-matches, offer-recommendations | Stops before Score Council |
+| **`src/engine/signals/dedup.js`** | Calibrated dedupe key builder (Phase 4.0) | Signal / Platform | `signals/` | source, headline, type, location, hash |
+| **`src/engine/signals/classify.js`** | Rules-only semantic signal classification (Phase 4.0) | Signal / Platform | None | Headline override for generic labels |
+| **`src/engine/capability-matcher/calibration.js`** | Semantic capability fit adjustments (Phase 4.0) | Platform | `capability-matcher/` | Industrial vs digital rejection |
+| **`src/engine/opportunity-factory/abstention.js`** | Commercial actionability gate (Phase 4.0) | Platform | `opportunity-factory/` | Abstain before Opportunity persist |
+| **`scripts/opportunity-engine/analyze-real-observations.js`** | Real observation pipeline analysis (Phase 4.0) | Platform | live pipeline runner | Writes gitignored reports |
+| **`scripts/opportunity-engine/validate-phase-4-0.js`** | Intelligence calibration regression (Phase 4.0) | Platform | calibration modules | Phase 3.6–3.8 regressions |
+| **`reports/real-observations-analysis.json`** | Real observation metrics (gitignored) | Platform | analyze script | Abstentions, dedupe, rankings |
+| **`reports/real-observations-analysis.md`** | Human-readable observation analysis (gitignored) | Platform | analyze script | False positive notes |
+| **`src/engine/opportunity-factory/`** | Problem + match + offer → Opportunity assembly (Phase 2.9) + abstention gate (4.0) | Platform | problems, capability-matches, offer-recommendations | Stops before Score Council |
 | **`src/engine/opportunity-validator/`** | Opportunity completeness validation (Phase 2.9) | Platform | opportunity-factory output | Rejects incomplete assemblies |
 | **`src/engine/opportunities/`** | Runtime opportunity store + legacy radar (`radar.js`) | Platform | `runtime/opportunities/` | Score Council next consumer |
 | **`runtime/events/`** | Append-only operating-loop event log (Phase 3.1) | Platform | None | `events.jsonl` gitignored |

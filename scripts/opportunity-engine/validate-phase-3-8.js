@@ -1,8 +1,10 @@
 import { readFile, access } from "node:fs/promises";
+import { bootstrapValidator, finalizeValidator, shouldSkipNestedRegressions, getActiveValidationContext } from "../../src/engine/validation/index.js";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { randomUUID } from "node:crypto";
 import {
   clearEventStoreForTests,
   getEventsByCorrelationId,
@@ -47,8 +49,6 @@ import { listHypotheses } from "../../src/engine/hypotheses/index.js";
 import { listSignals } from "../../src/engine/signals/index.js";
 import { listSituations } from "../../src/engine/situations/index.js";
 import {
-  REPORT_JSON_PATH,
-  REPORT_MD_PATH,
   runLivePipeline,
 } from "./run-live-pipeline.js";
 
@@ -83,6 +83,11 @@ const REQUIRED_ORCHESTRATOR_EVENTS = [
   "orchestrator.completed",
 ];
 const errors = [];
+const __validationStartedAt = Date.now();
+await bootstrapValidator("3.8");
+const validationReportsDir = getActiveValidationContext()?.reportsDir || join(ROOT, "reports");
+const LIVE_PIPELINE_MD = join(validationReportsDir, "live-pipeline.md");
+const LIVE_PIPELINE_JSON = join(validationReportsDir, "live-pipeline.json");
 
 function fail(message) {
   errors.push(message);
@@ -92,6 +97,8 @@ function fail(message) {
 function pass(message) {
   console.log(`PASS: ${message}`);
 }
+
+pass(`Isolated validation runtime: ${getActiveValidationContext()?.runtimePath || process.env.OPPORTUNITY_RUNTIME_DIR}`);
 
 async function fileExists(path) {
   try {
@@ -192,7 +199,13 @@ const baselineFacts = (await listFacts()).length;
 
 let report;
 try {
-  report = await runLivePipeline({ writeReports: true });
+  report = await runLivePipeline({
+    writeReports: true,
+    reportPaths: {
+      markdownPath: LIVE_PIPELINE_MD,
+      jsonPath: LIVE_PIPELINE_JSON,
+    },
+  });
 } catch (error) {
   fail(`runLivePipeline failed: ${error.message}`);
   report = null;
@@ -204,16 +217,16 @@ if (report?.success) {
   fail(`Live pipeline runner incomplete: ${report.summary}`);
 }
 
-if (!(await fileExists(REPORT_MD_PATH))) {
-  fail("reports/live-pipeline.md missing");
+if (!(await fileExists(LIVE_PIPELINE_MD))) {
+  fail("validation live-pipeline.md missing");
 } else {
-  pass("reports/live-pipeline.md generated");
+  pass("live-pipeline.md generated in validation reports");
 }
 
-if (!(await fileExists(REPORT_JSON_PATH))) {
-  fail("reports/live-pipeline.json missing");
+if (!(await fileExists(LIVE_PIPELINE_JSON))) {
+  fail("validation live-pipeline.json missing");
 } else {
-  pass("reports/live-pipeline.json generated");
+  pass("live-pipeline.json generated in validation reports");
 }
 
 const gitignore = await readFile(join(ROOT, ".gitignore"), "utf8");
@@ -392,6 +405,7 @@ const runtimeChanges = (afterGit ? afterGit.split("\n").filter(Boolean) : []).fi
   const path = line.slice(2).trimStart().replace(/\\/g, "/");
   if (path.endsWith(".gitkeep")) return false;
   if (path === "reports/live-pipeline.md" || path === "reports/live-pipeline.json") return false;
+  if (path.startsWith("runtime-validation/")) return false;
   return path.startsWith("runtime/");
 });
 
@@ -403,36 +417,30 @@ if (runtimeChanges.length) {
 
 await new Promise((resolve) => setTimeout(resolve, 1500));
 
-await clearPipelineStoresForTests();
-await initializeEventStore();
-await initializeJobStore();
-await initializeOrchestratorStore();
+if (!shouldSkipNestedRegressions()) {
+  const regressions = [
+    "validate-phase-3-7.js",
+    "validate-phase-3-6.js",
+    "validate-phase-3-5.js",
+    "validate-phase-3-4.js",
+    "validate-phase-3-3.js",
+    "validate-phase-3-2.js",
+    "validate-phase-3-1.js",
+  ];
 
-const regressions = [
-  "validate-phase-3-7.js",
-  "validate-phase-3-6.js",
-  "validate-phase-3-5.js",
-  "validate-phase-3-4.js",
-  "validate-phase-3-3.js",
-  "validate-phase-3-2.js",
-  "validate-phase-3-1.js",
-];
-
-for (const script of regressions) {
-  try {
-    await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine", script)], {
-      cwd: ROOT,
-    });
-    pass(`${script} regression passes`);
-  } catch (error) {
-    fail(`${script} regression failed: ${error.message}`);
+  for (const script of regressions) {
+    try {
+      await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine", script)], {
+        cwd: ROOT,
+      });
+      pass(`${script} regression passes`);
+    } catch (error) {
+      fail(`${script} regression failed: ${error.message}`);
+    }
   }
 }
 
-if (errors.length) {
-  console.error(`\nPhase 3.8 validation failed with ${errors.length} error(s).`);
-  process.exit(1);
-}
+await finalizeValidator({ phase: "3.8", errors, startedAt: __validationStartedAt });
 
 console.log("\nPhase 3.8 validation passed.");
 console.log("File Drop → Signal → Opportunity end-to-end. STOP.");

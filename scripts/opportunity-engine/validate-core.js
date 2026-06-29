@@ -1,103 +1,39 @@
-import { writeFile, mkdir } from "node:fs/promises";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { wait } from "../../src/engine/runtime/io.js";
+import { ValidationRunner } from "../../src/engine/validation/runner.js";
+import { ValidationReporter } from "../../src/engine/validation/reporter.js";
+import { getRepoRoot } from "../../src/engine/validation/env.js";
 
-const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
-const REPORT_MD = join(ROOT, "reports/core-validation.md");
-const REPORT_JSON = join(ROOT, "reports/core-validation.json");
-
-const VALIDATORS = [
-  "validate-phase-0-5.js",
-  "validate-phase-1.js",
-  "validate-phase-2-1.js",
-  "validate-phase-2-2.js",
-  "validate-phase-2-2-5.js",
-  "validate-phase-2-3.js",
-  "validate-phase-2-4.js",
-  "validate-phase-2-5.js",
-  "validate-phase-2-5-5.js",
-  "validate-phase-2-6.js",
-  "validate-phase-2-7.js",
-  "validate-phase-2-8.js",
-  "validate-phase-2-9.js",
-];
-
-const DELAY_BETWEEN_MS = 1500;
-const RETRYABLE = /\b(EBUSY|EPERM|EACCES)\b/;
+const LEGACY_REPORT_MD = join(ROOT, "reports/core-validation.md");
+const LEGACY_REPORT_JSON = join(ROOT, "reports/core-validation.json");
 
 function parseArgs(argv) {
   const only = [];
+  const phases = [];
   for (const arg of argv.slice(2)) {
     if (arg.startsWith("--only=")) {
       only.push(...arg.slice("--only=".length).split(",").map((value) => value.trim()).filter(Boolean));
     }
-  }
-  return { only };
-}
-
-function normalizeValidatorName(name) {
-  return name.endsWith(".js") ? name : `${name}.js`;
-}
-
-function resolveValidators({ only }) {
-  if (!only.length) return VALIDATORS;
-  return only.map((name) => {
-    const normalized = normalizeValidatorName(name);
-    if (!VALIDATORS.includes(normalized)) {
-      throw new Error(`Unknown validator: ${name}`);
-    }
-    return normalized;
-  });
-}
-
-async function runValidator(scriptName) {
-  const scriptPath = join(ROOT, "scripts/opportunity-engine", scriptName);
-  const command = `node ${join("scripts/opportunity-engine", scriptName)}`;
-  const started = Date.now();
-  let retryCount = 0;
-  let lastError = null;
-
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
-    try {
-      await execFileAsync(process.execPath, [scriptPath], { cwd: ROOT });
-      return {
-        script: scriptName,
-        command,
-        passed: true,
-        durationMs: Date.now() - started,
-        retryCount,
-      };
-    } catch (error) {
-      lastError = error;
-      const output = `${error.message}\n${error.stdout || ""}\n${error.stderr || ""}`;
-      if (attempt === 1 && RETRYABLE.test(output)) {
-        retryCount += 1;
-        await wait(2000);
-        continue;
-      }
-      break;
+    if (arg.startsWith("--phases=")) {
+      phases.push(...arg.slice("--phases=".length).split(",").map((value) => value.trim()).filter(Boolean));
     }
   }
-
-  return {
-    script: scriptName,
-    command,
-    passed: false,
-    durationMs: Date.now() - started,
-    retryCount,
-    error: lastError?.message || "Unknown error",
-  };
+  return { only, phases };
 }
 
-function renderMarkdown(summary) {
+function resolvePhases({ only, phases }) {
+  if (phases.length) return phases;
+  if (!only.length) return null;
+  return only.map((name) => name.replace(/^validate-phase-/, "").replace(/\.js$/, "").replace(/-/g, "."));
+}
+
+function renderLegacyMarkdown(summary) {
   const rows = summary.results
     .map(
       (row) =>
-        `| ${row.script} | ${row.passed ? "PASS" : "FAIL"} | ${row.durationMs}ms | ${row.retryCount} | \`${row.command}\` |`,
+        `| ${row.script} | ${row.passed ? "PASS" : row.dependencyBlocked ? "BLOCKED" : "FAIL"} | ${row.duration}ms | ${row.retryCount || 0} | \`${row.script}\` |`,
     )
     .join("\n");
 
@@ -109,65 +45,80 @@ Generated: ${summary.generatedAt}
 
 - **Passed:** ${summary.passed}
 - **Failed:** ${summary.failed}
-- **Total duration:** ${summary.totalDurationMs}ms
+- **Total duration:** ${summary.totalDuration}ms
 - **Validators:** ${summary.results.length}
 
 | Validator | Result | Duration | Retries | Command |
 |---|---|---:|---:|---|
 ${rows}
-
-${summary.failed ? "## Failures\n\n" + summary.results.filter((row) => !row.passed).map((row) => `- **${row.script}:** ${row.error}`).join("\n") : ""}
 `;
 }
 
 export async function runCoreValidation(options = {}) {
-  const validators = resolveValidators(options);
-  const started = Date.now();
-  const results = [];
-
-  for (let index = 0; index < validators.length; index += 1) {
-    const script = validators[index];
-    console.log(`\n[core-validation] Running ${script} (${index + 1}/${validators.length})`);
-    const result = await runValidator(script);
-    results.push(result);
-    console.log(
-      `[core-validation] ${result.passed ? "PASS" : "FAIL"} ${script} (${result.durationMs}ms, retries=${result.retryCount})`,
+  let phases = options.phases || null;
+  if (!phases && options.only?.length) {
+    phases = options.only.map((name) =>
+      name.replace(/^validate-phase-/, "").replace(/\.js$/, "").replace(/-/g, "."),
     );
-    if (index < validators.length - 1) {
-      await wait(DELAY_BETWEEN_MS);
-    }
   }
 
-  const passed = results.filter((row) => row.passed).length;
-  const failed = results.length - passed;
-  const summary = {
-    generatedAt: new Date().toISOString(),
-    passed,
-    failed,
-    totalDurationMs: Date.now() - started,
-    results,
+  const summary = await ValidationRunner.runReleaseSuite({
+    repoRoot: getRepoRoot(),
+    phases,
+    failFast: options.failFast !== false,
+  });
+
+  const legacySummary = {
+    generatedAt: summary.generatedAt,
+    passed: summary.passed,
+    failed: summary.failed,
+    totalDurationMs: summary.totalDuration,
+    results: summary.results.map((row) => ({
+      script: row.script,
+      command: `node scripts/opportunity-engine/${row.script}`,
+      passed: row.passed,
+      durationMs: row.duration,
+      retryCount: row.retryCount || 0,
+      error: row.rootFailures?.[0] || row.error || null,
+    })),
   };
 
-  await mkdir(dirname(REPORT_MD), { recursive: true });
-  await writeFile(REPORT_MD, renderMarkdown(summary), "utf8");
-  await writeFile(REPORT_JSON, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+  await mkdir(dirname(LEGACY_REPORT_MD), { recursive: true });
+  await writeFile(LEGACY_REPORT_MD, renderLegacyMarkdown(legacySummary), "utf8");
+  await writeFile(LEGACY_REPORT_JSON, `${JSON.stringify(legacySummary, null, 2)}\n`, "utf8");
 
   return summary;
+}
+
+export async function runReleaseSuite(options = {}) {
+  return ValidationRunner.runReleaseSuite({
+    repoRoot: getRepoRoot(),
+    ...options,
+  });
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 
 if (isMain) {
-  const options = parseArgs(process.argv);
-  const summary = await runCoreValidation(options);
+  const args = parseArgs(process.argv);
+  const phases = resolvePhases(args);
+  const summary = await runReleaseSuite({ phases });
 
-  console.log("\nCore validation summary");
+  console.log("\nRelease validation summary");
   console.log(`  Passed: ${summary.passed}`);
   console.log(`  Failed: ${summary.failed}`);
-  console.log(`  Duration: ${summary.totalDurationMs}ms`);
-  console.log(`  Report: reports/core-validation.md`);
+  console.log(`  Skipped/blocked: ${summary.skipped + summary.dependencyBlocked}`);
+  console.log(`  Duration: ${summary.totalDuration}ms`);
+  console.log(`  Report: reports/release-validation.md`);
 
-  if (summary.failed) {
+  if (summary.rootFailure) {
+    console.error(`\nRoot Failure: Phase ${summary.rootFailure.phase} (${summary.rootFailure.script})`);
+    if (summary.blockedPhases.length) {
+      console.error(`Affected: ${summary.blockedPhases.join(", ")}`);
+    }
+  }
+
+  if (summary.failed > 0) {
     process.exit(1);
   }
 }

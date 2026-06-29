@@ -16,7 +16,8 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
 | **Observations (raw)** | Ingest boundary + sensors + manual CLI | Write to `runtime/signals/raw/` only | Signal normalizer |
-| **Runtime storage** | `engine/runtime` | Path helpers, `readJsonWithRetry()`, `writeJsonAtomic()`, `writeJsonAtomicWithRetry()`, `appendJsonLineWithRetry()`, `readJsonLinesWithRetry()` | All runtime stores including `events/`, `jobs/` |
+| **Runtime storage** | `engine/runtime` | Path helpers, `ensureRuntimeDirectories()`, `readJsonWithRetry()`, `writeJsonAtomic()`, `writeJsonAtomicWithRetry()`, `appendJsonLineWithRetry()`, `readJsonLinesWithRetry()` | All runtime stores including `events/`, `jobs/` |
+| **Validation infrastructure** | `engine/validation` *(Phase 4.0.5)* | `ValidationRunner.runReleaseSuite()`, `bootstrapValidator()`, `finalizeValidator()`, `shouldSkipNestedRegressions()` | Phase validators, `validate-core.js` only |
 | **Sensors** | `engine/sensors` (Phase 2.3) | `registerSensor()`, `runSensor()`, `runAllSensors()`, `healthReport()`, `ingestSensorResult()` | Observation pipeline only |
 | **Connectors (deprecated)** | `engine/connectors` shim | `registerConnector()`, `runConnector()` | Regression only — use sensors |
 | **Signals** | `engine/signals` | `listSignals()`, `createSignal()`, `linkFactsToSignal()`, `initializeRuntimeSignalStore()` | Sensors, fact builder, CLI, Mission Control metrics (read) |
@@ -39,7 +40,8 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Capability Match Store** | `engine/capability-matches` *(Phase 2.7)* | `saveCapabilityMatch()`, `listCapabilityMatches()`, `getCapabilityMatchesByProblemId()` | Offer Intelligence, Mission Control projection |
 | **Offer Intelligence** | `engine/offer-intelligence` *(Phase 2.8)* | `recommendOffers(capabilityMatch)`, `recommendOffersForProblem()` | Opportunity Factory |
 | **Offer Recommendation Store** | `engine/offer-recommendations` *(Phase 2.8)* | `saveOfferRecommendation()`, `listOfferRecommendations()` | Opportunity Factory, Mission Control projection |
-| **Opportunity Factory** | `engine/opportunity-factory` *(Phase 2.9)* | `buildOpportunity()`, `buildOpportunityForProblem()` | Score Council — **next consumer** |
+| **Opportunity Factory** | `engine/opportunity-factory` *(Phase 2.9 + 4.0)* | `buildOpportunity()`, `buildOpportunityForProblem()`, `evaluateCommercialActionability()` | Score Council — **next consumer**; may abstain |
+| **Opportunity Abstention Gate** *(Phase 4.0)* | `engine/opportunity-factory/abstention.js` | `evaluateCommercialActionability()` | Returns structured `{ status: "abstained", reason, evidence }` — no Opportunity persist |
 | **Opportunity Validator** | `engine/opportunity-validator` *(Phase 2.9)* | `validateOpportunity()` | Factory gate only |
 | **Opportunity Store** | `engine/opportunities` *(Phase 2.9)* | `listOpportunities()`, `getOpportunityById()`, `saveOpportunity()` | Score Council, Mission Control projection |
 | **Opportunities (legacy radar)** | `engine/opportunities/radar.js` | `generateOpportunities()` | Intelligence radar only — not factory path |
@@ -64,6 +66,8 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | **Orchestrator** *(Phase 3.6)* | `engine/orchestrator` | `orchestrateEvent()`, `listEventRoutes()`, `resolveEventRoute()`, `enqueueDownstreamJob()` | Event → downstream Job enqueue only — no execution |
 | **Pipeline Handlers** *(Phase 3.7)* | `engine/pipeline-handlers` | `registerPipelineHandlers()`, stage handlers (`factBuildHandler`, …), `emitPipelineEvent()` | Processor executes one intelligence stage per Job — emits domain + `pipeline.*` Events |
 | **Live Pipeline Runner** *(Phase 3.8)* | `scripts/opportunity-engine/run-live-pipeline.js` | `runLivePipeline()`, `dropDemoObservation()`, `drainJobQueue()` | Integration only — coordinates sensor, orchestrator, processor; no daemon |
+| **Intelligence Calibration** *(Phase 4.0)* | `signals/dedup.js`, `signals/classify.js`, `situation-builder/`, `capability-matcher/calibration.js` | `buildCalibratedDedupKey()`, `classifySignalRules()`, calibrated routing + fit | Rules-only; no LLM |
+| **Real Observation Analysis** *(Phase 4.0)* | `scripts/opportunity-engine/analyze-real-observations.js` | Fixture runs → gitignored JSON/MD reports | Abstention + dedupe metrics |
 | **Autopilot** | `scripts/opportunity-engine/autopilot-*` | `collectAutopilotState()`, `writeAutopilotReports()` | Supervision only — **no loop execution** |
 | **OpenClaw** *(Phase 3.1.8)* | `engine/openclaw` + `engine-data/openclaw/prompts/` + `scripts/openclaw/` | Builder: `runOpenClawBuilderJob()` · QA: `runOpenClawQaJob()`, `validateQaJob()`, `evaluateExpectedOutputs()` · CLI: `run-builder-job.js`, `run-qa-job.js` | QA read-only; prompt verified; allowlists; one Job per invocation |
 

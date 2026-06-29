@@ -34,11 +34,19 @@ Separate **git-tracked code and seed config** from **live operational data** so 
 
 ### `runtime/`
 
-- Default root: `runtime/` (override: `OPPORTUNITY_OS_RUNTIME_DIR`)
+- Default root: `runtime/` (override: `OPPORTUNITY_RUNTIME_DIR` or legacy `OPPORTUNITY_OS_RUNTIME_DIR`)
 - Live signal registry: `runtime/signals/signals.json`
 - Sacred raw observations: `runtime/signals/raw/YYYY/MM/DD/obs_<uuid>.json`
 - Connector logs: `runtime/logs/`
 - Dedup/cache working files: `runtime/cache/`
+
+### `runtime-validation/` (Phase 4.0.5)
+
+- **Validation-only** isolated workspaces: `runtime-validation/run-{uuid}/`
+- Created automatically by `ValidationRunner` or standalone validator bootstrap
+- Contains full runtime layout (events, jobs, signals, facts, graph, …) plus `reports/`
+- **Never** used by production pipeline, OpenClaw, or Mission Control
+- Fully gitignored — validators must not write to repo `runtime/` during managed runs
 
 ---
 
@@ -103,13 +111,37 @@ These files are **local generated artifacts** — gitignored, non-blocking for a
 |---|---|
 | `reports/autopilot-status.md` | `npm run autopilot:status` |
 | `reports/autopilot-log.json` | `npm run autopilot:status` |
-| `reports/core-validation.md` / `.json` | `node scripts/opportunity-engine/validate-core.js` |
+| `reports/core-validation.md` / `.json` | `node scripts/opportunity-engine/validate-core.js` (legacy alias) |
+| `reports/release-validation.md` / `.json` | `node scripts/opportunity-engine/validate-core.js` (Phase 4.0.5 release suite) |
 | `reports/runtime-health.md` / `.json` | `node scripts/opportunity-engine/runtime-health.js` |
 | `reports/performance-baseline.md` / `.json` | `node scripts/opportunity-engine/performance-baseline.js` |
 
 Autopilot still blocks on real source/docs changes and owner-approval gates.
 
-Full phase regression: `node scripts/opportunity-engine/validate-core.js` (sequential, delayed, retry on lock errors).
+Full phase regression: `node scripts/opportunity-engine/validate-core.js` (dependency graph, isolated runtime per validator, fail-fast root-cause reporting).
+
+---
+
+## Validation Infrastructure (Phase 4.0.5)
+
+| Component | Path | Role |
+|---|---|---|
+| **ValidationRunner** | `src/engine/validation/runner.js` | Executes dependency graph once; no nested subprocess regressions |
+| **ValidationRuntime** | `src/engine/validation/runtime.js` | Creates `runtime-validation/run-{uuid}/` layout |
+| **ValidationContext** | `src/engine/validation/context.js` | Per-validator pass/fail, assertions, structured result |
+| **Dependency graph** | `src/engine/validation/graph.js` | Phase ordering (4.0 → 3.8 → … → 0.5) |
+
+Environment variables during managed runs:
+
+| Variable | Purpose |
+|---|---|
+| `OPPORTUNITY_RUNTIME_DIR` | Primary runtime override (production: unset → `runtime/`) |
+| `OPPORTUNITY_OS_RUNTIME_DIR` | Legacy alias — still honored |
+| `VALIDATION_FRAMEWORK_MANAGED=1` | Set by runner; skips nested regressions |
+| `VALIDATION_SKIP_NESTED=1` | Explicit nested regression skip |
+| `VALIDATION_RESULT_PATH` | Structured JSON result file per validator |
+
+Validators assert **runtime behavior** (directory exists, store IO, atomic writes) — never `.gitkeep` placeholder files.
 
 ---
 

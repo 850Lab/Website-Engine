@@ -562,3 +562,15 @@ Changes to reasoning rules require [Build Log](./09-build-log.md) entry and owne
 **Phase 2.5.8:** Design complete. No code until Phase 2.6 prompt.
 
 **Phase 2.6:** **COMPLETE** — Problem Inference implemented. Modules: `hypotheses/`, `hypothesis-generator/`, `evidence-engine/`, `confidence-engine/`, `contradictions/`, `problems/`, `problem-inference/`. Validation: `scripts/opportunity-engine/validate-phase-2-6.js`. Capability Matching remains **blocked** until Phase 2.7.
+
+**Phase 4.0:** **COMPLETE** — Intelligence calibration layer (rules-only):
+
+| Deliverable | Module | Behavior |
+|---|---|---|
+| Dedupe calibration | `signals/dedup.js` | Keys include source, headline, signalType, location, observedAt, content hash, semantic type |
+| Semantic classification | `signals/classify.js` | Headline/summary overrides generic labels (`company_news` + expansion → `expansion`) |
+| Situation routing | `situation-builder/` | Expansion / Maintenance / Turnaround; generic company news no longer auto Capital Project |
+| Commercial abstention | `opportunity-factory/abstention.js` | `buildOpportunityForProblem()` may return `{ status: "abstained" }` without deleting upstream artifacts |
+| Validation | `validate-phase-4-0.js` | Seven real observation profiles + Phase 3.6–3.8 regressions |
+
+**Phase 4.1:** **BLOCKED** — outreach / autonomous execution until owner approval.

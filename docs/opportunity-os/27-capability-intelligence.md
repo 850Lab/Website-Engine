@@ -940,3 +940,16 @@ Changes to Capability Intelligence rules require [Build Log](./09-build-log.md) 
 **Phase 2.8:** **COMPLETE** — Offer Intelligence implemented. Validation: `scripts/opportunity-engine/validate-phase-2-8.js`.
 
 **Phase 2.9:** **COMPLETE** — Opportunity Factory implemented. Commercial Intelligence pipeline complete. Validation: `scripts/opportunity-engine/validate-phase-2-9.js`. **Score Council remains next consumer.**
+
+**Phase 4.0:** **COMPLETE** — Capability ranking calibration (`capability-matcher/calibration.js`):
+
+| Problem category | Calibration behavior |
+|---|---|
+| `expansion_contractor_demand` | Boost `ktm_labor`; penalize generic `maintenance_support` and digital/cleaning |
+| `turnaround_labor_surge` | Boost `fire_watch`, `hole_watch`, `safety_support`, `ktm_labor` |
+| `maintenance_window_demand` | Boost `maintenance_support` |
+| Industrial categories | Cap digital/cleaning capabilities at low fit |
+
+Explainability preserved via existing dimension breakdown + selection reasons. Validation: `scripts/opportunity-engine/validate-phase-4-0.js`.
+
+**Phase 4.1:** **BLOCKED** — outreach / autonomous execution until owner approval.

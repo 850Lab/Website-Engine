@@ -357,6 +357,22 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-29 — Phase 4.0.5 Validation Infrastructure Hardening
+**Phase:** 4.0.5  
+**Type:** Milestone  
+**Summary:** Introduced isolated validation runtime (`runtime-validation/run-{uuid}/`), `src/engine/validation/` framework (ValidationContext, ValidationRuntime, ValidationRunner, dependency graph), primary runtime override `OPPORTUNITY_RUNTIME_DIR`, structured validator results, fail-fast release suite via `validate-core.js`, and runtime directory assertions replacing `.gitkeep` checks. No production engine logic changes.  
+**Links:** `src/engine/validation/`, `scripts/opportunity-engine/validate-core.js`, `reports/release-validation.md`
+
+---
+
+### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
+**Phase:** 4.0  
+**Type:** Milestone  
+**Summary:** Rules-only calibration layer improves dedupe keys, semantic signal classification, situation/problem routing, capability fit tuning, and commercial abstention before Opportunity creation. Real observation regression suite and gitignored analysis reports added. No new infrastructure, connectors, OpenClaw, or Mission Control changes. Phase 4.1 blocked.  
+**Links:** `src/engine/signals/dedup.js`, `src/engine/signals/classify.js`, `src/engine/capability-matcher/calibration.js`, `src/engine/opportunity-factory/abstention.js`, `scripts/opportunity-engine/validate-phase-4-0.js`, `scripts/opportunity-engine/analyze-real-observations.js`
+
+---
+
 ## Future Entries (Reserved)
 
 <!-- Phase 3 Score Council integration / Mission Control projection -->
@@ -371,6 +387,8 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-29 | Phase 4.0.5 Validation Infrastructure — isolated runtime-validation, ValidationRunner, dependency graph |
+| 2026-06-23 | Phase 4.0 Intelligence Calibration — abstention gate, semantic classification, calibrated dedupe |
 | 2026-06-23 | Phase 3.1.8 OpenClaw QA Worker — read-only, one Job, STOP |
 | 2026-06-23 | Phase 3.1.7.5 OpenClaw security hardening — prompt verification, command allowlist, forensic reports |
 | 2026-06-23 | Phase 3.1.7 OpenClaw Builder Worker v1 — bounded CLI, one Job, STOP |
