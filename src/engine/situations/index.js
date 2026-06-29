@@ -17,6 +17,7 @@ export const SITUATION_CATEGORIES = [
   "Government Funding",
   "Capital Project",
   "Facility Maintenance",
+  "Maintenance",
   "Turnaround",
   "Emergency",
   "Permit Activity",

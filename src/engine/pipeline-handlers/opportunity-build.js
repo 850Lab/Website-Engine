@@ -54,13 +54,37 @@ export async function opportunityBuildHandler(job, context) {
         throw new Error(`Capability match not found: ${offerRecommendation.capabilityMatchId}`);
       }
 
-      const { opportunity } = await buildOpportunityForProblem(problem.id, {
+      const result = await buildOpportunityForProblem(problem.id, {
         problem,
         capabilityMatch,
         offerRecommendation,
         ensureUpstream: false,
         persist: true,
       });
+
+      if (result.abstained) {
+        await stageContext.emitDomain("opportunity.abstained", {
+          subjectType: "opportunity",
+          subjectId: `abst_${offerRecommendationId}`,
+          offerRecommendationId,
+          problemId: problem.id,
+          reason: result.abstained.reason,
+          evidence: result.abstained.evidence,
+          recommendedNextInput: result.abstained.recommendedNextInput,
+        });
+
+        return {
+          outputRefs: [],
+          abstained: true,
+          metadata: {
+            offerRecommendationId,
+            problemId: problem.id,
+            abstained: result.abstained,
+          },
+        };
+      }
+
+      const { opportunity } = result;
 
       if (!opportunity?.id) {
         throw new Error(

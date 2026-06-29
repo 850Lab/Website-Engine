@@ -32,6 +32,13 @@ export const PROBLEM_CATEGORY_TO_PROBLEMS_SOLVED = {
     "shutdown_safety_coverage",
     "safety_staffing_gaps",
   ],
+  maintenance_window_demand: [
+    "deferred_maintenance",
+    "downtime",
+    "reliability_risk",
+    "facility_backlog",
+    "maintenance_safety_gaps",
+  ],
   emergency_response_demand: [
     "grease_and_dirt_accumulation",
     "poor_first_impression",
@@ -66,6 +73,11 @@ export const COMPOSITION_RULES = {
     parentCapabilityId: "ktm_labor",
     required: ["ktm_labor", "fire_watch", "hole_watch"],
     optional: ["safety_support"],
+  },
+  maintenance_window_demand: {
+    parentCapabilityId: "maintenance_support",
+    required: ["maintenance_support"],
+    optional: ["ktm_labor", "safety_support"],
   },
   expansion_contractor_demand: {
     parentCapabilityId: "ktm_labor",

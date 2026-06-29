@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { createSignal, normalizeSignal, updateSignalState } from "./index.js";
 import { archiveObservation, normalizeObservationInput } from "./observations.js";
 import { classifySignalRules, UNKNOWN_TYPE } from "./classify.js";
+import { buildCalibratedDedupKey } from "./dedup.js";
 
 export async function ingestManualObservation(input = {}) {
   let originalText = input.originalText;
@@ -33,11 +34,21 @@ export async function ingestManualObservation(input = {}) {
     rawTextRef: archived.rawTextRef,
     signalType: classification.signalType,
     confidence: classification.confidence,
+    dedupKey: buildCalibratedDedupKey({
+      source: normalizedInput.source,
+      headline: normalizedInput.headline,
+      signalType: classification.signalType,
+      location: normalizedInput.location,
+      observedAt: normalizedInput.observedAt,
+      contentHash: normalizedInput.provenance?.contentHash,
+      semanticEventType: classification.semanticEventType || classification.signalType,
+    }),
     provenance: {
       ...normalizedInput.provenance,
       observationId: archived.observationId,
       classificationMethod: classification.method,
       matchedRules: classification.matchedRules,
+      semanticEventType: classification.semanticEventType || classification.signalType,
     },
     evidence: [
       {

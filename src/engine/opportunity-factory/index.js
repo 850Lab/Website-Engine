@@ -11,6 +11,8 @@ import {
   listOpportunities,
 } from "../opportunities/index.js";
 import { getOfferWithCapabilities } from "../offers/index.js";
+import { getSignalById } from "../signals/index.js";
+import { evaluateCommercialActionability } from "./abstention.js";
 import {
   buildBuyer,
   buildConstraints,
@@ -129,6 +131,31 @@ export async function buildOpportunityForProblem(problemId, options = {}) {
     throw new Error(`No offer recommendation available for problem: ${problemId}`);
   }
 
+  const signalId = problem.supportingSignalIds?.[0];
+  const signal = options.signal || (signalId ? await getSignalById(signalId) : null);
+
+  const actionability = evaluateCommercialActionability({
+    problem,
+    capabilityMatch,
+    offerRecommendation,
+    signal,
+  });
+
+  if (!actionability.actionable) {
+    return {
+      abstained: actionability.abstained,
+      validation: {
+        valid: false,
+        status: "abstained",
+        checks: [],
+        errors: [actionability.abstained.reason],
+      },
+      problemId,
+      capabilityMatchId: capabilityMatch.id,
+      offerRecommendationId: offerRecommendation.id,
+    };
+  }
+
   const assembled = await buildOpportunity({
     problem,
     capabilityMatch,
@@ -156,3 +183,4 @@ export async function buildOpportunityForProblem(problemId, options = {}) {
 }
 
 export { buildOpportunityExplainability } from "./explainability.js";
+export { evaluateCommercialActionability, ABSTENTION_THRESHOLDS } from "./abstention.js";

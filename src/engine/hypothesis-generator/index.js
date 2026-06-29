@@ -67,6 +67,16 @@ export const CATEGORY_HYPOTHESIS_TEMPLATES = {
       polarity: "positive",
     },
   ],
+  Maintenance: [
+    {
+      key: "maintenance_window_demand",
+      title: "Maintenance support demand is increasing",
+      description: "Scheduled maintenance in {location} indicates support service needs.",
+      problemCategory: "maintenance_window_demand",
+      assumptions: ["Maintenance window is scheduled or active"],
+      polarity: "positive",
+    },
+  ],
   Emergency: [
     {
       key: "emergency_response_demand",

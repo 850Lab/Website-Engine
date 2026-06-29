@@ -101,6 +101,20 @@ export async function initializeRuntimeFactStore() {
   return runtimePath;
 }
 
+function createEmptyStore() {
+  return {
+    metadata: {
+      updatedAt: nowIso(),
+      storageMode: "runtime_only",
+    },
+    facts: [],
+  };
+}
+
+export async function clearFactStoreForTests() {
+  await saveStore(createEmptyStore());
+}
+
 export function validatePredicate(predicate) {
   return FACT_PREDICATES.includes(predicate);
 }

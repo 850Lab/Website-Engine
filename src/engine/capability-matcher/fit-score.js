@@ -1,5 +1,9 @@
 import { getCategoryWeights } from "./problem-category-map.js";
 import { constraintPenaltyFactor } from "./constraints.js";
+import {
+  applySemanticCalibration,
+  isCommerciallyIrrelevant,
+} from "./calibration.js";
 
 const MATURITY_SCORE = {
   experimental: 0.55,
@@ -92,7 +96,12 @@ export function analyzeFit(problemContext, candidate, constraintResults, targetP
   const rawFit = weightTotal ? weighted / weightTotal : 0;
   const penalty = constraintPenaltyFactor(constraintResults);
   const problemConfidenceCap = clamp(problemContext.confidence || 0.5, 0.5, 1);
-  const fitScore = clamp(rawFit * penalty * problemConfidenceCap, 0, 1);
+  let fitScore = clamp(rawFit * penalty * problemConfidenceCap, 0, 1);
+
+  fitScore = applySemanticCalibration(problemContext.category, capability.id, fitScore);
+  if (isCommerciallyIrrelevant(problemContext.category, capability)) {
+    fitScore = Math.min(fitScore, 0.35);
+  }
 
   return {
     fitScore: Number(fitScore.toFixed(4)),

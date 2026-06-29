@@ -10,6 +10,7 @@ import {
   safeFileExists,
   ensureDirectory,
 } from "../runtime/index.js";
+import { buildCalibratedDedupKey } from "./dedup.js";
 
 const LEGACY_STORE_PATH = getLegacySignalStorePath();
 
@@ -21,6 +22,7 @@ export const SIGNAL_TYPES = [
   "expansion",
   "shutdown",
   "turnaround",
+  "maintenance",
   "funding",
   "acquisition",
   "weather_event",
@@ -151,8 +153,7 @@ function hashPayload(payload) {
 }
 
 function buildDedupKey(input) {
-  if (input.dedupKey) return String(input.dedupKey);
-  return [input.source, input.signalType, input.headline].filter(Boolean).join("|");
+  return buildCalibratedDedupKey(input);
 }
 
 function buildHashInput(signal) {
@@ -165,7 +166,9 @@ function buildHashInput(signal) {
     rawTextRef: signal.rawTextRef,
     url: signal.url,
     signalType: signal.signalType,
+    location: signal.location,
     dedupKey: signal.dedupKey,
+    contentHash: signal.provenance?.contentHash || null,
   };
 }
 
@@ -219,6 +222,24 @@ async function saveStore(store) {
     runtimeStorePath: toRepoRelativePath(runtimePath),
   };
   await writeJsonAtomicWithRetry(runtimePath, store);
+}
+
+function createEmptyStore() {
+  return {
+    metadata: {
+      updatedAt: nowIso(),
+      storageMode: "runtime_preferred",
+    },
+    signals: [],
+  };
+}
+
+export async function clearSignalStoreForTests() {
+  const empty = createEmptyStore();
+  await saveStore(empty);
+  if (await storeFileExists(LEGACY_STORE_PATH)) {
+    await writeJsonAtomicWithRetry(LEGACY_STORE_PATH, clone(empty));
+  }
 }
 
 export async function initializeRuntimeSignalStore() {
@@ -604,6 +625,7 @@ export {
   parseLocationString,
 } from "./observations.js";
 export { classifySignalRules, UNKNOWN_TYPE } from "./classify.js";
+export { buildCalibratedDedupKey } from "./dedup.js";
 
 export {
   ALLOWED_TRANSITIONS,

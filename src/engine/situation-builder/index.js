@@ -19,18 +19,92 @@ export const SIGNAL_TYPE_TO_CATEGORY = {
   public_budget: "Government Funding",
   government_agenda: "Government Funding",
   turnaround: "Turnaround",
+  maintenance: "Maintenance",
   shutdown: "Turnaround",
   weather_event: "Emergency",
   rfp: "Procurement",
   bid_award: "Procurement",
   contract_award: "Procurement",
   acquisition: "Acquisition",
-  company_news: "Capital Project",
+  company_news: "Unknown",
   crm_event: "Unknown",
   social_signal: "Unknown",
   regulatory_change: "Infrastructure",
   unknown: "Unknown",
 };
+
+const PRIORITY_SIGNAL_CATEGORIES = {
+  expansion: "Expansion",
+  maintenance: "Maintenance",
+  turnaround: "Turnaround",
+  hiring_spike: "Hiring",
+  permit: "Permit Activity",
+  funding: "Government Funding",
+  public_budget: "Government Funding",
+  government_agenda: "Government Funding",
+  shutdown: "Turnaround",
+  weather_event: "Emergency",
+  rfp: "Procurement",
+  bid_award: "Procurement",
+  contract_award: "Procurement",
+  acquisition: "Acquisition",
+  regulatory_change: "Infrastructure",
+};
+
+function factTextBlob(fact) {
+  return `${fact.object || ""} ${fact.subject || ""} ${fact.metadata?.headline || ""}`.toLowerCase();
+}
+
+function hasExpansionEvidence(cluster, factsById) {
+  if (cluster.signalTypes.includes("expansion")) return true;
+
+  for (const factId of cluster.factIds) {
+    const fact = factsById.get(factId);
+    if (!fact) continue;
+    if (fact.predicate === "has_signal_type" && fact.object === "expansion") return true;
+    if (/\b(expansion|new facility|warehouse expansion|announces expansion)\b/i.test(factTextBlob(fact))) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function hasCapitalProjectEvidence(cluster, factsById) {
+  if (hasExpansionEvidence(cluster, factsById)) return false;
+
+  for (const factId of cluster.factIds) {
+    const fact = factsById.get(factId);
+    if (!fact) continue;
+    const text = factTextBlob(fact);
+    if (/\$[\d,.]+[kmb]?|\bmillion\b|\bbillion\b|\bcapital project\b|\bgroundbreaking\b/i.test(text)) {
+      return true;
+    }
+  }
+
+  return cluster.marketIds.length > 0 && cluster.capabilityIds.length > 0;
+}
+
+function clusterHasSignalType(cluster, factsById, signalType) {
+  if (cluster.signalTypes.includes(signalType)) return true;
+  for (const factId of cluster.factIds) {
+    const fact = factsById.get(factId);
+    if (fact?.predicate === "has_signal_type" && fact.object === signalType) return true;
+  }
+  return false;
+}
+
+function getSignalTypeFacts(cluster, factsById) {
+  const signalIdSet = new Set(cluster.signalIds);
+  return cluster.factIds
+    .map((factId) => factsById.get(factId))
+    .filter((fact) => fact?.predicate === "has_signal_type")
+    .sort((a, b) => {
+      const aLinked = a.signalIds?.some((id) => signalIdSet.has(id)) ? 0 : 1;
+      const bLinked = b.signalIds?.some((id) => signalIdSet.has(id)) ? 0 : 1;
+      return aLinked - bLinked;
+    });
+}
 
 const PRIORITY_BY_URGENCY = {
   critical: "critical",
@@ -165,24 +239,39 @@ function extractCluster(nodes, edges, nodeIdSet) {
 }
 
 function resolveCategory(cluster, factsById) {
+  for (const fact of getSignalTypeFacts(cluster, factsById)) {
+    const priority = PRIORITY_SIGNAL_CATEGORIES[fact.object];
+    if (priority) return priority;
+  }
+
+  for (const signalType of cluster.signalTypes) {
+    const priority = PRIORITY_SIGNAL_CATEGORIES[signalType];
+    if (priority) return priority;
+  }
+
+  if (hasExpansionEvidence(cluster, factsById)) {
+    return "Expansion";
+  }
+
   for (const factId of cluster.factIds) {
     const fact = factsById.get(factId);
     if (!fact) continue;
-    if (fact.predicate === "has_signal_type") {
-      const mapped = SIGNAL_TYPE_TO_CATEGORY[fact.object];
-      if (mapped) return mapped;
-    }
     if (fact.predicate === "announced" && fact.metadata?.signalType === "expansion") {
       return "Expansion";
     }
   }
 
-  for (const signalType of cluster.signalTypes) {
-    const mapped = SIGNAL_TYPE_TO_CATEGORY[signalType];
-    if (mapped) return mapped;
+  if (clusterHasSignalType(cluster, factsById, "company_news")) {
+    if (hasCapitalProjectEvidence(cluster, factsById)) return "Capital Project";
+    return "Unknown";
   }
 
-  if (cluster.marketIds.length && cluster.capabilityIds.length) {
+  for (const signalType of cluster.signalTypes) {
+    const mapped = SIGNAL_TYPE_TO_CATEGORY[signalType];
+    if (mapped && mapped !== "Unknown") return mapped;
+  }
+
+  if (hasCapitalProjectEvidence(cluster, factsById)) {
     return "Capital Project";
   }
 
