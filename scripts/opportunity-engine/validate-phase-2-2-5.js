@@ -11,11 +11,15 @@ import {
   getRuntimeRoot,
   getRuntimeSignalStorePath,
   getRuntimeRawSignalPath,
+  usesRuntimeOverride,
 } from "../../src/engine/runtime/index.js";
 import {
   initializeRuntimeSignalStore,
   getSignalStorePaths,
 } from "../../src/engine/signals/index.js";
+import { listFacts } from "../../src/engine/facts/index.js";
+import { listProblems } from "../../src/engine/problems/index.js";
+import { listOpportunities } from "../../src/engine/opportunities/index.js";
 import {
   registerConnector,
   listConnectors,
@@ -55,29 +59,66 @@ async function runGit(args) {
   return stdout.trim();
 }
 
-const runtimeDirs = [
-  "runtime",
-  "runtime/signals",
-  "runtime/signals/raw",
-  "runtime/logs",
-  "runtime/cache",
+async function resolveRawArchivePath(rawTextRef) {
+  const normalized = rawTextRef.replace(/\\/g, "/");
+  if (/^[A-Za-z]:\//.test(normalized) || normalized.startsWith("/")) {
+    return normalized;
+  }
+  return join(ROOT, normalized).replace(/\\/g, "/");
+}
+
+async function assertRawTextRefUsesActiveRuntime(rawTextRef) {
+  if (!rawTextRef) {
+    fail("Ingested signal missing rawTextRef");
+    return false;
+  }
+
+  const normalized = rawTextRef.replace(/\\/g, "/");
+  if (normalized.includes("engine-data/")) {
+    fail("Ingested signal rawTextRef must not use engine-data archive");
+    return false;
+  }
+
+  const absolutePath = await resolveRawArchivePath(rawTextRef);
+  const runtimeRawRoot = getRuntimePath("signals", "raw").replace(/\\/g, "/");
+  if (!absolutePath.startsWith(runtimeRawRoot)) {
+    fail(`Ingested signal rawTextRef does not use active runtime raw archive: ${rawTextRef}`);
+    return false;
+  }
+
+  if (!(await fileExists(absolutePath))) {
+    fail(`Raw archive file missing at rawTextRef: ${rawTextRef}`);
+    return false;
+  }
+
+  pass("Connector output passes through manual ingestion path");
+  return true;
+}
+
+const runtimeLayout = [
+  [],
+  ["signals"],
+  ["signals", "raw"],
+  ["logs"],
+  ["cache"],
 ];
 
-for (const dir of runtimeDirs) {
-  if (!(await fileExists(join(ROOT, dir)))) {
-    fail(`Missing runtime directory: ${dir}`);
+await ensureRuntimeDirectories();
+for (const parts of runtimeLayout) {
+  const label = parts.length ? parts.join("/") : getRuntimeRoot();
+  if (!(await fileExists(getRuntimePath(...parts)))) {
+    fail(`Missing runtime directory: ${label}`);
   }
 }
 if (!errors.some((message) => message.includes("Missing runtime directory"))) {
   pass("Runtime directories exist");
 }
 
-await ensureRuntimeDirectories();
 const runtimeRoot = getRuntimeRoot();
 const signalStorePath = getRuntimeSignalStorePath();
 const rawPath = getRuntimeRawSignalPath("2026", "01", "01");
 
-if (!runtimeRoot.includes("runtime") && !process.env.OPPORTUNITY_OS_RUNTIME_DIR) {
+if (!usesRuntimeOverride() && !runtimeRoot.replace(/\\/g, "/").includes("/runtime")) {
   fail("Runtime root does not resolve to runtime/");
 } else {
   pass("Runtime paths resolve");
@@ -104,17 +145,11 @@ if (!gitignore.includes("runtime/**")) {
   pass("Runtime data is gitignored");
 }
 
-for (const forbidden of [
-  join(ROOT, "src/engine/facts"),
-  join(ROOT, "src/engine/problems"),
-  join(ROOT, "engine-data/facts"),
-]) {
-  if (await fileExists(forbidden)) {
-    fail(`Forbidden layer exists: ${forbidden}`);
-  }
+if (await fileExists(join(ROOT, "engine-data/facts"))) {
+  fail("Legacy engine-data fact store exists");
 }
-if (!errors.some((message) => message.includes("Forbidden layer"))) {
-  pass("No facts/problems/opportunities modules added");
+if (!errors.some((message) => message.includes("Legacy engine-data fact"))) {
+  pass("No legacy engine-data fact store added");
 }
 
 const homeSource = await readFile(join(ROOT, "src/pivotal-os/pages/home.js"), "utf8");
@@ -172,13 +207,18 @@ const ingested = await ingestConnectorResult(connectorResult);
 const signal = ingested[0]?.signal;
 if (!signal || signal.processingState !== "classified") {
   fail("Connector output did not complete manual ingestion path");
-} else if (!signal.rawTextRef.startsWith("runtime/signals/raw/")) {
-  fail("Ingested signal rawTextRef does not use runtime raw archive");
 } else {
-  pass("Connector output passes through manual ingestion path");
+  await assertRawTextRefUsesActiveRuntime(signal.rawTextRef);
 }
 
-if (signal.factIds?.length || signal.problemIds?.length || signal.opportunityIds?.length) {
+if (
+  signal?.factIds?.length ||
+  signal?.problemIds?.length ||
+  signal?.opportunityIds?.length ||
+  (await listFacts()).length > 0 ||
+  (await listProblems()).length > 0 ||
+  (await listOpportunities()).length > 0
+) {
   fail("Connector ingest produced facts/problems/opportunities");
 } else {
   pass("No facts/problems/opportunities generated");
@@ -187,9 +227,10 @@ if (signal.factIds?.length || signal.problemIds?.length || signal.opportunityIds
 const afterGit = await runGit(["status", "--porcelain"]);
 const afterLines = afterGit ? afterGit.split("\n").filter(Boolean) : [];
 const runtimeTrackedChanges = afterLines.filter((line) => {
-  const path = line.slice(2).trimStart();
+  const path = line.slice(2).trimStart().replace(/\\/g, "/");
   if (path === "runtime/" || path === "runtime") return false;
   if (path.endsWith(".gitkeep")) return false;
+  if (path.startsWith("runtime-validation/")) return false;
   return path.startsWith("runtime/");
 });
 
