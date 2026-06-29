@@ -9,6 +9,9 @@ import {
   getSignalById,
   getSignalRegistrySummary,
 } from "../../src/engine/signals/index.js";
+import { listFacts } from "../../src/engine/facts/index.js";
+import { listProblems } from "../../src/engine/problems/index.js";
+import { listOpportunities } from "../../src/engine/opportunities/index.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const errors = [];
@@ -70,18 +73,13 @@ if (await dirExists(connectorDir)) {
   pass("No connector code");
 }
 
-for (const path of [
-  join(ROOT, "src/engine/facts"),
-  join(ROOT, "src/engine/problems"),
-  join(ROOT, "engine-data/facts"),
-  join(ROOT, "engine-data/problems"),
-]) {
+for (const path of [join(ROOT, "engine-data/facts"), join(ROOT, "engine-data/problems")]) {
   if (await dirExists(path)) {
-    fail(`Forbidden layer exists: ${path}`);
+    fail(`Legacy engine-data layer exists: ${path}`);
   }
 }
-if (!errors.some((message) => message.includes("Forbidden layer"))) {
-  pass("No Fact, Problem, or Opportunity layer modules added");
+if (!errors.some((message) => message.includes("Legacy engine-data layer"))) {
+  pass("No legacy engine-data fact or problem stores added");
 }
 
 const homeSource = await readFile(join(ROOT, "src/pivotal-os/pages/home.js"), "utf8");
@@ -142,10 +140,20 @@ if (ingestResult) {
     pass("Signal normalized and lifecycle complete");
   }
 
-  if (signal.signalType !== "company_news") {
-    fail(`Expected company_news classification, got ${signal.signalType}`);
+  if (signal.signalType !== "expansion") {
+    fail(`Expected expansion classification from expansion summary, got ${signal.signalType}`);
   } else {
-    pass("Signal created with canonical type");
+    pass("Signal semantically classified from headline/summary");
+  }
+
+  if ((await listFacts()).length > 0) {
+    fail("Manual ingest created facts (Phase 2.2 must stop at signals)");
+  } else if ((await listProblems()).length > 0) {
+    fail("Manual ingest created problems (Phase 2.2 must stop at signals)");
+  } else if ((await listOpportunities()).length > 0) {
+    fail("Manual ingest created opportunities (Phase 2.2 must stop at signals)");
+  } else {
+    pass("Manual ingest stops at signal registry (no facts, problems, or opportunities)");
   }
 
   if (!signal.rawTextRef || signal.rawTextRef !== rawTextRef) {
