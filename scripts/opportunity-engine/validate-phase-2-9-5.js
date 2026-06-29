@@ -129,6 +129,27 @@ async function assertValidateCore() {
   }
 }
 
+async function restoreMissionControlReportIfModified() {
+  const reportPath = "reports/mission-control.md";
+  const porcelain = await runGit(["status", "--porcelain", "--", reportPath]);
+  if (!porcelain.trim()) {
+    return;
+  }
+
+  try {
+    if (porcelain.startsWith("??")) {
+      await execFileAsync("git", ["clean", "-f", "--", reportPath], { cwd: ROOT });
+    } else {
+      await execFileAsync("git", ["restore", "--source=HEAD", "--staged", "--worktree", reportPath], {
+        cwd: ROOT,
+      });
+    }
+    pass("Restored reports/mission-control.md to HEAD after validation side effects");
+  } catch (error) {
+    fail(`Could not restore ${reportPath}: ${error.message}`);
+  }
+}
+
 async function assertGitCleanlinessPolicy() {
   const gitignore = await readFile(join(ROOT, ".gitignore"), "utf8");
   const ignored = [
@@ -217,6 +238,7 @@ await assertIoHelpers();
 await wait(500);
 await assertRuntimeHealth();
 await assertValidateCore();
+await restoreMissionControlReportIfModified();
 await assertGitCleanlinessPolicy();
 await assertAutopilotGates();
 await assertArchitectureFreeze();
