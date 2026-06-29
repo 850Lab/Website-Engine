@@ -1,13 +1,14 @@
-import { readFile, writeFile, access } from "node:fs/promises";
+import { readFile, writeFile, access, mkdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { randomUUID } from "node:crypto";
 import {
   bootstrapValidator,
   finalizeValidator,
+  getActiveValidationContext,
   isValidationFrameworkManaged,
 } from "../../src/engine/validation/index.js";
 import { VALIDATOR_GRAPH } from "../../src/engine/validation/graph.js";
@@ -27,7 +28,7 @@ import {
   initializeRuntimeSignalStore,
 } from "../../src/engine/signals/index.js";
 import { runFileDropSensor, clearSensorsForTests } from "../../src/engine/sensors/index.js";
-import { runLivePipeline, clearInboxForRun } from "./run-live-pipeline.js";
+import { clearInboxForRun } from "./run-live-pipeline.js";
 import { assertEngineDataClean } from "./assert-engine-data-clean.js";
 
 const execFileAsync = promisify(execFile);
@@ -79,6 +80,145 @@ async function expectThrowsAsync(label, fn) {
   } catch (error) {
     pass(`${label} rejected: ${error.message}`);
     return true;
+  }
+}
+
+function formatLivePipelineFailure(result) {
+  const { report, error, stderr, stdout, reportPath } = result;
+  if (error && !report) {
+    const parts = [error.message || String(error)];
+    if (stderr?.trim()) parts.push(`stderr: ${stderr.trim()}`);
+    if (stdout?.trim()) parts.push(`stdout: ${stdout.trim()}`);
+    if (reportPath) parts.push(`reportPath=${reportPath}`);
+    return parts.join(" | ");
+  }
+  if (!report) {
+    return reportPath ? `no live pipeline report returned (expected ${reportPath})` : "no live pipeline report returned";
+  }
+  return [
+    report.summary || "live pipeline incomplete",
+    `success=${report.success}`,
+    `idle=${report.idle}`,
+    `opportunitiesCreated=${report.objectsCreated?.opportunities ?? 0}`,
+    `pendingJobs=${report.pendingJobs}`,
+    `retryJobs=${report.retryJobs}`,
+    `jobs=${report.jobsCompleted}/${report.jobsCreated} completed`,
+    report.jobs?.failed ? `failedJobs=${report.jobs.failed}` : null,
+    report.sensor?.errors?.length ? `sensorErrors=${report.sensor.errors.join("; ")}` : null,
+    reportPath ? `report=${reportPath}` : null,
+  ]
+    .filter(Boolean)
+    .join(" | ");
+}
+
+async function runLivePipelineInFreshRuntime(parentRuntimeRoot) {
+  const livePipelineRuntime = join(parentRuntimeRoot, `live-pipeline-${randomUUID().slice(0, 8)}`);
+  const livePipelineReportsDir = join(livePipelineRuntime, "reports");
+  const mdPath = join(livePipelineReportsDir, "live-pipeline.md");
+  const jsonPath = join(livePipelineReportsDir, "live-pipeline.json");
+  const runId = randomUUID().slice(0, 8);
+
+  await mkdir(livePipelineReportsDir, { recursive: true });
+
+  const moduleUrl = (absPath) => JSON.stringify(pathToFileURL(absPath).href);
+
+  const runnerCode = `
+import { ensureRuntimeDirectories } from ${moduleUrl(join(ROOT, "src/engine/runtime/index.js"))};
+import { clearSignalStoreForTests, initializeRuntimeSignalStore } from ${moduleUrl(join(ROOT, "src/engine/signals/index.js"))};
+import { clearFactStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/facts/index.js"))};
+import { clearEventStoreForTests, initializeEventStore } from ${moduleUrl(join(ROOT, "src/engine/events/index.js"))};
+import { clearJobStoreForTests, initializeJobStore } from ${moduleUrl(join(ROOT, "src/engine/jobs/index.js"))};
+import { clearSchedulerStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/scheduler/index.js"))};
+import { clearDispatchStoreForTests, initializeDispatchStore } from ${moduleUrl(join(ROOT, "src/engine/execution-queue/index.js"))};
+import { clearOrchestratorStoreForTests, initializeOrchestratorStore } from ${moduleUrl(join(ROOT, "src/engine/orchestrator/index.js"))};
+import { clearGraphStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/graph-store/index.js"))};
+import { clearSituationStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/situations/index.js"))};
+import { clearHypothesisStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/hypotheses/index.js"))};
+import { clearProblemStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/problems/index.js"))};
+import { clearCapabilityMatchStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/capability-matches/index.js"))};
+import { clearOfferRecommendationStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/offer-recommendations/index.js"))};
+import { clearOpportunityStoreForTests } from ${moduleUrl(join(ROOT, "src/engine/opportunities/index.js"))};
+import { clearCapabilityCacheForTests } from ${moduleUrl(join(ROOT, "src/engine/capabilities/index.js"))};
+import { clearOfferCacheForTests } from ${moduleUrl(join(ROOT, "src/engine/offers/index.js"))};
+import { runLivePipeline, clearInboxForRun } from ${moduleUrl(join(ROOT, "scripts/opportunity-engine/run-live-pipeline.js"))};
+
+await ensureRuntimeDirectories();
+await clearSignalStoreForTests();
+await clearFactStoreForTests();
+await clearJobStoreForTests();
+await clearEventStoreForTests();
+await clearSchedulerStoreForTests();
+await clearDispatchStoreForTests();
+await clearOrchestratorStoreForTests();
+await clearGraphStoreForTests();
+await clearSituationStoreForTests();
+await clearHypothesisStoreForTests();
+await clearProblemStoreForTests();
+await clearCapabilityMatchStoreForTests();
+await clearOfferRecommendationStoreForTests();
+await clearOpportunityStoreForTests();
+clearCapabilityCacheForTests();
+clearOfferCacheForTests();
+await initializeRuntimeSignalStore();
+await initializeEventStore();
+await initializeJobStore();
+await initializeDispatchStore();
+await initializeOrchestratorStore();
+await clearInboxForRun();
+
+const report = await runLivePipeline({
+  runId: ${JSON.stringify(runId)},
+  writeReports: true,
+  reportPaths: {
+    markdownPath: ${JSON.stringify(mdPath)},
+    jsonPath: ${JSON.stringify(jsonPath)},
+  },
+});
+
+console.log(JSON.stringify({ reportPath: ${JSON.stringify(jsonPath)}, report }));
+`;
+
+  const env = {
+    ...process.env,
+    OPPORTUNITY_RUNTIME_DIR: livePipelineRuntime,
+    OPPORTUNITY_OS_RUNTIME_DIR: livePipelineRuntime,
+    OPPORTUNITY_VALIDATION_RUNTIME_DIR: livePipelineRuntime,
+  };
+
+  try {
+    const { stdout } = await execFileAsync(process.execPath, ["--input-type=module", "-e", runnerCode], {
+      cwd: ROOT,
+      env,
+      maxBuffer: 10 * 1024 * 1024,
+    });
+    const lastLine = stdout.trim().split("\n").filter(Boolean).pop();
+    const payload = JSON.parse(lastLine);
+    return {
+      report: payload.report,
+      reportPath: payload.reportPath || jsonPath,
+      mdPath,
+      jsonPath,
+      runtimePath: livePipelineRuntime,
+    };
+  } catch (error) {
+    let report = null;
+    try {
+      if (await fileExists(jsonPath)) {
+        report = JSON.parse(await readFile(jsonPath, "utf8"));
+      }
+    } catch {
+      // Ignore report read failures; outer handler formats subprocess error.
+    }
+    return {
+      report,
+      reportPath: jsonPath,
+      mdPath,
+      jsonPath,
+      runtimePath: livePipelineRuntime,
+      error,
+      stderr: error.stderr || "",
+      stdout: error.stdout || "",
+    };
   }
 }
 
@@ -179,15 +319,29 @@ try {
 }
 
 await clearInboxForRun({ inboxDir });
-try {
-  const pipelineResult = await runLivePipeline({ runId: randomUUID().slice(0, 8) });
-  if (!pipelineResult?.success) {
-    fail(`live pipeline did not succeed: ${pipelineResult?.error || "unknown"}`);
-  } else {
-    pass("live pipeline completed in isolated runtime");
-  }
-} catch (error) {
-  fail(`live pipeline failed: ${error.message}`);
+const validationRuntimeRoot =
+  getActiveValidationContext()?.runtimePath ||
+  process.env.OPPORTUNITY_VALIDATION_RUNTIME_DIR ||
+  process.env.OPPORTUNITY_RUNTIME_DIR ||
+  join(ROOT, "runtime-validation");
+
+const livePipelineResult = await runLivePipelineInFreshRuntime(validationRuntimeRoot);
+if (!livePipelineResult.report?.success) {
+  fail(`live pipeline did not succeed: ${formatLivePipelineFailure(livePipelineResult)}`);
+} else {
+  pass(`live pipeline completed in fresh isolated runtime (${livePipelineResult.runtimePath})`);
+}
+
+if (!(await fileExists(livePipelineResult.jsonPath))) {
+  fail(`live pipeline JSON report missing at ${livePipelineResult.jsonPath}`);
+} else {
+  pass(`live pipeline report written to ${livePipelineResult.jsonPath}`);
+}
+
+if (!(await fileExists(livePipelineResult.mdPath))) {
+  fail(`live pipeline markdown report missing at ${livePipelineResult.mdPath}`);
+} else {
+  pass(`live pipeline markdown report written to ${livePipelineResult.mdPath}`);
 }
 
 try {
