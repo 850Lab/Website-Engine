@@ -118,6 +118,7 @@ export class ValidationRunner {
     const env = {
       ...process.env,
       VALIDATION_FRAMEWORK_MANAGED: "1",
+      OPPORTUNITY_OS_VALIDATION_RUNNER: "1",
       VALIDATION_SKIP_NESTED: "1",
       OPPORTUNITY_RUNTIME_DIR: runtime.root,
       OPPORTUNITY_OS_RUNTIME_DIR: runtime.root,

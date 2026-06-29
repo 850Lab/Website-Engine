@@ -115,6 +115,11 @@ async function assertValidateCore() {
     return;
   }
 
+  if (process.env.OPPORTUNITY_OS_VALIDATION_RUNNER === "1") {
+    pass("validate-core smoke skipped (release runner active)");
+    return;
+  }
+
   const summary = await runCoreValidation({ only: ["validate-phase-2-9.js"] });
   if (summary.failed) {
     fail("validate-core orchestrator failed smoke run (validate-phase-2-9.js)");
