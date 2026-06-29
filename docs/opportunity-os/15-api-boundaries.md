@@ -16,7 +16,7 @@ See [Reasoning Engine §11 — Permanent Rules](./26-reasoning-engine.md#11-perm
 | Domain | Owner module | Public API | Consumers |
 |---|---|---|---|
 | **Observations (raw)** | Ingest boundary + sensors + manual CLI | Write to `runtime/signals/raw/` only | Signal normalizer |
-| **Runtime storage** | `engine/runtime` | Path helpers, `ensureRuntimeDirectories()`, `readJsonWithRetry()`, `writeJsonAtomic()`, `writeJsonAtomicWithRetry()`, `appendJsonLineWithRetry()`, `readJsonLinesWithRetry()` | All runtime stores including `events/`, `jobs/` |
+| **Runtime storage** | `engine/runtime` | Path helpers, `ensureRuntimeDirectories()`, `readJsonWithRetry()`, `writeJsonAtomic()`, `writeJsonAtomicWithRetry()`, `appendJsonLineWithRetry()`, `readJsonLinesWithRetry()`, `assertNotEngineDataWritePath()`, `assertRuntimeWritePath()`, `isEngineDataPath()` | All runtime stores including `events/`, `jobs/` |
 | **Validation infrastructure** | `engine/validation` *(Phase 4.0.5)* | `ValidationRunner.runReleaseSuite()`, `bootstrapValidator()`, `finalizeValidator()`, `shouldSkipNestedRegressions()` | Phase validators, `validate-core.js` only |
 | **Sensors** | `engine/sensors` (Phase 2.3) | `registerSensor()`, `runSensor()`, `runAllSensors()`, `healthReport()`, `ingestSensorResult()` | Observation pipeline only |
 | **Connectors (deprecated)** | `engine/connectors` shim | `registerConnector()`, `runConnector()` | Regression only — use sensors |

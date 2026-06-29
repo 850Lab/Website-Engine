@@ -6,6 +6,7 @@ import {
   isValidationFrameworkManaged,
   shouldSkipNestedRegressions,
 } from "./env.js";
+import { assertEngineDataClean } from "../../../scripts/opportunity-engine/assert-engine-data-clean.js";
 
 export {
   getRepoRoot,
@@ -51,6 +52,12 @@ export async function emitValidatorResult(result) {
 }
 
 export async function finalizeValidator({ phase, errors = [], warnings = [], artifacts = [], startedAt = null }) {
+  try {
+    await assertEngineDataClean();
+  } catch (error) {
+    errors.push(error.message || String(error));
+  }
+
   const passed = errors.length === 0;
   const result = {
     phase,

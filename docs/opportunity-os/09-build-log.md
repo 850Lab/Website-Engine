@@ -365,6 +365,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-23 — Phase 4.0.6 Engine-Data Read-Only Enforcement
+**Phase:** 4.0.6  
+**Type:** Milestone  
+**Summary:** Hardened storage boundaries: `engine-data/` is read-only seed/config during runtime and validation. Added `engine-data-guard.js`, wired guards into runtime IO, removed legacy signal store writes from test helpers, added `assert-engine-data-clean.js`, integrated git cleanliness checks into `finalizeValidator()`, and registered Phase 4.0.6 in the release validation graph. No new intelligence, connectors, or Phase 4.1 work.  
+**Links:** `src/engine/runtime/engine-data-guard.js`, `scripts/opportunity-engine/assert-engine-data-clean.js`, `scripts/opportunity-engine/validate-phase-4-0-6.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -387,6 +395,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-23 | Phase 4.0.6 Engine-Data Read-Only — guard, IO choke point, validator git assert |
 | 2026-06-29 | Phase 4.0.5 Validation Infrastructure — isolated runtime-validation, ValidationRunner, dependency graph |
 | 2026-06-23 | Phase 4.0 Intelligence Calibration — abstention gate, semantic classification, calibrated dedupe |
 | 2026-06-23 | Phase 3.1.8 OpenClaw QA Worker — read-only, one Job, STOP |

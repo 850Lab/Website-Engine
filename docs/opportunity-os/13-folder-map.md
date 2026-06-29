@@ -14,7 +14,7 @@
 | **`src/engine/`** | Opportunity logic: radar, factory, scoring, mission, execution projections | Platform / OS team | `engine-data/`, `data/` reads | Problem factory Phase 3; sole business logic home |
 | **`src/engine/capabilities/`** | Load + normalize capability registry (Phase 2.7) | Platform | `engine-data/capabilities/` | Matcher, offers join, factory |
 | **`src/engine/score-council/`** | Independent score engines + CEO mode weighting | Platform | opportunity fields | Learning calibration Phase 5 |
-| **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
+| **`engine-data/`** | Config: offers, markets, campaigns (CEO/mission config) — **read-only at runtime** | Product / CEO | None | Add `ceo-modes/` when Phase 1 UI lands |
 | **`engine-data/capabilities/`** | First-class capability registry JSON | Product / Platform | `engine-data/offers/` | Expand capabilities; link to problem taxonomy Phase 3 |
 | **`runtime/`** | Live operational data: signals, facts, graph, situations, hypotheses, problems, capability-matches, offer-recommendations, opportunities, events, jobs, logs, cache (gitignored) | Platform | None | Default local runtime |
 | **`runtime-validation/`** | Isolated per-run validation workspaces (`run-{uuid}/`) — events, jobs, stores, reports (gitignored, Phase 4.0.5) | Platform | None | Never used in production |
@@ -71,7 +71,7 @@
 | **`src/engine/fact-builder/`** | Rules-only fact extraction from signals | Signal / Platform | `facts/`, `signals/` | No LLM; conservative predicates |
 | **`src/engine/knowledge-graph/`** | Graph projection bridge (nodes/edges) | Platform | `facts/` | Graph DB later; Phase 2.5 enrichment |
 | **`src/engine/connectors/`** | **Deprecated** shim over sensors (Phase 2.2.5 regression) | Signal / Platform | `src/engine/sensors/` | Do not add new connectors |
-| **`engine-data/signals/`** | Legacy/historical signal seed (read-compatible) | Signal / Platform | None | New writes go to `runtime/signals/` |
+| **`engine-data/signals/`** | Legacy/historical signal seed (read-compatible only) | Signal / Platform | None | **No writes** — runtime store is `runtime/signals/` |
 | **`src/schema/`** | Locked 8-entity persistence schema | Platform | `data/*.json` | Converge with Constitution ontology gradually |
 | **`src/services/`** | Schema service layer, flags, id-bridge, dual-read, schema queue/outcomes | Platform | `schema/`, legacy stores | Shrink as graph writer replaces bridges |
 

@@ -16,8 +16,9 @@ Separate **git-tracked code and seed config** from **live operational data** so 
 | Layer | Path | Role | Git |
 |---|---|---|---|
 | **Application logic** | `src/` | Engine modules, connectors, UI projections | Tracked |
-| **Seed / reference config** | `engine-data/` | Offers, capabilities, markets, campaigns, legacy signal seed | Tracked |
-| **Live operational data** | `runtime/` | Signal store, raw observations, logs, cache | **Ignored** (`.gitkeep` only) |
+| **Seed / reference config** | `engine-data/` | Offers, capabilities, markets, campaigns, legacy signal seed — **read-only at runtime** | Tracked |
+| **Live operational data** | `runtime/` | Signal store, raw observations, logs, cache — **mutable production runtime** | **Ignored** (`.gitkeep` only) |
+| **Validation runtime** | `runtime-validation/run-*` | Isolated validator workspaces — **mutable validation runtime** | **Ignored** |
 | **Generated reports** | `reports/` | Autopilot, core validation, runtime health, performance baseline | **Ignored** when listed in `.gitignore` |
 | **Schema / entity data** | `data/` | Businesses, contacts, migration entities | Partially tracked |
 
@@ -25,22 +26,25 @@ Separate **git-tracked code and seed config** from **live operational data** so 
 
 ## engine-data/ vs runtime/
 
-### `engine-data/`
+### `engine-data/` (read-only — Phase 4.0.6)
 
 - Reference and seed configuration the OS ships with
 - Examples: `offers/offers.json`, `capabilities/capabilities.json`, `campaigns/active.json`
-- Legacy signal registry at `engine-data/signals/signals.json` remains **read-compatible** for historical data
-- **Do not** append new live signals here after Phase 2.2.5
+- Legacy signal registry at `engine-data/signals/signals.json` is **read/merge only**
+- **Must not** be written during runtime, validation, sensors, pipeline runs, or tests
+- Guard: `src/engine/runtime/engine-data-guard.js` + IO choke point in `io.js`
+- Validators fail when `git status --short engine-data` shows changes (`assert-engine-data-clean.js`)
 
-### `runtime/`
+### `runtime/` (mutable production runtime)
 
 - Default root: `runtime/` (override: `OPPORTUNITY_RUNTIME_DIR` or legacy `OPPORTUNITY_OS_RUNTIME_DIR`)
+- Override **must not** point into `engine-data/`
 - Live signal registry: `runtime/signals/signals.json`
 - Sacred raw observations: `runtime/signals/raw/YYYY/MM/DD/obs_<uuid>.json`
 - Connector logs: `runtime/logs/`
 - Dedup/cache working files: `runtime/cache/`
 
-### `runtime-validation/` (Phase 4.0.5)
+### `runtime-validation/` (mutable validation runtime — Phase 4.0.5)
 
 - **Validation-only** isolated workspaces: `runtime-validation/run-{uuid}/`
 - Created automatically by `ValidationRunner` or standalone validator bootstrap
@@ -57,11 +61,29 @@ Phase 2.2 wrote observations to `engine-data/signals/raw/` and signals to `engin
 **Phase 2.2.5 policy:**
 
 1. **Read:** Engine merges legacy + runtime stores (runtime wins on ID collision)
-2. **Write:** New signals and raw observations go to `runtime/` only
+2. **Write:** New signals and raw observations go to `runtime/` only — enforced by engine-data guard (Phase 4.0.6)
 3. **No automatic deletion** of legacy files (safe, auditable)
 4. **Optional future step:** Archive legacy signal JSON to `runtime/migrations/` and mark legacy store read-only
 
 Do not bulk-move historical files in Phase 2.2.5 unless a dedicated migration script is approved.
+
+---
+
+## Engine-Data Guard (Phase 4.0.6)
+
+| Function | Purpose |
+|---|---|
+| `isEngineDataPath(path)` | Detect paths under `engine-data/` |
+| `assertNotEngineDataWritePath(path)` | Throw before any write to tracked seed data |
+| `assertRuntimeWritePath(path)` | Require writes under active runtime or `runtime-validation/` |
+| `assertRuntimeOverrideSafe(path)` | Reject runtime dir overrides targeting `engine-data/` |
+
+All `writeJsonAtomic()`, `writeJsonAtomicWithRetry()`, `appendJsonLineWithRetry()`, and guarded `ensureDirectory()` calls in `io.js` invoke the guard.
+
+Validator integration: `finalizeValidator()` calls `assertEngineDataClean()` — fails if `git status --short engine-data` is non-empty.
+
+Script: `node scripts/opportunity-engine/assert-engine-data-clean.js`  
+Phase validator: `node scripts/opportunity-engine/validate-phase-4-0-6.js`
 
 ---
 
@@ -141,7 +163,7 @@ Environment variables during managed runs:
 | `VALIDATION_SKIP_NESTED=1` | Explicit nested regression skip |
 | `VALIDATION_RESULT_PATH` | Structured JSON result file per validator |
 
-Validators assert **runtime behavior** (directory exists, store IO, atomic writes) — never `.gitkeep` placeholder files.
+Validators assert **runtime behavior** (directory exists, store IO, atomic writes) — never `.gitkeep` placeholder files. Validators **must fail** when tracked `engine-data/` files change (Phase 4.0.6).
 
 ---
 

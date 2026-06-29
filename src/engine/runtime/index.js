@@ -1,6 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { assertRuntimeOverrideSafe } from "./engine-data-guard.js";
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../..");
 
@@ -13,7 +14,10 @@ export function getRuntimeRoot() {
     process.env.OPPORTUNITY_RUNTIME_DIR ||
     process.env.OPPORTUNITY_OS_RUNTIME_DIR ||
     process.env.OPPORTUNITY_VALIDATION_RUNTIME_DIR;
-  if (override) return override;
+  if (override) {
+    assertRuntimeOverrideSafe(override);
+    return override;
+  }
   return join(REPO_ROOT, "runtime");
 }
 
@@ -157,6 +161,14 @@ export function usesRuntimeOverride() {
       process.env.OPPORTUNITY_VALIDATION_RUNTIME_DIR,
   );
 }
+
+export {
+  assertNotEngineDataWritePath,
+  assertRuntimeWritePath,
+  isEngineDataPath,
+  assertRuntimeOverrideSafe,
+  getEngineDataRoot,
+} from "./engine-data-guard.js";
 
 export {
   wait,

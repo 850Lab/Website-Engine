@@ -237,9 +237,6 @@ function createEmptyStore() {
 export async function clearSignalStoreForTests() {
   const empty = createEmptyStore();
   await saveStore(empty);
-  if (await storeFileExists(LEGACY_STORE_PATH)) {
-    await writeJsonAtomicWithRetry(LEGACY_STORE_PATH, clone(empty));
-  }
 }
 
 export async function initializeRuntimeSignalStore() {

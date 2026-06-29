@@ -1,6 +1,7 @@
 import { readFile, writeFile, appendFile, mkdir, access, rename, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { randomUUID } from "node:crypto";
+import { assertNotEngineDataWritePath, assertRuntimeWritePath } from "./engine-data-guard.js";
 
 const RETRYABLE_CODES = new Set(["EBUSY", "EPERM", "EACCES", "ENOENT"]);
 const DEFAULT_RETRIES = 6;
@@ -20,6 +21,7 @@ export async function safeFileExists(path) {
 }
 
 export async function ensureDirectory(path) {
+  assertNotEngineDataWritePath(path);
   await mkdir(path, { recursive: true });
 }
 
@@ -57,6 +59,8 @@ export async function readJsonWithRetry(filePath, fallback = null) {
 }
 
 export async function writeJsonAtomic(filePath, data) {
+  assertNotEngineDataWritePath(filePath);
+  assertRuntimeWritePath(filePath);
   const directory = dirname(filePath);
   await ensureDirectory(directory);
   const payload = `${JSON.stringify(data, null, 2)}\n`;
@@ -96,6 +100,8 @@ export function isRetryableIoError(error) {
 }
 
 export async function appendJsonLineWithRetry(filePath, record) {
+  assertNotEngineDataWritePath(filePath);
+  assertRuntimeWritePath(filePath);
   const directory = dirname(filePath);
   await ensureDirectory(directory);
   const line = `${JSON.stringify(record)}\n`;
