@@ -178,6 +178,8 @@ These files are **local generated artifacts** — gitignored, non-blocking for a
 
 Autopilot still blocks on real source/docs changes and owner-approval gates.
 
+`runtime-health.js` emits generated report data only: schema version, runtime root, check results, runtime store counts, and generated-report gitignore policy. It must not add a dashboard, daemon, live monitor, execution worker, outreach behavior, or OpenClaw permissions.
+
 Full phase regression: `node scripts/opportunity-engine/validate-core.js` (dependency graph, isolated runtime per validator, fail-fast root-cause reporting).
 
 ---

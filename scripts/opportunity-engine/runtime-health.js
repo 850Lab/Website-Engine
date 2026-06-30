@@ -8,6 +8,19 @@ import {
   getRuntimeRoot,
   getRuntimePath,
   ensureRuntimeDirectories,
+  getRuntimeSignalStorePath,
+  getRuntimeFactStorePath,
+  getRuntimeGraphStorePath,
+  getRuntimeSituationStorePath,
+  getRuntimeHypothesisStorePath,
+  getRuntimeProblemStorePath,
+  getRuntimeCapabilityMatchStorePath,
+  getRuntimeOfferRecommendationStorePath,
+  getRuntimeOpportunityStorePath,
+  getRuntimeEventStorePath,
+  getRuntimeJobStorePath,
+  getRuntimeMissionStorePath,
+  getRuntimeEngineeringTaskStorePath,
   readJsonWithRetry,
   writeJsonAtomic,
   writeJsonAtomicWithRetry,
@@ -31,6 +44,22 @@ const REPORT_JSON = join(ROOT, "reports/runtime-health.json");
 
 const checks = [];
 const errors = [];
+const GENERATED_REPORTS = Object.freeze([
+  "reports/autopilot-status.md",
+  "reports/autopilot-log.json",
+  "reports/core-validation.md",
+  "reports/core-validation.json",
+  "reports/release-validation.md",
+  "reports/release-validation.json",
+  "reports/runtime-health.md",
+  "reports/runtime-health.json",
+  "reports/performance-baseline.md",
+  "reports/performance-baseline.json",
+]);
+
+function nowIso() {
+  return process.env.OPPORTUNITY_HEALTH_GENERATED_AT || new Date().toISOString();
+}
 
 function record(name, passed, detail = "") {
   checks.push({ name, passed, detail });
@@ -45,6 +74,52 @@ function record(name, passed, detail = "") {
 async function runGit(args) {
   const { stdout } = await execFileAsync("git", args, { cwd: ROOT });
   return stdout.trim();
+}
+
+async function countJsonArrayStore(path, key) {
+  const store = await readJsonWithRetry(path, null);
+  const collection = key ? store?.[key] : store;
+  return Array.isArray(collection) ? collection.length : 0;
+}
+
+async function countJsonl(path) {
+  if (!(await safeFileExists(path))) return 0;
+  const content = await readFile(path, "utf8");
+  return content.split(/\r?\n/).filter((line) => line.trim()).length;
+}
+
+async function collectRuntimeStoreHealth() {
+  const stores = [
+    { name: "signals", path: getRuntimeSignalStorePath(), key: "signals" },
+    { name: "facts", path: getRuntimeFactStorePath(), key: "facts" },
+    { name: "graphNodes", path: getRuntimeGraphStorePath(), key: "nodes" },
+    { name: "situations", path: getRuntimeSituationStorePath(), key: "situations" },
+    { name: "hypotheses", path: getRuntimeHypothesisStorePath(), key: "hypotheses" },
+    { name: "problems", path: getRuntimeProblemStorePath(), key: "problems" },
+    { name: "capabilityMatches", path: getRuntimeCapabilityMatchStorePath(), key: "matches" },
+    { name: "offerRecommendations", path: getRuntimeOfferRecommendationStorePath(), key: "recommendations" },
+    { name: "opportunities", path: getRuntimeOpportunityStorePath(), key: "opportunities" },
+    { name: "jobs", path: getRuntimeJobStorePath(), key: "jobs" },
+    { name: "missions", path: getRuntimeMissionStorePath(), key: "missions" },
+    { name: "engineeringTasks", path: getRuntimeEngineeringTaskStorePath(), key: "tasks" },
+  ];
+
+  const rows = [];
+  for (const store of stores) {
+    rows.push({
+      name: store.name,
+      path: store.path.replace(/\\/g, "/"),
+      count: await countJsonArrayStore(store.path, store.key),
+      exists: await safeFileExists(store.path),
+    });
+  }
+  rows.push({
+    name: "events",
+    path: getRuntimeEventStorePath().replace(/\\/g, "/"),
+    count: await countJsonl(getRuntimeEventStorePath()),
+    exists: await safeFileExists(getRuntimeEventStorePath()),
+  });
+  return rows;
 }
 
 async function main() {
@@ -70,7 +145,7 @@ async function main() {
   record("Runtime stores initialize", true);
 
   const probePath = getRuntimePath("cache", `health_probe_${randomUUID().slice(0, 8)}.json`);
-  const probePayload = { probe: true, at: new Date().toISOString() };
+  const probePayload = { probe: true, at: nowIso() };
   await writeJsonAtomic(probePath, probePayload);
   const atomicRead = await readJsonWithRetry(probePath, null);
   record(
@@ -79,7 +154,7 @@ async function main() {
   );
 
   await wait(50);
-  const retryPayload = { probe: "retry", at: new Date().toISOString() };
+  const retryPayload = { probe: "retry", at: nowIso() };
   await writeJsonAtomicWithRetry(probePath, retryPayload);
   const retryRead = await readJsonWithRetry(probePath, null);
   record(
@@ -116,28 +191,32 @@ async function main() {
 
   await mkdir(join(ROOT, "reports"), { recursive: true });
   const reportsGitignore = await readFile(join(ROOT, ".gitignore"), "utf8");
-  const ignoredReports = [
-    "reports/autopilot-status.md",
-    "reports/autopilot-log.json",
-    "reports/core-validation.md",
-    "reports/core-validation.json",
-    "reports/runtime-health.md",
-    "reports/runtime-health.json",
-    "reports/performance-baseline.md",
-    "reports/performance-baseline.json",
-  ];
-  const allIgnored = ignoredReports.every((path) => reportsGitignore.includes(path));
+  const allIgnored = GENERATED_REPORTS.every((path) => reportsGitignore.includes(path));
   record(
     "Reports directory can be reset or ignored safely",
     allIgnored,
     allIgnored ? "generated reports listed in .gitignore" : "missing .gitignore entries",
   );
 
+  const runtimeStores = await collectRuntimeStoreHealth();
+  record(
+    "Runtime store health collected",
+    runtimeStores.length >= 10 && runtimeStores.every((row) => Number.isInteger(row.count)),
+    `${runtimeStores.length} stores`,
+  );
+
   const summary = {
-    generatedAt: new Date().toISOString(),
+    schemaVersion: "4.2.s1",
+    generatedAt: nowIso(),
+    runtimeRoot: getRuntimeRoot().replace(/\\/g, "/"),
     passed: checks.filter((row) => row.passed).length,
     failed: checks.filter((row) => !row.passed).length,
     checks,
+    runtimeStores,
+    reportPolicy: {
+      generatedReports: [...GENERATED_REPORTS],
+      gitignored: allIgnored,
+    },
   };
 
   const markdown = `# Runtime Health
@@ -148,10 +227,24 @@ Generated: ${summary.generatedAt}
 
 - **Passed:** ${summary.passed}
 - **Failed:** ${summary.failed}
+- **Runtime stores:** ${summary.runtimeStores.length}
+- **Generated reports gitignored:** ${summary.reportPolicy.gitignored ? "yes" : "no"}
 
 | Check | Result | Detail |
 |---|---|---|
 ${checks.map((row) => `| ${row.name} | ${row.passed ? "PASS" : "FAIL"} | ${row.detail || ""} |`).join("\n")}
+
+## Runtime Stores
+
+| Store | Count | Path |
+|---|---:|---|
+${runtimeStores.map((row) => `| ${row.name} | ${row.count} | ${row.path} |`).join("\n")}
+
+## Generated Report Policy
+
+| Report | Gitignored |
+|---|---|
+${GENERATED_REPORTS.map((path) => `| ${path} | ${allIgnored ? "yes" : "no"} |`).join("\n")}
 `;
 
   await writeFile(REPORT_MD, markdown, "utf8");

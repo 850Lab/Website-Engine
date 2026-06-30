@@ -405,6 +405,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Runtime Health Observability Data
+**Phase:** 4.2 S1  
+**Type:** Milestone  
+**Summary:** Extended `runtime-health.js` to emit deterministic JSON/Markdown report data with a schema version, runtime root, runtime store counts, and generated-report gitignore policy. Added `validate-observability.js` to verify deterministic output, report sections, key store counts, gitignored reports, and no daemon/live-service/OpenClaw/outreach behavior.  
+**Links:** `scripts/opportunity-engine/runtime-health.js`, `scripts/opportunity-engine/validate-observability.js`
+
+---
+
 ### 2026-06-30 — Pressure Washing Business Operator Template
 **Phase:** 4.2 O-PW1  
 **Type:** Milestone  
@@ -467,6 +475,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 S1 Runtime health observability data — deterministic runtime health JSON/Markdown with store counts |
 | 2026-06-30 | Phase 4.2 B3 OpenClaw handoff package — approved engineering tasks become handoff-only OpenClaw job drafts |
 | 2026-06-30 | Phase 4.2 O-WEB1 Website agency mission template — validated local service business growth mission |
 | 2026-06-30 | Phase 4.2 B2 Engineering task registry — runtime lifecycle store for Engineering Director tasks |

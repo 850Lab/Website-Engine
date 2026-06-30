@@ -30,6 +30,8 @@ for (const rel of [
   "scripts/opportunity-engine/validate-openclaw-handoff.js",
   "scripts/opportunity-engine/validate-business-operators.js",
   "scripts/opportunity-engine/validate-business-discovery.js",
+  "scripts/opportunity-engine/validate-observability.js",
+  "scripts/opportunity-engine/runtime-health.js",
   "scripts/opportunity-engine/validate-phase-4-2.js",
 ]) {
   try {
@@ -88,6 +90,16 @@ try {
   pass("Business discovery validation passed");
 } catch (error) {
   fail(`Business discovery validation failed: ${error.stderr || error.message}`);
+}
+
+try {
+  await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-observability.js")], {
+    cwd: ROOT,
+    env: { ...process.env },
+  });
+  pass("Observability validation passed");
+} catch (error) {
+  fail(`Observability validation failed: ${error.stderr || error.message}`);
 }
 
 await finalizeValidator({ phase: "4.2", errors, startedAt: __validationStartedAt });

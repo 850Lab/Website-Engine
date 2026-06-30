@@ -7,9 +7,9 @@
 
 ## Current Phase
 
-**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + B3 + O-PW1 + O-KTM1 + C1 + O-APT1 + O-WEB1)** — **COMPLETE**
+**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + B3 + O-PW1 + O-KTM1 + C1 + O-APT1 + O-WEB1 + S1)** — **COMPLETE**
 
-Deterministic Engineering Director selector, runtime engineering task registry, bounded OpenClaw handoff package generator, Founder-priority business operator templates, and mission-aware file-drop intake. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. The handoff generator converts approved, OpenClaw-eligible engineering tasks into schema-valid handoff drafts only; it does not dispatch or run jobs. Business operator templates create validated draft missions for pressure washing, KTM, apartment financial workshops, and website agency growth. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
+Deterministic Engineering Director selector, runtime engineering task registry, bounded OpenClaw handoff package generator, Founder-priority business operator templates, mission-aware file-drop intake, and runtime health observability. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. The handoff generator converts approved, OpenClaw-eligible engineering tasks into schema-valid handoff drafts only; it does not dispatch or run jobs. Runtime health emits deterministic JSON/Markdown reports with store counts and report policy; it does not add a dashboard, daemon, or live monitoring service. Business operator templates create validated draft missions for pressure washing, KTM, apartment financial workshops, and website agency growth. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
 
 Run: `node scripts/opportunity-engine/validate-phase-4-2.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
@@ -49,6 +49,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 - [x] Mission-aware file-drop observation metadata (`C1`)
 - [x] Apartment financial workshop mission template (`O-APT1`)
 - [x] Website agency mission template (`O-WEB1`)
+- [x] Runtime health observability report data (`S1`)
 - [x] `validate-phase-4-2.js` in release graph
 - [x] Docs updated (08, 09, 13, 15, 33)
 
@@ -65,6 +66,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 | Builder Plans may describe work but may not execute OpenClaw or jobs | **Enforced** |
 | Business operator templates create mission specs only; no opportunities, contacts, or outreach | **Enforced** |
 | Mission hints on file-drop observations remain metadata/provenance only | **Enforced** |
+| Runtime health remains generated reporting only; no dashboard, daemon, or monitor service | **Enforced** |
 | Outreach / contact discovery / CEO review UI not built by B1 | **Enforced** |
 | OpenClaw, Scheduler, Processor, Orchestrator, Pipeline unchanged | **Enforced** |
 
@@ -112,6 +114,7 @@ Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-30 | Phase 4.2 S1: Runtime health dashboard data — deterministic JSON/Markdown health report data with store counts and report policy |
 | 2026-06-30 | Phase 4.2 B3: OpenClaw handoff package — approved engineering tasks become schema-valid handoff drafts only |
 | 2026-06-30 | Phase 4.2 O-WEB1: Website agency mission template — local service business website growth mission |
 | 2026-06-30 | Phase 4.2 B2: Engineering task registry — runtime lifecycle store for proposed, approved, active, blocked, and completed tasks |
