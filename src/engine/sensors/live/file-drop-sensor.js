@@ -33,6 +33,20 @@ function collapseWhitespace(value) {
     .trim();
 }
 
+function uniqueStrings(values) {
+  return [...new Set(asArray(values).map((value) => collapseWhitespace(value)).filter(Boolean))];
+}
+
+function normalizeMissionHints(parsed = {}) {
+  return {
+    candidateMissionIds: uniqueStrings(
+      parsed.candidateMissionIds || parsed.missionIds || parsed.missions || parsed.metadata?.candidateMissionIds,
+    ),
+    missionHints: uniqueStrings(parsed.missionHints || parsed.metadata?.missionHints),
+    sourceLabel: collapseWhitespace(parsed.sourceLabel || parsed.metadata?.sourceLabel || parsed.source || "file_drop"),
+  };
+}
+
 function isSupportedFile(name) {
   const ext = extname(name).toLowerCase();
   return SUPPORTED_EXTENSIONS.has(ext);
@@ -112,6 +126,7 @@ function parseJsonObservation(file, parsed) {
 
   const observedAt = parsed.observedAt ? new Date(parsed.observedAt).toISOString() : file.modifiedAt;
   const location = parsed.location || null;
+  const missionMetadata = normalizeMissionHints(parsed);
 
   return {
     capturedAt: observedAt,
@@ -128,6 +143,7 @@ function parseJsonObservation(file, parsed) {
       fileName: file.fileName,
       contentHash: file.contentHash,
       sourceType: parsed.sourceType || "file",
+      ...missionMetadata,
     },
   };
 }
@@ -272,6 +288,9 @@ export const fileDropSensor = {
         fileName: observation.metadata?.fileName || null,
         contentHash: observation.metadata?.contentHash || null,
         ingestChannel: "file_drop_sensor",
+        candidateMissionIds: uniqueStrings(observation.metadata?.candidateMissionIds),
+        missionHints: uniqueStrings(observation.metadata?.missionHints),
+        sourceLabel: observation.metadata?.sourceLabel || "file_drop",
       },
     };
   },

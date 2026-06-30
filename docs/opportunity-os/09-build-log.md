@@ -405,6 +405,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Mission-Aware File Drop Intake
+**Phase:** 4.2 C1  
+**Type:** Milestone  
+**Summary:** Extended the live file-drop intake so JSON observations can carry `candidateMissionIds`, `missionHints`, and `sourceLabel`. Mission context is preserved as observation metadata and signal provenance only; the existing sensor-to-signal path remains unchanged and no facts, situations, problems, opportunities, contacts, campaigns, or outreach are created directly.  
+**Links:** `src/engine/sensors/live/file-drop-sensor.js`, `scripts/opportunity-engine/validate-business-discovery.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -427,6 +435,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 C1 Mission-aware file-drop intake — candidate mission metadata preserved through signal provenance |
 | 2026-06-30 | Phase 4.2 O-KTM1 KTM industrial mission template — validated Beaumont 500-mile industrial maintenance mission |
 | 2026-06-30 | Phase 4.2 O-PW1 Pressure Washing business operator template — validated Beaumont 500-mile commercial mission |
 | 2026-06-30 | Phase 4.2 B1 Engineering Director backlog selector — deterministic backlog parsing, blocker detection, task selection, Builder Plan output |

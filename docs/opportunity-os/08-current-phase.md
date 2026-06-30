@@ -7,9 +7,9 @@
 
 ## Current Phase
 
-**Phase 4.2 — Engineering Director Backlog Execution (B1 + O-PW1 + O-KTM1)** — **COMPLETE**
+**Phase 4.2 — Engineering Director Backlog Execution (B1 + O-PW1 + O-KTM1 + C1)** — **COMPLETE**
 
-Deterministic Engineering Director selector plus Founder-priority business operator templates. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The pressure washing template creates a validated mission for commercial pressure washing within 500 miles of Beaumont, Texas. The KTM template creates a validated mission for industrial maintenance, turnaround, staffing, and safety support opportunities in the same operating radius.
+Deterministic Engineering Director selector plus Founder-priority business operator templates and mission-aware file-drop intake. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. Business operator templates create validated draft missions for pressure washing and KTM. File-drop observations may now carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
 
 Run: `node scripts/opportunity-engine/validate-phase-4-2.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
@@ -42,6 +42,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 - [x] Phase validator: `validate-phase-4-2.js`
 - [x] Pressure washing business operator mission template (`O-PW1`)
 - [x] KTM industrial maintenance mission template (`O-KTM1`)
+- [x] Mission-aware file-drop observation metadata (`C1`)
 - [x] `validate-phase-4-2.js` in release graph
 - [x] Docs updated (08, 09, 13, 15, 33)
 
@@ -55,6 +56,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 | External credentials, legal approval, Founder approval, and business decisions block task readiness | **Enforced** |
 | Builder Plans may describe work but may not execute OpenClaw or jobs | **Enforced** |
 | Business operator templates create mission specs only; no opportunities, contacts, or outreach | **Enforced** |
+| Mission hints on file-drop observations remain metadata/provenance only | **Enforced** |
 | Outreach / contact discovery / CEO review UI not built by B1 | **Enforced** |
 | OpenClaw, Scheduler, Processor, Orchestrator, Pipeline unchanged | **Enforced** |
 
@@ -102,6 +104,7 @@ Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-30 | Phase 4.2 C1: Mission-aware file-drop intake — candidate mission IDs, mission hints, and source labels preserved as metadata/provenance |
 | 2026-06-30 | Phase 4.2 O-KTM1: KTM industrial maintenance mission template — Beaumont 500-mile industrial opportunity mission |
 | 2026-06-30 | Phase 4.2 O-PW1: Pressure washing business operator mission template — Beaumont 500-mile commercial cash-flow mission |
 | 2026-06-30 | Phase 4.2 B1: Engineering Director backlog selector — deterministic task selection + Builder Plan output |

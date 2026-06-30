@@ -22,8 +22,10 @@ function pass(message) {
 for (const rel of [
   "src/engine/founder-intent/backlog-selector.js",
   "src/engine/founder-intent/business-operators.js",
+  "src/engine/sensors/live/file-drop-sensor.js",
   "scripts/opportunity-engine/validate-engineering-director.js",
   "scripts/opportunity-engine/validate-business-operators.js",
+  "scripts/opportunity-engine/validate-business-discovery.js",
   "scripts/opportunity-engine/validate-phase-4-2.js",
 ]) {
   try {
@@ -52,6 +54,16 @@ try {
   pass("Business operator validation passed");
 } catch (error) {
   fail(`Business operator validation failed: ${error.stderr || error.message}`);
+}
+
+try {
+  await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-business-discovery.js")], {
+    cwd: ROOT,
+    env: { ...process.env },
+  });
+  pass("Business discovery validation passed");
+} catch (error) {
+  fail(`Business discovery validation failed: ${error.stderr || error.message}`);
 }
 
 await finalizeValidator({ phase: "4.2", errors, startedAt: __validationStartedAt });
