@@ -7,6 +7,8 @@ import {
   isIntentObject,
   prepareChiefOfStaffPlan,
   prepareChiefOfStaffPlanFromClarification,
+  buildFounderBriefing,
+  renderFounderBriefingMarkdown,
   interpretFounderIntent,
   completeMissionFromClarification,
   splitMultiMissionBrief,
@@ -303,12 +305,47 @@ if (chiefReady.status !== "ready" || chiefReady.approvalGates?.outreachExecution
   pass("AI Chief of Staff creates mission, strategy, engineering tasks, and blocked outreach gates");
 }
 
+const briefing = await buildFounderBriefing({
+  missions: [savedPressure.mission, savedKtm.mission, savedApartment.mission],
+  opportunities: [
+    {
+      id: "opp_validation_ktm",
+      title: "KTM turnaround labor surge",
+      offerId: "offer_ktm_manpower",
+      signalType: "turnaround",
+      confidence: 0.8,
+      location: { city: "Beaumont", state: "TX" },
+    },
+    {
+      id: "opp_validation_pw",
+      title: "Commercial entryway cleaning package",
+      offerId: "offer_pressure_washing",
+      signalType: "property_management",
+      confidence: 0.72,
+      location: { city: "Beaumont", state: "TX" },
+    },
+  ],
+});
+if (briefing.summary.activeMissions < 3 || briefing.summary.outreachBlocked !== true) {
+  fail("Founder briefing should summarize active missions while keeping outreach blocked");
+} else {
+  pass("Founder briefing summarizes active missions and preserves outreach block");
+}
+
+const briefingMarkdown = renderFounderBriefingMarkdown(briefing);
+if (!briefingMarkdown.includes("AI Chief of Staff Briefing") || !briefingMarkdown.includes("Recommended Engineering Work")) {
+  fail("Founder briefing markdown missing expected sections");
+} else {
+  pass("Founder briefing markdown renders mission priorities and engineering work");
+}
+
 const forbiddenPatterns = [
   { file: "src/engine/founder-intent/index.js", patterns: ["orchestrator", "processNextJob", "buildOpportunity", "runOpenClaw", "dispatchNextJob"] },
   { file: "src/engine/founder-intent/mission-interpreter.js", patterns: ["createSignal", "appendEvent", "processNextJob"] },
   { file: "src/engine/founder-intent/mission-registry.js", patterns: ["engine-data/"] },
   { file: "src/engine/founder-intent/ai-chief-of-staff.js", patterns: ["saveMission", "appendEvent", "processNextJob", "sendEmail"] },
   { file: "src/engine/founder-intent/engineering-director.js", patterns: ["writeJsonAtomic", "runOpenClaw", "dispatchNextJob"] },
+  { file: "src/engine/founder-intent/founder-briefing.js", patterns: ["writeFile", "appendEvent", "processNextJob", "sendEmail"] },
 ];
 for (const check of forbiddenPatterns) {
   const source = await readSource(check.file);
@@ -326,6 +363,7 @@ for (const rel of [
   "src/engine/founder-intent/intent-engine.js",
   "src/engine/founder-intent/ai-chief-of-staff.js",
   "src/engine/founder-intent/engineering-director.js",
+  "src/engine/founder-intent/founder-briefing.js",
   "src/engine/founder-intent/mission-schema.js",
   "src/engine/founder-intent/mission-interpreter.js",
   "src/engine/founder-intent/clarification-engine.js",

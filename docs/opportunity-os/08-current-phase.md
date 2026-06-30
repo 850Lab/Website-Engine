@@ -22,7 +22,7 @@ Full suite: `node scripts/opportunity-engine/validate-core.js`
 
 Add the **Mission Chef** above the intelligence engine:
 
-1. `src/engine/founder-intent/` — Chief-of-Staff planner, intent engine, clarification, mission planner, validator, registry, strategy, alignment, engineering task drafts
+1. `src/engine/founder-intent/` — Chief-of-Staff planner, intent engine, clarification, mission planner, validator, registry, strategy, alignment, engineering task drafts, Founder briefing
 2. Founder speaks in natural language → clarification → deterministic mission specification
 3. Multiple simultaneous **ACTIVE** missions in `runtime/missions/missions.json`
 4. Mission validation against supported offers/capabilities in `engine-data/`
@@ -44,6 +44,7 @@ The LLM **may not** create opportunities, execute jobs, modify engine stores dir
 - [x] Mission alignment scoring
 - [x] Engineering Director task drafts
 - [x] AI Chief-of-Staff planning API
+- [x] Read-only Founder briefing report
 - [x] `validate-phase-4-1.js` in release graph
 - [x] Docs updated (08, 09, 13, 15, 24)
 

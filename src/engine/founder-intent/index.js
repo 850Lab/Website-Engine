@@ -61,4 +61,9 @@ export {
   prepareChiefOfStaffPlanFromClarification,
 } from "./ai-chief-of-staff.js";
 
+export {
+  buildFounderBriefing,
+  renderFounderBriefingMarkdown,
+} from "./founder-briefing.js";
+
 export { isLlmInterpreterEnabled, requestStructuredMissionDraft } from "./llm-client.js";

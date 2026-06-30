@@ -51,6 +51,9 @@ reports/live-pipeline.md
 reports/live-pipeline.json
 reports/real-observations-analysis.json
 reports/real-observations-analysis.md
+reports/system-status-roadmap.md
+reports/chief-of-staff-briefing.md
+reports/chief-of-staff-briefing.json
 
 # Seed configs required for schema migration
 !data/seeds/

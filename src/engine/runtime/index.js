@@ -46,6 +46,7 @@ export async function ensureRuntimeDirectories() {
     getRuntimePath("orchestrator"),
     getRuntimePath("logs"),
     getRuntimePath("cache"),
+    getRuntimePath("missions"),
   ];
 
   for (const directory of directories) {
@@ -139,6 +140,10 @@ export function getRuntimeOrchestratorDirectory() {
 
 export function getRuntimeOrchestratorStorePath() {
   return getRuntimePath("orchestrator", "orchestrator.json");
+}
+
+export function getRuntimeMissionStorePath() {
+  return getRuntimePath("missions", "missions.json");
 }
 
 export function getLegacySignalStorePath() {
