@@ -52,6 +52,7 @@ Do not redesign these layers. Extend them.
 | ID | Status | Completion evidence | Last validation |
 |---|---|---|---|
 | `B1` | `complete` | `parseMasterBacklog()`, `selectNextBacklogTask()`, and `createBuilderPlanFromBacklogTask()` implemented in `src/engine/founder-intent/backlog-selector.js`; Phase 4.2 registered in validation graph. | `node scripts/opportunity-engine/validate-phase-4-2.js` |
+| `O-PW1` | `complete` | `createPressureWashingMissionTemplate()` implemented in `src/engine/founder-intent/business-operators.js`; template creates a valid commercial pressure washing mission for Beaumont 500-mile radius with offer/capability mapping and outreach approval gate. | `node scripts/opportunity-engine/validate-business-operators.js` |
 
 Status rows are factual execution records. Do not mark a backlog task `complete` unless its completion criteria are met, required validation passes, docs are updated, and the task is committed or explicitly approved as uncommitted.
 

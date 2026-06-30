@@ -7,9 +7,9 @@
 
 ## Current Phase
 
-**Phase 4.2 — Engineering Director Backlog Execution (B1)** — **COMPLETE**
+**Phase 4.2 — Engineering Director Backlog Execution (B1 + O-PW1)** — **COMPLETE**
 
-Deterministic Engineering Director selector that reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach.
+Deterministic Engineering Director selector plus first Founder-priority business operator template. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The pressure washing template creates a validated mission for commercial pressure washing within 500 miles of Beaumont, Texas.
 
 Run: `node scripts/opportunity-engine/validate-phase-4-2.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
@@ -40,6 +40,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 - [x] Builder Plan generator
 - [x] Focused validator: `validate-engineering-director.js`
 - [x] Phase validator: `validate-phase-4-2.js`
+- [x] Pressure washing business operator mission template (`O-PW1`)
 - [x] `validate-phase-4-2.js` in release graph
 - [x] Docs updated (08, 09, 13, 15, 33)
 
@@ -52,6 +53,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 | Backlog selection must be deterministic and explainable | **Enforced** |
 | External credentials, legal approval, Founder approval, and business decisions block task readiness | **Enforced** |
 | Builder Plans may describe work but may not execute OpenClaw or jobs | **Enforced** |
+| Business operator templates create mission specs only; no opportunities, contacts, or outreach | **Enforced** |
 | Outreach / contact discovery / CEO review UI not built by B1 | **Enforced** |
 | OpenClaw, Scheduler, Processor, Orchestrator, Pipeline unchanged | **Enforced** |
 
@@ -99,6 +101,7 @@ Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-30 | Phase 4.2 O-PW1: Pressure washing business operator mission template — Beaumont 500-mile commercial cash-flow mission |
 | 2026-06-30 | Phase 4.2 B1: Engineering Director backlog selector — deterministic task selection + Builder Plan output |
 | 2026-06-29 | Phase 4.1: Founder Intent Interpreter — mission chef above OS, no outreach |
 | 2026-06-23 | Phase 4.0.6: Engine-data read-only enforcement |

@@ -65,6 +65,12 @@ export {
 } from "./backlog-selector.js";
 
 export {
+  PRESSURE_WASHING_TEMPLATE_ID,
+  createPressureWashingMissionTemplate,
+  listBusinessOperatorMissionTemplates,
+} from "./business-operators.js";
+
+export {
   prepareChiefOfStaffPlan,
   prepareChiefOfStaffPlanFromClarification,
 } from "./ai-chief-of-staff.js";

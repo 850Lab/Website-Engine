@@ -389,6 +389,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Pressure Washing Business Operator Template
+**Phase:** 4.2 O-PW1  
+**Type:** Milestone  
+**Summary:** Added the first business operator mission template for the Founder’s top revenue priority: commercial pressure washing within 500 miles of Beaumont, Texas. The template creates a validated draft mission with pressure washing offer/capability mapping, commercial buyer types, buying signals, constraints, success metrics, strategy, and Founder approval gate. It does not create opportunities, contacts, campaigns, or outreach.  
+**Links:** `src/engine/founder-intent/business-operators.js`, `scripts/opportunity-engine/validate-business-operators.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -411,6 +419,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 O-PW1 Pressure Washing business operator template — validated Beaumont 500-mile commercial mission |
 | 2026-06-30 | Phase 4.2 B1 Engineering Director backlog selector — deterministic backlog parsing, blocker detection, task selection, Builder Plan output |
 | 2026-06-29 | Phase 4.1 Founder Intent Interpreter — mission chef, runtime/missions registry |
 | 2026-06-23 | Phase 4.0.6 Engine-Data Read-Only — guard, IO choke point, validator git assert |
