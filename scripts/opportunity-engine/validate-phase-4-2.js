@@ -22,6 +22,7 @@ function pass(message) {
 for (const rel of [
   "src/engine/founder-intent/backlog-selector.js",
   "src/engine/founder-intent/business-operators.js",
+  "src/engine/founder-intent/engineering-director.js",
   "src/engine/founder-intent/engineering-task-registry.js",
   "src/engine/founder-intent/openclaw-handoff.js",
   "src/engine/sensors/live/file-drop-sensor.js",

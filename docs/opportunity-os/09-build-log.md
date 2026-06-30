@@ -405,6 +405,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Regression-Aware Engineering Plans
+**Phase:** 4.2 B4  
+**Type:** Milestone  
+**Summary:** Added explicit validation plans to Engineering Director task recommendations and backlog-derived Builder Plans. Each plan includes focused validators, required phase validators, regression validators from the validation graph, core validation, affected modules, and a failure/repair policy that blocks commits until all required validation passes. Planning only — no OpenClaw execution, job dispatch, outreach, or business logic changes.  
+**Links:** `src/engine/founder-intent/engineering-director.js`, `src/engine/founder-intent/backlog-selector.js`, `scripts/opportunity-engine/validate-engineering-director.js`
+
+---
+
 ### 2026-06-30 — Runtime Health Observability Data
 **Phase:** 4.2 S1  
 **Type:** Milestone  
@@ -475,6 +483,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 B4 Regression-aware planning — task recommendations include explicit validation and repair plans |
 | 2026-06-30 | Phase 4.2 S1 Runtime health observability data — deterministic runtime health JSON/Markdown with store counts |
 | 2026-06-30 | Phase 4.2 B3 OpenClaw handoff package — approved engineering tasks become handoff-only OpenClaw job drafts |
 | 2026-06-30 | Phase 4.2 O-WEB1 Website agency mission template — validated local service business growth mission |

@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { getValidatorByPhase, getValidatorByScript } from "../validation/graph.js";
 
 const DEFAULT_FORBIDDEN_PATHS = Object.freeze([
   "src/engine/openclaw/",
@@ -19,11 +20,69 @@ function normalizeArray(values) {
   return Array.isArray(values) ? values.filter(Boolean) : [];
 }
 
+function uniqueStrings(values) {
+  return [...new Set(normalizeArray(values).map((value) => String(value).trim()).filter(Boolean))];
+}
+
+function validatorCommand(script) {
+  return `node scripts/opportunity-engine/${script}`;
+}
+
+function normalizeValidationScript(script) {
+  const value = String(script || "").trim();
+  if (!value) return "";
+  return value.endsWith(".js") ? value : `${value}.js`;
+}
+
+export function createEngineeringValidationPlan(options = {}) {
+  const phase = String(options.phase || "4.2").trim();
+  const validationScript = normalizeValidationScript(options.validationScript || "validate-phase-4-2.js");
+  const focusedValidators = validationScript ? [validatorCommand(validationScript)] : [];
+  const phaseNode = getValidatorByPhase(phase) || getValidatorByScript(validationScript);
+  const phaseValidators = phaseNode ? [validatorCommand(phaseNode.script)] : [];
+  const regressionValidators = phaseNode
+    ? phaseNode.dependsOn
+        .map((dependencyPhase) => getValidatorByPhase(dependencyPhase)?.script)
+        .filter(Boolean)
+        .map(validatorCommand)
+    : [];
+  const coreValidation = "node scripts/opportunity-engine/validate-core.js";
+  const commands = uniqueStrings([...focusedValidators, ...phaseValidators, ...regressionValidators, coreValidation]);
+
+  return {
+    required: true,
+    phase,
+    validationScript,
+    focusedValidators: uniqueStrings(focusedValidators),
+    phaseValidators: uniqueStrings(phaseValidators),
+    regressionValidators: uniqueStrings(regressionValidators),
+    coreValidation,
+    commands,
+    affectedModules: uniqueStrings(options.affectedModules),
+    failureRepairPolicy: {
+      stopOnFailure: true,
+      repairAllowed: true,
+      repairScope: "Only repair regressions caused by the current task and within the approved affected modules.",
+      rerunFailedValidator: true,
+      rerunPhaseValidator: true,
+      rerunCoreBeforeCommit: true,
+      commitOnlyAfterAllRequiredValidationPasses: true,
+    },
+  };
+}
+
 export function createEngineeringTaskId(prefix = "engtask") {
   return `${prefix}_${randomUUID()}`;
 }
 
 export function createEngineeringTask(overrides = {}) {
+  const affectedModules = uniqueStrings(overrides.affectedModules || [overrides.ownerModule || "engine/founder-intent"]);
+  const validationPlan = createEngineeringValidationPlan({
+    phase: overrides.phase || "4.2",
+    validationScript: overrides.validationScript,
+    affectedModules,
+  });
+
   return {
     taskId: overrides.taskId || createEngineeringTaskId(),
     missionId: overrides.missionId || null,
@@ -41,6 +100,9 @@ export function createEngineeringTask(overrides = {}) {
     acceptanceCriteria: normalizeArray(overrides.acceptanceCriteria).length
       ? normalizeArray(overrides.acceptanceCriteria)
       : [...DEFAULT_ACCEPTANCE_CRITERIA],
+    validationPlan,
+    validationCommands: validationPlan.commands,
+    affectedModules,
     approvalRequired: overrides.approvalRequired ?? true,
     openClawEligible: overrides.openClawEligible ?? false,
     status: overrides.status || "proposed",
@@ -180,5 +242,13 @@ export function validateEngineeringTask(task) {
   if (!task.scope?.allowedPaths?.length) errors.push("scope.allowedPaths must contain at least one path");
   if (!task.scope?.forbiddenPaths?.length) errors.push("scope.forbiddenPaths must contain at least one path");
   if (!task.acceptanceCriteria?.length) errors.push("acceptanceCriteria must contain at least one item");
+  if (!task.validationPlan?.required) errors.push("validationPlan.required must be true");
+  if (!task.validationPlan?.commands?.length) errors.push("validationPlan.commands must contain at least one command");
+  if (!task.validationPlan?.coreValidation?.includes("validate-core.js")) {
+    errors.push("validationPlan.coreValidation must require validate-core.js");
+  }
+  if (!task.validationPlan?.failureRepairPolicy?.commitOnlyAfterAllRequiredValidationPasses) {
+    errors.push("validationPlan.failureRepairPolicy must block commits until validation passes");
+  }
   return { valid: errors.length === 0, errors };
 }

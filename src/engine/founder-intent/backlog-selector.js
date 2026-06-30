@@ -1,3 +1,5 @@
+import { createEngineeringValidationPlan } from "./engineering-director.js";
+
 const BACKLOG_COLUMNS = Object.freeze([
   "id",
   "title",
@@ -274,6 +276,11 @@ function taskPaths(task) {
 
 export function createBuilderPlanFromBacklogTask(task) {
   const paths = taskPaths(task);
+  const validationPlan = createEngineeringValidationPlan({
+    phase: "4.2",
+    validationScript: task.validationScript || "validate-engineering-director.js",
+    affectedModules: task.affectedModules,
+  });
   return {
     taskId: task.id,
     title: task.title,
@@ -288,10 +295,8 @@ export function createBuilderPlanFromBacklogTask(task) {
       "docs/opportunity-os/33-master-engineering-backlog.md",
       "docs/opportunity-os/34-engineering-director-execution-model.md",
     ],
-    validationCommands: [
-      `node scripts/opportunity-engine/${task.validationScript || "validate-engineering-director.js"}`,
-      "node scripts/opportunity-engine/validate-core.js",
-    ],
+    validationPlan,
+    validationCommands: validationPlan.commands,
     expectedOutputs: [task.completionCriteria],
     stopConditions: task.stopConditions,
     affectedModules: task.affectedModules,

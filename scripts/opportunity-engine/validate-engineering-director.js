@@ -6,6 +6,7 @@ import {
   selectNextBacklogTask,
   createBuilderPlanFromBacklogTask,
   evaluateBacklogTask,
+  recommendEngineeringTasks,
 } from "../../src/engine/founder-intent/index.js";
 import { assertEngineDataClean } from "./assert-engine-data-clean.js";
 
@@ -99,6 +100,70 @@ if (!plan?.validationCommands?.some((command) => command.includes("validate-engi
   fail("Builder Plan must include focused Engineering Director validation");
 } else {
   pass("Builder Plan includes focused validation command");
+}
+
+if (!plan?.validationPlan?.required) {
+  fail("Builder Plan must include explicit validationPlan");
+} else {
+  pass("Builder Plan includes explicit validation plan");
+}
+
+if (!plan?.validationPlan?.phaseValidators?.some((command) => command.includes("validate-phase-4-2.js"))) {
+  fail("Builder Plan validationPlan must include required phase validator");
+} else {
+  pass("Builder Plan validation plan includes required phase validator");
+}
+
+if (!plan?.validationPlan?.regressionValidators?.some((command) => command.includes("validate-phase-4-1.js"))) {
+  fail("Builder Plan validationPlan must include regression validators");
+} else {
+  pass("Builder Plan validation plan includes regression validators");
+}
+
+if (!plan?.validationPlan?.coreValidation?.includes("validate-core.js")) {
+  fail("Builder Plan validationPlan must require core validation");
+} else {
+  pass("Builder Plan validation plan requires core validation");
+}
+
+if (!plan?.validationPlan?.affectedModules?.length) {
+  fail("Builder Plan validationPlan must include affected modules");
+} else {
+  pass("Builder Plan validation plan includes affected modules");
+}
+
+if (!plan?.validationPlan?.failureRepairPolicy?.commitOnlyAfterAllRequiredValidationPasses) {
+  fail("Builder Plan validationPlan must include failure/repair commit policy");
+} else {
+  pass("Builder Plan validation plan includes failure/repair policy");
+}
+
+const recommendedTasks = recommendEngineeringTasks({
+  mission: {
+    missionId: "mission_validation_plan",
+    status: "active",
+    approvalPolicy: { requireFounderApprovalBeforeOutreach: true },
+    requiredSignals: ["permits", "RFPs"],
+    buyerTypes: ["Property managers"],
+    preferredChannels: ["Email"],
+  },
+});
+if (!recommendedTasks.length) {
+  fail("Engineering Director should recommend tasks for active mission");
+} else if (
+  !recommendedTasks.every(
+    (task) =>
+      task.validationPlan?.required &&
+      task.validationPlan?.commands?.some((command) => command.includes("validate-core.js")) &&
+      task.validationPlan?.phaseValidators?.length &&
+      task.validationPlan?.regressionValidators?.length &&
+      task.validationPlan?.affectedModules?.length &&
+      task.validationPlan?.failureRepairPolicy?.commitOnlyAfterAllRequiredValidationPasses,
+  )
+) {
+  fail("Every Engineering Director task recommendation must include a complete validation plan");
+} else {
+  pass("Every Engineering Director task recommendation includes a complete validation plan");
 }
 
 if (!executionModel.includes("B1 - Backlog reader and task selector")) {

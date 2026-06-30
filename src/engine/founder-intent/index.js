@@ -52,6 +52,7 @@ export { alignOpportunityToMission, rankOpportunitiesForMission } from "./missio
 export {
   createEngineeringTaskId,
   createEngineeringTask,
+  createEngineeringValidationPlan,
   recommendEngineeringTasks,
   validateEngineeringTask,
 } from "./engineering-director.js";
