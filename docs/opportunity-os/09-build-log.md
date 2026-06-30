@@ -515,6 +515,8 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | F-1 Privacy policy — `/privacy` route and `docs/legal/privacy-policy.md`; unblocks backlog `A1` |
+| 2026-06-30 | Founder decisions F-2, F-3, F-4 — Vercel+Blob approved; PW mission #1 active; discovery API key provisioned |
 | 2026-06-30 | Phase 5.0 Operational Launch Checklist — living readiness dashboard, blocker registry, gated launch checklist |
 | 2026-06-30 | Phase 5.0 Deployment Readiness Report — production/revenue readiness assessment |
 | 2026-06-30 | Phase 4.2 B5 Backlog progress dashboard — deterministic backlog-derived progress and estimate reports |

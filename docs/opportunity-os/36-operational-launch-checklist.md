@@ -1,7 +1,7 @@
 # 36 — Operational Launch Checklist
 
 **Status:** Phase 5.0 — living operational document  
-**Last assessed:** 2026-06-30  
+**Last assessed:** 2026-06-30 (Founder decisions: F-2, F-3, F-4 cleared)  
 **Related:** [Deployment Readiness Report](./35-deployment-readiness.md) · [Master Engineering Backlog](./33-master-engineering-backlog.md) · [Engineering Director Execution Model](./34-engineering-director-execution-model.md) · [Current Phase](./08-current-phase.md) · [Folder Map](./13-folder-map.md)
 
 **Reading path:** Architecture (`00`–`34`) → [Deployment Readiness Report](./35-deployment-readiness.md) → **this document**
@@ -38,14 +38,14 @@ Opportunity OS Launch Readiness
 Last updated: 2026-06-30
 
 Platform Engineering      █████████████████░  94%
-Deployment                ████░░░░░░░░░░░░░  25%
+Deployment                ██████░░░░░░░░░░░  35%
 Business Discovery        ██████░░░░░░░░░░░  38%
 Contact Discovery         ░░░░░░░░░░░░░░░░░   0%
 Campaign Engine           ░░░░░░░░░░░░░░░░░   0%
 CRM                       ░░░░░░░░░░░░░░░░░   0%
 Learning                  ░░░░░░░░░░░░░░░░░   0%
-Founder Actions           ███░░░░░░░░░░░░░░  20%
-Overall Business Readiness ███░░░░░░░░░░░░░░  25%
+Founder Actions           ██████░░░░░░░░░░░  60%
+Overall Business Readiness ████░░░░░░░░░░░░░  38%
 ```
 
 ### Score definitions
@@ -53,22 +53,23 @@ Overall Business Readiness ███░░░░░░░░░░░░░░  
 | Area | Score | Basis |
 |---|---:|---|
 | **Platform Engineering** | 94% | Reasoning pipeline, validation (29 phases), runtime, jobs/events, OpenClaw, Chief of Staff core, Engineering Director, mission registry, observability data — built and regression-tested. Remaining: mission control projection, analytics, scale hardening. |
-| **Deployment** | 25% | Local Node app + legacy Vercel pattern exist. Missing: approved production architecture, hosted OS runtime, env validation, backup/restore, secrets policy, production alerts. |
+| **Deployment** | 35% | Vercel + Blob approved by Founder (F-2). Legacy app pattern in place. Missing: `P1` deployment architecture doc, hosted OS runtime on durable storage, env validation, backup/restore, production alerts. |
 | **Business Discovery** | 38% | Backlog: 6/16 tasks complete (`C1`, `O-PW1`, `O-KTM1`, `O-APT1`, `O-WEB1`, `O-WEB2`). Missing: live connectors (`C2`–`C4`), operator scoring (`O-PW2`). |
 | **Contact Discovery** | 0% | Backlog: 0/7 tasks. Entire epic blocked on legal/PII and mission workflow prerequisites. |
 | **Campaign Engine** | 0% | Backlog: 0/15 tasks across opportunity intelligence, content, campaigns, email infra. |
 | **CRM** | 0% | Backlog: 0/3 tasks. Legacy outcome tracking exists outside OS model. |
 | **Learning** | 0% | Backlog: 0/3 tasks. Requires CRM outcomes first. |
-| **Founder Actions** | 20% | ~2/10 critical Founder unlocks partially satisfied (legacy hosting exists; Twilio partially configured). Policies, mission activation, discovery APIs, email domain not done. |
-| **Overall Business Readiness** | 25% | Weighted toward revenue execution path, not platform code volume. Matches [Deployment Readiness Report](./35-deployment-readiness.md) overall score. |
+| **Founder Actions** | 60% | F-1, F-2, F-3, F-4 cleared (2026-06-30). Remaining: PII/email compliance, ESP domain, outreach policy doc, backup/alerts. |
+| **Overall Business Readiness** | 38% | Founder cleared privacy, hosting, mission #1, and discovery API. **`A1` unblocked** — engineering can resume. |
 
 ### Current system state
 
 | Indicator | Value |
 |---|---|
 | Backlog tasks complete | 12 / 77 (16%) |
-| Next unblocked engineering task | **None** — legitimate stop condition |
-| Engineering Director status | Stopped on external/Founder blockers |
+| Next unblocked engineering task | **`A1`** — Founder conversation state |
+| Engineering Director status | **Ready to resume** on `A1` |
+| Active production mission | **Pressure Washing** (`mission_pressure_washing_beaumont_500`) — active in `runtime/missions/` |
 | Revenue via OS today | **No** — legacy manual tools only |
 | Fastest cash path | Founder manual PW queue + phone (parallel track) |
 
@@ -104,7 +105,7 @@ A blocker may have **multiple tags** when more than one party must act.
 | PE-2 | Opportunity review packets (`F2`) | 🟡 Waiting | Engineering | `F1`, contact architecture (`D1`) |
 | PE-3 | Mission-aware Mission Control (`M1`, `M2`) | 🟡 Waiting | Engineering | `F1`, mission analytics (`L1`) |
 | PE-4 | Chief of Staff conversation state (`A1`) | 🔴 Open | Engineering + **Founder** + **External** | Privacy policy published |
-| PE-5 | Mission activation workflow (`A2`) | 🟡 Waiting | Engineering + **Founder** | `A1`; Founder approves missions |
+| PE-5 | Mission activation workflow (`A2`) | 🟡 Waiting | Engineering + **Founder** | `A1`; **PW mission active in runtime (F-3).** |
 | PE-6 | Multi-mission prioritization (`A3`) | 🟡 Waiting | Engineering + **Founder** | `A2`; revenue targets set |
 | PE-7 | Runtime store compaction at scale (`Q1`) | 🔴 Open | Engineering | Volume pressure — not launch-critical |
 | PE-8 | Database migration plan (`Q3`) | 🔴 Open | Engineering | Future — not launch-critical |
@@ -115,7 +116,7 @@ A blocker may have **multiple tags** when more than one party must act.
 
 | ID | Blocker | Status | Owner | Unblocks |
 |---|---|---|---|---|
-| DEP-1 | Production deployment architecture (`P1`) | 🔴 Open | **Founder** + Engineering | Hosting provider + budget approved |
+| DEP-1 | Production deployment architecture (`P1`) | 🟡 Waiting | Engineering + **Founder** | **Founder approved Vercel + Blob (F-2).** Engineering documents `P1`. |
 | DEP-2 | Hosted Opportunity OS runtime (`OPPORTUNITY_RUNTIME_DIR` on durable volume) | 🔴 Open | Engineering + **Founder** | `DEP-1` |
 | DEP-3 | Environment validation script (`P2`) | 🟡 Waiting | Engineering + **External** | `P1`; secrets placeholders defined |
 | DEP-4 | Backup and restore (`P3`) | 🔴 Open | **Founder** + Engineering | Backup destination chosen |
@@ -131,7 +132,7 @@ A blocker may have **multiple tags** when more than one party must act.
 
 | ID | Blocker | Status | Owner | Unblocks |
 |---|---|---|---|---|
-| BD-1 | Commercial property connector (`C2`) | 🔴 Open | Engineering + **External** | Google Maps / discovery API credentials |
+| BD-1 | Commercial property connector (`C2`) | 🟡 Waiting | Engineering | **Discovery API key provisioned (F-4).** Build `C2` connector. |
 | BD-2 | Industrial signal connector (`C3`) | 🔴 Open | Engineering + **External** + **Founder** | Paid source budget + legal approval |
 | BD-3 | Apartment relationship source (`C4`) | 🔴 Open | Engineering + **External** | Source terms approved |
 | BD-4 | Pressure washing opportunity scoring (`O-PW2`) | 🟡 Waiting | Engineering | `F1` mission-fit ranking |
@@ -211,10 +212,10 @@ These are **Founder-only** actions. Tick when done; update Founder Actions score
 
 | # | Action | Status | Unlocks |
 |---|---|---|---|
-| F-1 | Publish Privacy Policy | ☐ | `A1`, responsible data collection, CEO UI path |
-| F-2 | Approve hosting provider + production budget | ☐ | `P1`, `DEP-1`, `DEP-2` |
-| F-3 | Activate Pressure Washing as first revenue mission | ☐ | `A2`, mission-ranked pipeline, `F1` |
-| F-4 | Provision Google Maps / commercial discovery API | ☐ | `C2`, `BD-1` |
+| F-1 | Publish Privacy Policy | ☑ | **`/privacy`** — `docs/legal/privacy-policy.md` (2026-06-30) |
+| F-2 | Approve hosting provider + production budget | ☑ | **Vercel + Blob — approved 2026-06-30** |
+| F-3 | Activate Pressure Washing as first revenue mission | ☑ | **Mission #1 active** — `mission_pressure_washing_beaumont_500` |
+| F-4 | Provision Google Maps / commercial discovery API | ☑ | **`GOOGLE_MAPS_API_KEY`** in `.env` — Maps Platform key (2026-06-30) |
 | F-5 | Approve PII handling policy | ☐ | `D1`, `D3`, `R2`, `CD-3` |
 | F-6 | Approve email / outreach compliance policy | ☐ | `I1`, `CE-10`, campaign path |
 | F-7 | Create ESP account + register sending domain + DNS | ☐ | `I3`, `CE-12` |
@@ -222,7 +223,7 @@ These are **Founder-only** actions. Tick when done; update Founder Actions score
 | F-9 | Set production `PUBLIC_BASE_URL` + webhook alignment | ☐ | Twilio/webhooks, `DEP-8` |
 | F-10 | Choose backup destination + alert channel | ☐ | `P3`, `S2`, `DEP-4`, `DEP-7` |
 
-**Partial credit today:** legacy Vercel hosting and partial Twilio config count toward ~20% Founder Actions — not sufficient for OS launch.
+**Remaining Founder actions:** F-1 (privacy policy) is the critical path. F-5–F-10 still open before launch gates complete.
 
 ---
 
@@ -230,10 +231,10 @@ These are **Founder-only** actions. Tick when done; update Founder Actions score
 
 | ID | Blocker | Status | Required for |
 |---|---|---|---|
-| EXT-1 | Privacy policy (legal document) | 🔴 Open | `A1`, conversation persistence |
+| EXT-1 | Privacy policy (legal document) | 🟢 Cleared | Published at `/privacy` — `docs/legal/privacy-policy.md` |
 | EXT-2 | PII / data handling legal review | 🔴 Open | Contact discovery, CRM |
 | EXT-3 | Email / CAN-SPAM / opt-out legal review | 🔴 Open | All bulk outreach |
-| EXT-4 | Google Maps / Places API account | 🔴 Open | PW commercial discovery |
+| EXT-4 | Google Maps / Places API account | 🟢 Cleared | PW commercial discovery — key provisioned (F-4); wire in `C2` |
 | EXT-5 | Industrial data source (paid/news/RFP) | 🔴 Open | KTM mission |
 | EXT-6 | Apartment data source terms | 🔴 Open | Apartment mission |
 | EXT-7 | Contact enrichment vendor account | 🔴 Open | Scale contact discovery |
@@ -257,17 +258,17 @@ Quick view of **open** blockers only.
 
 | Owner | Count | Top priority |
 |---|---:|---|
-| **Founder** | 10 decision actions + 8 policy/approval blockers | F-1 Privacy Policy · F-2 Hosting · F-3 Activate PW mission |
-| **External** | 18 | EXT-4 Maps API · EXT-8 ESP · EXT-9 sending domain |
-| **Engineering** | 0 immediately executable | **Stopped** — all ready work depends on Founder/External clears |
+| **Founder** | 6 decision actions remaining | F-5 PII policy · F-6 email compliance |
+| **External** | 16 | EXT-8 ESP · EXT-9 sending domain |
+| **Engineering** | **`A1` ready** | Resume Engineering Director on conversation state |
 
-### What Engineering can do **immediately after** Founder clears F-1, F-2, F-3, F-4
+### Next engineering sequence (from `A1`)
 
 ```text
 A1 → A2 → A3 → P1 → P2 → C2 → F1 → F2 → D1 → D2 → D3
 ```
 
-That sequence restores Engineering Director autonomous execution toward first OS-mediated PW revenue.
+F-1 through F-4 are **cleared**. Run `node scripts/opportunity-engine/backlog-progress-dashboard.js` to confirm current task selection.
 
 ---
 
@@ -277,10 +278,10 @@ Check items in order. Do not skip compliance and deployment gates.
 
 ### Gate 0 — Founder decisions (required before engineering resumes)
 
-- [ ] **F-1** Privacy Policy published
-- [ ] **F-2** Hosting provider and budget approved
-- [ ] **F-3** Pressure Washing mission activated
-- [ ] **F-4** Discovery API credentials provisioned
+- [x] **F-1** Privacy Policy published — **`https://www.pivotalwebsites.com/privacy`** (route: `/privacy`)
+- [x] **F-2** Hosting provider and budget approved — **Vercel + Blob**
+- [x] **F-3** Pressure Washing mission activated — **`mission_pressure_washing_beaumont_500` active**
+- [x] **F-4** Discovery API credentials provisioned — **Google Maps/Places key in `.env`**
 - [ ] **F-5** PII policy approved
 - [ ] **F-6** Email/compliance policy approved
 - [ ] **F-8** Outreach approval policy documented
@@ -384,6 +385,10 @@ Record clears here when blockers move to 🟢.
 
 | Date | Blocker | Notes |
 |---|---|---|
+| 2026-06-30 | F-1 | Privacy policy published — `/privacy`, `docs/legal/privacy-policy.md` |
+| 2026-06-30 | F-2 | Founder approved Vercel + Blob for production hosting. |
+| 2026-06-30 | F-3 | Pressure Washing mission #1 activated — commercial, Beaumont 500 mi, $20k/mo, Founder approves all outreach. Saved active in `runtime/missions/`. |
+| 2026-06-30 | F-4 | Google Maps/Places discovery API key provisioned in `.env`. |
 | 2026-06-30 | — | Initial operational assessment. Engineering Director stopped: no unblocked backlog task. |
 | 2026-06-30 | B1–B5, S1, C1, O-* templates, O-WEB2 | Cleared — see backlog execution status |
 

@@ -149,6 +149,7 @@
 
 | Path | Purpose |
 |---|---|
+| **`docs/legal/privacy-policy.md`** | Published privacy policy — served at `/privacy` |
 | **`docs/opportunity-os/`** | AI Constitution — supreme architecture |
 | **`docs/opportunity-os/32-ai-chief-of-staff.md`** | AI Chief of Staff architecture — mission chef, Founder briefing |
 | **`docs/opportunity-os/33-master-engineering-backlog.md`** | Master Engineering Backlog — task IDs, dependencies, execution status |

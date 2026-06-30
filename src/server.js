@@ -43,6 +43,7 @@ import {
 } from "./operators/index.js";
 import { ensureSchemaFiles } from "./schema/init.js";
 import { getSchemaRuntimeDiagnostics } from "./services/schema-diagnostics.js";
+import { registerLegalRoutes } from "./legal/routes.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -204,6 +205,7 @@ app.post("/api/logout", async (req, res) => {
 });
 
 registerV7Routes(app, { requireOperatorApi, requireOperatorPage });
+registerLegalRoutes(app);
 registerPressureWashingRoutes(app, { requireOperatorApi, requireOperatorPage });
 
 app.use("/api", protectKnownApiRoutes);
