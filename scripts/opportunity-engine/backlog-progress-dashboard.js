@@ -153,6 +153,13 @@ function selectCurrentTask(parsed, statuses) {
       title: row.task.title,
       score: row.score,
     })),
+    stopCondition:
+      ready.length === 0
+        ? {
+            type: "no_unblocked_task",
+            message: "No unblocked backlog task is currently selectable. Remaining work requires dependency completion, external credentials, legal/compliance approval, Founder approval, or another explicit business decision.",
+          }
+        : null,
   };
 }
 
@@ -180,7 +187,7 @@ ${dashboard.categories
 
 ## Current Task
 
-${current ? `\`${current.id}\` — ${current.title}` : "No unblocked task selected."}
+${current ? `\`${current.id}\` — ${current.title}` : dashboard.stopCondition?.message || "No unblocked task selected."}
 
 ## Estimates
 
@@ -222,6 +229,7 @@ async function main() {
       : null,
     readyTop5: selected.readyTop5,
     blockedTaskIds: selected.blockedTaskIds,
+    stopCondition: selected.stopCondition,
     estimates,
   };
 

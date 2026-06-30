@@ -26,11 +26,13 @@ for (const rel of [
   "src/engine/founder-intent/engineering-task-registry.js",
   "src/engine/founder-intent/openclaw-handoff.js",
   "src/engine/sensors/live/file-drop-sensor.js",
+  "src/engine/sensors/live/website-scan-bridge.js",
   "scripts/opportunity-engine/validate-engineering-director.js",
   "scripts/opportunity-engine/validate-engineering-task-registry.js",
   "scripts/opportunity-engine/validate-openclaw-handoff.js",
   "scripts/opportunity-engine/validate-business-operators.js",
   "scripts/opportunity-engine/validate-business-discovery.js",
+  "scripts/opportunity-engine/validate-website-operator.js",
   "scripts/opportunity-engine/validate-observability.js",
   "scripts/opportunity-engine/runtime-health.js",
   "scripts/opportunity-engine/backlog-progress-dashboard.js",
@@ -93,6 +95,16 @@ try {
   pass("Business discovery validation passed");
 } catch (error) {
   fail(`Business discovery validation failed: ${error.stderr || error.message}`);
+}
+
+try {
+  await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-website-operator.js")], {
+    cwd: ROOT,
+    env: { ...process.env },
+  });
+  pass("Website operator validation passed");
+} catch (error) {
+  fail(`Website operator validation failed: ${error.stderr || error.message}`);
 }
 
 try {

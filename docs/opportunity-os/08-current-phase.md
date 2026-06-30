@@ -7,9 +7,9 @@
 
 ## Current Phase
 
-**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + B3 + B4 + B5 + O-PW1 + O-KTM1 + C1 + O-APT1 + O-WEB1 + S1)** — **COMPLETE**
+**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + B3 + B4 + B5 + O-PW1 + O-KTM1 + C1 + O-APT1 + O-WEB1 + O-WEB2 + S1)** — **COMPLETE**
 
-Deterministic Engineering Director selector, runtime engineering task registry, bounded OpenClaw handoff package generator, regression-aware planning, backlog progress dashboard generation, Founder-priority business operator templates, mission-aware file-drop intake, and runtime health observability. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. Every Builder Plan and Engineering Director task recommendation now includes an explicit validation plan before implementation begins: focused validator, phase validator, regression validators, core validation, affected modules, and failure/repair policy. The backlog progress dashboard reads the Master Engineering Backlog and execution status to emit deterministic JSON/Markdown reports with completion by operating category, current task selection, blocked tasks, and remaining task/commit/hour estimates. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. The handoff generator converts approved, OpenClaw-eligible engineering tasks into schema-valid handoff drafts only; it does not dispatch or run jobs. Runtime health emits deterministic JSON/Markdown reports with store counts and report policy; it does not add a dashboard, daemon, or live monitoring service. Business operator templates create validated draft missions for pressure washing, KTM, apartment financial workshops, and website agency growth. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
+Deterministic Engineering Director selector, runtime engineering task registry, bounded OpenClaw handoff package generator, regression-aware planning, backlog progress dashboard generation, Founder-priority business operator templates, mission-aware file-drop intake, website scan signal bridging, and runtime health observability. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. Every Builder Plan and Engineering Director task recommendation now includes an explicit validation plan before implementation begins: focused validator, phase validator, regression validators, core validation, affected modules, and failure/repair policy. The backlog progress dashboard reads the Master Engineering Backlog and execution status to emit deterministic JSON/Markdown reports with completion by operating category, current task selection, blocked tasks, and remaining task/commit/hour estimates. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. The handoff generator converts approved, OpenClaw-eligible engineering tasks into schema-valid handoff drafts only; it does not dispatch or run jobs. Runtime health emits deterministic JSON/Markdown reports with store counts and report policy; it does not add a dashboard, daemon, or live monitoring service. Business operator templates create validated draft missions for pressure washing, KTM, apartment financial workshops, and website agency growth. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged. Legacy website scan records can now become mission-aware OS observations/signals with provenance and without creating downstream facts, situations, problems, opportunities, contacts, campaigns, or outreach.
 
 Run: `node scripts/opportunity-engine/validate-phase-4-2.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
@@ -52,6 +52,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 - [x] Mission-aware file-drop observation metadata (`C1`)
 - [x] Apartment financial workshop mission template (`O-APT1`)
 - [x] Website agency mission template (`O-WEB1`)
+- [x] Website scan signal bridge (`O-WEB2`)
 - [x] Runtime health observability report data (`S1`)
 - [x] `validate-phase-4-2.js` in release graph
 - [x] Docs updated (08, 09, 13, 15, 24, 33)
@@ -71,6 +72,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 | Builder Plans may describe work but may not execute OpenClaw or jobs | **Enforced** |
 | Business operator templates create mission specs only; no opportunities, contacts, or outreach | **Enforced** |
 | Mission hints on file-drop observations remain metadata/provenance only | **Enforced** |
+| Legacy website scan bridge emits observations/signals only and does not create contacts, opportunities, campaigns, or outreach | **Enforced** |
 | Runtime health remains generated reporting only; no dashboard, daemon, or monitor service | **Enforced** |
 | Backlog progress dashboard remains generated reporting only; no UI, daemon, execution loop, or outreach | **Enforced** |
 | Outreach / contact discovery / CEO review UI not built by B1 | **Enforced** |
@@ -120,6 +122,7 @@ Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-30 | Phase 4.2 O-WEB2: Website scan signal bridge — legacy website scan data becomes mission-aware OS observations/signals only |
 | 2026-06-30 | Phase 4.2 B5: Backlog progress dashboard — deterministic backlog-derived progress, current task, blocker, and estimate reports |
 | 2026-06-30 | Phase 4.2 B4: Regression-aware planning — task recommendations include focused, phase, regression, and core validation plans |
 | 2026-06-30 | Phase 4.2 S1: Runtime health dashboard data — deterministic JSON/Markdown health report data with store counts and report policy |

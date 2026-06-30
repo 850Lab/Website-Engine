@@ -66,7 +66,7 @@
 | **`src/engine/relationship-builder/`** | Fact → relationship projection | Platform | `facts/`, `graph-store/`, `entity-resolution/` | No problem inference |
 | **`runtime/inbox/`** | Local observation file drop inbox (Phase 3.5) | Platform | None | `observations/` gitignored |
 | **`src/engine/sensors/`** | Sensor Framework registry + lifecycle + health (Phase 2.3) | Signal / Platform | `src/engine/signals/`, `runtime/` | Demo + live sensors |
-| **`src/engine/sensors/live/`** | Live sensor connectors (Phase 3.5+) | Platform | `runtime/inbox/`, `engine/signals/` | File drop first; mission hints allowed as metadata/provenance only; no reasoning |
+| **`src/engine/sensors/live/`** | Live sensor connectors (Phase 3.5+) | Platform | `runtime/inbox/`, `engine/signals/`, tracked legacy website scan JSON | File drop and website scan bridge; mission hints allowed as metadata/provenance only; no reasoning |
 | **`runtime/missions/`** | Founder-defined mission registry (Phase 4.1) — ACTIVE missions, strategy, alignment | Platform | `engine/founder-intent/` | Multiple simultaneous missions; no outreach execution |
 | **`runtime/engineering-tasks/`** | Engineering Director task registry (Phase 4.2 B2) — proposed, approved, active, blocked, completed tasks | Platform | `engine/founder-intent/` | Runtime-only operating memory; no source backlog mutation |
 | **`src/engine/founder-intent/`** | AI Chief of Staff + Engineering Director planning — intent, missions, strategy, business operator templates, engineering task drafts, backlog selection, Builder Plans, OpenClaw handoff drafts, alignment *(Phase 4.1–4.2)* | Product / CEO | `engine-data/offers/`, `engine-data/capabilities/` (read), `docs/opportunity-os/33-master-engineering-backlog.md` | Sits above pipeline; may create handoff drafts only; does not execute jobs, call OpenClaw workers, or create opportunities |
@@ -138,7 +138,7 @@
 
 | Path | Purpose | Owner | Future direction |
 |---|---|---|---|
-| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `backlog-progress-dashboard.js`, `ingest-signal.js`, `validate-engineering-director.js`, `validate-engineering-task-registry.js`, `validate-openclaw-handoff.js`, `validate-business-operators.js`, `validate-business-discovery.js`, `validate-observability.js`, `validate-backlog-progress-dashboard.js`, `validate-phase-4-2.js` |
+| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `backlog-progress-dashboard.js`, `ingest-signal.js`, `validate-engineering-director.js`, `validate-engineering-task-registry.js`, `validate-openclaw-handoff.js`, `validate-business-operators.js`, `validate-business-discovery.js`, `validate-website-operator.js`, `validate-observability.js`, `validate-backlog-progress-dashboard.js`, `validate-phase-4-2.js` |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
 | **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*` (deterministic store-count observability data), `backlog-progress-dashboard.*` (backlog-derived progress and estimate data), `performance-baseline.*`, `live-pipeline.*`, autopilot reports |

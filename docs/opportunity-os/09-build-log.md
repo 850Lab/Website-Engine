@@ -469,6 +469,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Website Scan Signal Bridge
+**Phase:** 4.2 O-WEB2  
+**Type:** Milestone  
+**Summary:** Added a live sensor bridge that reads tracked legacy website scan records and maps weak/no/unknown website findings into mission-aware OS observations and signals. Provenance carries legacy source, business ID, website score/status, mission candidate, and source label while contact fields are excluded. The bridge does not create facts, situations, problems, opportunities, contacts, campaigns, jobs, OpenClaw runs, or outreach.  
+**Links:** `src/engine/sensors/live/website-scan-bridge.js`, `scripts/opportunity-engine/validate-website-operator.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -496,6 +504,7 @@ Record architectural milestones here. Implementation details belong in commit me
 | 2026-06-30 | Phase 4.2 S1 Runtime health observability data — deterministic runtime health JSON/Markdown with store counts |
 | 2026-06-30 | Phase 4.2 B3 OpenClaw handoff package — approved engineering tasks become handoff-only OpenClaw job drafts |
 | 2026-06-30 | Phase 4.2 O-WEB1 Website agency mission template — validated local service business growth mission |
+| 2026-06-30 | Phase 4.2 O-WEB2 Website scan signal bridge — legacy scans become mission-aware observations/signals only |
 | 2026-06-30 | Phase 4.2 B2 Engineering task registry — runtime lifecycle store for Engineering Director tasks |
 | 2026-06-30 | Phase 4.2 O-APT1 Apartment workshop mission template — validated apartment community and sponsor acquisition mission |
 | 2026-06-30 | Phase 4.2 C1 Mission-aware file-drop intake — candidate mission metadata preserved through signal provenance |

@@ -257,4 +257,13 @@ export {
   FILE_DROP_SENSOR_ID,
 } from "./live/file-drop-sensor.js";
 
+export {
+  collectLegacyWebsiteScanObservations,
+  loadLegacyWebsiteScanDocuments,
+  runWebsiteScanBridgeSensor,
+  registerWebsiteScanBridgeSensor,
+  WEBSITE_SCAN_BRIDGE_SENSOR_ID,
+  WEBSITE_AGENCY_MISSION_ID,
+} from "./live/website-scan-bridge.js";
+
 export { SENSOR_LIFECYCLE } from "./types.js";

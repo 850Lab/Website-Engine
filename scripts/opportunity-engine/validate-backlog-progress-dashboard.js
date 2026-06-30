@@ -77,10 +77,14 @@ if (!errors.some((message) => message.includes("missing category"))) {
   pass("Backlog progress dashboard includes major revenue-operating categories");
 }
 
-if (!first.dashboard.currentTask?.id) {
-  fail("Backlog progress dashboard must include current task selection");
-} else if (first.dashboard.currentTask.id === "B1") {
+if (!first.dashboard.currentTask?.id && first.dashboard.stopCondition?.type !== "no_unblocked_task") {
+  fail("Backlog progress dashboard must include current task selection or explicit no-unblocked-task stop condition");
+} else if (first.dashboard.currentTask?.id === "B1") {
   fail("Backlog progress dashboard must not select a task already marked complete");
+} else if (!first.dashboard.currentTask?.id && !first.dashboard.blockedTaskIds?.length) {
+  fail("Backlog progress dashboard stop condition must include blocked task evidence");
+} else if (!first.dashboard.currentTask?.id) {
+  pass("Backlog progress dashboard records explicit no-unblocked-task stop condition");
 } else {
   pass(`Backlog progress dashboard includes current task ${first.dashboard.currentTask.id}`);
 }
