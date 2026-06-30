@@ -3,6 +3,7 @@ import { attachStrategyToMission } from "./mission-strategy.js";
 
 export const PRESSURE_WASHING_TEMPLATE_ID = "pressure_washing_beaumont_500";
 export const KTM_TEMPLATE_ID = "ktm_industrial_beaumont_500";
+export const APARTMENT_WORKSHOP_TEMPLATE_ID = "apartment_workshop_beaumont_500";
 
 export function createPressureWashingMissionTemplate(overrides = {}) {
   return attachStrategyToMission(
@@ -153,6 +154,72 @@ export function createKtmMissionTemplate(overrides = {}) {
   );
 }
 
+export function createApartmentWorkshopMissionTemplate(overrides = {}) {
+  return attachStrategyToMission(
+    normalizeMission({
+      missionId: "mission_apartment_workshop_beaumont_500",
+      name: "Apartment Financial Workshop Sponsor Mission - Beaumont 500 Mile Radius",
+      goal:
+        "Find apartment communities that can host financial workshops and support local sponsor acquisition within 500 miles of Beaumont, Texas.",
+      status: "draft",
+      priority: "high",
+      businessMode: "sponsor_acquisition",
+      revenueTarget: {
+        amount: 10000,
+        currency: "USD",
+        period: "month",
+      },
+      deadline: "6 months",
+      geography: [
+        {
+          label: "Beaumont, TX 500-mile apartment workshop radius",
+          city: "Beaumont",
+          state: "TX",
+          country: "US",
+          radiusMiles: 500,
+        },
+      ],
+      industries: ["Multi-family Housing", "Apartment Communities", "Resident Services", "Local Sponsorships"],
+      buyerTypes: [
+        "Property managers",
+        "Regional managers",
+        "Apartment owners",
+        "Community managers",
+        "Resident services coordinators",
+        "Local sponsor decision makers",
+      ],
+      offers: ["offer_website_growth"],
+      capabilities: ["website_growth", "lead_generation"],
+      constraints: [
+        "No outreach without Founder approval",
+        "Workshop and sponsor messaging must be reviewed before use",
+        "Prioritize apartment communities with resident engagement signals",
+        "Do not imply financial advice automation or regulated recommendations",
+      ],
+      requiredSignals: [
+        "Apartment community events",
+        "Resident enrichment programs",
+        "Property management groups",
+        "Multi-family ownership changes",
+        "Community partnerships",
+        "Local sponsor categories",
+        "Resident retention initiatives",
+      ],
+      ignoredSignals: ["Single-family residential", "No on-site community programming"],
+      preferredChannels: ["Email", "Phone", "Visit"],
+      approvalPolicy: { ...DEFAULT_APPROVAL_POLICY },
+      successMetrics: {
+        qualifiedApartmentCommunitiesPerWeek: 15,
+        workshopConversationsPerMonth: 20,
+        sponsorRevenuePerMonth: 10000,
+      },
+      notes:
+        "Default apartment workshop mission template using existing website growth and lead-generation capabilities until a dedicated workshop offer is approved.",
+      ...overrides,
+    }),
+  );
+}
+
 export function listBusinessOperatorMissionTemplates() {
   return [
     {
@@ -168,6 +235,13 @@ export function listBusinessOperatorMissionTemplates() {
       priority: "P0",
       founderPriorityRank: 2,
       createMission: createKtmMissionTemplate,
+    },
+    {
+      templateId: APARTMENT_WORKSHOP_TEMPLATE_ID,
+      title: "Apartment Financial Workshop Sponsor Mission - Beaumont 500 Mile Radius",
+      priority: "P1",
+      founderPriorityRank: 3,
+      createMission: createApartmentWorkshopMissionTemplate,
     },
   ];
 }

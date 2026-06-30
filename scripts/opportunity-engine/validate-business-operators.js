@@ -2,8 +2,10 @@ import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  APARTMENT_WORKSHOP_TEMPLATE_ID,
   KTM_TEMPLATE_ID,
   PRESSURE_WASHING_TEMPLATE_ID,
+  createApartmentWorkshopMissionTemplate,
   createKtmMissionTemplate,
   createPressureWashingMissionTemplate,
   listBusinessOperatorMissionTemplates,
@@ -24,8 +26,14 @@ function pass(message) {
 }
 
 const templates = listBusinessOperatorMissionTemplates();
+const apartmentTemplate = templates.find((template) => template.templateId === APARTMENT_WORKSHOP_TEMPLATE_ID);
 const pressureTemplate = templates.find((template) => template.templateId === PRESSURE_WASHING_TEMPLATE_ID);
 const ktmTemplate = templates.find((template) => template.templateId === KTM_TEMPLATE_ID);
+if (!apartmentTemplate) {
+  fail("Apartment workshop mission template is missing from business operator templates");
+} else {
+  pass("Apartment workshop mission template is registered");
+}
 if (!pressureTemplate) {
   fail("Pressure washing mission template is missing from business operator templates");
 } else {
@@ -126,6 +134,55 @@ if (ktmMission.approvalPolicy?.requireFounderApprovalBeforeOutreach !== true) {
   fail("KTM template must keep outreach approval gate enabled");
 } else {
   pass("KTM template keeps outreach approval gate enabled");
+}
+
+const apartmentMission = createApartmentWorkshopMissionTemplate();
+const apartmentValidation = await validateMission(apartmentMission);
+if (!apartmentValidation.valid) {
+  fail(`Apartment workshop mission template failed validation: ${apartmentValidation.errors.join("; ")}`);
+} else {
+  pass("Apartment workshop mission template creates a valid mission");
+}
+
+if (apartmentMission.offers?.[0] !== "offer_website_growth") {
+  fail("Apartment workshop template must use offer_website_growth until a dedicated offer is approved");
+} else {
+  pass("Apartment workshop template maps to supported offer_website_growth");
+}
+
+for (const capabilityId of ["website_growth", "lead_generation"]) {
+  if (!apartmentMission.capabilities?.includes(capabilityId)) {
+    fail(`Apartment workshop template must include ${capabilityId} capability`);
+  }
+}
+if (!errors.some((message) => message.includes("Apartment workshop template must include"))) {
+  pass("Apartment workshop template maps to supported growth capabilities");
+}
+
+if (
+  !apartmentMission.geography?.some((geo) => geo.city === "Beaumont" && geo.state === "TX" && geo.radiusMiles === 500)
+) {
+  fail("Apartment workshop template must target a 500-mile radius from Beaumont, TX");
+} else {
+  pass("Apartment workshop template targets Beaumont 500-mile radius");
+}
+
+if (!apartmentMission.buyerTypes?.some((buyer) => /property manager|apartment owner|sponsor/i.test(buyer))) {
+  fail("Apartment workshop template must include apartment and sponsor decision makers");
+} else {
+  pass("Apartment workshop template includes apartment and sponsor decision makers");
+}
+
+if (!apartmentMission.requiredSignals?.some((signal) => /resident|community|sponsor/i.test(signal))) {
+  fail("Apartment workshop template must include apartment workshop trigger signals");
+} else {
+  pass("Apartment workshop template includes apartment workshop trigger signals");
+}
+
+if (apartmentMission.approvalPolicy?.requireFounderApprovalBeforeOutreach !== true) {
+  fail("Apartment workshop template must keep outreach approval gate enabled");
+} else {
+  pass("Apartment workshop template keeps outreach approval gate enabled");
 }
 
 const source = await readFile(join(ROOT, "src/engine/founder-intent/business-operators.js"), "utf8");

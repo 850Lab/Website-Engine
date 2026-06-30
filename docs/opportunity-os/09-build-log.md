@@ -413,6 +413,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Apartment Workshop Mission Template
+**Phase:** 4.2 O-APT1  
+**Type:** Milestone  
+**Summary:** Added the apartment financial workshop mission template for apartment community acquisition and local sponsor revenue within 500 miles of Beaumont, Texas. The template uses the existing `offer_website_growth` path and supported growth/lead-generation capabilities until a dedicated workshop offer is approved. It creates mission and strategy context only; no contact discovery, sponsor mapping, campaigns, or outreach.  
+**Links:** `src/engine/founder-intent/business-operators.js`, `scripts/opportunity-engine/validate-business-operators.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -435,6 +443,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 O-APT1 Apartment workshop mission template — validated apartment community and sponsor acquisition mission |
 | 2026-06-30 | Phase 4.2 C1 Mission-aware file-drop intake — candidate mission metadata preserved through signal provenance |
 | 2026-06-30 | Phase 4.2 O-KTM1 KTM industrial mission template — validated Beaumont 500-mile industrial maintenance mission |
 | 2026-06-30 | Phase 4.2 O-PW1 Pressure Washing business operator template — validated Beaumont 500-mile commercial mission |

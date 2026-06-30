@@ -65,8 +65,10 @@ export {
 } from "./backlog-selector.js";
 
 export {
+  APARTMENT_WORKSHOP_TEMPLATE_ID,
   PRESSURE_WASHING_TEMPLATE_ID,
   KTM_TEMPLATE_ID,
+  createApartmentWorkshopMissionTemplate,
   createPressureWashingMissionTemplate,
   createKtmMissionTemplate,
   listBusinessOperatorMissionTemplates,
