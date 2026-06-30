@@ -7,9 +7,9 @@
 
 ## Current Phase
 
-**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + O-PW1 + O-KTM1 + C1 + O-APT1)** — **COMPLETE**
+**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + O-PW1 + O-KTM1 + C1 + O-APT1 + O-WEB1)** — **COMPLETE**
 
-Deterministic Engineering Director selector, runtime engineering task registry, Founder-priority business operator templates, and mission-aware file-drop intake. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. Business operator templates create validated draft missions for pressure washing, KTM, and apartment financial workshops. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
+Deterministic Engineering Director selector, runtime engineering task registry, Founder-priority business operator templates, and mission-aware file-drop intake. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. Business operator templates create validated draft missions for pressure washing, KTM, apartment financial workshops, and website agency growth. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
 
 Run: `node scripts/opportunity-engine/validate-phase-4-2.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
@@ -46,6 +46,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 - [x] KTM industrial maintenance mission template (`O-KTM1`)
 - [x] Mission-aware file-drop observation metadata (`C1`)
 - [x] Apartment financial workshop mission template (`O-APT1`)
+- [x] Website agency mission template (`O-WEB1`)
 - [x] `validate-phase-4-2.js` in release graph
 - [x] Docs updated (08, 09, 13, 15, 33)
 
@@ -108,6 +109,7 @@ Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-30 | Phase 4.2 O-WEB1: Website agency mission template — local service business website growth mission |
 | 2026-06-30 | Phase 4.2 B2: Engineering task registry — runtime lifecycle store for proposed, approved, active, blocked, and completed tasks |
 | 2026-06-30 | Phase 4.2 O-APT1: Apartment financial workshop mission template — apartment community and sponsor acquisition mission |
 | 2026-06-30 | Phase 4.2 C1: Mission-aware file-drop intake — candidate mission IDs, mission hints, and source labels preserved as metadata/provenance |

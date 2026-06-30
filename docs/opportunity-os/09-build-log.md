@@ -429,6 +429,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Website Agency Mission Template
+**Phase:** 4.2 O-WEB1  
+**Type:** Milestone  
+**Summary:** Added the website agency mission template for local service businesses with weak websites, low conversion, or poor digital credibility. The template maps to `offer_website_growth` and supported website growth/lead-generation capabilities, preserving Founder approval before outreach. It does not perform website scans, contact discovery, campaigns, or outreach.  
+**Links:** `src/engine/founder-intent/business-operators.js`, `scripts/opportunity-engine/validate-business-operators.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -451,6 +459,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 O-WEB1 Website agency mission template — validated local service business growth mission |
 | 2026-06-30 | Phase 4.2 B2 Engineering task registry — runtime lifecycle store for Engineering Director tasks |
 | 2026-06-30 | Phase 4.2 O-APT1 Apartment workshop mission template — validated apartment community and sponsor acquisition mission |
 | 2026-06-30 | Phase 4.2 C1 Mission-aware file-drop intake — candidate mission metadata preserved through signal provenance |

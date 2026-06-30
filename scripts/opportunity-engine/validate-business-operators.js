@@ -5,9 +5,11 @@ import {
   APARTMENT_WORKSHOP_TEMPLATE_ID,
   KTM_TEMPLATE_ID,
   PRESSURE_WASHING_TEMPLATE_ID,
+  WEBSITE_AGENCY_TEMPLATE_ID,
   createApartmentWorkshopMissionTemplate,
   createKtmMissionTemplate,
   createPressureWashingMissionTemplate,
+  createWebsiteAgencyMissionTemplate,
   listBusinessOperatorMissionTemplates,
   validateMission,
 } from "../../src/engine/founder-intent/index.js";
@@ -29,6 +31,7 @@ const templates = listBusinessOperatorMissionTemplates();
 const apartmentTemplate = templates.find((template) => template.templateId === APARTMENT_WORKSHOP_TEMPLATE_ID);
 const pressureTemplate = templates.find((template) => template.templateId === PRESSURE_WASHING_TEMPLATE_ID);
 const ktmTemplate = templates.find((template) => template.templateId === KTM_TEMPLATE_ID);
+const websiteTemplate = templates.find((template) => template.templateId === WEBSITE_AGENCY_TEMPLATE_ID);
 if (!apartmentTemplate) {
   fail("Apartment workshop mission template is missing from business operator templates");
 } else {
@@ -43,6 +46,11 @@ if (!ktmTemplate) {
   fail("KTM mission template is missing from business operator templates");
 } else {
   pass("KTM mission template is registered");
+}
+if (!websiteTemplate) {
+  fail("Website agency mission template is missing from business operator templates");
+} else {
+  pass("Website agency mission template is registered");
 }
 
 const mission = createPressureWashingMissionTemplate();
@@ -183,6 +191,47 @@ if (apartmentMission.approvalPolicy?.requireFounderApprovalBeforeOutreach !== tr
   fail("Apartment workshop template must keep outreach approval gate enabled");
 } else {
   pass("Apartment workshop template keeps outreach approval gate enabled");
+}
+
+const websiteMission = createWebsiteAgencyMissionTemplate();
+const websiteValidation = await validateMission(websiteMission);
+if (!websiteValidation.valid) {
+  fail(`Website agency mission template failed validation: ${websiteValidation.errors.join("; ")}`);
+} else {
+  pass("Website agency mission template creates a valid mission");
+}
+
+if (websiteMission.offers?.[0] !== "offer_website_growth") {
+  fail("Website agency template must use offer_website_growth");
+} else {
+  pass("Website agency template maps to offer_website_growth");
+}
+
+for (const capabilityId of ["website_growth", "lead_generation"]) {
+  if (!websiteMission.capabilities?.includes(capabilityId)) {
+    fail(`Website agency template must include ${capabilityId} capability`);
+  }
+}
+if (!errors.some((message) => message.includes("Website agency template must include"))) {
+  pass("Website agency template maps to supported growth capabilities");
+}
+
+if (!websiteMission.buyerTypes?.some((buyer) => /owner|manager/i.test(buyer))) {
+  fail("Website agency template must include local business decision makers");
+} else {
+  pass("Website agency template includes local business decision makers");
+}
+
+if (!websiteMission.requiredSignals?.some((signal) => /weak website|conversion|rebrand/i.test(signal))) {
+  fail("Website agency template must include website growth trigger signals");
+} else {
+  pass("Website agency template includes website growth trigger signals");
+}
+
+if (websiteMission.approvalPolicy?.requireFounderApprovalBeforeOutreach !== true) {
+  fail("Website agency template must keep outreach approval gate enabled");
+} else {
+  pass("Website agency template keeps outreach approval gate enabled");
 }
 
 const source = await readFile(join(ROOT, "src/engine/founder-intent/business-operators.js"), "utf8");

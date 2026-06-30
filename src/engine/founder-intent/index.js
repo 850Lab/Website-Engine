@@ -83,9 +83,11 @@ export {
   APARTMENT_WORKSHOP_TEMPLATE_ID,
   PRESSURE_WASHING_TEMPLATE_ID,
   KTM_TEMPLATE_ID,
+  WEBSITE_AGENCY_TEMPLATE_ID,
   createApartmentWorkshopMissionTemplate,
   createPressureWashingMissionTemplate,
   createKtmMissionTemplate,
+  createWebsiteAgencyMissionTemplate,
   listBusinessOperatorMissionTemplates,
 } from "./business-operators.js";
 

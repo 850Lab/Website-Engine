@@ -4,6 +4,7 @@ import { attachStrategyToMission } from "./mission-strategy.js";
 export const PRESSURE_WASHING_TEMPLATE_ID = "pressure_washing_beaumont_500";
 export const KTM_TEMPLATE_ID = "ktm_industrial_beaumont_500";
 export const APARTMENT_WORKSHOP_TEMPLATE_ID = "apartment_workshop_beaumont_500";
+export const WEBSITE_AGENCY_TEMPLATE_ID = "website_agency_local_services";
 
 export function createPressureWashingMissionTemplate(overrides = {}) {
   return attachStrategyToMission(
@@ -220,6 +221,64 @@ export function createApartmentWorkshopMissionTemplate(overrides = {}) {
   );
 }
 
+export function createWebsiteAgencyMissionTemplate(overrides = {}) {
+  return attachStrategyToMission(
+    normalizeMission({
+      missionId: "mission_website_agency_local_services",
+      name: "Website Agency Growth - Local Service Businesses",
+      goal:
+        "Find local service businesses with weak websites, low conversion, or poor digital credibility that may need website growth support.",
+      status: "draft",
+      priority: "medium",
+      businessMode: "service_growth",
+      revenueTarget: {
+        amount: 15000,
+        currency: "USD",
+        period: "month",
+      },
+      deadline: "6 months",
+      geography: [
+        {
+          label: "Beaumont, TX 500-mile local service radius",
+          city: "Beaumont",
+          state: "TX",
+          country: "US",
+          radiusMiles: 500,
+        },
+      ],
+      industries: ["Local Services", "Home Services", "Trade Contractors", "B2C Services"],
+      buyerTypes: ["Owners", "General managers", "Marketing managers", "Operations managers"],
+      offers: ["offer_website_growth"],
+      capabilities: ["website_growth", "lead_generation"],
+      constraints: [
+        "No outreach without Founder approval",
+        "Prioritize businesses where website weakness is observable from source evidence",
+        "No unsupported claims about traffic, revenue, or conversion performance",
+      ],
+      requiredSignals: [
+        "Weak website",
+        "Low conversion",
+        "Poor credibility",
+        "New business launch",
+        "Rebrand",
+        "Website redesign need",
+        "Estimate request friction",
+      ],
+      ignoredSignals: ["Industrial turnarounds", "Apartment community events", "Residential-only cleaning jobs"],
+      preferredChannels: ["Email", "Phone"],
+      approvalPolicy: { ...DEFAULT_APPROVAL_POLICY },
+      successMetrics: {
+        qualifiedWebsiteOpportunitiesPerWeek: 20,
+        consultationsPerMonth: 10,
+        revenuePerMonth: 15000,
+      },
+      notes:
+        "Default website agency mission template for local service businesses using existing website growth and lead-generation capabilities.",
+      ...overrides,
+    }),
+  );
+}
+
 export function listBusinessOperatorMissionTemplates() {
   return [
     {
@@ -242,6 +301,13 @@ export function listBusinessOperatorMissionTemplates() {
       priority: "P1",
       founderPriorityRank: 3,
       createMission: createApartmentWorkshopMissionTemplate,
+    },
+    {
+      templateId: WEBSITE_AGENCY_TEMPLATE_ID,
+      title: "Website Agency Growth - Local Service Businesses",
+      priority: "P2",
+      founderPriorityRank: 4,
+      createMission: createWebsiteAgencyMissionTemplate,
     },
   ];
 }
