@@ -28,6 +28,8 @@ const DEFAULT_COMPLETED_CAPABILITIES = Object.freeze([
   "openclaw builder",
   "validation framework",
   "runtime health script",
+  "connector policy",
+  "source connector policy",
 ]);
 
 const EXTERNAL_BLOCKER_PATTERNS = Object.freeze([

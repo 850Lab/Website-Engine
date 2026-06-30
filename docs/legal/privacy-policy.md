@@ -166,3 +166,13 @@ We may update this policy as our systems evolve. The effective date at the top w
 **Pivotal Websites**  
 Privacy inquiries: **privacy@pivotalwebsites.com**  
 Website: **https://www.pivotalwebsites.com**
+
+---
+
+## Related policies
+
+- [PII Policy](/legal/pii)
+- [Email Compliance](/legal/email-compliance)
+- [Outreach Approval](/legal/outreach-approval)
+- [Source Connectors](/legal/source-connectors)
+- [Operations Policy](/legal/operations)

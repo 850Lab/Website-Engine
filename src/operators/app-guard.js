@@ -64,6 +64,7 @@ function isPublicApiPath(path, method) {
 function isPublicPagePath(path) {
   if (path === "/login") return true;
   if (path === "/privacy") return true;
+  if (path.startsWith("/legal/")) return true;
   if (path.startsWith("/p/")) return true;
   if (path.startsWith("/launch/")) return true;
   if (path.startsWith("/activate/")) return true;

@@ -3,7 +3,6 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
-const POLICY_PATH = join(ROOT, "docs/legal/privacy-policy.md");
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -13,7 +12,7 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function markdownToHtml(markdown) {
+export function markdownToHtml(markdown) {
   const lines = String(markdown || "").split(/\r?\n/);
   const parts = [];
   let inList = false;
@@ -69,17 +68,19 @@ function markdownToHtml(markdown) {
   return parts.join("\n");
 }
 
-export async function renderPrivacyPolicyPage(options = {}) {
-  const markdown = await readFile(POLICY_PATH, "utf8");
-  const bodyHtml = markdownToHtml(markdown);
+export async function renderLegalPolicyPage(options = {}) {
+  const relativePath = options.relativePath || "docs/legal/privacy-policy.md";
+  const pageTitle = options.pageTitle || "Policy";
   const homeUrl = escapeHtml(options.homeUrl || "/");
+  const markdown = await readFile(join(ROOT, relativePath), "utf8");
+  const bodyHtml = markdownToHtml(markdown);
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Privacy Policy — Pivotal Websites</title>
+  <title>${escapeHtml(pageTitle)} — Pivotal Websites</title>
   <style>
     :root {
       color-scheme: light;

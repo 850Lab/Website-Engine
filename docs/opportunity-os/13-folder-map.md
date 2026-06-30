@@ -150,6 +150,12 @@
 | Path | Purpose |
 |---|---|
 | **`docs/legal/privacy-policy.md`** | Published privacy policy — served at `/privacy` |
+| **`docs/legal/pii-policy.md`** | PII and business contact data policy — `/legal/pii` |
+| **`docs/legal/email-compliance-policy.md`** | Email and outreach compliance — `/legal/email-compliance` |
+| **`docs/legal/outreach-approval-policy.md`** | Founder outreach approval rules — `/legal/outreach-approval` |
+| **`docs/legal/source-connector-policy.md`** | Approved discovery sources — `/legal/source-connectors` |
+| **`docs/legal/operations-policy.md`** | Hosting, URL, email, backup, alerts — `/legal/operations` |
+| **`docs/legal/founder-decisions.md`** | Founder decision audit registry |
 | **`docs/opportunity-os/`** | AI Constitution — supreme architecture |
 | **`docs/opportunity-os/32-ai-chief-of-staff.md`** | AI Chief of Staff architecture — mission chef, Founder briefing |
 | **`docs/opportunity-os/33-master-engineering-backlog.md`** | Master Engineering Backlog — task IDs, dependencies, execution status |

@@ -122,7 +122,7 @@ Stop conditions are mandatory. If a stop condition is hit, halt and request Foun
 | ID | Title | Description | Business purpose | Priority | Dependencies | Validation script | Complexity | Business value | Stop conditions | Affected modules | Completion criteria |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | `C1` | Mission-aware file drop intake | Allow file-drop observations to carry mission hints and source labels. | Fastest path to pressure washing and KTM signal testing. | P0 | Mission registry | `validate-business-discovery.js` | S | L | Attempts direct opportunity creation | `sensors/live`, `signals` | Observations tag candidate mission IDs; pipeline remains unchanged. |
-| `C2` | Commercial property source connector v1 | Add first connector for business openings, remodels, property management, shopping centers. | Directly supports pressure washing revenue. | P0 | C1, connector policy | `validate-source-connectors-v1.js` | L | XL | Maps API key provisioned; build connector | `sensors`, `runtime/inbox` | Connector writes observations only; no facts/opportunities directly. |
+| `C2` | Commercial property source connector v1 | Add first connector for business openings, remodels, property management, shopping centers. | Directly supports pressure washing revenue. | P0 | C1 | `validate-source-connectors-v1.js` | L | XL | Source connector policy published; build connector | `sensors`, `runtime/inbox` | Connector writes observations only; no facts/opportunities directly. |
 | `C3` | Industrial signal connector v1 | Add KTM-oriented source for turnarounds, shutdowns, permits, RFP/news. | Feeds high-upside KTM opportunities. | P1 | C1, connector policy | `validate-source-connectors-v1.js` | L | XL | Paid source or legal approval required | `sensors` | Industrial observations enter signal registry with provenance. |
 | `C4` | Apartment relationship source v1 | Add source for apartment communities, property management groups, community event signals. | Supports apartment workshop/sponsor mission. | P1 | C1 | `validate-source-connectors-v1.js` | L | L | Source terms prohibit use | `sensors` | Apartment observations flow into pipeline as signals. |
 
@@ -132,9 +132,9 @@ Stop conditions are mandatory. If a stop condition is hit, halt and request Foun
 
 | ID | Title | Description | Business purpose | Priority | Dependencies | Validation script | Complexity | Business value | Stop conditions | Affected modules | Completion criteria |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `D1` | Contact discovery architecture | Define contact object, provenance, confidence, allowed sources, and no-contact rules. | Required before any outreach. | P0 | Mission approval workflow | `validate-contact-discovery.js` | M | XL | Legal/compliance uncertainty | `docs`, `engine/contact-discovery` | Contact schema and validation rules exist; no sending. |
+| `D1` | Contact discovery architecture | Define contact object, provenance, confidence, allowed sources, and no-contact rules. | Required before any outreach. | P0 | Mission approval workflow | `validate-contact-discovery.js` | M | XL | PII and outreach policies published | `docs`, `engine/contact-discovery` | Contact schema and validation rules exist; no sending. |
 | `D2` | Buyer role resolver | Map missions to buyer roles: property manager, operations manager, safety manager, owner. | Finds the right people to contact. | P0 | D1 | `validate-contact-discovery.js` | M | XL | Role cannot be inferred | `contact-discovery`, `founder-intent` | Mission -> buyer roles are deterministic and explainable. |
-| `D3` | Contact candidate store | Persist contact candidates with source, confidence, consent/compliance flags. | Prepares CRM and outreach safely. | P1 | D1, D2 | `validate-contact-store.js` | M | XL | PII policy missing | `runtime/contacts/` | Contacts store validates, supports archive, no outreach. |
+| `D3` | Contact candidate store | Persist contact candidates with source, confidence, consent/compliance flags. | Prepares CRM and outreach safely. | P1 | D1, D2 | `validate-contact-store.js` | M | XL | PII policy published at `/legal/pii` | `runtime/contacts/` | Contacts store validates, supports archive, no outreach. |
 | `D4` | Contact enrichment adapters | Add approved enrichment sources for email, phone, title, company. | Improves campaign quality and deliverability. | P2 | D3, legal approval | `validate-contact-enrichment.js` | XL | XL | Requires paid account/API | `contact-discovery` | Enrichment produces candidates with provenance and confidence. |
 
 ---
@@ -185,9 +185,9 @@ Stop conditions are mandatory. If a stop condition is hit, halt and request Foun
 
 | ID | Title | Description | Business purpose | Priority | Dependencies | Validation script | Complexity | Business value | Stop conditions | Affected modules | Completion criteria |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `I1` | Email compliance architecture | Define consent, unsubscribe, suppression, rate limits, legal policies. | Required before email scale. | P0 | H1 | `validate-email-compliance.js` | M | XL | Legal approval required | `docs`, `engine/compliance` | Compliance policy blocks sending until configured. |
-| `I2` | Suppression and unsubscribe store | Persist unsubscribes, bounces, do-not-contact, and suppressed domains. | Protects deliverability and compliance. | P0 | I1 | `validate-suppression-store.js` | M | XL | PII policy missing | `runtime/compliance/` | Suppression checks are enforced before queueing sends. |
-| `I3` | Sending provider adapter | Add provider abstraction for approved email account. | Enables controlled sending later. | P2 | I1, I2, provider credentials | `validate-email-adapter.js` | L | XL | Credentials/account required | `engine/email` | Adapter validates in dry-run until credentials approved. |
+| `I1` | Email compliance architecture | Define consent, unsubscribe, suppression, rate limits, legal policies. | Required before email scale. | P0 | H1 | `validate-email-compliance.js` | M | XL | Email compliance policy published at `/legal/email-compliance` | `docs`, `engine/compliance` | Compliance policy blocks sending until configured. |
+| `I2` | Suppression and unsubscribe store | Persist unsubscribes, bounces, do-not-contact, and suppressed domains. | Protects deliverability and compliance. | P0 | I1 | `validate-suppression-store.js` | M | XL | PII policy published at `/legal/pii` | `runtime/compliance/` | Suppression checks are enforced before queueing sends. |
+| `I3` | Sending provider adapter | Add provider abstraction for approved email account. | Enables controlled sending later. | P2 | I1, I2, provider credentials | `validate-email-adapter.js` | L | XL | Resend credentials in Vercel env; build adapter | `engine/email` | Adapter validates in dry-run until credentials approved. |
 | `I4` | Scale controller | Enforce 10,000 emails/month/offer caps, warmup, throttles, and kill switch. | Supports long-term scale safely. | P2 | I3, observability | `validate-email-scale-controller.js` | XL | XL | Deliverability setup absent | `engine/email`, `runtime/compliance/` | Caps and kill switch validated in simulation. |
 
 ---
@@ -294,7 +294,7 @@ Stop conditions are mandatory. If a stop condition is hit, halt and request Foun
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | `P1` | Production deployment architecture | Define hosting, runtime storage, environment variables, backups, auth. | Makes OS usable outside local machine. | P1 | Security basics | `validate-deployment-plan.js` | M | L | Vercel + Blob approved; document deployment plan | `docs`, `scripts/deploy/` | Deployment plan approved; no secrets committed. |
 | `P2` | Environment validation | Verify required env vars, runtime paths, secrets placeholders. | Prevents broken production runs. | P1 | P1 | `validate-environment.js` | M | L | Secrets required | `scripts/opportunity-engine/` | Environment check reports missing config safely. |
-| `P3` | Backup and restore | Backup runtime stores and restore to clean environment. | Protects business data. | P1 | P1 | `validate-backup-restore.js` | L | L | Backup destination absent | `scripts/runtime/`, `runtime/` | Backup/restore validated with test runtime. |
+| `P3` | Backup and restore | Backup runtime stores and restore to clean environment. | Protects business data. | P1 | P1 | `validate-backup-restore.js` | L | L | Vercel Blob + Git approved; implement restore test | `scripts/runtime/`, `runtime/` | Backup/restore validated with test runtime. |
 
 ---
 
@@ -312,8 +312,8 @@ Stop conditions are mandatory. If a stop condition is hit, halt and request Foun
 
 | ID | Title | Description | Business purpose | Priority | Dependencies | Validation script | Complexity | Business value | Stop conditions | Affected modules | Completion criteria |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `R1` | Secrets policy and scanner | Define secrets handling and block accidental commits. | Protects accounts and compliance. | P0 | Deployment planning | `validate-security.js` | M | XL | Requires secret provider approval | `scripts/security/`, `.gitignore` | Scanner blocks common secret patterns. |
-| `R2` | PII classification | Classify contact/customer fields and redaction rules. | Required before contact discovery scale. | P0 | D1 | `validate-pii-policy.js` | M | XL | Legal uncertainty | `security`, `contact-discovery` | PII fields have handling policy and tests. |
+| `R1` | Secrets policy and scanner | Define secrets handling and block accidental commits. | Protects accounts and compliance. | P0 | Deployment planning | `validate-security.js` | M | XL | Vercel env secrets approved; implement scanner | `scripts/security/`, `.gitignore` | Scanner blocks common secret patterns. |
+| `R2` | PII classification | Classify contact/customer fields and redaction rules. | Required before contact discovery scale. | P0 | D1 | `validate-pii-policy.js` | M | XL | PII policy published at `/legal/pii` | `security`, `contact-discovery` | PII fields have handling policy and tests. |
 | `R3` | Permission model | Define roles: Founder, operator, QA, builder, read-only auditor. | Safe multi-user operations. | P1 | CEO dashboard | `validate-permissions.js` | L | L | Auth provider missing | `operators`, `pivotal-os` | Role checks protect privileged actions. |
 
 ---
@@ -323,7 +323,7 @@ Stop conditions are mandatory. If a stop condition is hit, halt and request Foun
 | ID | Title | Description | Business purpose | Priority | Dependencies | Validation script | Complexity | Business value | Stop conditions | Affected modules | Completion criteria |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | `S1` | Runtime health dashboard data | Emit health for jobs, events, stores, missions, connectors, campaigns. | Founder sees system reliability. | P1 | Runtime health script | `validate-observability.js` | M | L | Metrics source missing | `scripts/opportunity-engine`, `runtime/health` | Health JSON/MD generated and gitignored. |
-| `S2` | Error alert policy | Define alert thresholds, channels, and escalation rules. | Prevents silent failures. | P1 | Deployment | `validate-alert-policy.js` | M | L | Alert account required | `docs`, `observability` | Alert policy exists; no external sends until configured. |
+| `S2` | Error alert policy | Define alert thresholds, channels, and escalation rules. | Prevents silent failures. | P1 | Deployment | `validate-alert-policy.js` | M | L | Alert policy published; email privacy@pivotalwebsites.com | `docs`, `observability` | Alert policy exists; no external sends until configured. |
 | `S3` | Audit trail explorer | Read-only report for mission, opportunity, campaign, contact history. | Builds trust and debuggability. | P2 | CRM, campaign engine | `validate-audit-report.js` | M | M | PII redaction incomplete | `reports`, `runtime/events` | Audit report renders with redaction. |
 
 ---
