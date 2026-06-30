@@ -7,50 +7,75 @@
 
 ## Current Phase
 
-**Phase 4.0.6 — Engine-Data Read-Only Enforcement** — **COMPLETE**
+**Phase 4.1 — Founder Intent Interpreter (Mission Chef)** — **COMPLETE**
 
-`engine-data/` is read-only seed/config/reference data. All runtime, validation, sensor, and pipeline writes go only to `runtime/` or `runtime-validation/run-*`. Runtime IO rejects writes under `engine-data/`; validators fail if git-tracked engine-data changes.
+LLM-capable (optional) + rules-based layer that translates natural-language founder goals into validated, structured missions stored in `runtime/missions/`. Missions configure strategy and alignment for the existing Opportunity OS pipeline without modifying orchestrator, processor, or outreach paths.
 
-Run: `node scripts/opportunity-engine/validate-phase-4-0-6.js`  
+Run: `node scripts/opportunity-engine/validate-phase-4-1.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
 
 **Architecture freeze:** R26–R30 — [07-architecture-rules.md](./07-architecture-rules.md)
 
 ---
 
-## Phase 4.0.6 Objective
+## Phase 4.1 Objective
 
-Harden storage boundaries so validation and runtime operations cannot mutate tracked seed data:
+Add the **Mission Chef** above the intelligence engine:
 
-1. `src/engine/runtime/engine-data-guard.js` — `assertNotEngineDataWritePath()`, `assertRuntimeWritePath()`, `isEngineDataPath()`
-2. Guard wired into `src/engine/runtime/io.js` (atomic JSON + append writes)
-3. Signal registry writes target active runtime store only — legacy `engine-data/signals/signals.json` is read/merge only
-4. `scripts/opportunity-engine/assert-engine-data-clean.js` — fails on `git status --short engine-data`
-5. All validators assert engine-data cleanliness via `finalizeValidator()`
-6. Release graph includes Phase 4.0.6 after 4.0
+1. `src/engine/founder-intent/` — Chief-of-Staff planner, intent engine, clarification, mission planner, validator, registry, strategy, alignment, engineering task drafts
+2. Founder speaks in natural language → clarification → deterministic mission specification
+3. Multiple simultaneous **ACTIVE** missions in `runtime/missions/missions.json`
+4. Mission validation against supported offers/capabilities in `engine-data/`
+5. Mission alignment scoring for downstream opportunities (rank by mission fit)
+6. LLM optional via `MISSION_INTERPRETER_LLM=1` + `OPENAI_API_KEY`; rules interpreter default for validation
+
+The LLM **may not** create opportunities, execute jobs, modify engine stores directly, bypass validation, call OpenClaw, or launch outreach.
 
 ---
 
-## Phase 4.0.6 Checklist
+## Phase 4.1 Checklist
 
-- [x] Engine-data guard module
-- [x] Runtime IO write choke point
-- [x] Signal store test clear no longer writes legacy path
-- [x] assert-engine-data-clean helper
-- [x] validate-phase-4-0-6.js
-- [x] Validator graph + finalizeValidator integration
+- [x] Intent object extraction
+- [x] Mission schema + validator
+- [x] Clarification engine (no guessing critical constraints)
+- [x] Rules-based mission interpreter + optional LLM adapter
+- [x] Runtime mission registry (`runtime/missions/`)
+- [x] Mission strategy generation
+- [x] Mission alignment scoring
+- [x] Engineering Director task drafts
+- [x] AI Chief-of-Staff planning API
+- [x] `validate-phase-4-1.js` in release graph
 - [x] Docs updated (08, 09, 13, 15, 24)
+
+---
+
+## Active Rules (Phase 4.1)
+
+| Rule | Status |
+|---|---|
+| Founder intent → validated mission only (no direct pipeline writes) | **Enforced** |
+| `approvalPolicy.requireFounderApprovalBeforeOutreach` must remain true | **Enforced** |
+| Multiple ACTIVE missions supported | **Enforced** |
+| Outreach / contact discovery / CEO review UI not built | **Enforced** |
+| OpenClaw, Scheduler, Processor, Orchestrator, Pipeline unchanged | **Enforced** |
+
+---
+
+## Phase 4.2+ (Blocked / Not Started)
+
+**Source Connectors v1, Contact Discovery, Outreach, Campaign Execution** — blocked until owner approves explicit implementation prompts.
+
+Do not build autonomous outreach, reply processing, or Mission Control UI changes without authorization.
 
 ---
 
 ## Prior Phase — COMPLETE
 
-**Phase 4.0.5 — Validation Infrastructure Hardening**
+**Phase 4.0.6 — Engine-Data Read-Only Enforcement**
 
-Deterministic, isolated validation framework: each validator runs in `runtime-validation/run-{uuid}/`, nested subprocess regressions replaced by dependency graph execution, fail-fast root-cause reporting, structured results.
+`engine-data/` is read-only seed/config/reference data. Runtime IO rejects writes under `engine-data/`; validators fail on tracked engine-data changes.
 
-Run single phase: `node scripts/opportunity-engine/validate-core.js --phases=3.1`  
-Run legacy phase script (standalone isolated runtime): `node scripts/opportunity-engine/validate-phase-3-8.js`
+Run: `node scripts/opportunity-engine/validate-phase-4-0-6.js`
 
 ---
 
@@ -58,46 +83,9 @@ Run legacy phase script (standalone isolated runtime): `node scripts/opportunity
 
 **Phase 4.0 — Intelligence Calibration Layer**
 
-Rules-only calibration improves dedupe, semantic classification, situation routing, capability ranking, and commercial abstention before Opportunity creation.
+Rules-only calibration: dedupe, semantic classification, situation routing, capability fit, commercial abstention.
 
-Run: `node scripts/opportunity-engine/validate-phase-4-0.js`  
-Analyze: `node scripts/opportunity-engine/analyze-real-observations.js`
-
----
-
-## Active Rules (Phase 4.0.6)
-
-| Rule | Status |
-|---|---|
-| `engine-data/` read-only during runtime and validation | **Enforced** |
-| Mutable data only in `runtime/` or `runtime-validation/run-*` | **Enforced** |
-| Runtime override must not target `engine-data/` | **Enforced** |
-| Validators fail on engine-data git changes | **Enforced** |
-| Phase 4.1 blocked until owner approval | **Enforced** |
-
----
-
-## Phase 4.1 (Blocked)
-
-**Autonomous Execution / Outreach** — blocked until owner approves explicit implementation prompt.
-
-Do not build daemon mode, continuous polling, outreach automation, or Score Council / Mission Control changes without owner authorization.
-
----
-
-## Prior Phases — COMPLETE
-
-### Phase 3.8 — End-to-End Live Pipeline Run
-
-Run: `node scripts/opportunity-engine/validate-phase-3-8.js`
-
-### Phase 3.7 — Pipeline Stage Handlers
-
-Run: `node scripts/opportunity-engine/validate-phase-3-7.js`
-
-### Phase 3.6 — Event Pipeline Orchestrator
-
-Run: `node scripts/opportunity-engine/validate-phase-3-6.js`
+Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 ---
 
@@ -105,9 +93,7 @@ Run: `node scripts/opportunity-engine/validate-phase-3-6.js`
 
 | Date | Decision |
 |---|---|
-| 2026-06-23 | Phase 4.0.6: Engine-data read-only enforcement — guard, IO choke point, validator git assert |
+| 2026-06-29 | Phase 4.1: Founder Intent Interpreter — mission chef above OS, no outreach |
+| 2026-06-23 | Phase 4.0.6: Engine-data read-only enforcement |
 | 2026-06-29 | Phase 4.0.5: Validation infrastructure — isolated runtime-validation, ValidationRunner |
-| 2026-06-23 | Phase 4.0: Intelligence calibration — dedupe, classification, routing, capability fit, abstention gate |
-| 2026-06-23 | Phase 3.8: End-to-end live pipeline run — file drop to opportunity, STOP |
-| 2026-06-23 | Phase 3.7: Pipeline Stage Handlers — processor executes intelligence stages, STOP |
-| 2026-06-23 | Phase 3.6: Event Pipeline Orchestrator — event-driven Job chaining, STOP |
+| 2026-06-23 | Phase 4.0: Intelligence calibration — dedupe, classification, routing, abstention |

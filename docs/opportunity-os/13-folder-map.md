@@ -67,6 +67,8 @@
 | **`runtime/inbox/`** | Local observation file drop inbox (Phase 3.5) | Platform | None | `observations/` gitignored |
 | **`src/engine/sensors/`** | Sensor Framework registry + lifecycle + health (Phase 2.3) | Signal / Platform | `src/engine/signals/`, `runtime/` | Demo + live sensors |
 | **`src/engine/sensors/live/`** | Live sensor connectors (Phase 3.5+) | Platform | `runtime/inbox/`, `engine/signals/` | File drop first; no reasoning |
+| **`runtime/missions/`** | Founder-defined mission registry (Phase 4.1) — ACTIVE missions, strategy, alignment | Platform | `engine/founder-intent/` | Multiple simultaneous missions; no outreach execution |
+| **`src/engine/founder-intent/`** | AI Chief of Staff — intent, clarification, mission planning, validation, registry, strategy, engineering task drafts, alignment *(Phase 4.1)* | Product / CEO | `engine-data/offers/`, `engine-data/capabilities/` (read) | Sits above pipeline; does not execute jobs or create opportunities |
 | **`src/engine/facts/`** | Runtime-backed append-only fact store (Phase 2.4) | Signal / Platform | `runtime/facts/`, signals | Problem inference blocked |
 | **`src/engine/fact-builder/`** | Rules-only fact extraction from signals | Signal / Platform | `facts/`, `signals/` | No LLM; conservative predicates |
 | **`src/engine/knowledge-graph/`** | Graph projection bridge (nodes/edges) | Platform | `facts/` | Graph DB later; Phase 2.5 enrichment |

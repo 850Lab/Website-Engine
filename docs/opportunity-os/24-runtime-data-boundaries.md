@@ -17,7 +17,7 @@ Separate **git-tracked code and seed config** from **live operational data** so 
 |---|---|---|---|
 | **Application logic** | `src/` | Engine modules, connectors, UI projections | Tracked |
 | **Seed / reference config** | `engine-data/` | Offers, capabilities, markets, campaigns, legacy signal seed — **read-only at runtime** | Tracked |
-| **Live operational data** | `runtime/` | Signal store, raw observations, logs, cache — **mutable production runtime** | **Ignored** (`.gitkeep` only) |
+| **Live operational data** | `runtime/` | Signal store, raw observations, logs, cache, **missions** — **mutable production runtime** | **Ignored** (`.gitkeep` only) |
 | **Validation runtime** | `runtime-validation/run-*` | Isolated validator workspaces — **mutable validation runtime** | **Ignored** |
 | **Generated reports** | `reports/` | Autopilot, core validation, runtime health, performance baseline | **Ignored** when listed in `.gitignore` |
 | **Schema / entity data** | `data/` | Businesses, contacts, migration entities | Partially tracked |
@@ -43,6 +43,7 @@ Separate **git-tracked code and seed config** from **live operational data** so 
 - Sacred raw observations: `runtime/signals/raw/YYYY/MM/DD/obs_<uuid>.json`
 - Connector logs: `runtime/logs/`
 - Dedup/cache working files: `runtime/cache/`
+- Founder missions: `runtime/missions/missions.json` *(Phase 4.1)*
 
 ### `runtime-validation/` (mutable validation runtime — Phase 4.0.5)
 
@@ -121,7 +122,32 @@ All runtime-backed stores use shared helpers in `src/engine/runtime/io.js`:
 
 Retry codes: `EBUSY`, `EPERM`, `EACCES`, `ENOENT` (rename/read races).
 
-Stores using these helpers: signals, facts, graph-store, situations, hypotheses, problems, capability-matches, offer-recommendations, opportunities.
+Stores using these helpers: signals, facts, graph-store, situations, hypotheses, problems, capability-matches, offer-recommendations, opportunities, **missions** *(Phase 4.1)*.
+
+---
+
+## Founder Intent / Mission Registry (Phase 4.1)
+
+| Path | Role |
+|---|---|
+| `runtime/missions/missions.json` | Mutable founder mission registry — multiple ACTIVE missions |
+| `src/engine/founder-intent/` | Interpret → clarify → validate → save — **no pipeline execution** |
+
+Flow:
+
+```
+Founder natural language
+  → interpretFounderIntent() / completeMissionFromClarification()
+  → validateMission()
+  → saveMission() → runtime/missions/
+  → generateMissionStrategy()
+  → (future) configure sensors/pipeline filters
+  → alignOpportunityToMission() ranks opportunities by mission fit
+```
+
+LLM optional: `MISSION_INTERPRETER_LLM=1` + `OPENAI_API_KEY`. Default rules interpreter used in validators.
+
+Hard rule: `approvalPolicy.requireFounderApprovalBeforeOutreach` must remain `true` in Phase 4.1.
 
 ---
 

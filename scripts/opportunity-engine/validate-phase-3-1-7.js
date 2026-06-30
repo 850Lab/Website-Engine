@@ -32,6 +32,9 @@ import {
 const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const DEMO_PROMPT_PATH = "engine-data/openclaw/prompts/demo-phase-3-1-7.json";
+const CURRENT_PHASE_DOC_PATH = join(ROOT, "docs/opportunity-os/08-current-phase.md");
+const BLOCKED_FUTURE_PHASE_ID = "4.2";
+const BLOCKED_FUTURE_PHASE_HEADING = "## Phase 4.2+ (Blocked / Not Started)";
 const errors = [];
 const __validationStartedAt = Date.now();
 await bootstrapValidator("3.1.7");
@@ -164,24 +167,33 @@ if (!demoApproval.ok) {
 
 const savedDemoFlag = process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;
 delete process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;
+const currentPhaseDoc = await readFile(CURRENT_PHASE_DOC_PATH, "utf8");
+if (!currentPhaseDoc.includes(BLOCKED_FUTURE_PHASE_HEADING)) {
+  fail(`Current phase docs do not mark Phase ${BLOCKED_FUTURE_PHASE_ID} as blocked`);
+}
+const blockedFuturePhaseDoc = currentPhaseDoc.replace(
+  BLOCKED_FUTURE_PHASE_HEADING,
+  `## Phase ${BLOCKED_FUTURE_PHASE_ID} (Blocked)`,
+);
 const blockedApproval = await verifyOwnerApproval(
   buildMinimalOpenClaw({
-    phaseId: "4",
+    phaseId: BLOCKED_FUTURE_PHASE_ID,
     ownerApproval: {
       approvedBy: "owner",
       approvedAt: new Date().toISOString(),
       approvalSource: "explicit_prompt",
-      phaseDocStatus: "ACTIVE",
-      phaseId: "4",
+      phaseDocStatus: "BLOCKED",
+      phaseId: BLOCKED_FUTURE_PHASE_ID,
       promptHash: demoPromptHash,
       promptExcerpt: "blocked test",
     },
     idempotencyKey: deriveOpenClawIdempotencyKey({
-      phaseId: "4",
+      phaseId: BLOCKED_FUTURE_PHASE_ID,
       jobType: "openclaw.build",
       promptHash: demoPromptHash,
     }),
   }),
+  { phaseDocContent: blockedFuturePhaseDoc },
 );
 if (savedDemoFlag === undefined) {
   delete process.env.OPENCLAW_ALLOW_VALIDATION_DEMO;

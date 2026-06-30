@@ -373,6 +373,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-29 — Phase 4.1 Founder Intent Interpreter (Mission Chef)
+**Phase:** 4.1  
+**Type:** Milestone  
+**Summary:** Added bounded `src/engine/founder-intent/` layer that translates natural-language founder goals into validated mission specifications stored in `runtime/missions/`. Includes intent object extraction, Chief-of-Staff planning API, clarification engine, deterministic validation against offers/capabilities, multi-mission registry, strategy recommendations, engineering task drafts, and mission-alignment scoring. Optional LLM adapter (`MISSION_INTERPRETER_LLM=1`); rules interpreter default for validation. Does not create opportunities, execute jobs, call OpenClaw, or launch outreach.  
+**Links:** `src/engine/founder-intent/`, `scripts/opportunity-engine/validate-phase-4-1.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -395,6 +403,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-29 | Phase 4.1 Founder Intent Interpreter — mission chef, runtime/missions registry |
 | 2026-06-23 | Phase 4.0.6 Engine-Data Read-Only — guard, IO choke point, validator git assert |
 | 2026-06-29 | Phase 4.0.5 Validation Infrastructure — isolated runtime-validation, ValidationRunner, dependency graph |
 | 2026-06-23 | Phase 4.0 Intelligence Calibration — abstention gate, semantic classification, calibrated dedupe |
