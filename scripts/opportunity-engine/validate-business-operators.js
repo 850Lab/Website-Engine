@@ -2,7 +2,9 @@ import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  KTM_TEMPLATE_ID,
   PRESSURE_WASHING_TEMPLATE_ID,
+  createKtmMissionTemplate,
   createPressureWashingMissionTemplate,
   listBusinessOperatorMissionTemplates,
   validateMission,
@@ -23,10 +25,16 @@ function pass(message) {
 
 const templates = listBusinessOperatorMissionTemplates();
 const pressureTemplate = templates.find((template) => template.templateId === PRESSURE_WASHING_TEMPLATE_ID);
+const ktmTemplate = templates.find((template) => template.templateId === KTM_TEMPLATE_ID);
 if (!pressureTemplate) {
   fail("Pressure washing mission template is missing from business operator templates");
 } else {
   pass("Pressure washing mission template is registered");
+}
+if (!ktmTemplate) {
+  fail("KTM mission template is missing from business operator templates");
+} else {
+  pass("KTM mission template is registered");
 }
 
 const mission = createPressureWashingMissionTemplate();
@@ -71,6 +79,53 @@ if (mission.approvalPolicy?.requireFounderApprovalBeforeOutreach !== true) {
   fail("Pressure washing template must keep outreach approval gate enabled");
 } else {
   pass("Pressure washing template keeps outreach approval gate enabled");
+}
+
+const ktmMission = createKtmMissionTemplate();
+const ktmValidation = await validateMission(ktmMission);
+if (!ktmValidation.valid) {
+  fail(`KTM mission template failed validation: ${ktmValidation.errors.join("; ")}`);
+} else {
+  pass("KTM mission template creates a valid mission");
+}
+
+if (ktmMission.offers?.[0] !== "offer_ktm_manpower") {
+  fail("KTM template must use offer_ktm_manpower");
+} else {
+  pass("KTM template maps to offer_ktm_manpower");
+}
+
+for (const capabilityId of ["ktm_labor", "fire_watch", "hole_watch", "safety_support", "maintenance_support"]) {
+  if (!ktmMission.capabilities?.includes(capabilityId)) {
+    fail(`KTM template must include ${capabilityId} capability`);
+  }
+}
+if (!errors.some((message) => message.includes("KTM template must include"))) {
+  pass("KTM template maps to supported industrial capabilities");
+}
+
+if (!ktmMission.geography?.some((geo) => geo.city === "Beaumont" && geo.state === "TX" && geo.radiusMiles === 500)) {
+  fail("KTM template must target a 500-mile radius from Beaumont, TX");
+} else {
+  pass("KTM template targets Beaumont 500-mile radius");
+}
+
+if (!ktmMission.buyerTypes?.some((buyer) => /maintenance manager|safety manager|turnaround/i.test(buyer))) {
+  fail("KTM template must include industrial decision makers");
+} else {
+  pass("KTM template includes industrial decision makers");
+}
+
+if (!ktmMission.requiredSignals?.some((signal) => /turnaround|shutdown|staffing shortages|safety coverage/i.test(signal))) {
+  fail("KTM template must include industrial trigger signals");
+} else {
+  pass("KTM template includes industrial trigger signals");
+}
+
+if (ktmMission.approvalPolicy?.requireFounderApprovalBeforeOutreach !== true) {
+  fail("KTM template must keep outreach approval gate enabled");
+} else {
+  pass("KTM template keeps outreach approval gate enabled");
 }
 
 const source = await readFile(join(ROOT, "src/engine/founder-intent/business-operators.js"), "utf8");

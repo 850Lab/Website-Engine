@@ -397,6 +397,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — KTM Industrial Mission Template
+**Phase:** 4.2 O-KTM1  
+**Type:** Milestone  
+**Summary:** Added the KTM business operator mission template for industrial maintenance, turnaround, staffing, and safety support opportunities within 500 miles of Beaumont, Texas. The template maps to `offer_ktm_manpower` and supported KTM capabilities, includes industrial buyer roles and trigger signals, and preserves Founder approval before outreach. It does not create opportunities, contacts, campaigns, or outreach.  
+**Links:** `src/engine/founder-intent/business-operators.js`, `scripts/opportunity-engine/validate-business-operators.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -419,6 +427,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 O-KTM1 KTM industrial mission template — validated Beaumont 500-mile industrial maintenance mission |
 | 2026-06-30 | Phase 4.2 O-PW1 Pressure Washing business operator template — validated Beaumont 500-mile commercial mission |
 | 2026-06-30 | Phase 4.2 B1 Engineering Director backlog selector — deterministic backlog parsing, blocker detection, task selection, Builder Plan output |
 | 2026-06-29 | Phase 4.1 Founder Intent Interpreter — mission chef, runtime/missions registry |

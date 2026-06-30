@@ -66,7 +66,9 @@ export {
 
 export {
   PRESSURE_WASHING_TEMPLATE_ID,
+  KTM_TEMPLATE_ID,
   createPressureWashingMissionTemplate,
+  createKtmMissionTemplate,
   listBusinessOperatorMissionTemplates,
 } from "./business-operators.js";
 
