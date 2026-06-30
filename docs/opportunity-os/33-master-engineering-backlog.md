@@ -1,7 +1,7 @@
 # 33 - Master Engineering Backlog
 
 **Status:** Phase 4.2 planning source of truth - design/backlog only  
-**Related:** [Roadmap](./01-roadmap.md) - [Current Phase](./08-current-phase.md) - [AI Chief of Staff](./32-ai-chief-of-staff.md) - [Runtime Data Boundaries](./24-runtime-data-boundaries.md) - [Autonomous Operating Loop](./28-autonomous-operating-loop.md) - [OpenClaw Constitution](./29-openclaw-constitution.md)
+**Related:** [Roadmap](./01-roadmap.md) - [Current Phase](./08-current-phase.md) - [AI Chief of Staff](./32-ai-chief-of-staff.md) - [Engineering Director Execution Model](./34-engineering-director-execution-model.md) - [Deployment Readiness Report](./35-deployment-readiness.md) - [Operational Launch Checklist](./36-operational-launch-checklist.md) - [Runtime Data Boundaries](./24-runtime-data-boundaries.md) - [Autonomous Operating Loop](./28-autonomous-operating-loop.md) - [OpenClaw Constitution](./29-openclaw-constitution.md)
 
 ---
 

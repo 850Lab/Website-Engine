@@ -150,6 +150,11 @@
 | Path | Purpose |
 |---|---|
 | **`docs/opportunity-os/`** | AI Constitution — supreme architecture |
+| **`docs/opportunity-os/32-ai-chief-of-staff.md`** | AI Chief of Staff architecture — mission chef, Founder briefing |
+| **`docs/opportunity-os/33-master-engineering-backlog.md`** | Master Engineering Backlog — task IDs, dependencies, execution status |
+| **`docs/opportunity-os/34-engineering-director-execution-model.md`** | Engineering Director execution model — autonomous build loop |
+| **`docs/opportunity-os/35-deployment-readiness.md`** | Phase 5.0 deployment readiness assessment — credentials, risks, revenue path |
+| **`docs/opportunity-os/36-operational-launch-checklist.md`** | Phase 5.0 operational launch checklist — living readiness dashboard and blockers |
 | **`docs/opportunity-os/23-world-model.md`** | World Model chain and sensor rules |
 | **`docs/opportunity-os/25-sensor-framework.md`** | Sensor interface, lifecycle, health, runtime integration |
 | **`docs/opportunity-os/26-reasoning-engine.md`** | Reasoning pipeline, hypothesis/problem schemas, confidence, Phase 2.6 implementation |
@@ -158,6 +163,16 @@
 | **`docs/opportunity-os/29-openclaw-constitution.md`** | OpenClaw Constitution — bounded worker rules, Job/Event interaction, OC1–OC15, Phase 3.1.6–3.1.8 roadmap |
 | **`docs/opportunity-os/30-openclaw-job-schema.md`** | OpenClaw Job Schema — canonical object, job types, agent roles, OCJ1–OCJ15, generic Job mapping |
 | **`docs/*.md`** | Legacy product docs — do not override Constitution |
+
+### Operations reading path
+
+For production and revenue readiness, read in order:
+
+1. **Architecture** — Constitution documents (`00`–`31`, plus `32`–`34` execution model)
+2. **[Deployment Readiness](./35-deployment-readiness.md)** — full audit, credentials, risks, revenue-by-business
+3. **[Operational Launch Checklist](./36-operational-launch-checklist.md)** — living dashboard, blocker registry, gated launch checklist
+
+Regenerate backlog percentages: `node scripts/opportunity-engine/backlog-progress-dashboard.js` → `reports/backlog-progress-dashboard.md` (gitignored).
 
 ---
 

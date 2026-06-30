@@ -144,3 +144,12 @@ Rename deferred — [Future Ideas](./19-future-ideas.md).
 3. [Folder Map](./13-folder-map.md)  
 4. [Current Phase](./08-current-phase.md)  
 5. Active phase in [Roadmap](./01-roadmap.md)
+
+---
+
+## Launch Readiness Reading Path (Founder / Operations)
+
+After the architecture constitution (`00`–`31`, plus `32`–`34`):
+
+1. [Deployment Readiness Report](./35-deployment-readiness.md) — assessment, external dependencies, risks  
+2. [Operational Launch Checklist](./36-operational-launch-checklist.md) — living dashboard, blockers, gated launch checklist

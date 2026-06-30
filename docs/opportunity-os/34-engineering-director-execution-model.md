@@ -1,7 +1,7 @@
 # 34 - Engineering Director Execution Model
 
 **Status:** Phase 4.2 architecture - design/execution model only  
-**Related:** [AI Chief of Staff](./32-ai-chief-of-staff.md) - [Master Engineering Backlog](./33-master-engineering-backlog.md) - [Autonomous Operating Loop](./28-autonomous-operating-loop.md) - [OpenClaw Constitution](./29-openclaw-constitution.md) - [OpenClaw Job Schema](./30-openclaw-job-schema.md) - [Runtime Data Boundaries](./24-runtime-data-boundaries.md)
+**Related:** [AI Chief of Staff](./32-ai-chief-of-staff.md) - [Master Engineering Backlog](./33-master-engineering-backlog.md) - [Deployment Readiness Report](./35-deployment-readiness.md) - [Operational Launch Checklist](./36-operational-launch-checklist.md) - [Autonomous Operating Loop](./28-autonomous-operating-loop.md) - [OpenClaw Constitution](./29-openclaw-constitution.md) - [OpenClaw Job Schema](./30-openclaw-job-schema.md) - [Runtime Data Boundaries](./24-runtime-data-boundaries.md)
 
 ---
 

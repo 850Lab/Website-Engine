@@ -485,6 +485,22 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Phase 5.0 Deployment Readiness Report
+**Phase:** 5.0  
+**Type:** Operations  
+**Summary:** Authored Phase 5.0 deployment readiness assessment covering operational readiness by subsystem, external dependencies, credential inventory, deployment checklist, revenue readiness by business, email-at-scale plan, risks, and Founder action list. Assessment only — no implementation.  
+**Links:** [35-deployment-readiness.md](./35-deployment-readiness.md), [33-master-engineering-backlog.md](./33-master-engineering-backlog.md), [13-folder-map.md](./13-folder-map.md)
+
+---
+
+### 2026-06-30 — Phase 5.0 Operational Launch Checklist
+**Phase:** 5.0  
+**Type:** Operations  
+**Summary:** Authored living operational launch checklist with readiness dashboard, blocker registry tagged Engineering/Founder/External, gated launch checklist, critical path, and changelog. Pairs with Deployment Readiness Report in the Architecture → Deployment → Operations reading path.  
+**Links:** [36-operational-launch-checklist.md](./36-operational-launch-checklist.md), [35-deployment-readiness.md](./35-deployment-readiness.md), [13-folder-map.md](./13-folder-map.md)
+
+---
+
 ## Future Entries (Reserved)
 
 <!-- Phase 3 Score Council integration / Mission Control projection -->
@@ -499,6 +515,8 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 5.0 Operational Launch Checklist — living readiness dashboard, blocker registry, gated launch checklist |
+| 2026-06-30 | Phase 5.0 Deployment Readiness Report — production/revenue readiness assessment |
 | 2026-06-30 | Phase 4.2 B5 Backlog progress dashboard — deterministic backlog-derived progress and estimate reports |
 | 2026-06-30 | Phase 4.2 B4 Regression-aware planning — task recommendations include explicit validation and repair plans |
 | 2026-06-30 | Phase 4.2 S1 Runtime health observability data — deterministic runtime health JSON/Markdown with store counts |

@@ -1,7 +1,7 @@
 # 08 — Current Phase
 
 **Status:** Living document · update when phase changes  
-**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [OpenClaw Constitution](./29-openclaw-constitution.md) · [OpenClaw Job Schema](./30-openclaw-job-schema.md)
+**Related:** [Roadmap](./01-roadmap.md) · [Build Log](./09-build-log.md) · [Deployment Readiness Report](./35-deployment-readiness.md) · [Operational Launch Checklist](./36-operational-launch-checklist.md) · [Autonomous Operating Loop](./28-autonomous-operating-loop.md) · [OpenClaw Constitution](./29-openclaw-constitution.md) · [OpenClaw Job Schema](./30-openclaw-job-schema.md)
 
 ---
 
@@ -85,6 +85,8 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 **Source Connectors v1, Contact Discovery, Outreach, Campaign Execution** — blocked until prerequisites, credentials, legal/compliance decisions, and owner approvals are present.
 
 Do not build autonomous outreach, reply processing, or Mission Control UI changes without authorization.
+
+**Phase 5.0 operational documents** (assessment only — no implementation): [Deployment Readiness Report](./35-deployment-readiness.md) → [Operational Launch Checklist](./36-operational-launch-checklist.md).
 
 ---
 
