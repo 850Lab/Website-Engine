@@ -72,6 +72,12 @@ export {
 } from "./engineering-task-registry.js";
 
 export {
+  buildOpenClawPromptFromEngineeringTask,
+  createOpenClawHandoffPackage,
+  validateOpenClawHandoffPackage,
+} from "./openclaw-handoff.js";
+
+export {
   parseMasterBacklog,
   evaluateBacklogTask,
   scoreBacklogTask,

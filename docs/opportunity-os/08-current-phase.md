@@ -7,9 +7,9 @@
 
 ## Current Phase
 
-**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + O-PW1 + O-KTM1 + C1 + O-APT1 + O-WEB1)** — **COMPLETE**
+**Phase 4.2 — Engineering Director Backlog Execution (B1 + B2 + B3 + O-PW1 + O-KTM1 + C1 + O-APT1 + O-WEB1)** — **COMPLETE**
 
-Deterministic Engineering Director selector, runtime engineering task registry, Founder-priority business operator templates, and mission-aware file-drop intake. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. Business operator templates create validated draft missions for pressure washing, KTM, apartment financial workshops, and website agency growth. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
+Deterministic Engineering Director selector, runtime engineering task registry, bounded OpenClaw handoff package generator, Founder-priority business operator templates, and mission-aware file-drop intake. The selector reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach. The registry persists engineering task lifecycle state under `runtime/engineering-tasks/`. The handoff generator converts approved, OpenClaw-eligible engineering tasks into schema-valid handoff drafts only; it does not dispatch or run jobs. Business operator templates create validated draft missions for pressure washing, KTM, apartment financial workshops, and website agency growth. File-drop observations may carry candidate mission IDs, mission hints, and source labels as metadata/provenance while the pipeline remains unchanged.
 
 Run: `node scripts/opportunity-engine/validate-phase-4-2.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
@@ -39,8 +39,10 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 - [x] Scored next-task selector
 - [x] Builder Plan generator
 - [x] Runtime engineering task registry (`B2`)
+- [x] Bounded OpenClaw handoff package generator (`B3`)
 - [x] Focused validator: `validate-engineering-director.js`
 - [x] Focused validator: `validate-engineering-task-registry.js`
+- [x] Focused validator: `validate-openclaw-handoff.js`
 - [x] Phase validator: `validate-phase-4-2.js`
 - [x] Pressure washing business operator mission template (`O-PW1`)
 - [x] KTM industrial maintenance mission template (`O-KTM1`)
@@ -58,6 +60,7 @@ The Engineering Director selector **may not** execute jobs, call OpenClaw, modif
 |---|---|
 | Backlog selection must be deterministic and explainable | **Enforced** |
 | Engineering task lifecycle writes only to runtime engineering-task store | **Enforced** |
+| OpenClaw handoff packages are drafts only and may not dispatch or run jobs | **Enforced** |
 | External credentials, legal approval, Founder approval, and business decisions block task readiness | **Enforced** |
 | Builder Plans may describe work but may not execute OpenClaw or jobs | **Enforced** |
 | Business operator templates create mission specs only; no opportunities, contacts, or outreach | **Enforced** |
@@ -109,6 +112,7 @@ Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-30 | Phase 4.2 B3: OpenClaw handoff package — approved engineering tasks become schema-valid handoff drafts only |
 | 2026-06-30 | Phase 4.2 O-WEB1: Website agency mission template — local service business website growth mission |
 | 2026-06-30 | Phase 4.2 B2: Engineering task registry — runtime lifecycle store for proposed, approved, active, blocked, and completed tasks |
 | 2026-06-30 | Phase 4.2 O-APT1: Apartment financial workshop mission template — apartment community and sponsor acquisition mission |

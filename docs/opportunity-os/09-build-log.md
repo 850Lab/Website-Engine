@@ -397,6 +397,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — OpenClaw Handoff Package
+**Phase:** 4.2 B3  
+**Type:** Milestone  
+**Summary:** Added a bounded OpenClaw handoff package generator that converts approved, OpenClaw-eligible engineering tasks into schema-valid `openclaw.build` job drafts. The package includes prompt hash, idempotency key, owner approval artifact, allowed/forbidden file scopes, validation commands, expected outputs, and a handoff-only generic job draft. It does not create generic jobs, dispatch jobs, run OpenClaw, execute workers, or expand OpenClaw permissions.  
+**Links:** `src/engine/founder-intent/openclaw-handoff.js`, `scripts/opportunity-engine/validate-openclaw-handoff.js`
+
+---
+
 ### 2026-06-30 — Pressure Washing Business Operator Template
 **Phase:** 4.2 O-PW1  
 **Type:** Milestone  
@@ -459,6 +467,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 B3 OpenClaw handoff package — approved engineering tasks become handoff-only OpenClaw job drafts |
 | 2026-06-30 | Phase 4.2 O-WEB1 Website agency mission template — validated local service business growth mission |
 | 2026-06-30 | Phase 4.2 B2 Engineering task registry — runtime lifecycle store for Engineering Director tasks |
 | 2026-06-30 | Phase 4.2 O-APT1 Apartment workshop mission template — validated apartment community and sponsor acquisition mission |
