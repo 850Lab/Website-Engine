@@ -68,7 +68,7 @@
 | **`src/engine/sensors/`** | Sensor Framework registry + lifecycle + health (Phase 2.3) | Signal / Platform | `src/engine/signals/`, `runtime/` | Demo + live sensors |
 | **`src/engine/sensors/live/`** | Live sensor connectors (Phase 3.5+) | Platform | `runtime/inbox/`, `engine/signals/` | File drop first; no reasoning |
 | **`runtime/missions/`** | Founder-defined mission registry (Phase 4.1) — ACTIVE missions, strategy, alignment | Platform | `engine/founder-intent/` | Multiple simultaneous missions; no outreach execution |
-| **`src/engine/founder-intent/`** | AI Chief of Staff — intent, clarification, mission planning, validation, registry, strategy, engineering task drafts, alignment *(Phase 4.1)* | Product / CEO | `engine-data/offers/`, `engine-data/capabilities/` (read) | Sits above pipeline; does not execute jobs or create opportunities |
+| **`src/engine/founder-intent/`** | AI Chief of Staff + Engineering Director planning — intent, missions, strategy, engineering task drafts, backlog selection, Builder Plans, alignment *(Phase 4.1–4.2)* | Product / CEO | `engine-data/offers/`, `engine-data/capabilities/` (read), `docs/opportunity-os/33-master-engineering-backlog.md` | Sits above pipeline; does not execute jobs, call OpenClaw, or create opportunities |
 | **`src/engine/facts/`** | Runtime-backed append-only fact store (Phase 2.4) | Signal / Platform | `runtime/facts/`, signals | Problem inference blocked |
 | **`src/engine/fact-builder/`** | Rules-only fact extraction from signals | Signal / Platform | `facts/`, `signals/` | No LLM; conservative predicates |
 | **`src/engine/knowledge-graph/`** | Graph projection bridge (nodes/edges) | Platform | `facts/` | Graph DB later; Phase 2.5 enrichment |
@@ -137,7 +137,7 @@
 
 | Path | Purpose | Owner | Future direction |
 |---|---|---|---|
-| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `ingest-signal.js` |
+| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `ingest-signal.js`, `validate-engineering-director.js`, `validate-phase-4-2.js` |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
 | **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*`, `performance-baseline.*`, `live-pipeline.*`, autopilot reports |

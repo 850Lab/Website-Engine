@@ -57,6 +57,14 @@ export {
 } from "./engineering-director.js";
 
 export {
+  parseMasterBacklog,
+  evaluateBacklogTask,
+  scoreBacklogTask,
+  selectNextBacklogTask,
+  createBuilderPlanFromBacklogTask,
+} from "./backlog-selector.js";
+
+export {
   prepareChiefOfStaffPlan,
   prepareChiefOfStaffPlanFromClarification,
 } from "./ai-chief-of-staff.js";

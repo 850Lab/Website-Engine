@@ -27,6 +27,7 @@ export const VALIDATOR_GRAPH = [
   { phase: "4.0", script: "validate-phase-4-0.js", dependsOn: ["3.8", "3.7", "3.6"] },
   { phase: "4.0.6", script: "validate-phase-4-0-6.js", dependsOn: ["4.0"] },
   { phase: "4.1", script: "validate-phase-4-1.js", dependsOn: ["4.0.6"] },
+  { phase: "4.2", script: "validate-phase-4-2.js", dependsOn: ["4.1"] },
 ];
 
 export function getValidatorByPhase(phase) {

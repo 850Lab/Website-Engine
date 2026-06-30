@@ -381,6 +381,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Phase 4.2 Engineering Director Backlog Selector
+**Phase:** 4.2 B1  
+**Type:** Milestone  
+**Summary:** Implemented deterministic backlog parsing and next-task selection for the Engineering Director. `backlog-selector.js` reads `33-master-engineering-backlog.md`, evaluates dependencies and external blockers, scores ready work by priority/business value/revenue impact/dependency leverage/validation confidence/risk/effort, selects the next unblocked task, and creates Builder Plan packages. Added focused validation plus Phase 4.2 release graph coverage. Planning only — no OpenClaw execution, job execution, pipeline changes, runtime mutation, or outreach.  
+**Links:** `src/engine/founder-intent/backlog-selector.js`, `scripts/opportunity-engine/validate-engineering-director.js`, `scripts/opportunity-engine/validate-phase-4-2.js`
+
+---
+
 ### 2026-06-23 — Phase 4.0 Intelligence Calibration Layer
 **Phase:** 4.0  
 **Type:** Milestone  
@@ -403,6 +411,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 B1 Engineering Director backlog selector — deterministic backlog parsing, blocker detection, task selection, Builder Plan output |
 | 2026-06-29 | Phase 4.1 Founder Intent Interpreter — mission chef, runtime/missions registry |
 | 2026-06-23 | Phase 4.0.6 Engine-Data Read-Only — guard, IO choke point, validator git assert |
 | 2026-06-29 | Phase 4.0.5 Validation Infrastructure — isolated runtime-validation, ValidationRunner, dependency graph |

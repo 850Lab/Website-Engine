@@ -7,66 +7,71 @@
 
 ## Current Phase
 
-**Phase 4.1 — Founder Intent Interpreter (Mission Chef)** — **COMPLETE**
+**Phase 4.2 — Engineering Director Backlog Execution (B1)** — **COMPLETE**
 
-LLM-capable (optional) + rules-based layer that translates natural-language founder goals into validated, structured missions stored in `runtime/missions/`. Missions configure strategy and alignment for the existing Opportunity OS pipeline without modifying orchestrator, processor, or outreach paths.
+Deterministic Engineering Director selector that reads the Master Engineering Backlog, identifies blocked and ready work, selects the next highest-value unblocked task, and creates Builder Plan packages without executing OpenClaw, jobs, pipeline work, or outreach.
 
-Run: `node scripts/opportunity-engine/validate-phase-4-1.js`  
+Run: `node scripts/opportunity-engine/validate-phase-4-2.js`  
 Full suite: `node scripts/opportunity-engine/validate-core.js`
 
 **Architecture freeze:** R26–R30 — [07-architecture-rules.md](./07-architecture-rules.md)
 
 ---
 
-## Phase 4.1 Objective
+## Phase 4.2 Objective
 
-Add the **Mission Chef** above the intelligence engine:
+Activate the **Engineering Director** execution model:
 
-1. `src/engine/founder-intent/` — Chief-of-Staff planner, intent engine, clarification, mission planner, validator, registry, strategy, alignment, engineering task drafts, Founder briefing
-2. Founder speaks in natural language → clarification → deterministic mission specification
-3. Multiple simultaneous **ACTIVE** missions in `runtime/missions/missions.json`
-4. Mission validation against supported offers/capabilities in `engine-data/`
-5. Mission alignment scoring for downstream opportunities (rank by mission fit)
-6. LLM optional via `MISSION_INTERPRETER_LLM=1` + `OPENAI_API_KEY`; rules interpreter default for validation
+1. `src/engine/founder-intent/backlog-selector.js` — parse the Master Engineering Backlog into task objects
+2. Evaluate dependencies and external blockers before task selection
+3. Select the highest-value ready task using priority, business value, revenue impact, dependency leverage, validation confidence, effort, and risk
+4. Generate Builder Plan objects with allowed files, forbidden files, reading, validation commands, expected outputs, and stop conditions
+5. Register Phase 4.2 validation in the release graph
 
-The LLM **may not** create opportunities, execute jobs, modify engine stores directly, bypass validation, call OpenClaw, or launch outreach.
-
----
-
-## Phase 4.1 Checklist
-
-- [x] Intent object extraction
-- [x] Mission schema + validator
-- [x] Clarification engine (no guessing critical constraints)
-- [x] Rules-based mission interpreter + optional LLM adapter
-- [x] Runtime mission registry (`runtime/missions/`)
-- [x] Mission strategy generation
-- [x] Mission alignment scoring
-- [x] Engineering Director task drafts
-- [x] AI Chief-of-Staff planning API
-- [x] Read-only Founder briefing report
-- [x] `validate-phase-4-1.js` in release graph
-- [x] Docs updated (08, 09, 13, 15, 24)
+The Engineering Director selector **may not** execute jobs, call OpenClaw, modify runtime state, bypass validation, or launch outreach.
 
 ---
 
-## Active Rules (Phase 4.1)
+## Phase 4.2 Checklist
+
+- [x] Master backlog parser
+- [x] Task readiness and blocker evaluation
+- [x] Scored next-task selector
+- [x] Builder Plan generator
+- [x] Focused validator: `validate-engineering-director.js`
+- [x] Phase validator: `validate-phase-4-2.js`
+- [x] `validate-phase-4-2.js` in release graph
+- [x] Docs updated (08, 09, 13, 15, 33)
+
+---
+
+## Active Rules (Phase 4.2)
 
 | Rule | Status |
 |---|---|
-| Founder intent → validated mission only (no direct pipeline writes) | **Enforced** |
-| `approvalPolicy.requireFounderApprovalBeforeOutreach` must remain true | **Enforced** |
-| Multiple ACTIVE missions supported | **Enforced** |
-| Outreach / contact discovery / CEO review UI not built | **Enforced** |
+| Backlog selection must be deterministic and explainable | **Enforced** |
+| External credentials, legal approval, Founder approval, and business decisions block task readiness | **Enforced** |
+| Builder Plans may describe work but may not execute OpenClaw or jobs | **Enforced** |
+| Outreach / contact discovery / CEO review UI not built by B1 | **Enforced** |
 | OpenClaw, Scheduler, Processor, Orchestrator, Pipeline unchanged | **Enforced** |
 
 ---
 
-## Phase 4.2+ (Blocked / Not Started)
+## Phase 4.3+ (Blocked / Not Started)
 
-**Source Connectors v1, Contact Discovery, Outreach, Campaign Execution** — blocked until owner approves explicit implementation prompts.
+**Source Connectors v1, Contact Discovery, Outreach, Campaign Execution** — blocked until prerequisites, credentials, legal/compliance decisions, and owner approvals are present.
 
 Do not build autonomous outreach, reply processing, or Mission Control UI changes without authorization.
+
+---
+
+## Prior Phase — COMPLETE
+
+**Phase 4.1 — Founder Intent Interpreter (Mission Chef)**
+
+LLM-capable (optional) + rules-based layer that translates natural-language founder goals into validated, structured missions stored in `runtime/missions/`. Missions configure strategy and alignment for the existing Opportunity OS pipeline without modifying orchestrator, processor, or outreach paths.
+
+Run: `node scripts/opportunity-engine/validate-phase-4-1.js`
 
 ---
 
@@ -94,6 +99,7 @@ Run: `node scripts/opportunity-engine/validate-phase-4-0.js`
 
 | Date | Decision |
 |---|---|
+| 2026-06-30 | Phase 4.2 B1: Engineering Director backlog selector — deterministic task selection + Builder Plan output |
 | 2026-06-29 | Phase 4.1: Founder Intent Interpreter — mission chef above OS, no outreach |
 | 2026-06-23 | Phase 4.0.6: Engine-data read-only enforcement |
 | 2026-06-29 | Phase 4.0.5: Validation infrastructure — isolated runtime-validation, ValidationRunner |
