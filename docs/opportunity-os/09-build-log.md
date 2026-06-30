@@ -413,6 +413,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Backlog Progress Dashboard
+**Phase:** 4.2 B5  
+**Type:** Milestone  
+**Summary:** Added a living progress dashboard generator that reads `33-master-engineering-backlog.md` and execution status rows to emit deterministic JSON/Markdown reports. The dashboard reports overall completion, operating category completion, current task selection, externally blocked tasks, and remaining task/commit/hour estimates. Generated reports are gitignored and reporting-only; no UI, daemon, execution loop, OpenClaw run, or outreach behavior was added.  
+**Links:** `scripts/opportunity-engine/backlog-progress-dashboard.js`, `scripts/opportunity-engine/validate-backlog-progress-dashboard.js`
+
+---
+
 ### 2026-06-30 — Runtime Health Observability Data
 **Phase:** 4.2 S1  
 **Type:** Milestone  
@@ -483,6 +491,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 B5 Backlog progress dashboard — deterministic backlog-derived progress and estimate reports |
 | 2026-06-30 | Phase 4.2 B4 Regression-aware planning — task recommendations include explicit validation and repair plans |
 | 2026-06-30 | Phase 4.2 S1 Runtime health observability data — deterministic runtime health JSON/Markdown with store counts |
 | 2026-06-30 | Phase 4.2 B3 OpenClaw handoff package — approved engineering tasks become handoff-only OpenClaw job drafts |

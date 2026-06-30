@@ -138,10 +138,10 @@
 
 | Path | Purpose | Owner | Future direction |
 |---|---|---|---|
-| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `ingest-signal.js`, `validate-engineering-director.js`, `validate-engineering-task-registry.js`, `validate-openclaw-handoff.js`, `validate-business-operators.js`, `validate-business-discovery.js`, `validate-observability.js`, `validate-phase-4-2.js` |
+| **`scripts/opportunity-engine/`** | CLI reports, validation, manual ingest | OS team | `validate-phase-3-1.js`, `validate-core.js`, `runtime-health.js`, `backlog-progress-dashboard.js`, `ingest-signal.js`, `validate-engineering-director.js`, `validate-engineering-task-registry.js`, `validate-openclaw-handoff.js`, `validate-business-operators.js`, `validate-business-discovery.js`, `validate-observability.js`, `validate-backlog-progress-dashboard.js`, `validate-phase-4-2.js` |
 | **`scripts/validate-*`**, **`verify-*`** | Migration and schema validation | Platform | Pattern for all phases |
 | **`scripts/website-find-leads.js`**, **`pw-find-leads.js`** | Discovery CLIs | Signal | Connector harnesses |
-| **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*` (deterministic store-count observability data), `performance-baseline.*`, `live-pipeline.*`, autopilot reports |
+| **`reports/`** | Generated markdown/JSON outputs (local; most gitignored) | OS team | `core-validation.*`, `runtime-health.*` (deterministic store-count observability data), `backlog-progress-dashboard.*` (backlog-derived progress and estimate data), `performance-baseline.*`, `live-pipeline.*`, autopilot reports |
 
 ---
 

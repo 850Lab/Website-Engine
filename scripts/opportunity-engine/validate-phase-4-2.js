@@ -33,6 +33,8 @@ for (const rel of [
   "scripts/opportunity-engine/validate-business-discovery.js",
   "scripts/opportunity-engine/validate-observability.js",
   "scripts/opportunity-engine/runtime-health.js",
+  "scripts/opportunity-engine/backlog-progress-dashboard.js",
+  "scripts/opportunity-engine/validate-backlog-progress-dashboard.js",
   "scripts/opportunity-engine/validate-phase-4-2.js",
 ]) {
   try {
@@ -101,6 +103,16 @@ try {
   pass("Observability validation passed");
 } catch (error) {
   fail(`Observability validation failed: ${error.stderr || error.message}`);
+}
+
+try {
+  await execFileAsync(process.execPath, [join(ROOT, "scripts/opportunity-engine/validate-backlog-progress-dashboard.js")], {
+    cwd: ROOT,
+    env: { ...process.env },
+  });
+  pass("Backlog progress dashboard validation passed");
+} catch (error) {
+  fail(`Backlog progress dashboard validation failed: ${error.stderr || error.message}`);
 }
 
 await finalizeValidator({ phase: "4.2", errors, startedAt: __validationStartedAt });

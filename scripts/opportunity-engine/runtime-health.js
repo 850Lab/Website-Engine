@@ -53,6 +53,8 @@ const GENERATED_REPORTS = Object.freeze([
   "reports/release-validation.json",
   "reports/runtime-health.md",
   "reports/runtime-health.json",
+  "reports/backlog-progress-dashboard.md",
+  "reports/backlog-progress-dashboard.json",
   "reports/performance-baseline.md",
   "reports/performance-baseline.json",
 ]);

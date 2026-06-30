@@ -19,7 +19,7 @@ Separate **git-tracked code and seed config** from **live operational data** so 
 | **Seed / reference config** | `engine-data/` | Offers, capabilities, markets, campaigns, legacy signal seed — **read-only at runtime** | Tracked |
 | **Live operational data** | `runtime/` | Signal store, raw observations, logs, cache, **missions**, **engineering tasks** — **mutable production runtime** | **Ignored** (`.gitkeep` only) |
 | **Validation runtime** | `runtime-validation/run-*` | Isolated validator workspaces — **mutable validation runtime** | **Ignored** |
-| **Generated reports** | `reports/` | Autopilot, core validation, runtime health, performance baseline | **Ignored** when listed in `.gitignore` |
+| **Generated reports** | `reports/` | Autopilot, core validation, runtime health, backlog progress dashboard, performance baseline | **Ignored** when listed in `.gitignore` |
 | **Schema / entity data** | `data/` | Businesses, contacts, migration entities | Partially tracked |
 
 ---
@@ -174,11 +174,14 @@ These files are **local generated artifacts** — gitignored, non-blocking for a
 | `reports/core-validation.md` / `.json` | `node scripts/opportunity-engine/validate-core.js` (legacy alias) |
 | `reports/release-validation.md` / `.json` | `node scripts/opportunity-engine/validate-core.js` (Phase 4.0.5 release suite) |
 | `reports/runtime-health.md` / `.json` | `node scripts/opportunity-engine/runtime-health.js` |
+| `reports/backlog-progress-dashboard.md` / `.json` | `node scripts/opportunity-engine/backlog-progress-dashboard.js` |
 | `reports/performance-baseline.md` / `.json` | `node scripts/opportunity-engine/performance-baseline.js` |
 
 Autopilot still blocks on real source/docs changes and owner-approval gates.
 
 `runtime-health.js` emits generated report data only: schema version, runtime root, check results, runtime store counts, and generated-report gitignore policy. It must not add a dashboard, daemon, live monitor, execution worker, outreach behavior, or OpenClaw permissions.
+
+`backlog-progress-dashboard.js` emits generated report data only from the Master Engineering Backlog and execution status: completion percentages, current task, blocked task IDs, and remaining task/commit/hour estimates. It must not add a UI, daemon, live monitor, execution loop, outreach behavior, or OpenClaw permissions.
 
 Full phase regression: `node scripts/opportunity-engine/validate-core.js` (dependency graph, isolated runtime per validator, fail-fast root-cause reporting).
 
