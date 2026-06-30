@@ -389,6 +389,14 @@ Record architectural milestones here. Implementation details belong in commit me
 
 ---
 
+### 2026-06-30 — Engineering Task Registry
+**Phase:** 4.2 B2  
+**Type:** Milestone  
+**Summary:** Added a runtime-only Engineering Director task registry under `runtime/engineering-tasks/`. The registry persists proposed, approved, active, blocked, completed, and cancelled engineering tasks with validation results, blocker reasons, and commit references. It does not mutate source backlog definitions, execute OpenClaw, dispatch jobs, save missions, or launch outreach.  
+**Links:** `src/engine/founder-intent/engineering-task-registry.js`, `scripts/opportunity-engine/validate-engineering-task-registry.js`
+
+---
+
 ### 2026-06-30 — Pressure Washing Business Operator Template
 **Phase:** 4.2 O-PW1  
 **Type:** Milestone  
@@ -443,6 +451,7 @@ Record architectural milestones here. Implementation details belong in commit me
 
 | Date | Change |
 |---|---|
+| 2026-06-30 | Phase 4.2 B2 Engineering task registry — runtime lifecycle store for Engineering Director tasks |
 | 2026-06-30 | Phase 4.2 O-APT1 Apartment workshop mission template — validated apartment community and sponsor acquisition mission |
 | 2026-06-30 | Phase 4.2 C1 Mission-aware file-drop intake — candidate mission metadata preserved through signal provenance |
 | 2026-06-30 | Phase 4.2 O-KTM1 KTM industrial mission template — validated Beaumont 500-mile industrial maintenance mission |

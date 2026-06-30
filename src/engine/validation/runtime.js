@@ -27,6 +27,7 @@ const RUNTIME_SUBDIRECTORIES = [
   "cache",
   "reports",
   "missions",
+  "engineering-tasks",
 ];
 
 export class ValidationRuntime {

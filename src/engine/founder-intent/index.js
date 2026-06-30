@@ -57,6 +57,21 @@ export {
 } from "./engineering-director.js";
 
 export {
+  ENGINEERING_TASK_STATUSES,
+  normalizeEngineeringTaskRecord,
+  listEngineeringTasks,
+  getEngineeringTaskById,
+  saveEngineeringTask,
+  approveEngineeringTask,
+  activateEngineeringTask,
+  blockEngineeringTask,
+  completeEngineeringTask,
+  cancelEngineeringTask,
+  clearEngineeringTaskStoreForTests,
+  getEngineeringTaskRegistrySummary,
+} from "./engineering-task-registry.js";
+
+export {
   parseMasterBacklog,
   evaluateBacklogTask,
   scoreBacklogTask,
