@@ -82,8 +82,10 @@ if (nextAfterB1.selected?.task?.id === "B1") {
   fail("Completed B1 should not be selected again");
 } else if (!nextAfterB1.selected) {
   fail("Expected another ready task after B1 is marked complete");
+} else if (nextAfterB1.selected.task.id !== "O-PW1") {
+  fail(`Expected pressure washing template after B1, got ${nextAfterB1.selected.task.id}`);
 } else {
-  pass(`After B1, Engineering Director selects ${nextAfterB1.selected.task.id}`);
+  pass("After B1, Engineering Director selects the pressure washing mission template");
 }
 
 const plan = b1 ? createBuilderPlanFromBacklogTask(b1) : null;

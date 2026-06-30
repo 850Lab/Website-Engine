@@ -180,12 +180,29 @@ function containsAny(task, patterns) {
   return patterns.some((pattern) => pattern.test(text));
 }
 
+function founderPriorityFit(task) {
+  const text = [
+    task.id,
+    task.title,
+    task.description,
+    task.businessPurpose,
+    task.affectedModules.join(" "),
+    task.completionCriteria,
+  ].join(" ");
+  if (/pressure washing|commercial property|beaumont/i.test(text)) return 100;
+  if (/\bktm\b|industrial|turnaround|shutdown|refinery/i.test(text)) return 90;
+  if (/apartment|sponsor|workshop|property manager/i.test(text)) return 80;
+  if (/10,?000|email|scale|campaign/i.test(text)) return 65;
+  return 45;
+}
+
 export function scoreBacklogTask(task, blockers = []) {
   if (blockers.length) return 0;
 
   const priority = PRIORITY_SCORE[task.priority] || 0;
   const businessValue = VALUE_SCORE[task.businessValue] || 0;
   const effortFit = COMPLEXITY_FIT[task.complexity] || 40;
+  const founderFit = founderPriorityFit(task);
   const revenueImpact = containsAny(task, [/revenue/i, /pressure washing/i, /ktm/i, /apartment/i, /cash/i])
     ? 100
     : 45;
@@ -201,7 +218,8 @@ export function scoreBacklogTask(task, blockers = []) {
     (
       priority * 0.15 +
       businessValue * 0.2 +
-      revenueImpact * 0.2 +
+      revenueImpact * 0.15 +
+      founderFit * 0.1 +
       dependencyLeverage * 0.15 +
       validationConfidence * 0.1 +
       effortFit * 0.08 +
